@@ -67,6 +67,7 @@ class LoansController extends ApiBaseController
                 'update-loan' => ['POST', 'OPTIONS'],
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
+                'loan-update' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -735,43 +736,42 @@ class LoansController extends ApiBaseController
     public function actionUpdateApplicationNumber()
     {
         // checking authorization
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            // checking value
-            if (empty($params['value'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "value"']);
-            }
-
-            // checking id
-            if (empty($params['id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
-            }
-
-            // getting loan application object from loan id
-            $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
-
-            // updating data
-            if ($application) {
-                $application->application_number = $params['value'];
-                $application->updated_by = $user->user_enc_id;
-                $application->updated_on = date('Y-m-d H:i:s');
-                if (!$application->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $application->getErrors()]);
-                }
-
-                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
-            } else {
-
-                // if application not found
-                return $this->response(404, ['status' => 404, 'message' => 'application not found']);
-            }
-
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        $params = Yii::$app->request->post();
+
+        // checking value
+        if (empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "value"']);
+        }
+
+        // checking id
+        if (empty($params['id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
+        }
+
+        // getting loan application object from loan id
+        $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+
+        // updating data
+        if ($application) {
+            $application->application_number = $params['value'];
+            $application->updated_by = $user->user_enc_id;
+            $application->updated_on = date('Y-m-d H:i:s');
+            if (!$application->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $application->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+
+            // if application not found
+            return $this->response(404, ['status' => 404, 'message' => 'application not found']);
+        }
+
     }
 
     // this action is used to add loan branch
@@ -1438,4 +1438,29 @@ class LoansController extends ApiBaseController
 
     }
 
+    public function actionLoanUpdate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information " or id or value"']);
+        }
+        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number'])) {
+            $type = $params['type'];
+            $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+            if (!$model) {
+                return $this->response(404, ['status' => 404, 'message' => 'loan not found']);
+            }
+            $model->$type = $params['value'];
+            $model->updated_by = $user->user_enc_id;
+            $model->updated_on = date('Y-m-d H:i:s');
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+        }
+        return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
+    }
 }

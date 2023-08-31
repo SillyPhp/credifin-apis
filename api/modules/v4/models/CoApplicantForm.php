@@ -26,6 +26,8 @@ class CoApplicantForm extends Model
     public $loan_co_app_enc_id;
     public $loan_id;
     public $user_id;
+    public $driving_license_number;
+    public $marital_status;
 
     public function rules()
     {
@@ -33,7 +35,7 @@ class CoApplicantForm extends Model
             [['name', 'dob', 'relation', 'borrower_type', 'loan_id'], 'required', 'when' => function ($model) {
                 return !isset($model->loan_co_app_enc_id);
             }],
-            [['pan_number', 'phone', 'loan_co_app_enc_id', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender'], 'safe'],
+            [['pan_number', 'phone', 'loan_co_app_enc_id', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender', 'driving_license_number', 'marital_status'], 'safe'],
             [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
             [['name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
@@ -63,6 +65,8 @@ class CoApplicantForm extends Model
             $co_applicant->gender = $this->gender;
             $co_applicant->borrower_type = $this->borrower_type;
             $co_applicant->pan_number = $this->pan_number;
+            $co_applicant->driving_license_number = $this->driving_license_number;
+            $co_applicant->marital_status = $this->marital_status;
             $co_applicant->aadhaar_number = $this->aadhaar_number;
             $co_applicant->voter_card_number = $this->voter_card_number;
             $co_applicant->created_by = $this->user_id;
@@ -115,6 +119,8 @@ class CoApplicantForm extends Model
                 $co_applicant->pan_number = $this->pan_number;
                 $co_applicant->aadhaar_number = $this->aadhaar_number;
                 $co_applicant->voter_card_number = $this->voter_card_number;
+                $co_applicant->driving_license_number = $this->driving_license_number;
+                $co_applicant->marital_status = $this->marital_status;
                 $co_applicant->updated_by = $this->user_id;
                 $co_applicant->updated_on = date('Y-m-d H:i:s');
             }
