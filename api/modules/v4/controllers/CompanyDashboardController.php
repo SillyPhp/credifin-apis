@@ -2886,22 +2886,22 @@ class CompanyDashboardController extends ApiBaseController
             $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
             $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
             $employeeAmount = $employeeAmount
-//                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
-                ->andWhere(['or',
-                    ['and',
-                        ['b.loan_type' => 'Loan Against Property'],
-                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
-                    ],
-                    ['and',
-                        ['not', ['b.loan_type' => 'Loan Against Property']],
-                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
-                    ],
-                    [
-                        'or',
-                        ['b.loan_type' => null],
-                        ['b.loan_type' => '']
-                    ]
-                ])
+                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+//                ->andWhere(['or',
+//                    ['and',
+//                        ['b.loan_type' => 'Loan Against Property'],
+//                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
+//                    ],
+//                    ['and',
+//                        ['not', ['b.loan_type' => 'Loan Against Property']],
+//                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
+//                    ],
+//                    [
+//                        'or',
+//                        ['b.loan_type' => null],
+//                        ['b.loan_type' => '']
+//                    ]
+//                ])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
