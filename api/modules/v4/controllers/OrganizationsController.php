@@ -1133,7 +1133,7 @@ class OrganizationsController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.financer_loan_product_enc_id', 'a.product_code', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
                 ->joinWith(['financerLoanProductPurposes b' => function ($b) {
-                    $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
+                    $b->select(['b.financer_loan_product_purpose_enc_id', 'b.purpose_code', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
@@ -1200,6 +1200,7 @@ class OrganizationsController extends ApiBaseController
                 foreach ($params['loan_purpose'] as $key => $value) {
                     $data['key'] = $key;
                     $data['purpose'] = $value['purpose'];
+                    $data['purpose_code'] = $value['purpose_code'];
                     if (!empty($value['financer_loan_product_purpose_enc_id'])) {
                         $purpose = FinancerLoanProductPurpose::findOne([
                             'financer_loan_product_purpose_enc_id' => $value['financer_loan_product_purpose_enc_id'],
@@ -1208,6 +1209,7 @@ class OrganizationsController extends ApiBaseController
                         if ($purpose) {
                             $purpose->sequence = $key;
                             $purpose->purpose = $value['purpose'];
+                            $purpose->purpose_code = $value['purpose_code'];
                             $purpose->updated_by = $user->user_enc_id;
                             $purpose->updated_on = date('Y-m-d H:i:s');
                             if (!$purpose->update()) {
@@ -1593,6 +1595,7 @@ class OrganizationsController extends ApiBaseController
         $purpose->financer_loan_product_purpose_enc_id = $utilitiesModel->encrypt();
         $purpose->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $purpose->purpose = $data['purpose'];
+        $purpose->purpose_code = $data['purpose_code'];
         $purpose->sequence = $data['key'];
         $purpose->created_on = date('Y-m-d H:i:s');
         $purpose->created_by = $data['user_enc_id'];

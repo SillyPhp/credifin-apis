@@ -1100,7 +1100,9 @@ class LoansController extends ApiBaseController
         }
         $credit_report = CreditLoanApplicationReports::find()
             ->alias('a')
-            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name'])
+            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name',
+                'a.created_on'
+            ])
             ->joinWith(['responseEnc b' => function ($b) {
                 $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
                 $b->joinWith(['requestEnc b1'], false);
@@ -1139,7 +1141,12 @@ class LoansController extends ApiBaseController
                                 $credit_report[$key]['CIBIL']['score'] = ltrim($array['ScoreSegment']['Score'], 0);
                             }
                         }
+                        if (!empty($array['Header'])) {
+                            $rawDate = $array['Header']['DateProcessed'];
+                            $formattedDate = substr($rawDate, 4) . '-' . substr($rawDate, 2, 2) . '-' . substr($rawDate, 0, 2);
 
+                            $credit_report[$key]['report_date'] = $formattedDate;
+                        }
                         if (!empty($array['TelephoneSegment'])) {
                             if (array_key_exists(0, $array['TelephoneSegment'])) {
                                 foreach ($array['TelephoneSegment'] as $telephones) {
@@ -1419,10 +1426,24 @@ class LoansController extends ApiBaseController
                 if (is_array($item['model'])) {
                     $item['model'] = end($item['model']);
                 }
-                $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-                $item['stamp'] = strtotime($item['stamp']);
-                $groupedAudit[$item['model']][] = $item;
+                if ($item['model'] !== 'EducationLoanPayments') {
+                    $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
+                    $item['stamp'] = strtotime($item['stamp']);
+
+                    if ($item['field'] === 'gender') {
+                        if ($item['new_value'] == 1) {
+                            $item['new_value'] = 'Male';
+                        } elseif ($item['new_value'] == 2) {
+                            $item['new_value'] = 'Female';
+                        } else {
+                            $item['new_value'] = 'Others';
+                        }
+                    }
+
+                    $groupedAudit[$item['model']][] = $item;
+                }
             }
+
             foreach ($groupedAudit as $g => $item) {
                 array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
                 foreach ($item as $key => $i) {
@@ -1430,6 +1451,7 @@ class LoansController extends ApiBaseController
                     $groupedAudit[$g][$key] = $i;
                 }
             }
+
             return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
 
         } else {
