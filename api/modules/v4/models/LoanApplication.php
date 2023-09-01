@@ -914,7 +914,7 @@ class LoanApplication extends Model
             $my_string = $incremental['application_number'];
             $my_array = explode('-', $my_string);
             $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
-            $new_num = $prev_num < 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+            $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
             $final_num = "$loanAccountNumber-{$new_num}";
             return $final_num;
         } else {
