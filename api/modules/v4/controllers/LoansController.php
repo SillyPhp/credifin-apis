@@ -1485,4 +1485,84 @@ class LoansController extends ApiBaseController
         }
         return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
     }
+
+    public function actionAssignApplicationNumber()
+    {
+        $loan_applications = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'b.financer_loan_product_enc_id', 'b.product_code', 'c1.organization_code', 'c1.location_enc_id', 'c2.city_code'])
+            ->joinWith(['loanProductsEnc b'], false)
+            ->joinWith(['assignedLoanProviders c' => function ($c) {
+                $c->joinWith(['branchEnc c1' => function ($c1) {
+                    $c1->joinWith(['cityEnc c2'], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanPurposes d' => function ($d) {
+                $d->select(['d.loan_purpose_enc_id', 'd.loan_app_enc_id', 'd1.purpose_code']);
+                $d->joinWith(['financerLoanPurposeEnc d1'], false);
+            }])
+            ->andWhere(['between', 'a.created_on', "2023-09-01 00:00:00", "2023-09-01 23:59:59"])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->orderBy(['a.created_on' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        foreach ($loan_applications as $la) {
+            $purposeCode = '';
+            $purposeCodeArray = [];
+            $finalPurposeCode = '';
+            if ($la['loanPurposes']) {
+                foreach ($la['loanPurposes'] as $purpose) {
+                    if (!empty($purpose['purpose_code'])) {
+                        $purposeCodeArray[] = $purpose['purpose_code'];
+                    }
+                }
+                $purposeCodeArray = array_unique($purposeCodeArray);
+                $purposeCode = implode($purposeCodeArray);
+                $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
+            }
+
+            if ($la['product_code'] && ($la['city_code'] || $la['organization_code'])) {
+                $this->assignNumber($la, $finalPurposeCode);
+            }
+        }
+        if ($loan_applications) {
+            return $this->response(200, ['status' => 200, 'data' => $loan_applications]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+
+    }
+
+    private function assignNumber($la, $purposeCode)
+    {
+        $currentYear = date('y');
+        $currentMonth = date('m');
+        $applicationNumber = null;
+        $loanAccountNumber = "{$la['product_code']}{$purposeCode}-{$la['city_code']}{$la['organization_code']}-{$currentMonth}{$currentYear}";
+
+        $incremental = LoanApplications::find()
+            ->select(['application_number'])
+            ->where(['like', 'application_number', $loanAccountNumber . '%', false])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->one();
+
+        if ($incremental) {
+            $prev_num = '';
+            $my_string = $incremental['application_number'];
+            $my_array = explode('-', $my_string);
+            $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+            $new_num = $prev_num < 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+            $final_num = "$loanAccountNumber-{$new_num}";
+            $applicationNumber = $final_num;
+        } else {
+            $applicationNumber = "$loanAccountNumber-001";
+        }
+
+        $resp = Yii::$app->db->createCommand()
+            ->update(LoanApplications::tableName(), ['application_number' => $applicationNumber], ['loan_app_enc_id' => $la['loan_app_enc_id']])
+            ->execute();
+
+    }
+
 }
