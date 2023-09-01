@@ -13,8 +13,10 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
 use common\models\extended\Payments;
+use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -133,10 +135,11 @@ class LoanApplication extends Model
                 $model->auto_assigned = 1;
             }
 
-            if($this->loan_product_id){
+            if ($this->loan_product_id) {
                 $model->loan_products_enc_id = $this->loan_product_id;
+                $model->application_number = $this->generateApplicationNumber($this->loan_product_id, $this->branch_id, $this->loan_purpose);
                 $model->loan_type = null;
-            }else{
+            } else {
                 $model->loan_type = $this->loan_type;
             }
 
@@ -305,7 +308,8 @@ class LoanApplication extends Model
         }
     }
 
-    private function getLoanType($loan_id){
+    private function getLoanType($loan_id)
+    {
         $loan_type = FinancerLoanProducts::find()
             ->alias('a')
             ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
@@ -317,10 +321,11 @@ class LoanApplication extends Model
             ->asArray()
             ->one();
 
-        if($loan_type){
+        if ($loan_type) {
             return $loan_type['name'];
         }
     }
+
     // private function to save loan purpose
     private function addPurpose($loan_id, $user_id, $p)
     {
@@ -854,5 +859,66 @@ class LoanApplication extends Model
         }
     }
 
+    private function generateApplicationNumber($product_id, $branch_id, $purpose_id)
+    {
+        $loan_num = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $product_id]);
+        $branch_code = OrganizationLocations::find()
+            ->alias('a')
+            ->select(['a.city_enc_id', 'a.organization_code', 'b.city_code'])
+            ->where(['a.location_enc_id' => $branch_id])
+            ->joinWith(['cityEnc b'], false)
+            ->asArray()
+            ->one();
+
+        $finalPurposeCode = '';
+        if ($purpose_id) {
+            $purposes = FinancerLoanProductPurpose::find()
+                ->select('purpose_code')
+                ->andWhere(['in', 'financer_loan_product_purpose_enc_id', $purpose_id])
+                ->asArray()
+                ->all();
+
+            $purposeCodeArray = [];
+            foreach ($purposes as $purpose) {
+                if (!empty($purpose['purpose_code'])) {
+                    $purposeCodeArray[] = $purpose['purpose_code'];
+                }
+            }
+            $purposeCodeArray = array_unique($purposeCodeArray);
+            $purposeCode = implode('-', $purposeCodeArray);
+            $finalPurposeCode = '-' . $purposeCode;
+        }
+
+        $productCode = $loan_num['product_code'];
+        $branchCode = $branch_code['organization_code'];
+        $cityCode = $branch_code['city_code'];
+
+        if ($productCode && $branchCode && $cityCode) {
+            $currentYear = date('y');
+            $currentMonth = date('m');
+
+            $loanAccountNumber = "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
+
+            $incremental = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.application_number'])
+                ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+                ->orderBy(['a.application_number' => SORT_DESC])
+                ->one();
+
+            if ($incremental) {
+                $my_string = $incremental['application_number'];
+                $my_array = explode('-', $my_string);
+                $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+                $new_num = $prev_num < 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+                $final_num = "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-{$new_num}";
+                return $final_num;
+
+            } else {
+                return "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-001";
+            }
+        }
+        return null;
+    }
 
 }
