@@ -160,7 +160,7 @@ class OrganizationsController extends ApiBaseController
             // updating data
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
-            (!empty($params['organization_code'])) ? $location->organization_code = $params['organization_code'] : "";
+            $location->organization_code = $params['organization_code'] ?? '';
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
             (!empty($params['status'])) ? $location->status = $params['status'] : "";
             $location->last_updated_by = $user->user_enc_id;
@@ -2238,12 +2238,12 @@ class OrganizationsController extends ApiBaseController
             ->innerJoinWith(['financerLoanProductImages c' => function ($c) {
                 $c->select(['c.product_image_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.name']);
                 $c->orderBy(['c.sequence' => SORT_ASC]);
+                $c->onCondition(['c.is_deleted' => 0]);
             }])
             ->where([
                 'b.organization_enc_id' => $lender,
                 'a.is_deleted' => 0,
                 'b.is_deleted' => 0,
-                'c.is_deleted' => 0
             ])
             ->groupBy(['a.financer_loan_product_enc_id'])
             ->asArray()
@@ -2271,6 +2271,36 @@ class OrganizationsController extends ApiBaseController
             if ($query) {
                 return $this->response(200, ['status' => 200, 'data' => $query]);
             }
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionGetEmiAccounts()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $query = LoanAccounts::find()
+            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on'])
+            ->where(['is_deleted' => 0]);
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    $query->andWhere(['like', $key, $value]);
+                }
+            }
+        }
+        $count = $query->count();
+        $query = $query->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($query) {
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
