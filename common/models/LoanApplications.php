@@ -30,6 +30,8 @@ namespace common\models;
  * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
  * @property string $candidate_status_date Status Date
  * @property int $cibil_score cibil score
+ * @property int $equifax_score Equifax Score
+ * @property int $crif_score CRIF Score
  * @property int $gender 1 for Male, 2 for Female,3 other
  * @property double $amount
  * @property double $yearly_income
@@ -40,6 +42,9 @@ namespace common\models;
  * @property string $aadhaar_number
  * @property string $pan_number
  * @property string $voter_card_number
+ * @property string $invoice_number Invoice Number
+ * @property string $rc_number Rc Number
+ * @property string $chassis_number Chassis Number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
@@ -141,7 +146,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return [
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
-            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
+            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi'], 'number'],
@@ -150,6 +155,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['voter_card_number'], 'string', 'max' => 20],
+            [['invoice_number', 'rc_number', 'chassis_number'], 'string', 'max' => 30],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
