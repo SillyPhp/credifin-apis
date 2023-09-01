@@ -3451,11 +3451,23 @@ class CompanyDashboardController extends ApiBaseController
                 $cityName = $cityData['name'];
                 $cityCode = $cityData['city_code'];
 
-                $existingCity = Cities::findOne(['name' => $cityName]);
+//                $existingCity = Cities::findOne(['name' => $cityName]);
+                $existingCity = Cities::find()
+                    ->alias('a')
+                    ->select(['a.city_enc_id', 'a.city_code', 'a.state_enc_id', 'b.state_enc_id', 'b.country_enc_id'])
+                    ->joinWith(['stateEnc b' => function ($b) {
+                        $b->joinWith(['countryEnc c']);
+                    }], false)
+                    ->where(['a.name' => $cityName, 'c.name' => 'India'])
+                    ->asArray()
+                    ->one();
 
                 if ($existingCity) {
-                    $existingCity->city_code = $cityCode;
-                    $existingCity->save();
+                    Yii::$app->db->createCommand()
+                        ->update(Cities::tableName(), ['city_code' => $cityCode], ['city_enc_id' => $existingCity['city_enc_id']])
+                        ->execute();
+//                    $existingCity[0]->city_code = $cityCode;
+//                    $existingCity[0]->update();
                 }
             }
         }
