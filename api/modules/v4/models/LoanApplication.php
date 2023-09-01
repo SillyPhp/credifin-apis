@@ -839,7 +839,7 @@ class LoanApplication extends Model
     private function share_leads($user_id, $loan_id)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
-        if (!empty($reporting_persons_ids)){
+        if (!empty($reporting_persons_ids)) {
             foreach ($reporting_persons_ids as $value) {
                 $query = new SharedLoanApplications();
                 $utilitiesModel = new Utilities();
@@ -862,6 +862,10 @@ class LoanApplication extends Model
     private function generateApplicationNumber($product_id, $branch_id, $purpose_id)
     {
         $loan_num = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $product_id]);
+        if (!$loan_num || !$loan_num['product_code']) {
+            return null;
+        }
+
         $branch_code = OrganizationLocations::find()
             ->alias('a')
             ->select(['a.city_enc_id', 'a.organization_code', 'b.city_code'])
@@ -869,6 +873,11 @@ class LoanApplication extends Model
             ->joinWith(['cityEnc b'], false)
             ->asArray()
             ->one();
+        $branchCode = $branch_code['organization_code'];
+        $cityCode = $branch_code['city_code'];
+        if (!$branchCode && !$cityCode) {
+            return null;
+        }
 
         $finalPurposeCode = '';
         if ($purpose_id) {
@@ -885,40 +894,32 @@ class LoanApplication extends Model
                 }
             }
             $purposeCodeArray = array_unique($purposeCodeArray);
-            $purposeCode = implode('-', $purposeCodeArray);
-            $finalPurposeCode = '-' . $purposeCode;
+            $purposeCode = implode($purposeCodeArray);
+            $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
         }
 
-        $productCode = $loan_num['product_code'];
-        $branchCode = $branch_code['organization_code'];
-        $cityCode = $branch_code['city_code'];
+        $currentYear = date('y');
+        $currentMonth = date('m');
 
-        if ($productCode && $branchCode && $cityCode) {
-            $currentYear = date('y');
-            $currentMonth = date('m');
+        $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
 
-            $loanAccountNumber = "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
+        $incremental = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.application_number'])
+            ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->one();
 
-            $incremental = LoanApplications::find()
-                ->alias('a')
-                ->select(['a.application_number'])
-                ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
-                ->orderBy(['a.application_number' => SORT_DESC])
-                ->one();
-
-            if ($incremental) {
-                $my_string = $incremental['application_number'];
-                $my_array = explode('-', $my_string);
-                $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
-                $new_num = $prev_num < 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
-                $final_num = "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-{$new_num}";
-                return $final_num;
-
-            } else {
-                return "{$productCode}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-001";
-            }
+        if ($incremental) {
+            $my_string = $incremental['application_number'];
+            $my_array = explode('-', $my_string);
+            $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+            $new_num = $prev_num < 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+            $final_num = "$loanAccountNumber-{$new_num}";
+            return $final_num;
+        } else {
+            return "$loanAccountNumber-001";
         }
-        return null;
     }
 
 }
