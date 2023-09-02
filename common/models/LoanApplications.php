@@ -45,6 +45,7 @@ namespace common\models;
  * @property string $invoice_number Invoice Number
  * @property string $rc_number Rc Number
  * @property string $chassis_number Chassis Number
+ * @property string $battery_number Battery Number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
@@ -155,7 +156,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['voter_card_number'], 'string', 'max' => 20],
-            [['invoice_number', 'rc_number', 'chassis_number'], 'string', 'max' => 30],
+            [['invoice_number', 'rc_number', 'chassis_number', 'battery_number'], 'string', 'max' => 30],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
