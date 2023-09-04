@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
+use common\models\EmiCollection;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
@@ -68,6 +69,26 @@ class PaymentsController extends ApiBaseController
         }
     }
 
+    private function updateEmi($id)
+    {
+        $model = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id'])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->joinWith(['loanPaymentsEnc c'], false);
+            }], false)
+            ->andWhere(['c.reference_id' => $id])
+            ->asArray()
+            ->one();
+        if ($model) {
+            Yii::$app->db->createCommand()
+                ->update(EmiCollection::tableName(),
+                    ['emi_payment_status' => 'paid'],
+                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']])
+                ->execute();
+        }
+    }
+
     private function handleQrWebhook($post)
     {
         if ($post['event'] == 'qr_code.credited') {
@@ -85,6 +106,7 @@ class PaymentsController extends ApiBaseController
                 if ($status == 'paid' || $status == 'captured') {
                     if (!empty($ref_id)):
                         $this->closeAllModes($ref_id);
+                        $this->updateEmi($ref_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
@@ -111,6 +133,7 @@ class PaymentsController extends ApiBaseController
                 if ($status == 'paid' || $status == 'captured') {
                     if (!empty($ref_id)):
                         $this->closeAllModes($ref_id);
+                        $this->updateEmi($ref_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
