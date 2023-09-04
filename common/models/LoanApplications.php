@@ -30,6 +30,8 @@ namespace common\models;
  * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
  * @property string $candidate_status_date Status Date
  * @property int $cibil_score cibil score
+ * @property int $equifax_score Equifax Score
+ * @property int $crif_score CRIF Score
  * @property int $gender 1 for Male, 2 for Female,3 other
  * @property double $amount
  * @property double $yearly_income
@@ -40,6 +42,9 @@ namespace common\models;
  * @property string $aadhaar_number
  * @property string $pan_number
  * @property string $voter_card_number
+ * @property string $invoice_number Invoice Number
+ * @property string $rc_number Rc Number
+ * @property string $chassis_number Chassis Number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
@@ -66,6 +71,9 @@ namespace common\models;
  * @property string $loan_type
  * @property string $form_type
  * @property string $loan_purpose
+ * @property int $registry_status
+ * @property string $registry_status_updated_on
+ * @property string $registry_status_updated_by
  * @property string $lender_reasons
  * @property int $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
@@ -79,6 +87,8 @@ namespace common\models;
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
+ * @property LoanApplicationFi[] $loanApplicationFis
+ * @property LoanApplicationImages[] $loanApplicationImages
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property LoanApplicationNotifications[] $loanApplicationNotifications
  * @property LoanApplicationOptions[] $loanApplicationOptions
@@ -94,6 +104,7 @@ namespace common\models;
  * @property Users $cpa0
  * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $capitalRoiUpdatedBy
+ * @property Users $registryStatusUpdatedBy
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $collegeEnc
@@ -135,15 +146,16 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return [
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
-            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
+            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
+            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['voter_card_number'], 'string', 'max' => 20],
+            [['invoice_number', 'rc_number', 'chassis_number'], 'string', 'max' => 30],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
@@ -151,6 +163,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['cpa'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['cpa' => 'user_enc_id']],
             [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
             [['capital_roi_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['capital_roi_updated_by' => 'user_enc_id']],
+            [['registry_status_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['registry_status_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
@@ -223,6 +236,22 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplicationCommissions()
     {
         return $this->hasMany(LoanApplicationCommissions::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationFis()
+    {
+        return $this->hasMany(LoanApplicationFi::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationImages()
+    {
+        return $this->hasMany(LoanApplicationImages::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -348,6 +377,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getRegistryStatusUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'registry_status_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
@@ -424,6 +461,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return $this->hasMany(LoanApplicationsReferences::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */

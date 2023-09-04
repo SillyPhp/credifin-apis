@@ -324,6 +324,7 @@ class LoanApplicationsForm extends LoanApplications
                     foreach ($params['child_information'] as $information) {
                         $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
                         $this->source = $source;
+                        $this->loan_status_updated_on = date('Y-m-d H:i:s');
                         $this->had_taken_addmission = 0;
                         $this->amount = $information['child_loan_amount'];
                         $this->loan_type = 'School Fee Loan';
