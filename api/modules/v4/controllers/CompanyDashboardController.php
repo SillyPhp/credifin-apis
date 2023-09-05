@@ -392,6 +392,13 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['managedBy k'], false)
             ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['sharedLoanApplications n' => function ($n) {
+                $n->select(['n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
+                    'CASE WHEN n1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", n1.image_location, "/", n1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(n1.first_name," ",n1.last_name), "&size=200&rounded=false&background=", REPLACE(n1.initials_color, "#", ""), "&color=ffffff") END image'
+                ])
+                    ->joinWith(['sharedTo n1'], false)
+                    ->onCondition(['n.is_deleted' => 0]);
+            }])
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['or',
                 ['and',
@@ -488,7 +495,7 @@ class CompanyDashboardController extends ApiBaseController
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
-            $name_search = ['created_by'];
+            $name_search = ['created_by', 'sharedTo'];
 
             // fields array for "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
@@ -526,18 +533,22 @@ class CompanyDashboardController extends ApiBaseController
 
                     // key match to "$name_search" table array
                     if (in_array($key, $name_search)) {
-                        if ($key == 'created_by') {
-                            $loans->andWhere(['or',
-                                ['and',
-                                    ['not',
-                                        ['a.lead_by' => null]],
-                                    ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
-                                ['and',
-                                    ['a.lead_by' => null],
-                                    ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
-                            ]);
+                        switch ($key) {
+                            case 'created_by':
+                                $loans->andWhere(['or',
+                                    ['and',
+                                        ['not',
+                                            ['a.lead_by' => null]],
+                                        ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
+                                    ['and',
+                                        ['a.lead_by' => null],
+                                        ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
+                                ]);
+                                break;
+                            case 'sharedTo':
+                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", n1.last_name)', $val]);
+                                break;
                         }
-
                     }
                 }
             }
@@ -622,18 +633,8 @@ class CompanyDashboardController extends ApiBaseController
 
         if ($loans) {
             foreach ($loans as $key => $val) {
-                $loans[$key]['sharedTo'] = SharedLoanApplications::find()
-                    ->alias('a')
-                    ->select(['a.shared_loan_app_enc_id', 'a.loan_app_enc_id', 'a.access', 'a.status', 'concat(b.first_name," ",b.last_name) name', 'b.phone',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-                    ])
-                    ->joinWith(['sharedTo b'], false);
-                if (!empty($params['fields_search']['sharedTo'])) {
-                    $loans[$key]['sharedTo']->andWhere(['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['fields_search']['sharedTo']]);
-                }
-                $loans[$key]['sharedTo'] = $loans[$key]['sharedTo']->andWhere(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
-                    ->asArray()
-                    ->all();
+                $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
+                unset($loans[$key]['sharedLoanApplications']);
 
                 $loans[$key]['access'] = null;
                 $loans[$key]['shared_by'] = null;
