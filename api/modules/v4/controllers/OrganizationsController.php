@@ -1824,6 +1824,8 @@ class OrganizationsController extends ApiBaseController
                                 $model->andWhere(['in', 'a.' . $key, $val]);
                             } elseif (in_array($value, $val = [5, 82])) {
                                 $model->andWhere(['in', 'a.' . $key, $val]);
+                            } elseif (in_array($value, $val = [1, 9])) {
+                                $model->andWhere(['in', 'a.' . $key, $val]);
                             } else {
                                 $model->andWhere(['a.' . $key => $value]);
                             }
