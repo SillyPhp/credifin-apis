@@ -92,7 +92,7 @@ class NotificationsController extends ApiBaseController
 
             $notifications = Notifications::find()
                 ->alias('a')
-                ->select(['a.title', 'a.description', 'a.link', 'a.notification_enc_id', 'a.user_enc_id', 'a.is_open',
+                ->select(['a.title', 'a.description', 'a.link', 'a.notification_enc_id', 'a.user_enc_id', 'a.is_open', 'a.created_on',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                 ])
                 ->joinWith(['createdBy b'], false)

@@ -295,15 +295,15 @@ class UserUtilities
                         $notificationStatus = $this->sendPushNotification($token, $an['title'], $an['description'], $an['link']);
 
                         $updateNotification = Notifications::findOne(['notification_enc_id' => $an['notification_enc_id']]);
-                        if ($notificationStatus && $updateNotification) {
-                            $updateNotification->status = '1';
-                        } else if (!$notificationStatus && $updateNotification) {
-                            $updateNotification->status = '2';
+                        if ($updateNotification) {
+                            $updateNotification->status = $notificationStatus ? 1 : 2;
                         }
 
                         if (!$updateNotification->update()) {
                             throw new \Exception(json_encode($updateNotification->getErrors()));
                         };
+
+                        return true;
                     }
                 }
             }
@@ -326,14 +326,16 @@ class UserUtilities
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
         //Send the request
         $response = curl_exec($ch);
         //Close request
         if ($response === FALSE) {
+            return false;
             die('FCM Send Error: ' . curl_error($ch));
         }
         curl_close($ch);
-        return json_encode($response);
+        return true;
 
     }
 }

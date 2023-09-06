@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\models;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\CertificateTypes;
 use common\models\EducationLoanPayments;
 use common\models\EmailLogs;
@@ -839,7 +840,10 @@ class LoanApplication extends Model
     private function share_leads($user_id, $loan_id)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
+        $shared = Users::findOne(['user_enc_id' => $user_id]);
+        $shared_by = $shared->first_name ." ". $shared->last_name;
         if (!empty($reporting_persons_ids)){
+            $all_notifications = [];
             foreach ($reporting_persons_ids as $value) {
                 $query = new SharedLoanApplications();
                 $utilitiesModel = new Utilities();
@@ -854,7 +858,22 @@ class LoanApplication extends Model
                 $query->created_on = date('Y-m-d H:i:s');
                 if (!$query->save()) {
                     throw new \Exception(json_encode($query->getErrors()));
+                }else {
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $notification = [
+                        'notification_enc_id' => $utilitiesModel->encrypt(),
+                        'user_enc_id' => $value,
+                        'title' => "$shared_by created a new loan application",
+                        'description' => '',
+                        'link' => '/account/loan-application/' . $loan_id,
+                        'created_by' => $user_id,
+                    ];
+                    array_push($all_notifications, $notification);
                 }
+            }
+            if(!empty($all_notifications)){
+                $notification_users = new UserUtilities();
+                $notification_users ->saveNotification($all_notifications);
             }
         }
     }
