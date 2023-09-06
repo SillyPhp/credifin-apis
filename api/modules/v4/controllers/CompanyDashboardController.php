@@ -887,7 +887,7 @@ class CompanyDashboardController extends ApiBaseController
                     $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
                 }])
                 ->joinWith(['loanApplicationPds m' => function ($m) {
-                    $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                    $m->select(['m.loan_application_pd_enc_id', 'm.preferred_date', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
                 }])
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
@@ -904,6 +904,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
+
 
             // if loan application exists
             if ($loan) {
@@ -938,6 +939,7 @@ class CompanyDashboardController extends ApiBaseController
                         }
                     }
                 }
+
 
                 if (!empty($loan['loanCoApplicants'])) {
                     foreach ($loan['loanCoApplicants'] as $keys => $values) {
@@ -3001,13 +3003,13 @@ class CompanyDashboardController extends ApiBaseController
             $loan_pd->loan_app_enc_id = $params['loan_app_enc_id'];
             $loan_pd->created_on = date('Y-m-d H:i:s');
             $loan_pd->created_by = $user->user_enc_id;
+            if (!empty($params['dates'])) {
+                $loan_pd->preferred_date = $params['dates'];
+            }
         }
         $loan_pd->status = $params['status'];
         if (isset($params['assigned_to'])) {
             $loan_pd->assigned_to = $params['assigned_to'];
-        }
-        if (isset($params['preferred_date'])) {
-            $loan_pd->preferred_date = $params['preferred_date'];
         }
         $loan_pd->updated_on = date('Y-m-d H:i:s');
         $loan_pd->updated_by = $user->user_enc_id;
