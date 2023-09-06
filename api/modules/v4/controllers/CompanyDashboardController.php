@@ -10,6 +10,7 @@ use common\models\AssignedDeals;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\Cities;
 use common\models\ClaimedDeals;
 use common\models\ColumnPreferences;
 use common\models\EducationLoanPayments;
@@ -48,6 +49,7 @@ use Yii;
 use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 
@@ -3246,6 +3248,19 @@ class CompanyDashboardController extends ApiBaseController
             $loan_fi->created_on = date('Y-m-d H:i:s');
             $loan_fi->created_by = $user->user_enc_id;
         }
+        $document = UploadedFile::getInstanceByName('document');
+        if ($document) {
+            $documents = Yii::$app->getSecurity()->generateRandomString() . '.' . $document->extension;
+            $documents_location = Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->document_images->documents . $documents_location;
+
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['contentType' => $document->type]]);
+
+            $loan_fi->documents = $documents;
+            $loan_fi->documents_location = $documents_location;
+        }
         $loan_fi->status = $params['status'];
         if (isset($params['assigned_to'])) {
             $loan_fi->assigned_to = $params['assigned_to'];
@@ -3534,6 +3549,47 @@ class CompanyDashboardController extends ApiBaseController
             return ['status' => 200, 'data' => $res];
         }
         return ['status' => 404, 'message' => 'not found'];
+    }
+
+    // adding city codes in cities table
+    public function actionAddCity()
+    {
+        $jsonData = file_get_contents('https://empoweryouth.com/assets/lJCWPnNNVy3d95ppLp7M_cities.json');
+        $citiesData = Json::decode($jsonData, true);
+
+        $entryCount = count($citiesData['data']);
+
+        $limit = 10;
+        $totalPages = ceil($entryCount / $limit);
+
+        for ($page = 1; $page <= $totalPages; $page++) {
+            $citiesFromUrl = array_slice($citiesData['data'], ($page - 1) * $limit, $limit);
+
+            foreach ($citiesFromUrl as $cityData) {
+                $cityName = $cityData['name'];
+                $cityCode = $cityData['city_code'];
+
+//                $existingCity = Cities::findOne(['name' => $cityName]);
+                $existingCity = Cities::find()
+                    ->alias('a')
+                    ->select(['a.city_enc_id', 'a.city_code', 'a.state_enc_id', 'b.state_enc_id', 'b.country_enc_id'])
+                    ->joinWith(['stateEnc b' => function ($b) {
+                        $b->joinWith(['countryEnc c']);
+                    }], false)
+                    ->where(['a.name' => $cityName, 'c.name' => 'India'])
+                    ->asArray()
+                    ->one();
+
+                if ($existingCity) {
+                    Yii::$app->db->createCommand()
+                        ->update(Cities::tableName(), ['city_code' => $cityCode], ['city_enc_id' => $existingCity['city_enc_id']])
+                        ->execute();
+//                    $existingCity[0]->city_code = $cityCode;
+//                    $existingCity[0]->update();
+                }
+            }
+        }
+        return 'Data updated successfully.';
     }
 
 }
