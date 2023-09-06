@@ -1619,10 +1619,9 @@ class LoansController extends ApiBaseController
             ->one();
         $cases = [1 => 'loanCertificates', 2 => 'loanApplicationImages', 3 => 'creditLoanApplicationReports'];
         if ($loan) {
-            foreach ($loan[$cases[$type]] as $key => &$val) {
+            foreach ($loan[$cases[$type]] as &$val) {
                 if (!empty($val['image'])) {
                     $val['image'] = $my_space->signedURL($val['image'], "15 minutes");
-//                    $loan[$cases[$type]][$key] = $my_space->signedURL($val['image'], "15 minutes");;
                 }
             }
             return $loan;
