@@ -13,7 +13,6 @@ use common\models\AssignedSupervisor;
 use common\models\Cities;
 use common\models\ClaimedDeals;
 use common\models\ColumnPreferences;
-use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
@@ -392,11 +391,14 @@ class CompanyDashboardController extends ApiBaseController
                 $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['educationLoanPayments l' => function ($l) {
-                $l->select(['l.loan_app_enc_id', 'l.payment_status']);
-                $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
-            }])
             ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['sharedLoanApplications n' => function ($n) {
+                $n->select(['n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
+                    'CASE WHEN n1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", n1.image_location, "/", n1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(n1.first_name," ",n1.last_name), "&size=200&rounded=false&background=", REPLACE(n1.initials_color, "#", ""), "&color=ffffff") END image'
+                ])
+                    ->joinWith(['sharedTo n1'], false)
+                    ->onCondition(['n.is_deleted' => 0]);
+            }])
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['or',
                 ['and',
@@ -531,19 +533,21 @@ class CompanyDashboardController extends ApiBaseController
 
                     // key match to "$name_search" table array
                     if (in_array($key, $name_search)) {
-                        if ($key == 'created_by') {
-                            $loans->andWhere(['or',
-                                ['and',
-                                    ['not',
-                                        ['a.lead_by' => null]],
-                                    ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
-                                ['and',
-                                    ['a.lead_by' => null],
-                                    ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
-                            ]);
-                        }
-                        if ($key == 'sharedTo') {
-                            $loans->andWhere(['like', 'CONCAT(k1.first_name," ",k1.last_name)', $val]);
+                        switch ($key) {
+                            case 'created_by':
+                                $loans->andWhere(['or',
+                                    ['and',
+                                        ['not',
+                                            ['a.lead_by' => null]],
+                                        ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
+                                    ['and',
+                                        ['a.lead_by' => null],
+                                        ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
+                                ]);
+                                break;
+                            case 'sharedTo':
+                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", n1.last_name)', $val]);
+                                break;
                         }
                     }
                 }
@@ -629,23 +633,8 @@ class CompanyDashboardController extends ApiBaseController
 
         if ($loans) {
             foreach ($loans as $key => $val) {
-                if (!$val['educationLoanPayments']) {
-                    $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-                    $loans[$key]['payment_status'] = $get_amount->payment_status;
-                } else {
-                    $loans[$key]['payment_status'] = $val['educationLoanPayments'][0]['payment_status'];
-                }
-                unset($loans[$key]['educationLoanPayments']);
-
-                $loans[$key]['sharedTo'] = SharedLoanApplications::find()
-                    ->alias('a')
-                    ->select(['a.shared_loan_app_enc_id', 'a.loan_app_enc_id', 'a.access', 'a.status', 'concat(b.first_name," ",b.last_name) name', 'b.phone',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-                    ])
-                    ->joinWith(['sharedTo b'], false)
-                    ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
-                    ->asArray()
-                    ->all();
+                $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
+                unset($loans[$key]['sharedLoanApplications']);
 
                 $loans[$key]['access'] = null;
                 $loans[$key]['shared_by'] = null;
@@ -823,17 +812,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['capitalRoiUpdatedBy ub'], false)
                 ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
-                ->joinWith(['loanCertificates c' => function ($c) {
-                    $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
-                    $c->joinWith(['certificateTypeEnc c1'], false);
-                    $c->joinWith(['createdBy c2'], false);
-                    $c->onCondition(['c.is_deleted' => 0]);
-                }])
-                ->joinWith(['loanApplicationImages im1' => function ($im1) {
-                    $im1->select(['im1.loan_application_image_enc_id', 'im1.loan_app_enc_id', 'im1.name', 'im1.image', 'im1.image_location', 'im1.created_on', 'CONCAT(im2.first_name," ",im2.last_name) created_by']);
-                    $im1->onCondition(['im1.is_deleted' => 0]);
-                    $im1->joinWith(['createdBy im2'], false);
-                }])
                 ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
@@ -949,28 +927,9 @@ class CompanyDashboardController extends ApiBaseController
                 // if loan certificates exists then getting their images private links
                 $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                if ($loan['loanCertificates']) {
-                    foreach ($loan['loanCertificates'] as $key => $val) {
-                        if ($val['proof_image']) {
-                            $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
-                            $loan['loanCertificates'][$key]['proof_image'] = $proof;
-                        }
-                    }
-                }
-                if ($loan['loanApplicationImages']) {
-                    foreach ($loan['loanApplicationImages'] as $key => $val) {
-                        if ($val['image']) {
-                            $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . $val['image_location'] . DIRECTORY_SEPARATOR . $val['image'], "15 minutes");
-                            $loan['loanApplicationImages'][$key]['image'] = $proof;
-                        }
-                    }
-                }
-
                 if (!empty($loan['creditLoanApplicationReports'])) {
                     foreach ($loan['creditLoanApplicationReports'] as $key => $value) {
                         if (!empty($value['file_url'])) {
-                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                             $parsedUrl = parse_url($value['file_url']);
                             $path = $parsedUrl['path'];
                             $path = ltrim($path, '/');
@@ -985,8 +944,6 @@ class CompanyDashboardController extends ApiBaseController
                         if (!empty($values['creditLoanApplicationReports'])) {
                             foreach ($values['creditLoanApplicationReports'] as $key => $value) {
                                 if (!empty($value['file_url'])) {
-                                    $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                                     $parsedUrl = parse_url($value['file_url']);
                                     $path = $parsedUrl['path'];
                                     $path = ltrim($path, '/');

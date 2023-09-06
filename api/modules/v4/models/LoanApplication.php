@@ -6,7 +6,6 @@ use common\models\CertificateTypes;
 use common\models\EducationLoanPayments;
 use common\models\EmailLogs;
 use common\models\extended\AssignedLoanProviderExtended;
-use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
@@ -276,22 +275,6 @@ class LoanApplication extends Model
             $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
             if (empty($user)) {
                 $this->SignUp($options);
-            }
-
-            // saving data in education loan payments right now it's waived off by default
-            $payment_model = new EducationLoanPaymentsExtends();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $payment_model->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-            $payment_model->loan_app_enc_id = $model->loan_app_enc_id;
-            $payment_model->payment_amount = 500;
-            $payment_model->payment_gst = 0;
-            $payment_model->payment_token = Yii::$app->getSecurity()->generateRandomString();
-            $payment_model->payment_status = 'waived off';
-            $payment_model->created_by = $user_id;
-            $payment_model->created_on = date('Y-m-d H:i:s');
-            if (!$payment_model->save()) {
-                throw new \Exception(json_encode($payment_model->getErrors()));
             }
 
             $transaction->commit();
