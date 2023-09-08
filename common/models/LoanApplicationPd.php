@@ -39,9 +39,8 @@ class LoanApplicationPd extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_application_pd_enc_id', 'loan_app_enc_id', 'status', 'created_by'], 'required'],
+            [['loan_application_pd_enc_id', 'loan_app_enc_id', 'status', 'preferred_date', 'created_by'], 'required'],
             [['status'], 'integer'],
-            [['preferred_date'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['loan_application_pd_enc_id', 'loan_app_enc_id', 'assigned_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['loan_application_pd_enc_id'], 'unique'],
