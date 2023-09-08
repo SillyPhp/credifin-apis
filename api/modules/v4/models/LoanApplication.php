@@ -411,8 +411,9 @@ class LoanApplication extends Model
                 $loan_options = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
                 if (!$loan_options) {
                     $loan_options = new LoanApplicationOptionsExtended();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                     $loan_options->option_enc_id = $utilitiesModel->encrypt();
-                    $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
+                    $loan_options->loan_app_enc_id = $loan_id;
                     $loan_options->created_on = date('Y-m-d H:i:s');
                     $loan_options->created_by = $user_id;
                 }
@@ -439,6 +440,7 @@ class LoanApplication extends Model
 
             if (!$loan_address) {
                 $loan_address = new LoanApplicantResidentialInfoExtended();
+                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
                 $loan_address->created_on = date('Y-m-d H:i:s');
