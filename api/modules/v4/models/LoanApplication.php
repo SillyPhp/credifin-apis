@@ -170,7 +170,7 @@ class LoanApplication extends Model
 
             if (!$model->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($model->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             if (!empty($model->lead_by)) {
@@ -215,7 +215,7 @@ class LoanApplication extends Model
                 $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception(json_encode($loan_options->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -232,7 +232,7 @@ class LoanApplication extends Model
             $loan_address->created_by = $user_id;
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($loan_address->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             // assign lender to loan application
@@ -287,7 +287,7 @@ class LoanApplication extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'Server Error', 'Error Message' => $exception->getMessage()];
         }
     }
 
@@ -379,7 +379,7 @@ class LoanApplication extends Model
         $loan_provider->created_by = $user_id;
         $loan_provider->created_on = date('Y-m-d H:i:s');
         if (!$loan_provider->save()) {
-            throw new \Exception(json_encode($loan_provider->getErrors()));
+            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_provider->errors, 0, false)));
         }
     }
 
@@ -613,7 +613,7 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception(json_encode($loan_app->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
 
         } else {
@@ -624,7 +624,7 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception(json_encode($loan_app->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
 
         }
@@ -836,7 +836,7 @@ class LoanApplication extends Model
                 $query->created_by = $user_id;
                 $query->created_on = date('Y-m-d H:i:s');
                 if (!$query->save()) {
-                    throw new \Exception(json_encode($query->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
                 }
             }
         }
