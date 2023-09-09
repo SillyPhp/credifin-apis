@@ -415,7 +415,6 @@ class LoansController extends ApiBaseController
         // getting loan application object
         $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
-
         if ($loan_app) {
 
             // creating loan application object
@@ -1470,7 +1469,7 @@ class LoansController extends ApiBaseController
         if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information " or id or value"']);
         }
-        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date'])) {
+        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
             $type = $params['type'];
             $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
             if (!$model) {
