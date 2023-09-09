@@ -403,7 +403,7 @@ class LoanApplication extends Model
             $model->updated_by = $user_id;
             if (!$model->update()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($model->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             // saving other options
@@ -430,7 +430,7 @@ class LoanApplication extends Model
                 $loan_options->last_updated_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception(json_encode($loan_options->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -456,7 +456,7 @@ class LoanApplication extends Model
 
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($loan_address->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             $transaction->commit();
@@ -468,7 +468,7 @@ class LoanApplication extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'an error occurred', 'Error' => $exception->getMessage()];
         }
     }
 
