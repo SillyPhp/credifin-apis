@@ -488,11 +488,19 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($params['loan_product'])) {
             $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
         }
+        if (!empty($params['fields_search']['start_date'])) {
+            $loans->andWhere(['>=', 'a.loan_status_updated_on', $params['fields_search']['start_date']]);
+        }
+
+        if (!empty($params['fields_search']['end_date'])) {
+            $loans->andWhere(['<=', 'a.loan_status_updated_on', $params['fields_search']['end_date']]);
+        }
+
 
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -515,6 +523,7 @@ class CompanyDashboardController extends ApiBaseController
                             $loans->andWhere(['like', 'a.' . $key, $val]);
                         }
                     }
+
 
                     // key match to "i" table array
                     if (in_array($key, $i)) {
