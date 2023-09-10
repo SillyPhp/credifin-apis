@@ -326,10 +326,10 @@ class CompanyDashboardController extends ApiBaseController
             ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
-                'CONCAT(k.first_name, " ", k.last_name) employee_name',
+                'CONCAT(k.first_name, " ", COALESCE(k.last_name,"")) employee_name',
                 '(CASE
-                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name, " ", lb.last_name)
-                    ELSE CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
+                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name," ",COALESCE(lb.last_name, ""))
+                    ELSE CONCAT("SELF (",cb.first_name, " ", COALESCE(cb.last_name, ""), ")")
                 END) as creator_name',
                 '(CASE 
                     WHEN a.lead_by IS NOT NULL THEN "0" 
@@ -539,14 +539,14 @@ class CompanyDashboardController extends ApiBaseController
                                     ['and',
                                         ['not',
                                             ['a.lead_by' => null]],
-                                        ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
+                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]],
                                     ['and',
                                         ['a.lead_by' => null],
-                                        ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
+                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]]
                                 ]);
                                 break;
                             case 'sharedTo':
-                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", n1.last_name)', $val]);
+                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", COALESCE(n1.last_name,""))', $val]);
                                 break;
                         }
                     }
