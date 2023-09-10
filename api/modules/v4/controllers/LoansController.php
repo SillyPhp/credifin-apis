@@ -1578,7 +1578,7 @@ class LoansController extends ApiBaseController
                     $b->select([
                         'b.certificate_enc_id', 'b.loan_app_enc_id', 'b.short_description', 'b.certificate_type_enc_id',
                         'b.number', 'c1.name', 'b.created_on',
-                        'CONCAT(c2.first_name," ",c2.last_name) created_by',
+                        'CONCAT(c2.first_name," ",COALESCE(c2.last_name, "")) created_by',
                         'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",b.proof_image_location, "/", b.proof_image) image'
                     ]);
                     $b->joinWith(['certificateTypeEnc c1'], false);
@@ -1589,7 +1589,7 @@ class LoansController extends ApiBaseController
             case 2:
                 $loan->joinWith(['loanApplicationImages b' => function ($b) {
                     $b->select(['b.loan_application_image_enc_id', 'b.loan_app_enc_id', 'b.name',
-                        'b.created_on', 'CONCAT(b1.first_name," ",b1.last_name) created_by',
+                        'b.created_on', 'CONCAT(b1.first_name," ",COALESCE(b1.last_name, "")) created_by',
                         'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . '",b.image_location, "/", b.image) image'
 
                     ]);
