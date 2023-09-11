@@ -2331,7 +2331,7 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiRefCheck()
     {
-        if (!$user = $this->isAuthorized()) {
+        if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
         $params = Yii::$app->request->post();
@@ -2340,7 +2340,7 @@ class OrganizationsController extends ApiBaseController
         }
         $emi = EmiCollection::findOne(['reference_number' => $params['ref']]);
         if ($emi) {
-            return $this->response(201, ['status' => 201, 'message' => 'Already exist']);
+            return $this->response(201, ['status' => 201, 'message' => 'Already exists']);
         }
         return $this->response(200, ['status' => 200, 'message' => 'Doesn\'t exist']);
     }
