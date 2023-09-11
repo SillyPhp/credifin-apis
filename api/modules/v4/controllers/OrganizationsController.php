@@ -2328,4 +2328,20 @@ class OrganizationsController extends ApiBaseController
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
+
+    public function actionEmiRefCheck()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['ref'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "ref"']);
+        }
+        $emi = EmiCollection::findOne(['reference_number' => $params['ref']]);
+        if ($emi) {
+            return $this->response(201, ['status' => 201, 'message' => 'Already exist']);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Doesn\'t exist']);
+    }
 }
