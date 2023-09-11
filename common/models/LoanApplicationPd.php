@@ -5,14 +5,14 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_loan_application_pd".
+ * This is the model class for table "{{%loan_application_pd}}".
  *
  * @property int $id Primary id
  * @property string $loan_application_pd_enc_id Loan Applications Pd Enc Id
  * @property string $loan_app_enc_id Loan App Enc Id
  * @property int $status 0 as Initiated, 1 as Completed
  * @property string $assigned_to Assigned to user enc id
- * @property array $preferred_date Preferred Date in Json Format
+ * @property string $preferred_date Preferred Date in Json Format
  * @property string $created_on Created On
  * @property string $created_by Created By
  * @property string $updated_on Updated On
@@ -39,9 +39,9 @@ class LoanApplicationPd extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_application_pd_enc_id', 'loan_app_enc_id', 'status', 'created_by'], 'required'],
+            [['loan_application_pd_enc_id', 'loan_app_enc_id', 'status', 'preferred_date', 'created_by'], 'required'],
             [['status'], 'integer'],
-            [['preferred_date', 'created_on', 'updated_on'], 'safe'],
+            [['created_on', 'updated_on'], 'safe'],
             [['loan_application_pd_enc_id', 'loan_app_enc_id', 'assigned_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['loan_application_pd_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],

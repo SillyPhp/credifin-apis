@@ -326,10 +326,10 @@ class CompanyDashboardController extends ApiBaseController
             ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
-                'CONCAT(k.first_name, " ", k.last_name) employee_name',
+                'CONCAT(k.first_name, " ", COALESCE(k.last_name,"")) employee_name',
                 '(CASE
-                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name, " ", lb.last_name)
-                    ELSE CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
+                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name," ",COALESCE(lb.last_name, ""))
+                    ELSE CONCAT("SELF (",cb.first_name, " ", COALESCE(cb.last_name, ""), ")")
                 END) as creator_name',
                 '(CASE 
                     WHEN a.lead_by IS NOT NULL THEN "0" 
@@ -488,11 +488,19 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($params['loan_product'])) {
             $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
         }
+        if (!empty($params['fields_search']['start_date'])) {
+            $loans->andWhere(['>=', 'a.loan_status_updated_on', $params['fields_search']['start_date']]);
+        }
+
+        if (!empty($params['fields_search']['end_date'])) {
+            $loans->andWhere(['<=', 'a.loan_status_updated_on', $params['fields_search']['end_date']]);
+        }
+
 
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -515,6 +523,7 @@ class CompanyDashboardController extends ApiBaseController
                             $loans->andWhere(['like', 'a.' . $key, $val]);
                         }
                     }
+
 
                     // key match to "i" table array
                     if (in_array($key, $i)) {
@@ -539,14 +548,14 @@ class CompanyDashboardController extends ApiBaseController
                                     ['and',
                                         ['not',
                                             ['a.lead_by' => null]],
-                                        ['like', 'CONCAT(lb.first_name, " ", lb.last_name)', $val]],
+                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]],
                                     ['and',
                                         ['a.lead_by' => null],
-                                        ['like', 'CONCAT(cb.first_name, " ", cb.last_name)', $val]]
+                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]]
                                 ]);
                                 break;
                             case 'sharedTo':
-                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", n1.last_name)', $val]);
+                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", COALESCE(n1.last_name,""))', $val]);
                                 break;
                         }
                     }
@@ -887,7 +896,7 @@ class CompanyDashboardController extends ApiBaseController
                     $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
                 }])
                 ->joinWith(['loanApplicationPds m' => function ($m) {
-                    $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                    $m->select(['m.loan_application_pd_enc_id', 'm.preferred_date', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
                 }])
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
@@ -904,6 +913,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
+
 
             // if loan application exists
             if ($loan) {
@@ -938,6 +948,7 @@ class CompanyDashboardController extends ApiBaseController
                         }
                     }
                 }
+
 
                 if (!empty($loan['loanCoApplicants'])) {
                     foreach ($loan['loanCoApplicants'] as $keys => $values) {
@@ -3001,13 +3012,13 @@ class CompanyDashboardController extends ApiBaseController
             $loan_pd->loan_app_enc_id = $params['loan_app_enc_id'];
             $loan_pd->created_on = date('Y-m-d H:i:s');
             $loan_pd->created_by = $user->user_enc_id;
+            if (!empty($params['dates'])) {
+                $loan_pd->preferred_date = $params['dates'];
+            }
         }
         $loan_pd->status = $params['status'];
         if (isset($params['assigned_to'])) {
             $loan_pd->assigned_to = $params['assigned_to'];
-        }
-        if (isset($params['preferred_date'])) {
-            $loan_pd->preferred_date = $params['preferred_date'];
         }
         $loan_pd->updated_on = date('Y-m-d H:i:s');
         $loan_pd->updated_by = $user->user_enc_id;
