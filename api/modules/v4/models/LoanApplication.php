@@ -6,15 +6,16 @@ use common\models\CertificateTypes;
 use common\models\EducationLoanPayments;
 use common\models\EmailLogs;
 use common\models\extended\AssignedLoanProviderExtended;
-use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
 use common\models\extended\Payments;
+use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -133,10 +134,11 @@ class LoanApplication extends Model
                 $model->auto_assigned = 1;
             }
 
-            if($this->loan_product_id){
+            if ($this->loan_product_id) {
                 $model->loan_products_enc_id = $this->loan_product_id;
+                $model->application_number = $this->generateApplicationNumber($this->loan_product_id, $this->branch_id, $this->loan_purpose);
                 $model->loan_type = null;
-            }else{
+            } else {
                 $model->loan_type = $this->loan_type;
             }
 
@@ -168,7 +170,7 @@ class LoanApplication extends Model
 
             if (!$model->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($model->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             if (!empty($model->lead_by)) {
@@ -213,7 +215,7 @@ class LoanApplication extends Model
                 $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception(json_encode($loan_options->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -230,7 +232,7 @@ class LoanApplication extends Model
             $loan_address->created_by = $user_id;
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($loan_address->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             // assign lender to loan application
@@ -275,22 +277,6 @@ class LoanApplication extends Model
                 $this->SignUp($options);
             }
 
-            // saving data in education loan payments right now it's waived off by default
-            $payment_model = new EducationLoanPaymentsExtends();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $payment_model->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-            $payment_model->loan_app_enc_id = $model->loan_app_enc_id;
-            $payment_model->payment_amount = 500;
-            $payment_model->payment_gst = 0;
-            $payment_model->payment_token = Yii::$app->getSecurity()->generateRandomString();
-            $payment_model->payment_status = 'waived off';
-            $payment_model->created_by = $user_id;
-            $payment_model->created_on = date('Y-m-d H:i:s');
-            if (!$payment_model->save()) {
-                throw new \Exception(json_encode($payment_model->getErrors()));
-            }
-
             $transaction->commit();
 
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
@@ -301,11 +287,12 @@ class LoanApplication extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'Server Error', 'Error Message' => $exception->getMessage()];
         }
     }
 
-    private function getLoanType($loan_id){
+    private function getLoanType($loan_id)
+    {
         $loan_type = FinancerLoanProducts::find()
             ->alias('a')
             ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
@@ -317,10 +304,11 @@ class LoanApplication extends Model
             ->asArray()
             ->one();
 
-        if($loan_type){
+        if ($loan_type) {
             return $loan_type['name'];
         }
     }
+
     // private function to save loan purpose
     private function addPurpose($loan_id, $user_id, $p)
     {
@@ -391,7 +379,7 @@ class LoanApplication extends Model
         $loan_provider->created_by = $user_id;
         $loan_provider->created_on = date('Y-m-d H:i:s');
         if (!$loan_provider->save()) {
-            throw new \Exception(json_encode($loan_provider->getErrors()));
+            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_provider->errors, 0, false)));
         }
     }
 
@@ -415,7 +403,7 @@ class LoanApplication extends Model
             $model->updated_by = $user_id;
             if (!$model->update()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($model->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             // saving other options
@@ -423,8 +411,9 @@ class LoanApplication extends Model
                 $loan_options = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
                 if (!$loan_options) {
                     $loan_options = new LoanApplicationOptionsExtended();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                     $loan_options->option_enc_id = $utilitiesModel->encrypt();
-                    $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
+                    $loan_options->loan_app_enc_id = $loan_id;
                     $loan_options->created_on = date('Y-m-d H:i:s');
                     $loan_options->created_by = $user_id;
                 }
@@ -442,7 +431,7 @@ class LoanApplication extends Model
                 $loan_options->last_updated_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception(json_encode($loan_options->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -451,6 +440,7 @@ class LoanApplication extends Model
 
             if (!$loan_address) {
                 $loan_address = new LoanApplicantResidentialInfoExtended();
+                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
                 $loan_address->created_on = date('Y-m-d H:i:s');
@@ -468,7 +458,7 @@ class LoanApplication extends Model
 
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception(json_encode($loan_address->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             $transaction->commit();
@@ -480,7 +470,7 @@ class LoanApplication extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'an error occurred', 'Error' => $exception->getMessage()];
         }
     }
 
@@ -625,7 +615,7 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception(json_encode($loan_app->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
 
         } else {
@@ -636,7 +626,7 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception(json_encode($loan_app->getErrors()));
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
 
         }
@@ -834,7 +824,7 @@ class LoanApplication extends Model
     private function share_leads($user_id, $loan_id)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
-        if (!empty($reporting_persons_ids)){
+        if (!empty($reporting_persons_ids)) {
             foreach ($reporting_persons_ids as $value) {
                 $query = new SharedLoanApplications();
                 $utilitiesModel = new Utilities();
@@ -848,11 +838,73 @@ class LoanApplication extends Model
                 $query->created_by = $user_id;
                 $query->created_on = date('Y-m-d H:i:s');
                 if (!$query->save()) {
-                    throw new \Exception(json_encode($query->getErrors()));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
                 }
             }
         }
     }
 
+    private function generateApplicationNumber($product_id, $branch_id, $purpose_id)
+    {
+        $loan_num = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $product_id]);
+        if (!$loan_num || !$loan_num['product_code']) {
+            return null;
+        }
+
+        $branch_code = OrganizationLocations::find()
+            ->alias('a')
+            ->select(['a.city_enc_id', 'a.organization_code', 'b.city_code'])
+            ->where(['a.location_enc_id' => $branch_id])
+            ->joinWith(['cityEnc b'], false)
+            ->asArray()
+            ->one();
+        $branchCode = $branch_code['organization_code'];
+        $cityCode = $branch_code['city_code'];
+        if (!$branchCode && !$cityCode) {
+            return null;
+        }
+
+        $finalPurposeCode = '';
+        if ($purpose_id) {
+            $purposes = FinancerLoanProductPurpose::find()
+                ->select('purpose_code')
+                ->andWhere(['in', 'financer_loan_product_purpose_enc_id', $purpose_id])
+                ->asArray()
+                ->all();
+
+            $purposeCodeArray = [];
+            foreach ($purposes as $purpose) {
+                if (!empty($purpose['purpose_code'])) {
+                    $purposeCodeArray[] = $purpose['purpose_code'];
+                }
+            }
+            $purposeCodeArray = array_unique($purposeCodeArray);
+            $purposeCode = implode($purposeCodeArray);
+            $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
+        }
+
+        $currentYear = date('y');
+        $currentMonth = date('m');
+
+        $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
+
+        $incremental = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.application_number'])
+            ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->one();
+
+        if ($incremental) {
+            $my_string = $incremental['application_number'];
+            $my_array = explode('-', $my_string);
+            $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+            $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+            $final_num = "$loanAccountNumber-{$new_num}";
+            return $final_num;
+        } else {
+            return "$loanAccountNumber-001";
+        }
+    }
 
 }

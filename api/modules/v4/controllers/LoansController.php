@@ -67,7 +67,8 @@ class LoansController extends ApiBaseController
                 'update-loan' => ['POST', 'OPTIONS'],
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
-                'loan-update' => ['POST', 'OPTIONS']
+                'loan-update' => ['POST', 'OPTIONS'],
+                'loan-detail-images' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1105,7 +1106,9 @@ class LoansController extends ApiBaseController
         }
         $credit_report = CreditLoanApplicationReports::find()
             ->alias('a')
-            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name'])
+            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name',
+                'a.created_on'
+            ])
             ->joinWith(['responseEnc b' => function ($b) {
                 $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
                 $b->joinWith(['requestEnc b1'], false);
@@ -1144,7 +1147,12 @@ class LoansController extends ApiBaseController
                                 $credit_report[$key]['CIBIL']['score'] = ltrim($array['ScoreSegment']['Score'], 0);
                             }
                         }
+                        if (!empty($array['Header'])) {
+                            $rawDate = $array['Header']['DateProcessed'];
+                            $formattedDate = substr($rawDate, 4) . '-' . substr($rawDate, 2, 2) . '-' . substr($rawDate, 0, 2);
 
+                            $credit_report[$key]['report_date'] = $formattedDate;
+                        }
                         if (!empty($array['TelephoneSegment'])) {
                             if (array_key_exists(0, $array['TelephoneSegment'])) {
                                 foreach ($array['TelephoneSegment'] as $telephones) {
@@ -1424,10 +1432,24 @@ class LoansController extends ApiBaseController
                 if (is_array($item['model'])) {
                     $item['model'] = end($item['model']);
                 }
-                $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-                $item['stamp'] = strtotime($item['stamp']);
-                $groupedAudit[$item['model']][] = $item;
+                if ($item['model'] !== 'EducationLoanPayments') {
+                    $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
+                    $item['stamp'] = strtotime($item['stamp']);
+
+                    if ($item['field'] === 'gender') {
+                        if ($item['new_value'] == 1) {
+                            $item['new_value'] = 'Male';
+                        } elseif ($item['new_value'] == 2) {
+                            $item['new_value'] = 'Female';
+                        } else {
+                            $item['new_value'] = 'Others';
+                        }
+                    }
+
+                    $groupedAudit[$item['model']][] = $item;
+                }
             }
+
             foreach ($groupedAudit as $g => $item) {
                 array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
                 foreach ($item as $key => $i) {
@@ -1435,6 +1457,7 @@ class LoansController extends ApiBaseController
                     $groupedAudit[$g][$key] = $i;
                 }
             }
+
             return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
 
         } else {
@@ -1452,7 +1475,7 @@ class LoansController extends ApiBaseController
         if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
         }
-        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'battery_number'])) {
+        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
             $type = $params['type'];
             $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
             if (!$model) {
@@ -1468,4 +1491,165 @@ class LoansController extends ApiBaseController
         }
         return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
     }
+
+    public function actionAssignApplicationNumber()
+    {
+        $loan_applications = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'b.financer_loan_product_enc_id', 'b.product_code', 'c1.organization_code', 'c1.location_enc_id', 'c2.city_code'])
+            ->joinWith(['loanProductsEnc b'], false)
+            ->joinWith(['assignedLoanProviders c' => function ($c) {
+                $c->joinWith(['branchEnc c1' => function ($c1) {
+                    $c1->joinWith(['cityEnc c2'], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanPurposes d' => function ($d) {
+                $d->select(['d.loan_purpose_enc_id', 'd.loan_app_enc_id', 'd1.purpose_code']);
+                $d->joinWith(['financerLoanPurposeEnc d1'], false);
+            }])
+            ->andWhere(['between', 'a.created_on', "2023-09-01 00:00:00", "2023-09-01 23:59:59"])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->orderBy(['a.created_on' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        foreach ($loan_applications as $la) {
+            $purposeCode = '';
+            $purposeCodeArray = [];
+            $finalPurposeCode = '';
+            if ($la['loanPurposes']) {
+                foreach ($la['loanPurposes'] as $purpose) {
+                    if (!empty($purpose['purpose_code'])) {
+                        $purposeCodeArray[] = $purpose['purpose_code'];
+                    }
+                }
+                $purposeCodeArray = array_unique($purposeCodeArray);
+                $purposeCode = implode($purposeCodeArray);
+                $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
+            }
+
+            if ($la['product_code'] && ($la['city_code'] || $la['organization_code'])) {
+                $this->assignNumber($la, $finalPurposeCode);
+            }
+        }
+        if ($loan_applications) {
+            return $this->response(200, ['status' => 200, 'data' => $loan_applications]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+
+    }
+
+    private function assignNumber($la, $purposeCode)
+    {
+        $currentYear = date('y');
+        $currentMonth = date('m');
+        $applicationNumber = null;
+        $loanAccountNumber = "{$la['product_code']}{$purposeCode}-{$la['city_code']}{$la['organization_code']}-{$currentMonth}{$currentYear}";
+
+        $incremental = LoanApplications::find()
+            ->select(['application_number'])
+            ->where(['like', 'application_number', $loanAccountNumber . '%', false])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->one();
+
+        if ($incremental) {
+            $prev_num = '';
+            $my_string = $incremental['application_number'];
+            $my_array = explode('-', $my_string);
+            $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+            $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+            $final_num = "$loanAccountNumber-{$new_num}";
+            $applicationNumber = $final_num;
+        } else {
+            $applicationNumber = "$loanAccountNumber-001";
+        }
+
+        $resp = Yii::$app->db->createCommand()
+            ->update(LoanApplications::tableName(), ['application_number' => $applicationNumber], ['loan_app_enc_id' => $la['loan_app_enc_id']])
+            ->execute();
+
+    }
+
+    private function loanDetailImages($loan_id, $type)
+    {
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $loan = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id']);
+        switch ($type) {
+            case 1:
+                $loan->joinWith(['loanCertificates b' => function ($b) use ($my_space) {
+                    $b->select([
+                        'b.certificate_enc_id', 'b.loan_app_enc_id', 'b.short_description', 'b.certificate_type_enc_id',
+                        'b.number', 'c1.name', 'b.created_on',
+                        'CONCAT(c2.first_name," ",COALESCE(c2.last_name, "")) created_by',
+                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",b.proof_image_location, "/", b.proof_image) image'
+                    ]);
+                    $b->joinWith(['certificateTypeEnc c1'], false);
+                    $b->joinWith(['createdBy c2'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }]);
+                break;
+            case 2:
+                $loan->joinWith(['loanApplicationImages b' => function ($b) {
+                    $b->select(['b.loan_application_image_enc_id', 'b.loan_app_enc_id', 'b.name',
+                        'b.created_on', 'CONCAT(b1.first_name," ",COALESCE(b1.last_name, "")) created_by',
+                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . '",b.image_location, "/", b.image) image'
+
+                    ]);
+                    $b->joinWith(['createdBy b1'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }]);
+                break;
+            case 3:
+                $loan->joinWith(['creditLoanApplicationReports b' => function ($j) {
+                    $j->select(['b.report_enc_id', 'b.loan_app_enc_id', 'b1.filename', 'b.created_on', 'b2.request_source', 'DATEDIFF("' . date('Y-m-d H:i:s') . '", b.created_on) as days_till_now',
+                        'CASE WHEN b1.file_url IS NOT NULL THEN CONCAT((REPLACE(b1.file_url, "https://eycdn.ams3.digitaloceanspaces.com/", ""))) ELSE NULL END AS image',
+                    ])
+                        ->joinWith(['responseEnc b1' => function ($j1) {
+                            $j1->joinWith(['requestEnc b2'], false);
+                        }], false);
+                    $j->onCondition(['and',
+                        ['b.loan_co_app_enc_id' => null, 'b.is_deleted' => 0],
+                    ]);
+                    $j->orderBy(['b.created_on' => SORT_DESC]);
+                }]);
+                break;
+
+        }
+        $loan = $loan->andWhere(['a.loan_app_enc_id' => $loan_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+        $cases = [1 => 'loanCertificates', 2 => 'loanApplicationImages', 3 => 'creditLoanApplicationReports'];
+        if ($loan) {
+            foreach ($loan[$cases[$type]] as &$val) {
+                if (!empty($val['image'])) {
+                    $val['image'] = $my_space->signedURL($val['image'], "15 minutes");
+                }
+            }
+            return $loan;
+        }
+        return false;
+
+    }
+
+    public function actionLoanDetailImages()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id or type"']);
+        }
+        $type = $params['type'];
+        $images = self::loanDetailImages($params['loan_id'], $type);
+        if (!$images) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $images]);
+    }
+
 }
