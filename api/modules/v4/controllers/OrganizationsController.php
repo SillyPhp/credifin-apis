@@ -1078,6 +1078,7 @@ class OrganizationsController extends ApiBaseController
                     $d->onCondition(['d.is_deleted' => 0]);
                 }])
                 ->groupBy(['a.financer_loan_product_enc_id'])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
