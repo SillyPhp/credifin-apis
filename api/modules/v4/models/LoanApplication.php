@@ -889,7 +889,11 @@ class LoanApplication extends Model
         $incremental = LoanApplications::find()
             ->alias('a')
             ->select(['a.application_number'])
-            ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+           // ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+               ->where(['AND',
+               ['LIKE', 'application_number', $loan_num['product_code']],
+               ['LIKE', 'application_number', $cityCode.$branchCode],
+               ['LIKE', 'application_number', $currentMonth.$currentYear]])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->one();
 
