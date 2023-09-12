@@ -2,19 +2,27 @@
 
 namespace api\modules\v4\utilities;
 
+use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\Notifications;
+use common\models\NotificationTokens;
 use common\models\Organizations;
+use common\models\PushNotifications;
+use common\models\SharedLoanApplications;
+use common\models\UserRoles;
+use yii\helpers\Url;
+use Yii;
 use common\models\SelectedServices;
 use common\models\UserAccessTokens;
-use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use Yii;
+use yii\db\Command;
 
 // this class is used to get user related data
 class UserUtilities
 {
     public $rolesArray = ['State Credit Head', 'Operations Manager', 'Product Manager'];
+
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
@@ -230,4 +238,104 @@ class UserUtilities
         return false;
     }
 
+    public function getApplicationUserIds($loan_id, $shared_to = null)
+    {
+        $userIds = SharedLoanApplications::find()
+            ->alias('a')
+            ->select(['a.shared_to'])
+            ->joinWith(['sharedTo b'], false)
+            ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $loan_id]);
+        if ($shared_to) {
+            $userIds->andWhere(['not', ['a.shared_to' => $shared_to]]);
+        }
+        $userIds = $userIds->asArray()
+            ->all();
+
+        $financerId = AssignedLoanProvider::find()
+            ->alias('a')
+            ->select(['c.user_enc_id'])
+            ->joinWith(['providerEnc b' => function ($b) {
+                $b->joinWith(['userEncs0 c'], false);
+            }], false)
+            ->where(['a.loan_application_enc_id' => $loan_id])
+            ->asArray()
+            ->one();
+
+        $ids = [];
+        foreach ($userIds as $key => $val) {
+            $ids[] = $val['shared_to'];
+        }
+        $ids[] = $financerId['user_enc_id'];
+
+        return $ids;
+    }
+
+    public function saveNotification($allNotifications)
+    {
+        if (!empty($allNotifications)) {
+            $savedNotification = Yii::$app->db->createCommand()->batchInsert(Notifications::tableName(),
+                ['notification_enc_id', 'user_enc_id', 'title', 'description', 'link', 'created_by'],
+                $allNotifications)->execute();
+
+
+            if ($savedNotification) {
+                foreach ($allNotifications as $an) {
+                    $tokens = NotificationTokens::find()
+                        ->select(['token'])
+                        ->where(['user_enc_id' => $an['user_enc_id'], 'is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    $token = [];
+                    foreach ($tokens as $key => $val) {
+                        $token[] = $val['token'];
+                    }
+
+                    if ($token) {
+                        $notificationStatus = $this->sendPushNotification($token, $an['title'], $an['description'], $an['link']);
+
+                        $updateNotification = Notifications::findOne(['notification_enc_id' => $an['notification_enc_id']]);
+                        if ($updateNotification) {
+                            $updateNotification->status = $notificationStatus ? 1 : 2;
+                        }
+
+                        if (!$updateNotification->update()) {
+                            throw new \Exception(json_encode($updateNotification->getErrors()));
+                        };
+
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    public function sendPushNotification($token, $title, $body = null, $link = null)
+    {
+        $url = "https://fcm.googleapis.com/fcm/send";
+        $tokens = $token;
+        $serverKey = Yii::$app->params->fireabse->modules->pushNotification->serverKey;
+        $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1',);
+        $arrayToSend = array('registration_ids' => $tokens, 'data' => array('notification' => $notification, 'link' => $link), 'priority' => 'high');
+        $json = json_encode($arrayToSend);
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer ' . $serverKey;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        //Send the request
+        $response = curl_exec($ch);
+        //Close request
+        if ($response === FALSE) {
+            return false;
+            die('FCM Send Error: ' . curl_error($ch));
+        }
+        curl_close($ch);
+        return true;
+
+    }
 }
