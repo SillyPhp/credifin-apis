@@ -53,7 +53,6 @@ class Notifications extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -69,5 +68,4 @@ class Notifications extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
     }
-
 }
