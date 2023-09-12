@@ -851,8 +851,13 @@ class CompanyDashboardController extends ApiBaseController
                     $e->onCondition(['e.is_deleted' => 0, 'e.source' => 'EL']);
                 }])
                 ->joinWith(['loanApplicationComments f' => function ($f) {
-                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by']);
-                    $f->joinWith(['createdBy f1'], false);
+                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by',
+                        'CASE WHEN f1.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",f1.image_location, "/", f1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f1.first_name," ",f1.last_name), "&size=200&rounded=true&background=", REPLACE(f1.initials_color, "#", ""), "&color=ffffff") END user_image',
+                        'CASE WHEN f2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", f2.logo_location, "/", f2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f2.name, "&size=200&rounded=false&background=", REPLACE(f2.initials_color, "#", ""), "&color=ffffff") END logo',
+                    ]);
+                    $f->joinWith(['createdBy f1' => function ($f1) {
+                        $f1->joinWith(['organizations f2']);
+                    }], false);
                     $f->onCondition(['f.is_deleted' => 0, 'f.source' => 'EL']);
                 }])
                 ->joinWith(['loanPurposes g' => function ($g) {
