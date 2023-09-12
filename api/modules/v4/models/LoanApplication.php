@@ -894,6 +894,7 @@ class LoanApplication extends Model
                ['LIKE', 'application_number', $loan_num['product_code']],
                ['LIKE', 'application_number', $cityCode.$branchCode],
                ['LIKE', 'application_number', $currentMonth.$currentYear]])
+            ->where(['a.is_deleted'=>0])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->one();
 
