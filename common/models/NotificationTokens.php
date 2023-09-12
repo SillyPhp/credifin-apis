@@ -40,4 +40,8 @@ class NotificationTokens extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getUserEnc()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 }
