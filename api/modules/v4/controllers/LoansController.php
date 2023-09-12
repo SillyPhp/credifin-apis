@@ -67,7 +67,8 @@ class LoansController extends ApiBaseController
                 'update-loan' => ['POST', 'OPTIONS'],
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
-                'loan-update' => ['POST', 'OPTIONS']
+                'loan-update' => ['POST', 'OPTIONS'],
+                'loan-detail-images' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1469,7 +1470,7 @@ class LoansController extends ApiBaseController
         if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information " or id or value"']);
         }
-        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number'])) {
+        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
             $type = $params['type'];
             $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
             if (!$model) {
@@ -1563,6 +1564,87 @@ class LoansController extends ApiBaseController
             ->update(LoanApplications::tableName(), ['application_number' => $applicationNumber], ['loan_app_enc_id' => $la['loan_app_enc_id']])
             ->execute();
 
+    }
+
+    private function loanDetailImages($loan_id, $type)
+    {
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $loan = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id']);
+        switch ($type) {
+            case 1:
+                $loan->joinWith(['loanCertificates b' => function ($b) use ($my_space) {
+                    $b->select([
+                        'b.certificate_enc_id', 'b.loan_app_enc_id', 'b.short_description', 'b.certificate_type_enc_id',
+                        'b.number', 'c1.name', 'b.created_on',
+                        'CONCAT(c2.first_name," ",COALESCE(c2.last_name, "")) created_by',
+                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",b.proof_image_location, "/", b.proof_image) image'
+                    ]);
+                    $b->joinWith(['certificateTypeEnc c1'], false);
+                    $b->joinWith(['createdBy c2'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }]);
+                break;
+            case 2:
+                $loan->joinWith(['loanApplicationImages b' => function ($b) {
+                    $b->select(['b.loan_application_image_enc_id', 'b.loan_app_enc_id', 'b.name',
+                        'b.created_on', 'CONCAT(b1.first_name," ",COALESCE(b1.last_name, "")) created_by',
+                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . '",b.image_location, "/", b.image) image'
+
+                    ]);
+                    $b->joinWith(['createdBy b1'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }]);
+                break;
+            case 3:
+                $loan->joinWith(['creditLoanApplicationReports b' => function ($j) {
+                    $j->select(['b.report_enc_id', 'b.loan_app_enc_id', 'b1.filename', 'b.created_on', 'b2.request_source', 'DATEDIFF("' . date('Y-m-d H:i:s') . '", b.created_on) as days_till_now',
+                        'CASE WHEN b1.file_url IS NOT NULL THEN CONCAT((REPLACE(b1.file_url, "https://eycdn.ams3.digitaloceanspaces.com/", ""))) ELSE NULL END AS image',
+                    ])
+                        ->joinWith(['responseEnc b1' => function ($j1) {
+                            $j1->joinWith(['requestEnc b2'], false);
+                        }], false);
+                    $j->onCondition(['and',
+                        ['b.loan_co_app_enc_id' => null, 'b.is_deleted' => 0],
+                    ]);
+                    $j->orderBy(['b.created_on' => SORT_DESC]);
+                }]);
+                break;
+
+        }
+        $loan = $loan->andWhere(['a.loan_app_enc_id' => $loan_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+        $cases = [1 => 'loanCertificates', 2 => 'loanApplicationImages', 3 => 'creditLoanApplicationReports'];
+        if ($loan) {
+            foreach ($loan[$cases[$type]] as &$val) {
+                if (!empty($val['image'])) {
+                    $val['image'] = $my_space->signedURL($val['image'], "15 minutes");
+                }
+            }
+            return $loan;
+        }
+        return false;
+
+    }
+
+    public function actionLoanDetailImages()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id or type"']);
+        }
+        $type = $params['type'];
+        $images = self::loanDetailImages($params['loan_id'], $type);
+        if (!$images) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $images]);
     }
 
 }
