@@ -130,7 +130,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -237,7 +236,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -269,7 +267,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'allLoanTypes' => $allLoanTypes]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -312,7 +309,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -336,7 +332,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -360,7 +355,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -419,7 +413,6 @@ class OrganizationsController extends ApiBaseController
                 $transaction->rollback();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -463,8 +456,8 @@ class OrganizationsController extends ApiBaseController
                     $c->orderBy(['c.sequence' => SORT_ASC]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['b.organization_enc_id' => $lender
-                    , 'b.is_deleted' => 0, 'a.is_deleted' => 0
+                ->where([
+                    'b.organization_enc_id' => $lender, 'b.is_deleted' => 0, 'a.is_deleted' => 0
                 ])
                 ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
@@ -494,7 +487,8 @@ class OrganizationsController extends ApiBaseController
                 'is_deleted' => 1,
                 'updated_by' => $user->user_enc_id,
                 'updated_on' => date('Y-m-d H:i:s'),
-            ], ['and',
+            ], [
+                'and',
                 ['assigned_financer_loan_type_id' => $params['assigned_financer_enc_id']],
             ]);
 
@@ -590,7 +584,6 @@ class OrganizationsController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -627,7 +620,6 @@ class OrganizationsController extends ApiBaseController
             } catch (\Exception $e) {
                 $transaction->rollback();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
-
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -824,11 +816,9 @@ class OrganizationsController extends ApiBaseController
                 $transaction->commit();
 
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
             } catch (\Exception $e) {
                 $transaction->rollback();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
-
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -1024,7 +1014,7 @@ class OrganizationsController extends ApiBaseController
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-//            $product->product_code = $params['product_code'];
+            //            $product->product_code = $params['product_code'];
             $product->created_by = $user->user_enc_id;
             $product->created_on = date('Y-m-d H:i:s');
             $save = 'save';
@@ -1051,7 +1041,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
-// get loan products (updated)
+    // get loan products (updated)
     public function actionGetLoanProducts()
     {
         if ($user = $this->isAuthorized()) {
@@ -1066,7 +1056,8 @@ class OrganizationsController extends ApiBaseController
                     $b->joinWith(['loanTypeEnc b1'], false);
                     $b->andWhere([
                         'b.organization_enc_id' => $lender,
-                        'b.is_deleted' => 0]);
+                        'b.is_deleted' => 0
+                    ]);
                 }], false)
                 ->joinWith(['financerLoanProductPurposes c' => function ($c) {
                     $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);
@@ -1121,7 +1112,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// get loan product details (updated)
+    // get loan product details (updated)
     public function actionGetLoanProductDetails()
     {
         if ($user = $this->isAuthorized()) {
@@ -1139,15 +1130,19 @@ class OrganizationsController extends ApiBaseController
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductDocuments c' => function ($c) {
-                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id',
-                        'c.sequence', 'ct.name name']);
+                    $c->select([
+                        'c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id',
+                        'c.sequence', 'ct.name name'
+                    ]);
                     $c->joinWith(['certificateTypeEnc ct'], false);
                     $c->orderBy(['c.sequence' => SORT_ASC]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductStatuses d' => function ($d) {
-                    $d->select(['d.financer_loan_product_status_enc_id', 'd.financer_loan_product_enc_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
-                        'd1.value', 'd1.sequence']);
+                    $d->select([
+                        'd.financer_loan_product_status_enc_id', 'd.financer_loan_product_enc_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
+                        'd1.value', 'd1.sequence'
+                    ]);
                     $d->joinWith(['loanStatusEnc d1'], false);
                     $d->onCondition(['d.is_deleted' => 0]);
                     $d->orderBy(['d1.sequence' => SORT_ASC]);
@@ -1182,7 +1177,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-// create or update loan product purpose (updated)
+    // create or update loan product purpose (updated)
     public function actionUpdateLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1242,7 +1237,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-// remove loan product purpose (updated)
+    // remove loan product purpose (updated)
     public function actionRemoveLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1272,7 +1267,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// create or update loan product documents (updated)
+    // create or update loan product documents (updated)
     public function actionUpdateLoanProductDocuments()
     {
         if ($user = $this->isAuthorized()) {
@@ -1319,7 +1314,6 @@ class OrganizationsController extends ApiBaseController
                                 $transaction->rollback();
                                 return $this->response(500, $query);
                             }
-
                         }
                     } else {
                         if (empty($val['name'])) {
@@ -1342,7 +1336,6 @@ class OrganizationsController extends ApiBaseController
                 }
                 $transaction->commit();
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
@@ -1352,7 +1345,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// remove loan product document (updated)
+    // remove loan product document (updated)
     public function actionRemoveLoanProductDocument()
     {
         if ($user = $this->isAuthorized()) {
@@ -1379,7 +1372,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// assign loan status (updated)
+    // assign loan status (updated)
     public function actionUpdateLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1434,7 +1427,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// remove loan product status (updated)
+    // remove loan product status (updated)
     public function actionRemoveLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1552,7 +1545,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-// used to create product status
+    // used to create product status
     private function __createStatus($data)
     {
         $loan_status = new FinancerLoanProductStatus();
@@ -1569,7 +1562,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-// used to create product document
+    // used to create product document
     private function __createDocument($data)
     {
         $loan_document = new FinancerLoanProductDocuments();
@@ -1587,7 +1580,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-// used to create product purpose
+    // used to create product purpose
     private function __createPurpose($data)
     {
         $purpose = new FinancerLoanProductPurpose();
@@ -1651,7 +1644,6 @@ class OrganizationsController extends ApiBaseController
             $save = $model->save($user->user_enc_id);
             $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
             return $this->response($save['status'], $save);
-
         } catch (\Exception $exception) {
             return [
                 'message' => $exception->getMessage(),
@@ -1746,7 +1738,6 @@ class OrganizationsController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
-
     }
 
     private function _emiData($data, $id_type, $search = '', $user = null)
@@ -1761,7 +1752,8 @@ class OrganizationsController extends ApiBaseController
 
         $model = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
+            ->select([
+                'a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
                 'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
@@ -1770,7 +1762,8 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
                 'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
                 'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
-                'a.comments', 'e1.payment_status'])
+                'a.comments', 'e1.payment_status'
+            ])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1'], false);
                 $b->joinWith(['designations d']);
@@ -1850,7 +1843,6 @@ class OrganizationsController extends ApiBaseController
             }
         }
         return $model;
-
     }
 
     public function actionUpdateLoanProductFees()
@@ -2057,7 +2049,8 @@ class OrganizationsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
-            ->select(['a.notice_enc_id',
+            ->select([
+                'a.notice_enc_id',
                 'a.notice', 'a.type',
                 '(CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END) as image',
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
@@ -2104,7 +2097,6 @@ class OrganizationsController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating', 'error' => $notice->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
     }
 
     public function actionUpdateLoanProductImages()
@@ -2182,7 +2174,6 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-//        print_r($params['image']);exit();
         if (empty($params['product_image_enc_id']) || empty($params['loan_app_enc_id']) || empty($params['image'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_image_enc_id or loan_app_enc_id or image"']);
         }
