@@ -41,9 +41,9 @@ class EmiCollectionForm extends Model
     public $reference_number;
     public $payment_methods = [
         'aa' => 'Total',
-        '1' => 'Qr',
+        '1' => 'QR',
         '2' => 'Link',
-//        '3' => 'POS',
+        //        '3' => 'POS',
         '4' => 'Cash',
         '5' => 'Cheque',
         '6' => 'Nach',
@@ -52,7 +52,7 @@ class EmiCollectionForm extends Model
         '82' => 'Cheque',
         '83' => 'Net Banking',
         '84' => 'RTGS/NEFT',
-        '9' => 'Qr',
+        '9' => 'QR',
         '10' => 'Digital Transfer',
         '11' => 'Paid To Dealer',
         'bb' => 'Pending',
