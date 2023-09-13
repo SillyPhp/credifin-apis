@@ -1072,6 +1072,7 @@ class OrganizationsController extends ApiBaseController
                     $d->onCondition(['d.is_deleted' => 0]);
                 }])
                 ->groupBy(['a.financer_loan_product_enc_id'])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -2180,7 +2181,6 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        //        print_r($params['image']);exit();
         if (empty($params['product_image_enc_id']) || empty($params['loan_app_enc_id']) || empty($params['image'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_image_enc_id or loan_app_enc_id or image"']);
         }
