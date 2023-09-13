@@ -16,6 +16,7 @@ use Yii;
  * @property string $link notification link
  * @property string $device_id device id
  * @property string $created_on created on
+ * @property string $token_expired_on
  * @property int $is_deleted 0 false, 1 true
  *
  * @property Users $userEnc
@@ -37,7 +38,7 @@ class PushNotifications extends \yii\db\ActiveRecord
     {
         return [
             [['push_notification_enc_id', 'token', 'created_on'], 'required'],
-            [['created_on'], 'safe'],
+            [['created_on', 'token_expired_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['push_notification_enc_id', 'user_enc_id', 'device_id'], 'string', 'max' => 100],
             [['token', 'description'], 'string', 'max' => 255],

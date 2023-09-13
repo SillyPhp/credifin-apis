@@ -31,6 +31,7 @@ use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
+use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
@@ -1135,6 +1136,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
+            $prevStatus = $provider->status;
             // updating data
             $provider->status = $params['status'];
             $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
@@ -1143,6 +1145,36 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
             if ($loanApp->update() && $provider->update()) {
+
+                $notificationUsers = new UserUtilities();
+                $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
+                $searchable = [$prevStatus, $params['status']];
+                $loanStatus = LoanStatus::find()
+                    ->andWhere(['in', 'value', $searchable])
+                    ->asArray()
+                    ->all();
+                $updated_by = $user->first_name . " " . $user->last_name;
+                $notificationBody = "Status: " . $loanStatus[0]['loan_status'] . " -> " . $loanStatus[1]['loan_status'];
+                if (!empty($userIds)) {
+                    $allNotifications = [];
+                    foreach ($userIds as $uid) {
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $notification = [
+                            'notification_enc_id' => $utilitiesModel->encrypt(),
+                            'user_enc_id' => $uid,
+                            'title' => "Application status of $loanApp->application_number changed by $updated_by",
+                            'description' => $notificationBody,
+                            'link' => '/account/loan-application/' . $params['loan_id'],
+                            'created_by' => $user->user_enc_id
+                        ];
+
+                        array_push($allNotifications, $notification);
+                    }
+                }
+
+                $notificationUsers->saveNotification($allNotifications);
+
                 return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
@@ -1837,6 +1869,43 @@ class CompanyDashboardController extends ApiBaseController
             if (!$shared->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $shared->getErrors()]);
             }
+
+            $shared_by = $user->first_name . " " . $user->last_name;
+            $shared = Users::findOne(['user_enc_id' => $params['shared_to']]);
+            $shared_to = $shared->first_name . " " . $shared->last_name;
+
+            $loan_details = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $notificationBody = $loan_details->application_number ? "Loan Account Number: $loan_details->application_number" : '';
+            $allNotifications = [];
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $notification = [
+                'notification_enc_id' => $utilitiesModel->encrypt(),
+                'user_enc_id' => $params['shared_to'],
+                'title' => "$shared_by shared an application with you",
+                'description' => $notificationBody,
+                'link' => '/account/loan-application/' . $params['loan_id'],
+                'created_by' => $user->user_enc_id
+            ];
+            array_push($allNotifications, $notification);
+            $notificationUsers = new UserUtilities();
+            $userIds = $notificationUsers->getApplicationUserIds($params['loan_id'], $params['shared_to']);
+            if (!empty($userIds)) {
+                foreach ($userIds as $uid) {
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $notification = [
+                        'notification_enc_id' => $utilitiesModel->encrypt(),
+                        'user_enc_id' => $uid,
+                        'title' => "$shared_by shared an application with $shared_to",
+                        'description' => $notificationBody,
+                        'link' => '/account/loan-application/' . $params['loan_id'],
+                        'created_by' => $user->user_enc_id,
+                    ];
+                    array_push($allNotifications, $notification);
+                }
+            }
+
+            $notificationUsers->saveNotification($allNotifications);
+
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         } else {
@@ -3034,6 +3103,30 @@ class CompanyDashboardController extends ApiBaseController
         if (!$loan_pd->$save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_pd->getErrors()]);
         }
+
+        $notificationUsers = new UserUtilities();
+        $userIds = $notificationUsers->getApplicationUserIds($params['loan_app_enc_id']);
+        $updated_by = $user->first_name . " " . $user->last_name;
+        $pd_status = $params['status'] === 1 ? "Completed" : "Initiated";
+        if (!empty($userIds)) {
+            $allNotifications = [];
+            foreach ($userIds as $uid) {
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $notification = [
+                    'notification_enc_id' => $utilitiesModel->encrypt(),
+                    'user_enc_id' => $uid,
+                    'title' => "PD $pd_status by $updated_by",
+                    'description' => "",
+                    'link' => '/account/loan-application/' . $params['loan_app_enc_id'],
+                    'created_by' => $user->user_enc_id
+                ];
+
+                array_push($allNotifications, $notification);
+            }
+        }
+        $notificationUsers->saveNotification($allNotifications);
+
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
@@ -3072,9 +3165,34 @@ class CompanyDashboardController extends ApiBaseController
         }
         $loan_tvr->updated_on = date('Y-m-d H:i:s');
         $loan_tvr->updated_by = $user->user_enc_id;
+
         if (!$loan_tvr->$save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_tvr->getErrors()]);
         }
+
+        $notificationUsers = new UserUtilities();
+        $userIds = $notificationUsers->getApplicationUserIds($params['loan_app_enc_id']);
+        $updated_by = $user->first_name . " " . $user->last_name;
+        $tvr_status = $params['status'] === 1 ? "Completed" : "Initiated";
+        if (!empty($userIds)) {
+            $allNotifications = [];
+            foreach ($userIds as $uid) {
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $notification = [
+                    'notification_enc_id' => $utilitiesModel->encrypt(),
+                    'user_enc_id' => $uid,
+                    'title' => "TVR $tvr_status by $updated_by",
+                    'description' => "",
+                    'link' => '/account/loan-application/' . $params['loan_app_enc_id'],
+                    'created_by' => $user->user_enc_id
+                ];
+
+                array_push($allNotifications, $notification);
+            }
+        }
+        $notificationUsers->saveNotification($allNotifications);
+
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
