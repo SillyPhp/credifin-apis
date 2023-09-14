@@ -2293,9 +2293,10 @@ class OrganizationsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+        $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
 
         if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
