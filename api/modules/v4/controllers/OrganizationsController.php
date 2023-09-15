@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -13,6 +14,7 @@ use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductImages;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\FinancerLoanProductPendencies;
 use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
@@ -82,7 +84,8 @@ class OrganizationsController extends ApiBaseController
                 'remove-loan-product-image' => ['POST', 'OPTIONS'],
                 'upload-application-image' => ['POST', 'OPTIONS'],
                 'get-assigned-images' => ['POST', 'OPTIONS'],
-                'search-emi' => ['POST', 'OPTIONS']
+                'search-emi' => ['POST', 'OPTIONS'],
+                'update-pendency' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1164,6 +1167,10 @@ class OrganizationsController extends ApiBaseController
                     $h->select(['h.product_image_enc_id', 'h.financer_loan_product_enc_id', 'h.name']);
                     $h->orderBy(['h.sequence' => SORT_ASC]);
                     $h->onCondition(['h.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanProductPendencies i' => function ($i) {
+                    $i->select(['i.pendencies_enc_id', 'i.financer_loan_product_enc_id', 'i.name', 'i.type']);
+                    $i->onCondition(['i.is_deleted' => 0]);
                 }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
@@ -2298,5 +2305,48 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionUpdatePendency()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['financer_loan_product_enc_id']) && !$params['delete']) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "financer_loan_product_enc_id"']);
+        }
+        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
+            return $this->response(500, ['status' => 500, 'message' => 'permission denied']);
+        }
+        $user = $user->user_enc_id;
+        $time = date("Y-m-d H:i:s");
+        if (!empty($params['pendencies_enc_id'])) {
+            $pendency = FinancerLoanProductPendencies::findOne(['pendencies_enc_id' => $params['pendencies_enc_id']]);
+            if (!$pendency) {
+                return $this->response(404, ['status' => 404, 'message' => 'Pendency not Found']);
+            }
+            if (!empty($params['delete'])) {
+                $pendency->is_deleted = 1;
+            }
+        } else {
+            $pendency = new FinancerLoanProductPendencies();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $pendency->financer_loan_product_enc_id = $params['financer_loan_product_enc_id'];
+            $pendency->pendencies_enc_id = $utilitiesModel->encrypt();
+            $pendency->created_by = $user;
+            $pendency->created_on = $time;
+        }
+        if (empty($params['delete'])) {
+            $pendency->name = $params['name'];
+            $pendency->type = $params['type'];
+        }
+        $pendency->updated_by = $user;
+        $pendency->updated_on = $time;
+        if (!$pendency->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $pendency->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
 }
