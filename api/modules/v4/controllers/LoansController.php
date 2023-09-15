@@ -1420,7 +1420,7 @@ class LoansController extends ApiBaseController
                 if (is_array($item['model'])) {
                     $item['model'] = end($item['model']);
                 }
-                if ($item['model'] !== 'EducationLoanPayments') {
+                if ($item['model'] !== 'EducationLoanPayments' && $item['field'] !== 'source' && $item['field'] !== 'related_to' && $item['field'] !== 'candidate_status' && $item['field'] !== 'candidate_status_date') {
                     $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
                     $item['stamp'] = strtotime($item['stamp']);
 
@@ -1432,6 +1432,18 @@ class LoansController extends ApiBaseController
                         } else {
                             $item['new_value'] = 'Others';
                         }
+                    }
+                    if ($item['field'] == 'co_applicant_dob' || $item['field'] == 'emi_collection_date' || $item['field'] == 'applicant_dob') {
+                        $new_date = date_create_from_format('Y-m-d', $item['new_value']);
+                        if ($new_date !== false) {
+                            $formatted_date = date_format($new_date, 'j M Y');
+                            $item['new_value'] = $formatted_date;
+                        }
+                    }
+                    if ($item['field'] == 'insurance_charges' || $item['field'] == 'disbursement_approved' || $item['field'] == 'soft_sanction' || $item['field'] == 'soft_approval' || $item['field'] == 'tl_approved_amount' || $item['field'] == 'bdo_approved_amount') {
+                        $amount = intval($item['new_value']);
+                        $formatted_amount = '₹' . number_format($amount, 0, '.', ',');
+                        $item['new_value'] = $formatted_amount;
                     }
 
                     $groupedAudit[$item['model']][] = $item;
