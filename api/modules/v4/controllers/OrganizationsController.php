@@ -2018,15 +2018,16 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         if (isset($params['type'])) {
             if ($params['type'] == '0') {
-                if (!$image = $_FILES['image']) {
+                if (!$image = UploadedFile::getInstanceByName('image')) {
                     return $this->response(401, ['status' => 401, 'message' => 'image missing']);
                 }
-                $notice->image = $utilitiesModel->encrypt() . '.' . explode('.', $image['name'])[1];
+                $type = explode('/', $image->type)[1];
+                $notice->image = $utilitiesModel->encrypt() . '.' . $type;
                 $notice->image_location = Yii::$app->getSecurity()->generateRandomString();
                 $base_path = Yii::$app->params->upload_directories->notice->image . $notice->image_location;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($image['tmp_name'], Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $image['type']]]);
+                $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $type]]);
                 if (!$result) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving image']);
                 }
