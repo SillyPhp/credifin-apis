@@ -1683,6 +1683,9 @@ class OrganizationsController extends ApiBaseController
                 'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
             ])
             ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+        if (!empty($params['emi_payment_status'])) {
+            $data->andWhere(['emi_payment_status' => $params['emi_payment_status']]);
+        }
         if (!empty($params['loan_type'])) {
             $data->andWhere(['loan_type' => $params['loan_type']]);
         }
@@ -1725,11 +1728,11 @@ class OrganizationsController extends ApiBaseController
 
         $org_id = $params['organization_id'];
         $model = $this->_emiData($org_id, 0, $search, $user);
-        $count = count($model);
+        $count = $model['count'];
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
-        return $this->response(200, ['status' => 200, 'data' => $model, 'count' => $count]);
+        return $this->response(200, ['status' => 200, 'data' => $model['data'], 'count' => $count]);
     }
 
     public function actionEmiDetail()
@@ -1742,7 +1745,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
         $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
-        $model = $this->_emiData($lac, 1, '', $user);
+        $model = $this->_emiData($lac, 1, '', $user)['data'];
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
@@ -1767,6 +1770,9 @@ class OrganizationsController extends ApiBaseController
         if ($id_type == 0) {
             $org_id = $data;
         }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
         $payments = new EmiCollectionForm();
         $payment_methods = $payments->payment_methods;
         $payment_modes = $payments->payment_modes;
@@ -1780,7 +1786,7 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
+                'CONCAT(a.address,", ", COALESCE(a.pincode, "")) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
                 'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
             ])
@@ -1844,8 +1850,11 @@ class OrganizationsController extends ApiBaseController
                 }
             }
         }
+        $count = $model->count();
 
         $model = $model
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
@@ -1867,7 +1876,7 @@ class OrganizationsController extends ApiBaseController
                 $model[$key]['pr_receipt_image'] = $proof;
             }
         }
-        return $model;
+        return ['data' => $model, 'count' => $count];
     }
 
     public function actionUpdateLoanProductFees()
