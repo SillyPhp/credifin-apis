@@ -415,7 +415,6 @@ class LoansController extends ApiBaseController
         // getting loan application object
         $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
-
         if ($loan_app) {
 
             // creating loan application object
@@ -1280,7 +1279,7 @@ class LoansController extends ApiBaseController
 
         $date = date('Y-m-d H:i:s', strtotime('-30 days'));
 
-        if (isset($params['phone'])) {
+        if (!empty($params['phone'])) {
             $phoneNumber = $params['phone'];
 
             $phoneExists = LoanApplications::find()
@@ -1304,7 +1303,7 @@ class LoansController extends ApiBaseController
                     ['a.phone' => '+' . $phoneNumber],
                     ['b.phone' => '+' . $phoneNumber],
                 ]);
-            if (isset($params['loan_id'])) {
+            if (!empty($params['loan_id'])) {
                 $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
             } else {
                 $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
@@ -1320,7 +1319,7 @@ class LoansController extends ApiBaseController
         }
 
 
-        if (isset($params['aadhaar_number'])) {
+        if (!empty($params['aadhaar_number'])) {
             $aadhaarNumber = $params['aadhaar_number'];
 
             $aadhaarExists = LoanApplications::find()
@@ -1341,7 +1340,7 @@ class LoansController extends ApiBaseController
             }
         }
 
-        if (isset($params['pan_number'])) {
+        if (!empty($params['pan_number'])) {
             $panNumber = $params['pan_number'];
 
             $panExists = LoanApplications::find()
