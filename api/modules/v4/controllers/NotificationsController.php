@@ -87,7 +87,7 @@ class NotificationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
-            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $limit = !empty($params['limit']) ? $params['limit'] : 15;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
             $notifications = Notifications::find()
