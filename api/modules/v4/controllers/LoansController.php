@@ -1320,7 +1320,8 @@ class LoansController extends ApiBaseController
             } else {
                 $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
             }
-            $phoneExists = $phoneExists->exists();
+            $phoneExists = $phoneExists->andWhere(['a.is_deleted' => 0])
+            ->exists();
 
 
             if ($phoneExists) {
@@ -1342,6 +1343,7 @@ class LoansController extends ApiBaseController
                     ['b.aadhaar_number' => $aadhaarNumber]
                 ])
                 ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->andWhere(['a.is_deleted' => 0])
                 ->exists();
 
             if ($aadhaarExists) {
@@ -1362,6 +1364,7 @@ class LoansController extends ApiBaseController
                     ['b.pan_number' => $panNumber]
                 ])
                 ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->andWhere(['a.is_deleted' => 0])
                 ->exists();
 
             if ($panExists) {
@@ -1381,6 +1384,7 @@ class LoansController extends ApiBaseController
                     ['b.voter_card_number' => $voter_card_number]
                 ])
                 ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->andWhere(['a.is_deleted' => 0])
                 ->exists();
 
             if ($voter_card_number) {
