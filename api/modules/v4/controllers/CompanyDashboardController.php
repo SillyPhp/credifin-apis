@@ -188,7 +188,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->one();
 
             return $this->response(200, ['status' => 200, 'stats' => $stats]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -207,7 +206,6 @@ class CompanyDashboardController extends ApiBaseController
             $data = $this->loanApplicationStats();
 
             return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -258,10 +256,9 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting and returning loan_type_enc_id
-//            $loan_id = FinancerLoanProducts::findOne(['name' => $params['loan_product'], 'is_deleted' => 0]);
+            //            $loan_id = FinancerLoanProducts::findOne(['name' => $params['loan_product'], 'is_deleted' => 0]);
 
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product']]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -324,7 +321,8 @@ class CompanyDashboardController extends ApiBaseController
         $loans = LoanApplications::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+            ->select([
+                'a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
                 'CONCAT(k.first_name, " ", COALESCE(k.last_name,"")) employee_name',
@@ -368,7 +366,8 @@ class CompanyDashboardController extends ApiBaseController
                 $cr->joinWith(['userTypeEnc ute'], false);
             }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
-                $h->select(['h.loan_app_enc_id',
+                $h->select([
+                    'h.loan_app_enc_id',
                     'h.relation',
                     'h.name',
                     'h.annual_income',
@@ -394,23 +393,28 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['managedBy k'], false)
             ->joinWith(['loanProductsEnc lp'], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
-                $n->select(['n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
+                $n->select([
+                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
                     'CASE WHEN n1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", n1.image_location, "/", n1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(n1.first_name," ",n1.last_name), "&size=200&rounded=false&background=", REPLACE(n1.initials_color, "#", ""), "&color=ffffff") END image'
                 ])
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }])
             ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['or',
-                ['and',
+            ->andWhere([
+                'or',
+                [
+                    'and',
                     ['a.loan_type' => 'Loan Against Property'],
                     ['>=', 'a.loan_status_updated_on', '2023-06-01 00:00:00']
                 ],
-                ['and',
+                [
+                    'and',
                     ['not', ['a.loan_type' => 'Loan Against Property']],
                     ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
                 ],
-                ['or',
+                [
+                    'or',
                     ['a.loan_type' => null],
                     ['a.loan_type' => '']
                 ]
@@ -446,9 +450,9 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
-//                    if (empty($params['fields_search'])) {
-//                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-//                    }
+                    //                    if (empty($params['fields_search'])) {
+                    //                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+                    //                    }
                     break;
                 case 'tvr':
                     $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {
@@ -545,14 +549,21 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $name_search)) {
                         switch ($key) {
                             case 'created_by':
-                                $loans->andWhere(['or',
-                                    ['and',
-                                        ['not',
-                                            ['a.lead_by' => null]],
-                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]],
-                                    ['and',
+                                $loans->andWhere([
+                                    'or',
+                                    [
+                                        'and',
+                                        [
+                                            'not',
+                                            ['a.lead_by' => null]
+                                        ],
+                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]
+                                    ],
+                                    [
+                                        'and',
                                         ['a.lead_by' => null],
-                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]]
+                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]
+                                    ]
                                 ]);
                                 break;
                             case 'sharedTo':
@@ -627,7 +638,6 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
                 }
             }
-
         } else {
             // else order_by i.updated_on desc and created_on desc
             $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
@@ -669,7 +679,7 @@ class CompanyDashboardController extends ApiBaseController
                 $loans[$key]['claimedDeals'] = $d;
 
                 $provider_id = $this->getFinancerId($user);
-//                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
+                //                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
 
                 $provider = AssignedLoanProvider::find()
                     ->alias('a')
@@ -692,7 +702,6 @@ class CompanyDashboardController extends ApiBaseController
                     $loans[$key]['branch_id'] = $provider['branch_enc_id'];
                     $loans[$key]['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
                 }
-
             }
         }
 
@@ -732,16 +741,16 @@ class CompanyDashboardController extends ApiBaseController
 
 
 
-//    private function __partnerApplications($user)
-//    {
-//        return LoanApplicationPartnersExtended::find()
-//            ->alias('a')
-//            ->select(['a.loan_app_enc_id'])
-//            ->joinWith(['providerEnc b'], false)
-//            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
-//            ->asArray()
-//            ->all();
-//    }
+    //    private function __partnerApplications($user)
+    //    {
+    //        return LoanApplicationPartnersExtended::find()
+    //            ->alias('a')
+    //            ->select(['a.loan_app_enc_id'])
+    //            ->joinWith(['providerEnc b'], false)
+    //            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
+    //            ->asArray()
+    //            ->all();
+    //    }
 
     // getting shared loan applications
     private function sharedApps($user_id)
@@ -788,7 +797,7 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting date before 1 month
             $date = new \DateTime('now');
-//            $date->modify('-30 day'); // or you can use '-90 day' for deduct
+            //            $date->modify('-30 day'); // or you can use '-90 day' for deduct
             $date = $date->format('Y-m-d H:i:s');
 
             $params = Yii::$app->request->post();
@@ -809,8 +818,9 @@ class CompanyDashboardController extends ApiBaseController
             // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'CONCAT(ub.first_name, " ", ub.last_name) AS capital_roi_updated_by', 'a.registry_status', 'a.registry_status_updated_on', 'CONCAT(rs.first_name, " ", rs.last_name) AS registry_status_updated_by',
-                    'a.applicant_name', 'lpe.name as loan_product', 'a.cibil_score', 'a.equifax_score', 'a.crif_score', 'a.chassis_number', 'a.rc_number', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date',
+                ->select([
+                    'a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'CONCAT(ub.first_name, " ", ub.last_name) AS capital_roi_updated_by', 'a.registry_status', 'a.registry_status_updated_on', 'CONCAT(rs.first_name, " ", rs.last_name) AS registry_status_updated_by',
+                    'a.applicant_name', 'lpe.name as loan_product', 'a.cibil_score', 'a.equifax_score', 'a.crif_score', 'a.chassis_number', 'a.rc_number', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
                     'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image',
                     'CASE WHEN rs.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", rs.image_location, "/", rs.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(rs.first_name," ",rs.last_name), "&size=200&rounded=false&background=", REPLACE(rs.initials_color, "#", ""), "&color=ffffff") END rs_image',
                     'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
@@ -823,7 +833,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
-                    $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
+                    $d->select([
+                        'd.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
                         'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
                         'CASE WHEN d.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",d.image_location, d.image) ELSE NULL END image',
@@ -833,13 +844,16 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
                     $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
-                        $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on',
+                        $d4->select([
+                            'd4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on',
                             'DATEDIFF("' . $date . '", d4.created_on) as days_till_now',
-                            'd6.request_source']);
+                            'd6.request_source'
+                        ]);
                         $d4->joinWith(['responseEnc d5' => function ($d5) {
                             $d5->joinWith(['requestEnc d6'], false);
                         }], false);
-                        $d4->onCondition(['and',
+                        $d4->onCondition([
+                            'and',
                             ['d4.is_deleted' => 0],
                         ]);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
@@ -852,7 +866,8 @@ class CompanyDashboardController extends ApiBaseController
                     $e->onCondition(['e.is_deleted' => 0, 'e.source' => 'EL']);
                 }])
                 ->joinWith(['loanApplicationComments f' => function ($f) {
-                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by',
+                    $f->select([
+                        'f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by',
                         'CASE WHEN f1.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",f1.image_location, "/", f1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f1.first_name," ",f1.last_name), "&size=200&rounded=true&background=", REPLACE(f1.initials_color, "#", ""), "&color=ffffff") END user_image',
                         'CASE WHEN f2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", f2.logo_location, "/", f2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f2.name, "&size=200&rounded=false&background=", REPLACE(f2.initials_color, "#", ""), "&color=ffffff") END logo',
                     ]);
@@ -864,9 +879,11 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanPurposes g' => function ($g) {
                     $g->select(['g.financer_loan_purpose_enc_id', 'g.financer_loan_purpose_enc_id', 'g.loan_app_enc_id', 'g1.purpose']);
                     $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                    $g->onCondition(['g.is_deleted' => 0]);
                 }])
                 ->joinWith(['loanVerificationLocations h' => function ($h) {
-                    $h->select(['h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
+                    $h->select([
+                        'h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
                         'h.local_address', 'h.latitude', 'h.longitude', 'CONCAT(h1.first_name," ",h1.last_name) created_by', 'h.created_on',
                         'CASE WHEN h1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", h1.image_location, "/", h1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(h1.first_name," ",h1.last_name), "&size=200&rounded=false&background=", REPLACE(h1.initials_color, "#", ""), "&color=ffffff") END image'
                     ]);
@@ -882,13 +899,15 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['responseEnc j1' => function ($j1) {
                             $j1->joinWith(['requestEnc j2'], false);
                         }], false);
-                    $j->onCondition(['and',
+                    $j->onCondition([
+                        'and',
                         ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
                     ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
                 }])
                 ->joinWith(['sharedLoanApplications k' => function ($k) {
-                    $k->select(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
+                    $k->select([
+                        'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
                         'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
                     ])->joinWith(['sharedTo k1'], false);
                 }])
@@ -914,8 +933,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationFis q' => function ($m) {
                     $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
                 }])
-//                ->joinWith(['loanApplicationVerifications lav' => function($lav){
-//                }])
+                //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
+                //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -1020,29 +1039,28 @@ class CompanyDashboardController extends ApiBaseController
 
             // if application detail not found
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-//    public function actionUniqueLink()
-//    {
-//        $loan_app_enc_id = Yii::$app->request->post('loan_app_enc_id');
-//
-//        if ($loan_app_enc_id !== null) {
-//            $loan = LoanApplications::find()
-//                ->alias('a')
-//                ->select(['a.phone'])
-//                ->joinWith([''])
-//                ->where(['loan_app_enc_id' => $loan_app_enc_id])
-//                ->asArray()
-//                ->all();
-//
-//            } else {
-//                return "Loan application not found.";
-//            }
-//    }
+    //    public function actionUniqueLink()
+    //    {
+    //        $loan_app_enc_id = Yii::$app->request->post('loan_app_enc_id');
+    //
+    //        if ($loan_app_enc_id !== null) {
+    //            $loan = LoanApplications::find()
+    //                ->alias('a')
+    //                ->select(['a.phone'])
+    //                ->joinWith([''])
+    //                ->where(['loan_app_enc_id' => $loan_app_enc_id])
+    //                ->asArray()
+    //                ->all();
+    //
+    //            } else {
+    //                return "Loan application not found.";
+    //            }
+    //    }
 
     public function actionLoanCertificates()
     {
@@ -1198,7 +1216,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1249,7 +1266,6 @@ class CompanyDashboardController extends ApiBaseController
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1261,10 +1277,12 @@ class CompanyDashboardController extends ApiBaseController
         // getting employees data
         $employee = UserRoles::find()
             ->alias('a')
-            ->select(['a.role_enc_id',
+            ->select([
+                'a.role_enc_id',
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'CONCAT(f.location_name, ", ", f1.name) AS branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on platform_joining_date'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'CONCAT(f.location_name, ", ", f1.name) AS branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on platform_joining_date'
+            ])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
             ->joinWith(['designation d'], false)
@@ -1351,10 +1369,12 @@ class CompanyDashboardController extends ApiBaseController
         // getting dealer data
         $dealer = UserRoles::find()
             ->alias('a')
-            ->select(['a.role_enc_id',
+            ->select([
+                'a.role_enc_id',
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'
+            ])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
             ->joinWith(['designation d'], false)
@@ -1377,11 +1397,11 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         // filter dealer search on dealer reporting person
-//        if ($params != null && !empty($params['reporting_person'])) {
-//            $dealer->andWhere([
-//                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
-//            ]);
-//        }
+        //        if ($params != null && !empty($params['reporting_person'])) {
+        //            $dealer->andWhere([
+        //                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
+        //            ]);
+        //        }
 
         // checking if this dealer already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
@@ -1398,9 +1418,10 @@ class CompanyDashboardController extends ApiBaseController
         // getting dsa from assigned supervisor table
         $dsa = AssignedSupervisor::find()
             ->alias('a')
-            ->select(['a.assigned_user_enc_id user_enc_id',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-                , 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')])
+            ->select([
+                'a.assigned_user_enc_id user_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')
+            ])
             ->joinWith(['assignedUserEnc b'], false)
             ->where(['a.supervisor_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
 
@@ -1427,9 +1448,10 @@ class CompanyDashboardController extends ApiBaseController
         // getting connector list
         $connector = SelectedServices::find()
             ->alias('a')
-            ->select(['a.created_by user_enc_id',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-                , 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')])
+            ->select([
+                'a.created_by user_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')
+            ])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['serviceEnc c'], false)
             ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0, 'a.is_selected' => 1]);
@@ -1509,7 +1531,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'list' => $employees]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1542,7 +1563,7 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
-//            $user->status = $params['status'];
+            //            $user->status = $params['status'];
             $user->last_updated_on = date('Y-m-d H:i:s');
 
             if (!$user->update()) {
@@ -1550,7 +1571,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'status updated']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1593,11 +1613,9 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1616,7 +1634,6 @@ class CompanyDashboardController extends ApiBaseController
 
             // returnin data
             return $this->response(200, ['status' => 200, 'connector' => $connector]);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1665,11 +1682,9 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 return $this->response(200, ['status' => 200, 'all_employees' => $all]);
-
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1688,12 +1703,15 @@ class CompanyDashboardController extends ApiBaseController
         // getting detail
         $detail = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone', 'a.description', 'a.facebook', 'a.google', 'a.twitter', 'a.instagram', 'a.linkedin',
+            ->select([
+                'a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone', 'a.description', 'a.facebook', 'a.google', 'a.twitter', 'a.instagram', 'a.linkedin',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'
             ])
             ->joinWith(['organizationLocations b' => function ($b) {
-                $b->select(['b.location_enc_id', 'b.organization_enc_id', 'b.location_name', 'b.location_for', 'b.email', 'b.description',
-                    'b.website', 'b.phone', 'b.address', 'b.postal_code', 'b.latitude', 'b.longitude', 'b.sequence', 'b1.name city_name', 'b2.name state_name']);
+                $b->select([
+                    'b.location_enc_id', 'b.organization_enc_id', 'b.location_name', 'b.location_for', 'b.email', 'b.description',
+                    'b.website', 'b.phone', 'b.address', 'b.postal_code', 'b.latitude', 'b.longitude', 'b.sequence', 'b1.name city_name', 'b2.name state_name'
+                ]);
                 $b->joinWith(['cityEnc b1' => function ($b1) {
                     $b1->joinWith(['stateEnc b2'], false);
                 }], false);
@@ -1719,8 +1737,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
                 ->joinWith(['assignedFinancerLoanPartners c' => function ($c) {
-                    $c->select(['c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',
-                        'c.ltv', 'concat(c1.first_name," ",c1.last_name) partner_name']);
+                    $c->select([
+                        'c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',
+                        'c.ltv', 'concat(c1.first_name," ",c1.last_name) partner_name'
+                    ]);
                     $c->joinWith(['loanPartnerEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
@@ -1733,7 +1753,6 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
     }
 
     // this action is used to save loan notifications
@@ -1766,7 +1785,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1805,7 +1823,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1891,7 +1908,6 @@ class CompanyDashboardController extends ApiBaseController
 
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1930,7 +1946,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2017,7 +2032,6 @@ class CompanyDashboardController extends ApiBaseController
                         $transaction->rollback();
                         $ids = $ids . $d[0] . ',';
                     }
-
                 }
 
                 // getting employee user id
@@ -2045,20 +2059,17 @@ class CompanyDashboardController extends ApiBaseController
 
                 // commiting code
                 $transaction->commit();
-
             } catch (Exception $e) {
                 $ids = $ids . $d[0] . ',' . $e->getMessage();
                 $transaction->rollback();
                 $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
             }
-
         }
 
         //closing file
         fclose($file);
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
     }
 
     // saving scratch card code to loan users
@@ -2108,7 +2119,6 @@ class CompanyDashboardController extends ApiBaseController
                             $headphone_cnt += 1;
                             $get_random = false;
                         }
-
                     } else if ($powerbank_cnt < 100 & $get_random) {
 
                         // getting random code
@@ -2117,7 +2127,6 @@ class CompanyDashboardController extends ApiBaseController
                             $powerbank_cnt += 1;
                             $get_random = false;
                         }
-
                     } else {
                         $code = $code_for_everyone;
                     }
@@ -2137,13 +2146,11 @@ class CompanyDashboardController extends ApiBaseController
 
                 // get random true for next user
                 $get_random = true;
-
             }
 
             $transaction->commit();
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } catch (Exception $e) {
             $transaction->rollback();
             $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
@@ -2253,7 +2260,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2302,7 +2308,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2335,7 +2340,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2362,7 +2366,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2433,7 +2436,6 @@ class CompanyDashboardController extends ApiBaseController
                     if (!empty($roleUnderId) || $roleUnderId != null) {
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
-
                 }], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
 
@@ -2454,7 +2456,6 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['loan_product'])) {
                 $stats->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
                 $product_name = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['loan_product']]);
-
             }
 
             $stats = $stats
@@ -2463,8 +2464,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->all();
 
             return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => $product_name ? $product_name->name : '']);
-
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2507,14 +2506,13 @@ class CompanyDashboardController extends ApiBaseController
                 $preference->created_on = date('Y-m-d H:i:s');
                 $preference->disabled_fields = $params['disabled_fields'];
                 if (!$preference->save()) {
-//                    print_r( $preference->loan_product_enc_id);
-//                    die();
+                    //                    print_r( $preference->loan_product_enc_id);
+                    //                    die();
                     return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $preference->getErrors()]);
                 }
 
                 return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Preference added successfully']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2539,7 +2537,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'Preference not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2558,8 +2555,9 @@ class CompanyDashboardController extends ApiBaseController
 
             $employeeStats = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
-//                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" and c2.loan_status !="New Lead" and c2.loan_status !="Sanctioned" and c2.loan_status !="CNI" THEN c.loan_app_enc_id END) as active',
+                ->select([
+                    'a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
+                    //                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" and c2.loan_status !="New Lead" and c2.loan_status !="Sanctioned" and c2.loan_status !="CNI" THEN c.loan_app_enc_id END) as active',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
@@ -2573,12 +2571,15 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params, $lap, $nlap) {
-                    $c->andWhere(['or',
-                        ['and',
+                    $c->andWhere([
+                        'or',
+                        [
+                            'and',
                             ['c.loan_type' => 'Loan Against Property'],
                             ['between', 'c.created_on', $lap, $params['end_date']]
                         ],
-                        ['and',
+                        [
+                            'and',
                             ['not', ['c.loan_type' => 'Loan Against Property']],
                             ['between', 'c.created_on', $nlap, $params['end_date']]
                         ],
@@ -2597,10 +2598,12 @@ class CompanyDashboardController extends ApiBaseController
                 }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
                     $k->groupBy(['k.created_by']);
-                    $k->select(['k.created_by',
+                    $k->select([
+                        'k.created_by',
                         'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                         'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
+                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'
+                    ]);
                     $k->joinWith(['responseEnc k1' => function ($k1) {
                         $k1->joinWith(['requestEnc k2']);
                     }], false);
@@ -2637,7 +2640,6 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
-
     }
 
     public function actionUploadApplicantImage()
@@ -2699,11 +2701,9 @@ class CompanyDashboardController extends ApiBaseController
                 } else {
                     return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
                 }
-
             } else {
                 return $this->response(400, ['status' => 400, 'message' => 'bad request']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -2752,7 +2752,6 @@ class CompanyDashboardController extends ApiBaseController
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
         }
-
     }
 
     public function actionEmployeeLoanList()
@@ -2771,8 +2770,10 @@ class CompanyDashboardController extends ApiBaseController
             $employeeLoanList = LoanApplications::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
-                    'c1.location_name', 'c3.loan_status', 'd.name product_name'])
+                ->select([
+                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
+                    'c1.location_name', 'c3.loan_status', 'd.name product_name'
+                ])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
@@ -2784,10 +2785,12 @@ class CompanyDashboardController extends ApiBaseController
                 }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
                     $k->groupBy(['k.loan_app_enc_id']);
-                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id', 'k.created_by',
+                    $k->select([
+                        'k.report_enc_id', 'k.loan_app_enc_id', 'k.created_by',
                         'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                         'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
+                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'
+                    ]);
                     $k->joinWith(['responseEnc k1' => function ($k1) {
                         $k1->joinWith(['requestEnc k2']);
                     }]);
@@ -2809,7 +2812,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
@@ -2875,7 +2877,7 @@ class CompanyDashboardController extends ApiBaseController
                     'SUM(CASE WHEN i.status = "24" THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
                     'SUM(CASE WHEN i.status = "15" THEN i.soft_approval ELSE 0 END) as soft_approval_amount',
                     'SUM(CASE WHEN i.status > "4" AND i.status < "26" THEN b.amount ELSE 0 END) as under_process_amount',
-//                    'SUM(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.amount ELSE 0 END) as under_process_amount',
+                    //                    'SUM(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.amount ELSE 0 END) as under_process_amount',
                     'SUM(CASE WHEN i.status = "32" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount',
                     'SUM(CASE WHEN i.status = "28" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount',
                     'SUM(CASE WHEN i.status = "30" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount',
@@ -2887,17 +2889,17 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
                     'COUNT(CASE WHEN i.status > "4" AND i.status < "26" THEN b.loan_app_enc_id END) as under_process_count',
-//                    'COUNT(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.loan_app_enc_id END) as under_process_count',
+                    //                    'COUNT(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.loan_app_enc_id END) as under_process_count',
                     'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni_count',
                     'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected_count',
                     'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval_count',
                     'COUNT(CASE WHEN i.status = "24" THEN b.loan_app_enc_id END) as soft_sanction_count',
                 ])
-//                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
-//                    if ($params['loan_type']) {
-//                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
-//                    }
-//                }],false)
+                //                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
+                //                    if ($params['loan_type']) {
+                //                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
+                //                    }
+                //                }],false)
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
@@ -2931,22 +2933,22 @@ class CompanyDashboardController extends ApiBaseController
             $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
             $employeeAmount = $employeeAmount
                 ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
-//                ->andWhere(['or',
-//                    ['and',
-//                        ['b.loan_type' => 'Loan Against Property'],
-//                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
-//                    ],
-//                    ['and',
-//                        ['not', ['b.loan_type' => 'Loan Against Property']],
-//                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
-//                    ],
-//                    [
-//                        'or',
-//                        ['b.loan_type' => null],
-//                        ['b.loan_type' => '']
-//                    ]
-//                ])
-//                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
+                //                ->andWhere(['or',
+                //                    ['and',
+                //                        ['b.loan_type' => 'Loan Against Property'],
+                //                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
+                //                    ],
+                //                    ['and',
+                //                        ['not', ['b.loan_type' => 'Loan Against Property']],
+                //                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
+                //                    ],
+                //                    [
+                //                        'or',
+                //                        ['b.loan_type' => null],
+                //                        ['b.loan_type' => '']
+                //                    ]
+                //                ])
+                //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
 
@@ -2982,7 +2984,8 @@ class CompanyDashboardController extends ApiBaseController
     {
         $branchSum = OrganizationLocations::find()
             ->alias('a')
-            ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
+            ->select([
+                'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
                 'SUM(c.amount) as new_lead_amount',
                 'SUM(IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount))) as login_amount',
                 'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
@@ -2990,7 +2993,7 @@ class CompanyDashboardController extends ApiBaseController
                 'SUM(b.insurance_charges) as insurance_charges_amount',
                 'SUM(b.soft_sanction) as soft_sanctioned_amount',
                 'SUM(b.soft_approval) as soft_approval_amount',
-//                'SUM(b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount) as under_process_amount',
+                //                'SUM(b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount) as under_process_amount',
                 'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
                 'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
                 'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
@@ -3016,25 +3019,26 @@ class CompanyDashboardController extends ApiBaseController
             return ['status' => 200, 'data' => $branchSum, 'count' => count($branchSum)];
         }
         return ['status' => 404, 'message' => 'not found'];
-
     }
 
     private function branchCount($org_id, $params)
     {
         $branchCount = OrganizationLocations::find()
             ->alias('a')
-            ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
+            ->select([
+                'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
                 'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
                 'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
                 'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
                 'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
-//                'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
+                //                'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
                 'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
                 'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
                 'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
                 'COUNT(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount',
                 'COUNT(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount',
-                'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'])
+                'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'
+            ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
             ->where(['between', 'c.updated_on', $params['start_date'], $params['end_date']])
@@ -3454,12 +3458,13 @@ class CompanyDashboardController extends ApiBaseController
     {
         $emiList = LoanApplications::find()
             ->alias('a')
-//            ->distinct()
-            ->select(['a.loan_app_enc_id', 'b1.emi_collection_enc_id', 'b1.amount', 'b.assigned_loan_payments_enc_id', 'b.loan_app_enc_id', 'b1.loan_account_number',
-                'b1.payment_method'])
+            //            ->distinct()
+            ->select([
+                'a.loan_app_enc_id', 'b1.emi_collection_enc_id', 'b1.amount', 'b.assigned_loan_payments_enc_id', 'b.loan_app_enc_id', 'b1.loan_account_number',
+                'b1.payment_method'
+            ])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['emiCollectionEnc b1'], false);
-
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
             ->asArray()
@@ -3480,7 +3485,8 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->select(['b.assigned_loan_payments_enc_id', 'b1.loan_payments_enc_id', 'b.loan_app_enc_id']);
                 $b->joinWith(['loanPaymentsEnc b1' => function ($b1) {
-                    $b1->select(['b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
+                    $b1->select([
+                        'b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
                         '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE "Manual" END) as mode', 'b1.reference_number',
                         '(CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . '", b1.image_location, "/",b1.image) ELSE NULL END) as receipt',
                         'b1.remarks', 'b1.created_on', 'CONCAT(b3.first_name, " ", b3.last_name) as created_by', 'CONCAT(b4.first_name, " ", b4.last_name) as updated_by', 'b1.updated_on'
@@ -3500,8 +3506,10 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
 
         $res = [];
-        $paymentModes = ['0' => 'Online Payment', '1' => 'NEFT', '2' => 'RTGS', '3' => 'IMPS', '4' => 'Cheque', '5' => 'UPI',
-            '6' => 'DD', '7' => 'Cash', '8' => 'Credit Card', '9' => 'Debit Card'];
+        $paymentModes = [
+            '0' => 'Online Payment', '1' => 'NEFT', '2' => 'RTGS', '3' => 'IMPS', '4' => 'Cheque', '5' => 'UPI',
+            '6' => 'DD', '7' => 'Cash', '8' => 'Credit Card', '9' => 'Debit Card'
+        ];
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($assignedList as $assigned) {
@@ -3514,10 +3522,9 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }
                 $res[] = $asp['loanPaymentsEnc'];
-
             }
         }
-//       'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_payments->image, 'https') . '", p1.image_location, "/", p1.image) ELSE NULL END imgg',
+        //       'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_payments->image, 'https') . '", p1.image_location, "/", p1.image) ELSE NULL END imgg',
         if ($res) {
             return ['status' => 200, 'data' => $res];
         }
@@ -3542,7 +3549,7 @@ class CompanyDashboardController extends ApiBaseController
                 $cityName = $cityData['name'];
                 $cityCode = $cityData['city_code'];
 
-//                $existingCity = Cities::findOne(['name' => $cityName]);
+                //                $existingCity = Cities::findOne(['name' => $cityName]);
                 $existingCity = Cities::find()
                     ->alias('a')
                     ->select(['a.city_enc_id', 'a.city_code', 'a.state_enc_id', 'b.state_enc_id', 'b.country_enc_id'])
@@ -3557,12 +3564,11 @@ class CompanyDashboardController extends ApiBaseController
                     Yii::$app->db->createCommand()
                         ->update(Cities::tableName(), ['city_code' => $cityCode], ['city_enc_id' => $existingCity['city_enc_id']])
                         ->execute();
-//                    $existingCity[0]->city_code = $cityCode;
-//                    $existingCity[0]->update();
+                    //                    $existingCity[0]->city_code = $cityCode;
+                    //                    $existingCity[0]->update();
                 }
             }
         }
         return 'Data updated successfully.';
     }
-
 }
