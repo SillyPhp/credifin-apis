@@ -70,7 +70,7 @@ class PaymentsController extends ApiBaseController
             }
         }
     }
-    private function updateStatus($id)
+    public static function updateStatus($id)
     {
         $query = AssignedLoanPayments::find()
             ->alias('a')
@@ -249,6 +249,7 @@ class PaymentsController extends ApiBaseController
         $options['payment_mode'] = $params['payment_mode'];
         $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
+        $options['type'] = 'manual';
 
         $transaction = Yii::$app->db->beginTransaction();
         $save = \common\models\extended\Payments::saveLoanPayment($options);
