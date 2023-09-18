@@ -59,14 +59,17 @@ class PaymentsController extends ApiBaseController
     private function closeAllModes($id)
     {
         $model = LoanPayments::find()
+            ->select(['loan_payments_enc_id'])
             ->where(['reference_id' => $id])
             ->asArray()->all();
         if ($model) {
-            foreach ($model as $mod) {
+            foreach ($model as $key => $mod) {
                 $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
-                self::updateStatus($mod['loan_payments_enc_id']);
+                if ($key == 0) {
+                    self::updateStatus($mod['loan_payments_enc_id']);
+                }
             }
         }
     }
