@@ -22,6 +22,7 @@ use Yii;
  * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
  * @property FinancerLoanProductImages[] $financerLoanProductImages
  * @property FinancerLoanProductLoginFeeStructure[] $financerLoanProductLoginFeeStructures
+ * @property FinancerLoanProductPendencies[] $financerLoanProductPendencies
  * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
  * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
  * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
@@ -89,6 +90,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function getFinancerLoanProductLoginFeeStructures()
     {
         return $this->hasMany(FinancerLoanProductLoginFeeStructure::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductPendencies()
+    {
+        return $this->hasMany(FinancerLoanProductPendencies::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
     }
 
     /**
