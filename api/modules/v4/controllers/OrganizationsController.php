@@ -1714,11 +1714,11 @@ class OrganizationsController extends ApiBaseController
 
         $org_id = $params['organization_id'];
         $model = $this->_emiData($org_id, 0, $search, $user);
-        $count = count($model);
+        $count = $model['count'];
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
-        return $this->response(200, ['status' => 200, 'data' => $model, 'count' => $count]);
+        return $this->response(200, ['status' => 200, 'data' => $model['data'], 'count' => $count]);
     }
 
     public function actionEmiDetail()
@@ -1731,7 +1731,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
         $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
-        $model = $this->_emiData($lac, 1, '', $user);
+        $model = $this->_emiData($lac, 1, '', $user)['data'];
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
@@ -1756,6 +1756,9 @@ class OrganizationsController extends ApiBaseController
         if ($id_type == 0) {
             $org_id = $data;
         }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
 
         $model = EmiCollection::find()
             ->alias('a')
@@ -1829,7 +1832,10 @@ class OrganizationsController extends ApiBaseController
             }
         }
 
-        $model = $model
+        $count = $model->count();
+
+        $model = $model->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
@@ -1849,7 +1855,7 @@ class OrganizationsController extends ApiBaseController
                 $model[$key]['pr_receipt_image'] = $proof;
             }
         }
-        return $model;
+        return ['data' => $model, 'count' => $count];
     }
 
     public function actionUpdateLoanProductFees()
