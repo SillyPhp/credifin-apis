@@ -1484,7 +1484,7 @@ class LoansController extends ApiBaseController
                 if (!is_array($params['value'])) {
                     return $this->response(500, ['status' => 500, 'message' => 'values must be in array']);
                 }
-              return  $purposes  = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
+                $purposes  = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
                 if (!$purposes) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating purposes']);
                 }
