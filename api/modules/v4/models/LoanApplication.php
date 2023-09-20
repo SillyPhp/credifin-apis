@@ -27,6 +27,7 @@ use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
+use phpDocumentor\Reflection\Types\Null_;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
@@ -928,6 +929,68 @@ class LoanApplication extends Model
         } else {
             return "$loanAccountNumber-001";
         }
+    }
+
+    public function updateLoanAccountPurpose($options){
+        $loan_account = LoanApplications::findOne(['loan_app_enc_id'=>$options['loan_id']]);
+        $loan_account_number = $loan_account->application_number;
+        $purpose_id =  $options['purposes'];
+        if (empty($loan_account_number)||$loan_account_number==NUll){
+            $product_id = $loan_account->loan_products_enc_id;
+            $branches = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id','b.branch_enc_id','a.application_number'])
+                ->where(['a.loan_app_enc_id'=>$options['loan_id']])
+                ->joinWith(['assignedLoanProviders b'],false,'INNER JOIN')
+                ->asArray()->one();
+            $branch_id = $branches['branch_enc_id'];
+            $new_loan_account_number = $this->generateApplicationNumber($product_id,$branch_id,$options['purposes']);
+        }
+        $loan_account_number_array = explode("-",$loan_account_number);
+         if (count($loan_account_number_array)>=4) {
+             if ($purpose_id) {
+                 $purposes = FinancerLoanProductPurpose::find()
+                     ->select('purpose_code')
+                     ->andWhere(['in', 'financer_loan_product_purpose_enc_id', $purpose_id])
+                     ->asArray()
+                     ->all();
+
+                 $purposeCodeArray = [];
+                 foreach ($purposes as $purpose) {
+                     if (!empty($purpose['purpose_code'])) {
+                         $purposeCodeArray[] = $purpose['purpose_code'];
+                     }
+                 }
+                 $purposeCodeArray = array_unique($purposeCodeArray);
+                 $purposeCode = implode($purposeCodeArray);
+                 if ($purposeCode!==''||$purposeCode!==Null){
+                     if (count($loan_account_number_array)==5){
+                         $loan_account_number_array[1] = $purposeCode;
+                         $new_loan_account_number =  implode("-",$loan_account_number_array);
+                     }elseif (count($loan_account_number_array)==4){
+                         $loan_account_number_array = $this->array_insert($loan_account_number_array,1,$purposeCode);
+                         $new_loan_account_number =  implode("-",$loan_account_number_array);
+                     }
+                 }
+                 $loan_account->application_number = $new_loan_account_number;
+                 $loan_account->save();
+             }
+         }
+    }
+
+    public function array_insert($array, $position, $insert)
+    {
+        if (is_int($position)) {
+            array_splice($array, $position, 0, $insert);
+        } else {
+            $pos   = array_search($position, array_keys($array));
+            $array = array_merge(
+                array_slice($array, 0, $pos),
+                $insert,
+                array_slice($array, $pos)
+            );
+        }
+        return $array;
     }
 
 }
