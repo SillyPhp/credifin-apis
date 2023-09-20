@@ -60,7 +60,7 @@ class TestController extends ApiBaseController
                 'a.phone', 'c.address', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.pf', 'a.cibil_score',
                 'DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), "%d-%m-%Y") as emi_collection_date', 'a.chassis_number',
                 'DATE_FORMAT(DATE_ADD(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), INTERVAL a.number_of_emis MONTH), "%d-%m-%Y") AS last_date',
-                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model'
+                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model','f2.name loan_type', 'a.amount', 'b.disbursement_approved', 'b.insurance_charges'
             ])
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanApplicantResidentialInfos c' => function ($c) {
@@ -78,7 +78,18 @@ class TestController extends ApiBaseController
                 ['b.provider_enc_id' => $params['org_id']],
                 ['a.is_deleted' => 0],
             ])
-            ->limit($params['limit'])
+            ->joinWith(['loanProductsEnc f'=>function($f){
+                $f->joinWith(['assignedFinancerLoanTypeEnc f1'=>function($f1){
+                    $f1->joinWith(['loanTypeEnc f2'],false);
+                }],false);
+            }],);
+            if(!empty($params['loan_products_enc_id '])){
+                $query->andWhere(['a.loan_products_enc_id' => $params['loan_products_enc_id']]);
+            }
+            if(!empty($params['status'])){
+                $query->andWhere(['b.status' => $params['status']]);
+            }
+            $query = $query->limit($params['limit'])
             ->offset(($params['page'] - 1) * $params['limit'])
             ->asArray()
             ->all();
