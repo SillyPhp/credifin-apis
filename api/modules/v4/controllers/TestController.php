@@ -79,7 +79,7 @@ class TestController extends ApiBaseController
                 ['a.is_deleted' => 0],
             ])
             ->joinWith(['loanProductsEnc f'],false);
-            if(!empty($params['loan_products_enc_id '])){
+            if(!empty($params['loan_products_enc_id'])){
                 $query->andWhere(['a.loan_products_enc_id' => $params['loan_products_enc_id']]);
             }
             if(!empty($params['status'])){
