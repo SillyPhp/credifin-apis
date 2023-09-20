@@ -24,6 +24,7 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
+               'testxl' => ['POST', 'OPTIONS'],
 //                'data-check-old' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
@@ -39,6 +40,49 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionTestxl()
+    {
+        $user = $this->isAuthorized();
+        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
+            return $this->response(500, 'Not Authorized');
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params)) {
+            return $this->response(500, 'params missing');
+        }
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id',
+                'a.applicant_name', 'a.pan_number', 'a.aadhaar_number',
+                'a.phone', 'c.address', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.pf', 'a.cibil_score',
+                'DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), "%d-%m-%Y") as emi_collection_date', 'a.chassis_number',
+                'DATE_FORMAT(DATE_ADD(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), INTERVAL a.number_of_emis MONTH), "%d-%m-%Y") AS last_date',
+                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model'
+            ])
+            ->joinWith(['assignedLoanProviders b'], false)
+            ->joinWith(['loanApplicantResidentialInfos c' => function ($c) {
+                $c->joinWith(['stateEnc c1'], false);
+            }], false)
+            ->joinWith(['loanCoApplicants d' => function ($d) {
+                $d->select(['d.loan_app_enc_id', 'd.name', 'd1.address', 'd.phone', 'd.borrower_type', 'd.loan_co_app_enc_id']);
+                $d->onCondition(['d.is_deleted'  => 0]);
+                $d->joinWith(['loanApplicantResidentialInfos d1'], false);
+            }], true)
+            ->joinWith(['loanApplicationOptions e'], false)
+            ->andWhere([
+                'AND',
+                ['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                ['b.provider_enc_id' => $params['org_id']],
+                ['a.is_deleted' => 0],
+            ])
+            ->limit($params['limit'])
+            ->offset(($params['page'] - 1) * $params['limit'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $query]);
     }
 
     public function actionTestt()
