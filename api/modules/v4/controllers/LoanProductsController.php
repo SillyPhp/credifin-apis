@@ -120,24 +120,37 @@ class LoanProductsController extends ApiBaseController
                     ->onCondition(['a.is_deleted' => 0]);
                 break;
 
-            case "p  endencies":
+            case "pendencies":
                 $query = FinancerLoanProductPendencies::find()
                     ->alias('a')
                     ->select(['a.pendencies_enc_id', 'a.financer_loan_product_enc_id', 'a.name', 'a.type'])
                     ->onCondition(['a.is_deleted' => 0]);
                 break;
             default:
-                return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error "Type"'];
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error "Type is not valid"'];
         }
         $result = $query
             ->andWhere(['a.financer_loan_product_enc_id' => $product_id])
             ->asArray()
             ->all();
 
+        if ($type == 'pendencies' && $result) {
+            $result = self::pendency($result);
+        }
         if (!empty($result)) {
             return $result;
         } else {
             return null;
         }
+    }
+
+    private function pendency($data)
+    {
+        $names = ["1" => 'Individual', "2" => 'Company', "3" => 'Property', "4" => 'Miscellaneous'];
+        $res = [];
+        foreach ($data as $datum) {
+            $res[$names[$datum['type']]][] = $datum;
+        }
+        return $res;
     }
 }
