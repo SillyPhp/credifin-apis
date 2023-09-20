@@ -82,7 +82,7 @@ class TestController extends ApiBaseController
                 $f->joinWith(['assignedFinancerLoanTypeEnc f1'=>function($f1){
                     $f1->joinWith(['loanTypeEnc f2'],false);
                 }],false);
-            }],);
+            }],false);
             if(!empty($params['loan_products_enc_id '])){
                 $query->andWhere(['a.loan_products_enc_id' => $params['loan_products_enc_id']]);
             }
