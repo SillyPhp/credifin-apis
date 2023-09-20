@@ -55,7 +55,7 @@ class TestController extends ApiBaseController
         $query = LoanApplications::find()
             ->alias('a')
             ->select([
-                'a.loan_app_enc_id',
+                'a.loan_app_enc_id','a.application_number',
                 'a.applicant_name', 'a.pan_number', 'a.aadhaar_number',
                 'a.phone', 'c.address', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.pf', 'a.cibil_score',
                 'DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), "%d-%m-%Y") as emi_collection_date', 'a.chassis_number',
@@ -74,7 +74,7 @@ class TestController extends ApiBaseController
             ->joinWith(['loanApplicationOptions e'], false)
             ->andWhere([
                 'AND',
-                ['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                ['between', 'a.created_on', $params['start_date'], $params['end_date']],
                 ['b.provider_enc_id' => $params['org_id']],
                 ['a.is_deleted' => 0],
             ])
