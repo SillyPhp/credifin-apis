@@ -3,6 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
+use common\models\AssignedLoanPayments;
+use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
@@ -57,14 +59,35 @@ class PaymentsController extends ApiBaseController
     private function closeAllModes($id)
     {
         $model = LoanPayments::find()
+            ->select(['loan_payments_enc_id'])
             ->where(['reference_id' => $id])
             ->asArray()->all();
         if ($model) {
-            foreach ($model as $mod) {
+            foreach ($model as $key => $mod) {
                 $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
+                if ($key == 0) {
+                    self::updateStatus($mod['loan_payments_enc_id']);
+                }
             }
+        }
+    }
+    public static function updateStatus($id)
+    {
+        $query = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select(['c.assigned_loan_provider_enc_id', 'a.updated_by'])
+            ->joinWith(['loanAppEnc b' => function ($b) {
+                $b->joinWith(['assignedLoanProviders c'], false, 'INNER JOIN');
+            }], false, 'INNER JOIN')
+            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<', 'c.status', 4]])
+            ->asArray()
+            ->one();
+        if ($query) {
+            Yii::$app->db->createCommand()
+                ->update(AssignedLoanProviderExtended::tableName(), ['status' => 4, 'loan_status_updated_on' => date('Y-m-d H:i:s'), 'updated_by' => $query['updated_by']], ['assigned_loan_provider_enc_id' => $query['assigned_loan_provider_enc_id']])
+                ->execute();
         }
     }
 
@@ -229,6 +252,7 @@ class PaymentsController extends ApiBaseController
         $options['payment_mode'] = $params['payment_mode'];
         $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
+        $options['type'] = 'manual';
 
         $transaction = Yii::$app->db->beginTransaction();
         $save = \common\models\extended\Payments::saveLoanPayment($options);

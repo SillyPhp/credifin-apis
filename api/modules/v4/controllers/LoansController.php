@@ -1484,7 +1484,7 @@ class LoansController extends ApiBaseController
                 if (!is_array($params['value'])) {
                     return $this->response(500, ['status' => 500, 'message' => 'values must be in array']);
                 }
-                $purposes  = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
+              return  $purposes  = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
                 if (!$purposes) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating purposes']);
                 }
@@ -1539,9 +1539,16 @@ class LoansController extends ApiBaseController
                 }
             }
         }
+        $options = [];
+        $options['loan_id'] = $loan_id;
+        $options['purposes'] = $purposes;
+        $LoanObject = new LoanApplication();
+        $LoanObject->updateLoanAccountPurpose($options);
         $transaction->commit();
         return true;
     }
+
+
 
     public function actionAssignApplicationNumber()
     {
