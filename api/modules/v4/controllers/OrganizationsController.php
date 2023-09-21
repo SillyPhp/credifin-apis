@@ -1054,13 +1054,12 @@ class OrganizationsController extends ApiBaseController
             }
             $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
+                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.product_code', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) use ($lender) {
                     $b->joinWith(['loanTypeEnc b1'], false);
                     $b->andWhere([
                         'b.organization_enc_id' => $lender,
-                        'b.is_deleted' => 0
-                    ]);
+                        'b.is_deleted' => 0]);
                 }], false)
                 ->joinWith(['financerLoanProductPurposes c' => function ($c) {
                     $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);

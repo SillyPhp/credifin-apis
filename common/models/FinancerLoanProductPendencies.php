@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%financer_loan_product_pendencies}}".
  *
@@ -47,6 +49,7 @@ class FinancerLoanProductPendencies extends \yii\db\ActiveRecord
             [['financer_loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
