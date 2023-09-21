@@ -2292,7 +2292,7 @@ class OrganizationsController extends ApiBaseController
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
         $query = LoanAccounts::find()
-            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on'])
+            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
             ->where(['is_deleted' => 0]);
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
