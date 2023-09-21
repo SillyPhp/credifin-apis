@@ -1689,7 +1689,11 @@ class OrganizationsController extends ApiBaseController
                 'COUNT(CASE WHEN emi_payment_status = "pending" THEN emi_payment_method END) pending_count',
                 'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
             ])
-            ->where(['between', 'collection_date', $params['start_date'], $params['end_date']]);
+            ->where([
+                'and',
+                ['between', 'collection_date', $params['start_date'], $params['end_date']],
+                ['is_deleted' => 0]
+            ]);
         if (!empty($params['emi_payment_status'])) {
             $data->andWhere(['emi_payment_status' => $params['emi_payment_status']]);
         }
@@ -1759,10 +1763,10 @@ class OrganizationsController extends ApiBaseController
         $display_data = EmiCollection::find()
             ->alias('a')
             ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(a.amount) total_amount', 'COUNT(a.loan_account_number) as total_emis', 'CONCAT(b.location_name , ", ", b1.name) as branch_name'])
-            ->where(['a.loan_account_number' => $lac])
             ->joinWith(['branchEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b1']);
             }], false)
+            ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0, 'a.emi_payment_status' => 'paid'])
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
