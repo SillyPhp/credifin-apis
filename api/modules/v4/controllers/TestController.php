@@ -28,6 +28,7 @@ class TestController extends ApiBaseController
             'actions' => [
                'testxl' => ['POST', 'OPTIONS'],
                'loan-accounts-upload' => ['POST', 'OPTIONS'],
+               'emi-shift' => ['POST', 'OPTIONS'],
 //                'data-check-old' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
@@ -236,50 +237,51 @@ class TestController extends ApiBaseController
 //    }
 
 
-    // public function actionSujal()
-    // {
-    //     $query = EmiCollection::find()
-    //         ->select(['emi_collection_enc_id', 'payment_method', 'other_payment_method'])
-    //         ->where([
-    //             'emi_payment_method' => ['', null],
-    //             'emi_payment_mode' => ['', null]
-    //         ])
-    //         ->asArray()
-    //         ->all();
-    //     $types = [
-    //         'Cash' => ['mode' => 2, 'method' => 4],
-    //         'Online Payment' => ['mode' => 1, 'method' => 1],
-    //         'Nach' => ['mode' => 3, 'method' => 6],
-    //         'Enach' => ['mode' => 3, 'method' => 7],
-    //         'Cheque' => ['mode' => 2, 'method' => 5],
-    //         'Paid To Dealer' => ['mode' => 2, 'method' => 4],
-    //         'Not Paid' => ['mode' => 0, 'method' => 0],
-    //         'Others' => ['mode' => 4, 'method' => 11],
-    //     ];
-    //     $transaction = Yii::$app->db->beginTransaction();
-    //     foreach ($query as $value) {
-    //         $emi = EmiCollection::findOne(['emi_collection_enc_id' => $value['emi_collection_enc_id']]);
-    //         if (!in_array($emi['payment_method'], array_keys($types))) {
-    //             $transaction->rollBack();
-    //             print_r('payment method not found');
-    //             exit();
-    //         }
-    //         $type = $types[$emi['payment_method']];
-    //         $emi->emi_payment_mode = $type['mode'];
-    //         $emi->emi_payment_method = $type['method'];
-    //         if (!empty($emi['other_payment_method'])) {
-    //             $emi->comments = $emi->other_payment_method . ' ' . $emi->comments;
-    //         }
-    //         if (!$emi->save()) {
-    //             $transaction->rollBack();
-    //             print_r('error while saving');
-    //             exit();
-    //         }
-    //     }
-    //     $transaction->commit();
-    //     print_r('done');
-    //     exit();
-    // }
+    public function actionEmiShift()
+    {
+        $query = EmiCollection::find()
+            ->select(['emi_collection_enc_id', 'payment_method', 'other_payment_method'])
+            ->where([
+                'emi_payment_method' => ['', null],
+                'emi_payment_mode' => ['', null]
+            ])
+            ->asArray()
+            ->all();
+        $types = [
+            'Cash' => ['mode' => 2, 'method' => 4],
+            'Online Payment' => ['mode' => 1, 'method' => 1],
+            'Nach' => ['mode' => 3, 'method' => 6],
+            'Enach' => ['mode' => 3, 'method' => 7],
+            'Cheque' => ['mode' => 2, 'method' => 5],
+            'Paid To Dealer' => ['mode' => 2, 'method' => 4],
+            'Not Paid' => ['mode' => 0, 'method' => 0],
+            'Others' => ['mode' => 4, 'method' => 11],
+        ];
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($query as $value) {
+            $emi = EmiCollection::findOne(['emi_collection_enc_id' => $value['emi_collection_enc_id']]);
+            if (!in_array($emi['payment_method'], array_keys($types))) {
+                $transaction->rollBack();
+                print_r('payment method not found');
+                exit();
+            }
+            $type = $types[$emi['payment_method']];
+            $emi->emi_payment_mode = $type['mode'];
+            $emi->emi_payment_method = $type['method'];
+            $emi->emi_payment_status = $emi['payment_method'] == 'Not Paid' ? 'pending':'paid'; 
+            if (!empty($emi['other_payment_method'])) {
+                $emi->comments = $emi->other_payment_method . ' ' . $emi->comments;
+            }
+            if (!$emi->save()) {
+                $transaction->rollBack();
+                print_r('error while saving');
+                exit();
+            }
+        }
+        $transaction->commit();
+        print_r('done');
+        exit();
+    }
 
 //    public function actionSujal()
 //    {
