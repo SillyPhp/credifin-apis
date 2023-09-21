@@ -8,6 +8,7 @@ use common\models\EmiCollection;
 use common\models\extended\Industries;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\LoanAccounts;
 use common\models\LoanPayments;
 use common\models\LoanType;
 use common\models\Utilities;
@@ -25,6 +26,8 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
+               'testxl' => ['POST', 'OPTIONS'],
+               'loan-accounts-upload' => ['POST', 'OPTIONS'],
 //                'data-check-old' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
@@ -40,6 +43,116 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionLoanAccountsUpload()
+   {
+       if (!$user = $this->isAuthorized()) {
+           return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+       }
+       $file = $_FILES['file'];
+       if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+           $count = 1;
+           $transaction = Yii::$app->db->beginTransaction();
+                   $utilitiesModel = new Utilities();
+           while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+               if ($count == 1) {
+                   $count++;
+                   continue;
+                }
+               $save = 'update';
+               $loan = LoanAccounts::findOne(['loan_account_number' => $data[0]]);
+               if (!$loan) {
+                   $loan = new LoanAccounts();
+                   $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                   $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                   $loan->loan_account_number = $data[0];
+                   $loan->name = $data[1];
+                   if(!empty($data[2])){
+                       $loan->phone = $data[2];
+                   }
+                   $loan->loan_type = $data[5];
+                   $loan->created_on = date('Y-m-d h:i:s');
+                   $loan->created_by = $user->user_enc_id;
+                   $save = 'save';
+               }
+               $loan->emi_date = date('Y-m-d', strtotime($data[4]));
+               $loan->emi_amount = $data[3];
+               if(!empty($data[6])){
+                   $loan->overdue_amount = $data[6];
+                }
+               if(!empty($data[7])){
+                    $loan->ledger_amount = $data[7];
+                }
+               if(!empty($data[8])){
+                   $loan->last_emi_received_amount = $data[8];
+                }
+               if(!empty($data[9])){
+               $loan->last_emi_received_date = $data[9];
+                }
+               $loan->updated_on = date('Y-m-d h:i:s');
+               $loan->updated_by = $user->user_enc_id;
+               if (!$loan->$save()) {
+                   $transaction->rollBack();
+                   return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+               }
+           }
+           fclose($handle);
+           $transaction->commit();
+           return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+       }
+   }
+
+
+    public function actionTestxl()
+    {
+        $user = $this->isAuthorized();
+        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
+            return $this->response(500, 'Not Authorized');
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params)) {
+            return $this->response(500, 'params missing');
+        }
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id','a.application_number','a.loan_products_enc_id',
+                'a.applicant_name', 'a.pan_number', 'a.aadhaar_number',
+                'a.phone', 'c.address', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.pf', 'a.cibil_score',
+                'DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), "%d-%m-%Y") as emi_collection_date', 'a.chassis_number',
+                'DATE_FORMAT(DATE_ADD(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), INTERVAL a.number_of_emis MONTH), "%d-%m-%Y") AS last_date',
+                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model','f.name loan_type', 'a.amount', 'b.disbursement_approved', 'b.insurance_charges'
+            ])
+            ->joinWith(['assignedLoanProviders b'], false)
+            ->joinWith(['loanApplicantResidentialInfos c' => function ($c) {
+                $c->joinWith(['stateEnc c1'], false);
+            }], false)
+            ->joinWith(['loanCoApplicants d' => function ($d) {
+                $d->select(['d.loan_app_enc_id', 'd.name', 'd1.address', 'd.phone', 'd.borrower_type', 'd.loan_co_app_enc_id']);
+                $d->onCondition(['d.is_deleted'  => 0]);
+                $d->joinWith(['loanApplicantResidentialInfos d1'], false);
+            }], true)
+            ->joinWith(['loanApplicationOptions e'], false)
+            ->andWhere([
+                'AND',
+                ['between', 'a.created_on', $params['start_date'], $params['end_date']],
+                ['b.provider_enc_id' => $params['org_id']],
+                ['a.is_deleted' => 0],
+            ])
+            ->joinWith(['loanProductsEnc f'],false);
+            if(!empty($params['loan_products_enc_id'])){
+                $query->andWhere(['a.loan_products_enc_id' => $params['loan_products_enc_id']]);
+            }
+            if(!empty($params['status'])){
+                $query->andWhere(['b.status' => $params['status']]);
+            }
+            $query = $query->limit($params['limit'])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->offset(($params['page'] - 1) * $params['limit'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $query]);
     }
 
 

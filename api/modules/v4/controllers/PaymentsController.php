@@ -4,6 +4,8 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
 use common\models\EmiCollection;
+use common\models\AssignedLoanPayments;
+use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
@@ -58,14 +60,35 @@ class PaymentsController extends ApiBaseController
     private function closeAllModes($id)
     {
         $model = LoanPayments::find()
+            ->select(['loan_payments_enc_id'])
             ->where(['reference_id' => $id])
             ->asArray()->all();
         if ($model) {
-            foreach ($model as $mod) {
+            foreach ($model as $key => $mod) {
                 $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
+                if ($key == 0) {
+                    self::updateStatus($mod['loan_payments_enc_id']);
+                }
             }
+        }
+    }
+    public static function updateStatus($id)
+    {
+        $query = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select(['c.assigned_loan_provider_enc_id', 'a.updated_by'])
+            ->joinWith(['loanAppEnc b' => function ($b) {
+                $b->joinWith(['assignedLoanProviders c'], false, 'INNER JOIN');
+            }], false, 'INNER JOIN')
+            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<', 'c.status', 4]])
+            ->asArray()
+            ->one();
+        if ($query) {
+            Yii::$app->db->createCommand()
+                ->update(AssignedLoanProviderExtended::tableName(), ['status' => 4, 'loan_status_updated_on' => date('Y-m-d H:i:s'), 'updated_by' => $query['updated_by']], ['assigned_loan_provider_enc_id' => $query['assigned_loan_provider_enc_id']])
+                ->execute();
         }
     }
 
@@ -82,12 +105,15 @@ class PaymentsController extends ApiBaseController
             ->one();
         if ($model) {
             Yii::$app->db->createCommand()
-                ->update(EmiCollection::tableName(),
+                ->update(
+                    EmiCollection::tableName(),
                     ['emi_payment_status' => 'paid'],
-                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']])
+                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
+                )
                 ->execute();
         }
     }
+
 
     private function handleQrWebhook($post)
     {
@@ -104,7 +130,7 @@ class PaymentsController extends ApiBaseController
             $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
                 if ($status == 'paid' || $status == 'captured') {
-                    if (!empty($ref_id)):
+                    if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
                         $this->updateEmi($ref_id);
                     endif;
@@ -131,7 +157,7 @@ class PaymentsController extends ApiBaseController
             $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
                 if ($status == 'paid' || $status == 'captured') {
-                    if (!empty($ref_id)):
+                    if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
                         $this->updateEmi($ref_id);
                     endif;
@@ -211,7 +237,7 @@ class PaymentsController extends ApiBaseController
                     $transaction->rollback();
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
-                $res ['link'] = $link;
+                $res['link'] = $link;
             }
 
             $transaction->commit();
@@ -229,9 +255,9 @@ class PaymentsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-//        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
+        //        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
+        //            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        //        }
         $params = Yii::$app->request->post();
         $amount = 0;
         if (!empty($params['amount'])) {
@@ -252,6 +278,7 @@ class PaymentsController extends ApiBaseController
         $options['payment_mode'] = $params['payment_mode'];
         $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
+        $options['type'] = 'manual';
 
         $transaction = Yii::$app->db->beginTransaction();
         $save = \common\models\extended\Payments::saveLoanPayment($options);
@@ -272,14 +299,19 @@ class PaymentsController extends ApiBaseController
             ->joinWith(['loanPaymentsDetails c' => function ($c) {
                 $c->select(['c.loan_payments_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id']);
             }])
-            ->andWhere(['and',
-                ['not',
-                    ['in',
+            ->andWhere([
+                'and',
+                [
+                    'not',
+                    [
+                        'in',
                         'a.payment_status', ['captured', 'created', 'cancelled', 'paid', '', null]
                     ]
                 ],
-                ['not',
-                    ['in',
+                [
+                    'not',
+                    [
+                        'in',
                         'a.payment_short_url', ['', null]
                     ]
                 ],

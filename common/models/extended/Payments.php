@@ -2,6 +2,7 @@
 
 namespace common\models\extended;
 
+use api\modules\v4\controllers\PaymentsController;
 use common\models\AssignedLoanPayments;
 use common\models\EducationLoanPayments;
 use common\models\InstituteLeadsPayments;
@@ -96,6 +97,9 @@ class Payments
         $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
         if (!$assign->save()) {
             return false;
+        }
+        if (isset($options['type']) && $options['type'] == 'manual') {
+            PaymentsController::updateStatus($model->loan_payments_enc_id);
         }
 
         if (isset($options['amount_enc_ids']) && !empty($ids = $options['amount_enc_ids'])) {

@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -13,6 +14,7 @@ use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductImages;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\FinancerLoanProductPendencies;
 use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
@@ -82,7 +84,8 @@ class OrganizationsController extends ApiBaseController
                 'remove-loan-product-image' => ['POST', 'OPTIONS'],
                 'upload-application-image' => ['POST', 'OPTIONS'],
                 'get-assigned-images' => ['POST', 'OPTIONS'],
-                'search-emi' => ['POST', 'OPTIONS']
+                'search-emi' => ['POST', 'OPTIONS'],
+                'update-pendency' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1051,7 +1054,7 @@ class OrganizationsController extends ApiBaseController
             }
             $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
+                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.product_code', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) use ($lender) {
                     $b->joinWith(['loanTypeEnc b1'], false);
                     $b->andWhere([
@@ -1164,6 +1167,10 @@ class OrganizationsController extends ApiBaseController
                     $h->select(['h.product_image_enc_id', 'h.financer_loan_product_enc_id', 'h.name']);
                     $h->orderBy(['h.sequence' => SORT_ASC]);
                     $h->onCondition(['h.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanProductPendencies i' => function ($i) {
+                    $i->select(['i.pendencies_enc_id', 'i.financer_loan_product_enc_id', 'i.name', 'i.type']);
+                    $i->onCondition(['i.is_deleted' => 0]);
                 }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
@@ -2045,15 +2052,16 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         if (isset($params['type'])) {
             if ($params['type'] == '0') {
-                if (!$image = $_FILES['image']) {
+                if (!$image = UploadedFile::getInstanceByName('image')) {
                     return $this->response(401, ['status' => 401, 'message' => 'image missing']);
                 }
-                $notice->image = $utilitiesModel->encrypt() . '.' . explode('.', $image['name'])[1];
+                $type = explode('/', $image->type)[1];
+                $notice->image = $utilitiesModel->encrypt() . '.' . $type;
                 $notice->image_location = Yii::$app->getSecurity()->generateRandomString();
                 $base_path = Yii::$app->params->upload_directories->notice->image . $notice->image_location;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($image['tmp_name'], Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $image['type']]]);
+                $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $type]]);
                 if (!$result) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving image']);
                 }
@@ -2313,7 +2321,7 @@ class OrganizationsController extends ApiBaseController
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
         $query = LoanAccounts::find()
-            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on'])
+            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
             ->where(['is_deleted' => 0]);
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
@@ -2333,6 +2341,49 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionUpdatePendency()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['financer_loan_product_enc_id']) && !$params['delete']) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "financer_loan_product_enc_id"']);
+        }
+        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
+            return $this->response(500, ['status' => 500, 'message' => 'permission denied']);
+        }
+        $user = $user->user_enc_id;
+        $time = date("Y-m-d H:i:s");
+        if (!empty($params['pendencies_enc_id'])) {
+            $pendency = FinancerLoanProductPendencies::findOne(['pendencies_enc_id' => $params['pendencies_enc_id']]);
+            if (!$pendency) {
+                return $this->response(404, ['status' => 404, 'message' => 'Pendency not Found']);
+            }
+            if (!empty($params['delete'])) {
+                $pendency->is_deleted = 1;
+            }
+        } else {
+            $pendency = new FinancerLoanProductPendencies();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $pendency->financer_loan_product_enc_id = $params['financer_loan_product_enc_id'];
+            $pendency->pendencies_enc_id = $utilitiesModel->encrypt();
+            $pendency->created_by = $user;
+            $pendency->created_on = $time;
+        }
+        if (empty($params['delete'])) {
+            $pendency->name = $params['name'];
+            $pendency->type = $params['type'];
+        }
+        $pendency->updated_by = $user;
+        $pendency->updated_on = $time;
+        if (!$pendency->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $pendency->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
 
     public function actionEmiRefCheck()
