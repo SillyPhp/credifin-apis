@@ -1059,7 +1059,8 @@ class OrganizationsController extends ApiBaseController
                     $b->joinWith(['loanTypeEnc b1'], false);
                     $b->andWhere([
                         'b.organization_enc_id' => $lender,
-                        'b.is_deleted' => 0]);
+                        'b.is_deleted' => 0
+                    ]);
                 }], false)
                 ->joinWith(['financerLoanProductPurposes c' => function ($c) {
                     $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);
@@ -1636,31 +1637,45 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
             }
         }
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $model = new EmiCollectionForm();
-            $model->org_id = $org;
-            if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
-                return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+        $params = Yii::$app->request->post();
+        if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
+            $model = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if ($model) {
+                $model->emi_payment_status = $params['status'];
+                $model->updated_by = $user->user_enc_id;
+                $model->updated_on = date('Y-m-d h:i:s');
+                if (!$model->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
             }
-            $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
-            $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
-            $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
-            $save = $model->save($user->user_enc_id);
-            $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
-            return $this->response($save['status'], $save);
-        } catch (\Exception $exception) {
-            return [
-                'message' => $exception->getMessage(),
-                'status' => false
-            ];
+        } else {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model = new EmiCollectionForm();
+                $model->org_id = $org;
+                if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                    return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+                }
+                $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
+                $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
+                $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
+                $save = $model->save($user->user_enc_id);
+                $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
+                return $this->response($save['status'], $save);
+            } catch (\Exception $exception) {
+                return [
+                    'message' => $exception->getMessage(),
+                    'status' => false
+                ];
+            }
         }
     }
 
     public function actionEmiStats()
+
     {
-        if (!$user = $this->isAuthorized()) {
+        if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         if (!$params = Yii::$app->request->post()) {
@@ -1668,33 +1683,40 @@ class OrganizationsController extends ApiBaseController
         }
         $data = EmiCollection::find()
             ->select([
-                'payment_method',
-                'COUNT(payment_method) count',
-                'SUM(amount) sum',
+                'emi_payment_method',
+                'COUNT(CASE WHEN emi_payment_status = "paid" THEN emi_payment_method END) count',
+                'SUM(CASE WHEN emi_payment_status = "paid" THEN amount END) sum',
+                'COUNT(CASE WHEN emi_payment_status = "pending" THEN emi_payment_method END) pending_count',
+                'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
             ])
             ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+        if (!empty($params['emi_payment_status'])) {
+            $data->andWhere(['emi_payment_status' => $params['emi_payment_status']]);
+        }
         if (!empty($params['loan_type'])) {
             $data->andWhere(['loan_type' => $params['loan_type']]);
         }
         if (!empty($params['branch_enc_id'])) {
             $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
         }
-        $data = $data->groupBy('payment_method')
+        $data = $data->groupBy(['emi_payment_method'])
             ->asArray()
             ->all();
-        if ($data) {
-            $total[] = ['payment_method' => 'Total EMIs', 'count' => 0, 'sum' => 0];
-            foreach ($data as $item) {
-                if ($item['payment_method'] == 'Not Paid') {
-                    continue;
-                }
-                $total[0]['count'] += $item['count'];
-                $total[0]['sum'] += $item['sum'];
-            }
-            $data = array_merge($total, $data);
-            return $this->response(200, ['status' => 200, 'data' => $data]);
+        $emi = new EmiCollectionForm();
+        $def = $emi->payment_methods;
+        $res = [];
+        foreach ($def as $item) {
+            $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
         }
-        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        foreach ($data as $item) {
+            $method = $def[$item['emi_payment_method']];
+            $res[$method] = ['payment_method' => $method, 'sum' => 0, 'count' => 0];
+            $res['Total']['count'] += $res[$method]['count'] += $item['count'];
+            $res['Total']['sum'] += $res[$method]['sum'] += $item['sum'];
+            $res['Pending']['count'] += $item['pending_count'];
+            $res['Pending']['sum'] += $item['pending_sum'];
+        }
+        return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
 
     public function actionGetCollectedEmiList()
@@ -1756,22 +1778,24 @@ class OrganizationsController extends ApiBaseController
             $org_id = $data;
         }
         $params = Yii::$app->request->post();
-        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-
+        $payments = new EmiCollectionForm();
+        $payment_methods = $payments->payment_methods;
+        $payment_modes = $payments->payment_modes;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
                 'a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
-                'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
-                'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
+                'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
+                'CONCAT(a.address,", ", COALESCE(a.pincode, "")) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
                 'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
-                'a.comments', 'e1.payment_status'
+                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
             ])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1'], false);
@@ -1779,9 +1803,6 @@ class OrganizationsController extends ApiBaseController
             }], false)
             ->joinWith(['branchEnc c' => function ($c) {
                 $c->joinWith(['cityEnc c1'], false);
-            }], false)
-            ->joinWith(['assignedLoanPayments e' => function ($e) {
-                $e->joinWith(['loanPaymentsEnc e1'], false);
             }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
             ->andWhere(['a.is_deleted' => 0]);
@@ -1797,7 +1818,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address'];
+            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1808,8 +1829,16 @@ class OrganizationsController extends ApiBaseController
                             $model->andWhere(['like', 'CONCAT(a.address,", ", a.pincode)', $value]);
                         } elseif ($key == 'ptp_amount') {
                             $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
-                        } elseif ($key == 'payment_method') {
-                            $model->andWhere(['a.payment_method' => $value]);
+                        } elseif ($key == 'emi_payment_method') {
+                            if (in_array($value, $val = [4, 81])) {
+                                $model->andWhere(['in', 'a.' . $key, $val]);
+                            } elseif (in_array($value, $val = [5, 82])) {
+                                $model->andWhere(['in', 'a.' . $key, $val]);
+                            } elseif (in_array($value, $val = [1, 9])) {
+                                $model->andWhere(['in', 'a.' . $key, $val]);
+                            } else {
+                                $model->andWhere(['a.' . $key => $value]);
+                            }
                         } else {
                             $model->andWhere(['like', 'a.' . $key, $value]);
                         }
@@ -1821,8 +1850,6 @@ class OrganizationsController extends ApiBaseController
                             $model->andWhere(['c.location_enc_id' => $value]);
                         } elseif ($key == 'designation') {
                             $model->andWhere(['like', 'd.' . $key, $value]);
-                        } elseif ($key == 'payment_status') {
-                            $model->andWhere(['like', 'e1.' . $key, $value]);
                         } elseif ($key == 'ptp_status') {
                             $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
                         }
@@ -1830,10 +1857,10 @@ class OrganizationsController extends ApiBaseController
                 }
             }
         }
-
         $count = $model->count();
 
-        $model = $model->limit($limit)
+        $model = $model
+            ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
@@ -1841,6 +1868,8 @@ class OrganizationsController extends ApiBaseController
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($model as $key => $value) {
+            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
             if ($value['other_doc_image']) {
                 $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
                 $model[$key]['other_doc_image'] = $proof;
@@ -2306,9 +2335,10 @@ class OrganizationsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+        $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
 
         if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
@@ -2354,5 +2384,21 @@ class OrganizationsController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $pendency->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionEmiRefCheck()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['ref'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "ref"']);
+        }
+        $emi = EmiCollection::findOne(['reference_number' => $params['ref']]);
+        if ($emi) {
+            return $this->response(201, ['status' => 201, 'message' => 'Already exists']);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Doesn\'t exist']);
     }
 }

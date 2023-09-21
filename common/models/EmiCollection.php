@@ -27,6 +27,11 @@ namespace common\models;
  * @property string $pr_receipt_image_location Pr Receipt Location
  * @property string $other_doc_image Other Document Image
  * @property string $other_doc_image_location Other Document Image Location
+ * @property int $emi_payment_mode
+ * @property int $emi_payment_method
+ * @property string $emi_payment_status
+ * @property string $reference_number
+ * @property string $dealer_name
  * @property string $address Address
  * @property string $pincode Pincode
  * @property double $latitude Location Latitude
@@ -59,15 +64,15 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
             [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
-            [['address', 'comments'], 'string'],
-            [['is_deleted'], 'integer'],
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
+            [['emi_payment_status', 'address', 'comments'], 'string'],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['payment_method'], 'string', 'max' => 30],
-            [['other_payment_method'], 'string', 'max' => 50],
+            [['other_payment_method', 'dealer_name'], 'string', 'max' => 50],
             [['pincode'], 'string', 'max' => 8],
             [['emi_collection_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
