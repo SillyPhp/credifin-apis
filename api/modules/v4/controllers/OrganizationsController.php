@@ -1689,7 +1689,7 @@ class OrganizationsController extends ApiBaseController
                 'COUNT(CASE WHEN emi_payment_status = "pending" THEN emi_payment_method END) pending_count',
                 'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
             ])
-            ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+            ->where(['between', 'collection_date', $params['start_date'], $params['end_date']]);
         if (!empty($params['emi_payment_status'])) {
             $data->andWhere(['emi_payment_status' => $params['emi_payment_status']]);
         }
