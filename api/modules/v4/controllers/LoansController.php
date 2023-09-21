@@ -287,7 +287,7 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id'])
+            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id'])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -295,13 +295,18 @@ class LoansController extends ApiBaseController
                         $d->joinWith(['userRoles0 e'], false);
                     }]);
                 }], false);
+                $b->joinWith(['emiCollectionEnc f' => function ($f) {
+                    $f->joinWith(['branchEnc g'], false);
+                }], false);
             }], false)
             ->asArray()->one();
         if ($model) {
-            if (isset($model['user_org_id']) || !empty($model['user_org_id'])) {
+            if (!empty($model['user_org_id'])) {
                 $options['org_id'] = $model['user_org_id'];
-            } else {
+            } elseif (!empty($model['org_id'])) {
                 $options['org_id'] = $model['org_id'];
+            } else {
+                $options['org_id'] = $model['branch_org_id'];
             }
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
             if (!$keys) {
@@ -1474,7 +1479,7 @@ class LoansController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information " or id or value"']);
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
         }
         if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
             $type = $params['type'];
