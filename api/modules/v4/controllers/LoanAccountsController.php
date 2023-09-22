@@ -56,7 +56,7 @@ class LoanAccountsController extends ApiBaseController
                 $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
                     $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                     $loan->lms_loan_account_number = $data[0];
                     $loan->loan_account_number = trim($data[1]);
