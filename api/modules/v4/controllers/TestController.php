@@ -44,63 +44,7 @@ class TestController extends ApiBaseController
         return $behaviors;
     }
 
-    public function actionLoanAccountsUpload()
-   {
-       if (!$user = $this->isAuthorized()) {
-           return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-       }
-       $file = $_FILES['file'];
-       if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
-           $count = 1;
-           $transaction = Yii::$app->db->beginTransaction();
-                   $utilitiesModel = new Utilities();
-           while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-               if ($count == 1) {
-                   $count++;
-                   continue;
-                }
-               $save = 'update';
-               $loan = LoanAccounts::findOne(['loan_account_number' => $data[0]]);
-               if (!$loan) {
-                   $loan = new LoanAccounts();
-                   $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                   $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                   $loan->loan_account_number = $data[0];
-                   $loan->name = $data[1];
-                   if(!empty($data[2])){
-                       $loan->phone = $data[2];
-                   }
-                   $loan->loan_type = $data[5];
-                   $loan->created_on = date('Y-m-d h:i:s');
-                   $loan->created_by = $user->user_enc_id;
-                   $save = 'save';
-               }
-               $loan->emi_date = date('Y-m-d', strtotime($data[4]));
-               $loan->emi_amount = $data[3];
-               if(!empty($data[6])){
-                   $loan->overdue_amount = $data[6];
-                }
-               if(!empty($data[7])){
-                    $loan->ledger_amount = $data[7];
-                }
-               if(!empty($data[8])){
-                   $loan->last_emi_received_amount = $data[8];
-                }
-               if(!empty($data[9])){
-               $loan->last_emi_received_date = $data[9];
-                }
-               $loan->updated_on = date('Y-m-d h:i:s');
-               $loan->updated_by = $user->user_enc_id;
-               if (!$loan->$save()) {
-                   $transaction->rollBack();
-                   return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
-               }
-           }
-           fclose($handle);
-           $transaction->commit();
-           return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-       }
-   }
+    
 
 
     public function actionTestxl()
