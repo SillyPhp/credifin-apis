@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
+use common\models\EmiCollection;
 use common\models\extended\Industries;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
@@ -27,6 +28,7 @@ class TestController extends ApiBaseController
             'actions' => [
                'testxl' => ['POST', 'OPTIONS'],
                'loan-accounts-upload' => ['POST', 'OPTIONS'],
+               'emi-shift' => ['POST', 'OPTIONS'],
 //                'data-check-old' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
@@ -97,6 +99,174 @@ class TestController extends ApiBaseController
             ->all();
         return $this->response(200, ['status' => 200, 'data' => $query]);
     }
+
+
+
+//                'SUM(CASE WHEN a.emi_payment_method = 1 AND c.payment_status in ("captured", "created") THEN amount END) as qr',
+//                'SUM(CASE WHEN a.emi_payment_method = 2 AND c.payment_status in ("captured", "created") THEN amount END) as link',
+//                'SUM(CASE WHEN a.emi_payment_method = 3 THEN amount END) as pos',
+//                'SUM(CASE WHEN a.emi_payment_method in (4,81) THEN amount END) as cash',
+//                'SUM(CASE WHEN a.emi_payment_method in (5,82) THEN amount END) as cheque',
+//                'SUM(CASE WHEN a.emi_payment_method = 6 THEN amount END) as nach',
+//                'SUM(CASE WHEN a.emi_payment_method = 7 THEN amount END) as enach',
+//                'SUM(CASE WHEN a.emi_payment_method = 83 THEN amount END) as netbanking',
+//                'SUM(CASE WHEN a.emi_payment_method = 84 THEN amount END) as neft',
+//                'SUM(CASE WHEN a.emi_payment_method = 9 THEN amount END) as scanned_qr',
+//                'SUM(CASE WHEN a.emi_payment_method = 10 THEN amount END) as digital_transfer',
+//                'SUM(CASE WHEN a.emi_payment_method = 11 THEN amount END) as dealer',
+
+//    public function actionTesttt()
+//    {
+//        if (!$user = $this->isAuthorized()) {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
+//        if (!$params = Yii::$app->request->post()) {
+//            return $this->response(500, ['status' => 500, 'message' => 'params not found']);
+//        }
+//        $query = EmiCollection::find()
+//            ->select([
+//                'emi_payment_method',
+//                'COUNT(CASE WHEN emi_payment_status = "paid" THEN emi_payment_method END) count',
+//                'SUM(CASE WHEN emi_payment_status = "paid" THEN amount END) sum',
+//                'COUNT(CASE WHEN emi_payment_status = "pending" THEN emi_payment_method END) pending_count',
+//                'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
+//            ])
+//            ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+//        if (!empty($params['loan_type'])) {
+//            $query->andWhere(['loan_type' => $params['loan_type']]);
+//        }
+//        if (!empty($params['branch_enc_id'])) {
+//            $query->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
+//        }
+//        $query = $query->groupBy(['a.emi_payment_method'])
+//            ->asArray()
+//            ->all();
+//        //print_r($query);exit();
+//        $def = [
+//            'aa' => 'Total',
+//            '1' => 'Qr',
+//            '2' => 'Link',
+//            '3' => 'POS',
+//            '4' => 'Cash',
+//            '5' => 'Cheque',
+//            '6' => 'Nach',
+//            '7' => 'eNach',
+//            '81' => 'Cash',
+//            '82' => 'Cheque',
+//            '83' => 'Net Banking',
+//            '84' => 'RTGS/NEFT',
+//            '9' => 'Scanned Qr',
+//            '10' => 'Digital Transfer',
+//            '11' => 'Paid To Dealer',
+//            'bb' => 'Pending'
+//        ];
+//        $res = [];
+//        foreach ($def as $item) {
+//            $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
+//        }
+//        foreach ($query as $item) {
+//            $method = $def[$item['emi_payment_method']];
+//            $res[$method] = ['payment_method' => $method, 'sum' => 0, 'count' => 0];
+//            $res['Total']['count'] += $res[$method]['count'] += $item['count'];
+//            $res['Total']['sum'] += $res[$method]['sum'] += $item['sum'];
+//            $res['Pending']['count'] += $item['pending_count'];
+//            $res['Pending']['sum'] += $item['pending_sum'];
+//        }
+//        return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
+//
+//        print_r(array_values($res));
+//        exit();
+//
+//
+//    }
+
+
+    // public function actionEmiShift()
+    // {
+    //     $query = EmiCollection::find()
+    //         ->select(['emi_collection_enc_id', 'payment_method', 'other_payment_method'])
+    //         ->where([
+    //             'emi_payment_method' => ['', null],
+    //             'emi_payment_mode' => ['', null]
+    //         ])
+    //         ->asArray()
+    //         ->all();
+    //     $types = [
+    //         'Cash' => ['mode' => 2, 'method' => 4],
+    //         'Online Payment' => ['mode' => 1, 'method' => 1],
+    //         'Nach' => ['mode' => 3, 'method' => 6],
+    //         'Enach' => ['mode' => 3, 'method' => 7],
+    //         'Cheque' => ['mode' => 2, 'method' => 5],
+    //         'Paid To Dealer' => ['mode' => 2, 'method' => 4],
+    //         'Not Paid' => ['mode' => 0, 'method' => 0],
+    //         'Others' => ['mode' => 4, 'method' => 11],
+    //     ];
+    //     $transaction = Yii::$app->db->beginTransaction();
+    //     foreach ($query as $value) {
+    //         $emi = EmiCollection::findOne(['emi_collection_enc_id' => $value['emi_collection_enc_id']]);
+    //         if (!in_array($emi['payment_method'], array_keys($types))) {
+    //             $transaction->rollBack();
+    //             print_r('payment method not found');
+    //             exit();
+    //         }
+    //         $type = $types[$emi['payment_method']];
+    //         $emi->emi_payment_mode = $type['mode'];
+    //         $emi->emi_payment_method = $type['method'];
+    //         $emi->emi_payment_status = $emi['payment_method'] == 'Not Paid' ? 'pending':'paid'; 
+    //         if (!empty($emi['other_payment_method'])) {
+    //             $emi->comments = $emi->other_payment_method . ' ' . $emi->comments;
+    //         }
+    //         if (!$emi->save()) {
+    //             $transaction->rollBack();
+    //             print_r('error while saving');
+    //             exit();
+    //         }
+    //     }
+    //     $transaction->commit();
+    //     print_r('done');
+    //     exit();
+    // }
+
+//    public function actionSujal()
+//    {
+////        if (!$this->isAuthorized()) {
+////            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+////        }
+////        if (!$params = Yii::$app->request->post()) {
+////            return $this->response(500, ['status' => 500, 'message' => 'params not found']);
+////        }
+//        $params = [
+//            "start_date" => "2023-08-01  00:00:00",
+//            "end_date" => "2023-08-28 23:59:59"
+//        ];
+//        $data = EmiCollection::find()
+//            ->select([
+//                ''
+//            ])
+//            ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+//        if (!empty($params['loan_type'])) {
+//            $data->andWhere(['loan_type' => $params['loan_type']]);
+//        }
+//        if (!empty($params['branch_enc_id'])) {
+//            $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
+//        }
+//        $data = $data->groupBy('emi_payment_mode')
+//            ->asArray()
+//            ->all();
+//        if ($data) {
+//            $total[] = ['payment_method' => 'Total EMIs', 'count' => 0, 'sum' => 0];
+//            foreach ($data as $item) {
+//                if ($item['payment_method'] == 'Not Paid') {
+//                    continue;
+//                }
+//                $total[0]['count'] += $item['count'];
+//                $total[0]['sum'] += $item['sum'];
+//            }
+//            $data = array_merge($total, $data);
+//            return $this->response(200, ['status' => 200, 'data' => $data]);
+//        }
+//        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+//    }
 
     public function actionTestt()
     {

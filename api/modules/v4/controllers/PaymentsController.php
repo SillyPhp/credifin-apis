@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
+use common\models\EmiCollection;
 use common\models\AssignedLoanPayments;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\Organizations;
@@ -91,6 +92,29 @@ class PaymentsController extends ApiBaseController
         }
     }
 
+    private function updateEmi($id)
+    {
+        $model = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id'])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->joinWith(['loanPaymentsEnc c'], false);
+            }], false)
+            ->andWhere(['c.reference_id' => $id])
+            ->asArray()
+            ->one();
+        if ($model) {
+            Yii::$app->db->createCommand()
+                ->update(
+                    EmiCollection::tableName(),
+                    ['emi_payment_status' => 'paid'],
+                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
+                )
+                ->execute();
+        }
+    }
+
+
     private function handleQrWebhook($post)
     {
         if ($post['event'] == 'qr_code.credited') {
@@ -106,8 +130,9 @@ class PaymentsController extends ApiBaseController
             $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
                 if ($status == 'paid' || $status == 'captured') {
-                    if (!empty($ref_id)):
+                    if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
+                        $this->updateEmi($ref_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
@@ -132,8 +157,9 @@ class PaymentsController extends ApiBaseController
             $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
                 if ($status == 'paid' || $status == 'captured') {
-                    if (!empty($ref_id)):
+                    if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
+                        $this->updateEmi($ref_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
@@ -211,7 +237,7 @@ class PaymentsController extends ApiBaseController
                     $transaction->rollback();
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
-                $res ['link'] = $link;
+                $res['link'] = $link;
             }
 
             $transaction->commit();
@@ -229,9 +255,9 @@ class PaymentsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-//        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
+        //        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
+        //            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        //        }
         $params = Yii::$app->request->post();
         $amount = 0;
         if (!empty($params['amount'])) {
@@ -273,14 +299,19 @@ class PaymentsController extends ApiBaseController
             ->joinWith(['loanPaymentsDetails c' => function ($c) {
                 $c->select(['c.loan_payments_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id']);
             }])
-            ->andWhere(['and',
-                ['not',
-                    ['in',
+            ->andWhere([
+                'and',
+                [
+                    'not',
+                    [
+                        'in',
                         'a.payment_status', ['captured', 'created', 'cancelled', 'paid', '', null]
                     ]
                 ],
-                ['not',
-                    ['in',
+                [
+                    'not',
+                    [
+                        'in',
                         'a.payment_short_url', ['', null]
                     ]
                 ],
