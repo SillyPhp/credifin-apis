@@ -39,8 +39,8 @@ class EmiCollectionForm extends Model
     public $payment_mode;
     public $dealer_name;
     public $reference_number;
-    public $payment_methods = [
-        'aa' => 'Total',
+    public static $payment_methods = [
+        'total' => 'Total',
         '1' => 'QR',
         '2' => 'Link',
         //        '3' => 'POS',
@@ -55,9 +55,9 @@ class EmiCollectionForm extends Model
         '9' => 'QR',
         '10' => 'Digital Transfer',
         '11' => 'Paid To Dealer',
-        'bb' => 'Pending',
+        'pending' => 'Pending',
     ];
-    public $payment_modes = [
+    public static $payment_modes = [
         '1' => 'Pay Now',
         '2' => 'Manual Collection',
         '3' => 'Pay By EOD',

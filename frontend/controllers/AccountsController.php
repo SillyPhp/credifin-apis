@@ -169,18 +169,9 @@ class AccountsController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
+
         if (!isset($type) || empty($type)) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-        }
-
-        switch (true) {
-            case ($ref_loan_id) :
-                $data = LoanApplications::findOne(['loan_app_enc_id' => $ref_loan_id]);
-                break;
-            case ($ref_pros_id) :
-                $data = LeadsApplications::findOne(['application_enc_id' => $ref_pros_id]);
-                break;
-            default :
         }
 
         if ($type == 'individual') {
@@ -342,7 +333,6 @@ class AccountsController extends Controller
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
-            } elseif ($model->forgotPassword() === 'User Not Exist') {
             } elseif ($model->forgotPassword() === 'User Not Exist') {
                 return $this->render('/site/message', [
                     'message' => 'Enter Valid Email Address.'
