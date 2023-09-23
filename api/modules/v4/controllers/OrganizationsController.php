@@ -2305,7 +2305,12 @@ class OrganizationsController extends ApiBaseController
             $query = LoanAccounts::find()
                 ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
                 ->where(['is_deleted' => 0])
-                ->andWhere(['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false])
+                ->andWhere([
+                    'or',
+                    ['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'phone', '%' . $params['loan_number'] . '%', false],
+
+                ])
                 ->limit(20)
                 ->asArray()
                 ->all();
