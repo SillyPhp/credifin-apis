@@ -1673,7 +1673,6 @@ class OrganizationsController extends ApiBaseController
     }
 
     public function actionEmiStats()
-
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1681,21 +1680,35 @@ class OrganizationsController extends ApiBaseController
         if (!$params = Yii::$app->request->post()) {
             return $this->response(500, ['status' => 500, 'message' => 'params not found']);
         }
+        if (!empty($params['method'])) {
+            $method = [$params['method']];
+        }
         $data = EmiCollection::find()
             ->select([
-                'emi_payment_method',
-                'COUNT(CASE WHEN emi_payment_status = "paid" THEN emi_payment_method END) count',
-                'SUM(CASE WHEN emi_payment_status = "paid" THEN amount END) sum',
-                'COUNT(CASE WHEN emi_payment_status = "pending" THEN emi_payment_method END) pending_count',
-                'SUM(CASE WHEN emi_payment_status = "pending" THEN amount END) pending_sum',
+                'emi_payment_method AS method',
+                'emi_payment_status AS status',
+                'amount'
             ])
-            ->where([
+            ->andWhere([
                 'and',
                 ['between', 'collection_date', $params['start_date'], $params['end_date']],
                 ['is_deleted' => 0]
             ]);
-        if (!empty($params['emi_payment_status'])) {
-            $data->andWhere(['emi_payment_status' => $params['emi_payment_status']]);
+        if (!empty($method)) {
+            if (in_array('pending', $method)) {
+                $data->andWhere(['emi_payment_status' => $method]);
+            } else {
+                if (in_array(1, $method)) {
+                    $method[] = 9;
+                }
+                if (in_array(4, $method)) {
+                    $method[] = 81;
+                }
+                if (in_array(5, $method)) {
+                    $method[] = 82;
+                }
+                $data->andWhere(['emi_payment_method' => $method]);
+            }
         }
         if (!empty($params['loan_type'])) {
             $data->andWhere(['loan_type' => $params['loan_type']]);
@@ -1703,22 +1716,30 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['branch_enc_id'])) {
             $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
         }
-        $data = $data->groupBy(['emi_payment_method'])
-            ->asArray()
+        $data = $data->asArray()
             ->all();
-        $emi = new EmiCollectionForm();
-        $def = $emi->payment_methods;
+
+        $def = EmiCollectionForm::$payment_methods;
+        if (!empty($method)) {
+            $method = array_merge(['total', 'pending'], $method);
+            $def = array_intersect_key($def, array_fill_keys(array_values($method), 0));
+        }
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
         }
         foreach ($data as $item) {
-            $method = $def[$item['emi_payment_method']];
-            $res[$method] = ['payment_method' => $method, 'sum' => 0, 'count' => 0];
-            $res['Total']['count'] += $res[$method]['count'] += $item['count'];
-            $res['Total']['sum'] += $res[$method]['sum'] += $item['sum'];
-            $res['Pending']['count'] += $item['pending_count'];
-            $res['Pending']['sum'] += $item['pending_sum'];
+            $method = $def[$item['method']] ?? '';
+            $amount = $item['amount'];
+            if ($item['status'] == 'paid') {
+                $res[$method]['sum'] += $amount;
+                $res[$method]['count'] += 1;
+            } else {
+                $res['Pending']['sum'] += $amount;
+                $res['Pending']['count'] += 1;
+            }
+            $res['Total']['sum'] += $amount;
+            $res['Total']['count'] += 1;
         }
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
@@ -1784,9 +1805,8 @@ class OrganizationsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $payments = new EmiCollectionForm();
-        $payment_methods = $payments->payment_methods;
-        $payment_modes = $payments->payment_modes;
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $payment_modes = EmiCollectionForm::$payment_modes;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
