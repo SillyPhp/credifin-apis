@@ -724,6 +724,11 @@ class AuthController extends ApiBaseController
         }
 
         if (!empty($params['employee_code'])) {
+            $existingUserRoles = UserRoles::findOne(['employee_code' => $params['employee_code']]);
+            if ($existingUserRoles) {
+                return $this->response(400, ['status' => 400, 'message' => 'Employee code already exists']);
+            }
+
             $user_role = UserRoles::findOne(['user_enc_id' => $user_id]);
             if (!$user_role) {
                 $user_role = new UserRoles();
