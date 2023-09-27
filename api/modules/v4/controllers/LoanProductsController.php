@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedFinancerLoanType;
+use common\models\FinancerLoanProductDisbursementCharges;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductImages;
 use common\models\FinancerLoanProductLoginFeeStructure;
@@ -11,6 +12,7 @@ use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\FinancerLoanProductStatus;
+use common\models\Utilities;
 use common\models\WebhookTest;
 use Yii;
 use yii\filters\Cors;
@@ -73,7 +75,8 @@ class LoanProductsController extends ApiBaseController
                     ->alias('a')
                     ->select([
                         'a.financer_loan_product_document_enc_id', 'a.financer_loan_product_enc_id', 'a.certificate_type_enc_id',
-                        'a.sequence', 'ct.name'])
+                        'a.sequence', 'ct.name'
+                    ])
                     ->joinWith(['certificateTypeEnc ct'], false)
                     ->orderBy(['a.sequence' => SORT_ASC])
                     ->onCondition(['a.is_deleted' => 0]);
@@ -126,6 +129,12 @@ class LoanProductsController extends ApiBaseController
                     ->select(['a.pendencies_enc_id', 'a.financer_loan_product_enc_id', 'a.name', 'a.type'])
                     ->onCondition(['a.is_deleted' => 0]);
                 break;
+            case "charges":
+                $query = FinancerLoanProductDisbursementCharges::find()
+                    ->alias('a')
+                    ->select(['a.disbursement_charges_enc_id', 'a.financer_loan_product_enc_id', 'a.name'])
+                    ->onCondition(['a.is_deleted' => 0]);
+                break;
             default:
                 return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error "Type is not valid"'];
         }
@@ -152,5 +161,68 @@ class LoanProductsController extends ApiBaseController
             $res[$names[$datum['type']]][] = $datum;
         }
         return $res;
+    }
+
+    public function actionUpdateDCharges()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!empty($params['disbursement_charges_enc_id'])) {
+            return $query = self::removeDCharges($params['disbursement_charges_enc_id'], $user->user_enc_id);
+        }
+        if (empty($params['financer_loan_product_enc_id']) || empty($params['charges'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "financer_loan_product_enc_id or charges"']);
+        }
+        $product_id = $params['financer_loan_product_enc_id'];
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($params['charges'] as $value) {
+            if (empty($value['disbursement_charges_enc_id']) || !$query = self::_chargesCheck($value['disbursement_charges_enc_id'], $product_id)) {
+                $query = new FinancerLoanProductDisbursementCharges();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $query->disbursement_charges_enc_id = $utilitiesModel->encrypt();
+                $query->financer_loan_product_enc_id = $product_id;
+                $query->created_by = $user->user_enc_id;
+                $query->created_on = date('Y-m-d H:i:s');
+            }
+            $query->name = $value['name'];
+            $query->updated_by = $user->user_enc_id;
+            $query->updated_on = date('Y-m-d H:i:s');
+            if (!$query->save()) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query->getErrors()]);
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+    }
+    private function _chargesCheck($charges_id, $product_id)
+    {
+        $image = FinancerLoanProductDisbursementCharges::findOne([
+            'disbursement_charges_enc_id' => $charges_id,
+            'financer_loan_product_enc_id' => $product_id,
+            'is_deleted' => 0
+        ]);
+        return $image ?? false;
+    }
+
+    public function removeDCharges($id,$user_id)
+    {
+        $query = FinancerLoanProductDisbursementCharges::findOne([
+            'disbursement_charges_enc_id' => $id,
+            'is_deleted' => 0
+        ]);
+        if (!$query) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        $query->is_deleted = 1;
+        $query->updated_by = $user_id;
+        $query->updated_on = date('Y-m-d H:i:s');
+        if (!$query->update()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Deleted Successfully']);
     }
 }
