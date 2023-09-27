@@ -36,6 +36,7 @@ class SignupForm extends Model
     public $user_type;
     public $user_id;
     public $organization_id;
+    public $employee_code;
 
     // rules for form
     public function rules()
@@ -43,6 +44,9 @@ class SignupForm extends Model
         return [
             [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
             [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
+            [['employee_code'], 'required', 'when' => function () {
+                return $this->user_type == 'Employee';
+            }],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
@@ -56,6 +60,7 @@ class SignupForm extends Model
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
             ['email', 'unique', 'targetClass' => Candidates::className(), 'message' => 'This email address has already been used.'],
+            ['employee_code', 'unique', 'targetClass' => UserRoles::className(), 'message' => 'This employee_code has already been used.'],
             ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This email address has already been used.'],
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Candidates::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
@@ -242,6 +247,9 @@ class SignupForm extends Model
             $user_role->user_type_enc_id = $user_type_id;
             $user_role->user_enc_id = $this->user_id;
             $user_role->organization_enc_id = $ref->organization_enc_id;
+            if ($this->user_type == 'Employee') {
+                $user_role->employee_code = $this->employee_code;
+            }
             $user_role->created_by = $this->user_id;
             $user_role->created_on = date('Y-m-d H:i:s');
             if (!$user_role->save()) {
