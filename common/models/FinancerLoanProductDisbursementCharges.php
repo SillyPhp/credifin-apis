@@ -13,11 +13,12 @@ use Yii;
  * @property string $name
  * @property int $sequence documents sequence
  * @property string $created_by created by
- * @property string $created_on created on 
+ * @property string $created_on created on
  * @property string $updated_by updated by
  * @property string $updated_on updated on
  * @property int $is_deleted 0 false, 1 true
  *
+ * @property AssignedDisbursementCharges[] $assignedDisbursementCharges
  * @property Users $updatedBy
  * @property Users $createdBy
  * @property FinancerLoanProducts $financerLoanProductEnc
@@ -47,6 +48,33 @@ class FinancerLoanProductDisbursementCharges extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['financer_loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'disbursement_charges_enc_id' => 'Disbursement Charges Enc ID',
+            'financer_loan_product_enc_id' => 'Financer Loan Product Enc ID',
+            'name' => 'Name',
+            'sequence' => 'Sequence',
+            'created_by' => 'Created By',
+            'created_on' => 'Created On',
+            'updated_by' => 'Updated By',
+            'updated_on' => 'Updated On',
+            'is_deleted' => 'Is Deleted',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDisbursementCharges()
+    {
+        return $this->hasMany(AssignedDisbursementCharges::className(), ['disbursement_charges_enc_id' => 'disbursement_charges_enc_id']);
     }
 
     /**

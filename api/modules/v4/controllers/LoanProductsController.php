@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\AssignedDisbursementCharges;
 use common\models\AssignedFinancerLoanType;
 use common\models\FinancerLoanProductDisbursementCharges;
 use common\models\FinancerLoanProductDocuments;
@@ -28,6 +29,9 @@ class LoanProductsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'get-loan-product-details' => ['POST', 'OPTIONS'],
+                'update-d-charges' => ['POST', 'OPTIONS'],
+                'remove-d-charges' => ['POST', 'OPTIONS'],
+                'save-assigned-charges' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -198,6 +202,7 @@ class LoanProductsController extends ApiBaseController
         $transaction->commit();
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
     }
+
     private function _chargesCheck($charges_id, $product_id)
     {
         $image = FinancerLoanProductDisbursementCharges::findOne([
@@ -208,7 +213,7 @@ class LoanProductsController extends ApiBaseController
         return $image ?? false;
     }
 
-    public function removeDCharges($id,$user_id)
+    public function removeDCharges($id, $user_id)
     {
         $query = FinancerLoanProductDisbursementCharges::findOne([
             'disbursement_charges_enc_id' => $id,
@@ -225,4 +230,62 @@ class LoanProductsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'Deleted Successfully']);
     }
+
+    public function actionSaveAssignedCharges()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id']) || empty($params['charges']) || !is_array($params['charges'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Invalid input data']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            foreach ($params['charges'] as $charge) {
+                // Check if the amount is greater than 0
+                if ($charge['amount'] < 0) {
+                    return $this->response(422, ['status' => 422, 'message' => 'Amount should be greater than 0']);
+                }
+                // Check if a record with the same charge_id exists
+                $existingRecord = AssignedDisbursementCharges::findOne([
+                    'disbursement_charges_enc_id' => $charge['charge_id'],
+                    'loan_app_enc_id' => $params['loan_id'],
+                    'is_deleted' => 0,
+                ]);
+
+                if ($existingRecord) {
+                    // Update the existing record's amount
+                    $existingRecord->amount = $charge['amount'];
+                    $existingRecord->save();
+                } else {
+                    // Create a new record
+                    $model = new AssignedDisbursementCharges();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->assigned_disbursement_charges_enc_id = $utilitiesModel->encrypt();
+                    $model->disbursement_charges_enc_id = $charge['charge_id'];
+                    $model->amount = $charge['amount'];
+                    $model->loan_app_enc_id = $params['loan_id'];
+                    $model->created_by = $model->updated_by = $user->user_enc_id;
+                    $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
+                    if (!$model->save()) {
+                        $transaction->rollBack();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+                    }
+                }
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
 }
