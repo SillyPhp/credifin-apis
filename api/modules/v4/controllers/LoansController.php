@@ -1725,10 +1725,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        $data = $params['data'] ?? '';
-        if (empty($data)) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "data"']);
-        }
+        $data = $params['data'] ?? [];
 
         // function to check existing pendencies
         function checkExist($pendency_id, $loan_id, $co_applicant = '')
