@@ -50,14 +50,14 @@ class LoanProductsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_enc_id or type"']);
         }
         $type = $params['type'];
-        $query = $this->getLoanProductPurposes($params['financer_loan_product_enc_id'], $type);
+        $query = $this->getLoanProductDetails($params['financer_loan_product_enc_id'], $type);
         if (!$query) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
         return $this->response(200, ['status' => 200, 'data' => $query]);
     }
 
-    private function getLoanProductPurposes($product_id, $type)
+    private function getLoanProductDetails($product_id, $type)
     {
 
         switch ($type) {
@@ -144,7 +144,7 @@ class LoanProductsController extends ApiBaseController
         }
     }
 
-    private function pendency($data)
+    public static function pendency($data)
     {
         $names = ["1" => 'Individual', "2" => 'Company', "3" => 'Property', "4" => 'Miscellaneous'];
         $res = [];

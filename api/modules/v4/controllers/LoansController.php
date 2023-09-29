@@ -21,7 +21,10 @@ use common\models\extended\LoanPaymentsExtends;
 use common\models\extended\LoanPurposeExtended;
 use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\FinancerLoanNegativeLocation;
+use common\models\FinancerLoanProductPendencies;
 use common\models\LeadsApplications;
+use common\models\LoanApplicationPendencies;
+use common\models\LoanApplicationPendencyDocuments;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanPayments;
@@ -70,7 +73,9 @@ class LoansController extends ApiBaseController
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
                 'loan-update' => ['POST', 'OPTIONS'],
-                'loan-detail-images' => ['POST', 'OPTIONS']
+                'loan-detail-images' => ['POST', 'OPTIONS'],
+                'get-assigned-pendencies' => ['POST', 'OPTIONS'],
+                'assign-pendency' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1314,7 +1319,7 @@ class LoansController extends ApiBaseController
                 $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
             }
             $phoneExists = $phoneExists->andWhere(['a.is_deleted' => 0])
-            ->exists();
+                ->exists();
 
 
             if ($phoneExists) {
@@ -1712,5 +1717,256 @@ class LoansController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
         return $this->response(200, ['status' => 200, 'data' => $images]);
+    }
+
+    public function actionAssignPendency()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $data = $params['data'] ?? '';
+        if (empty($data)) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "data"']);
+        }
+
+        // function to check existing pendencies
+        function checkExist($pendency_id, $loan_id, $co_applicant = '')
+        {
+            $whereCondition = [
+                'pendencies_enc_id' => $pendency_id,
+                'loan_app_enc_id' => $loan_id,
+                'is_deleted' => 0
+            ];
+            $co_applicant ? $whereCondition['loan_co_app_enc_id'] = $co_applicant : '';
+            return LoanApplicationPendencies::findOne($whereCondition) ? true : false;
+        }
+        // received pendencies from params
+        $new_pendency = array_column($data, 'pendency');
+
+        // pendencies from db
+        $old_pendency = array_column(self::getPendency($params['loan_id']), 'pendencies_enc_id');
+
+        // setting up user_id and loan_id in an array
+        $data_params = ['user_id' => $user->user_enc_id, 'loan_id' => $params['loan_id']];
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        // removing old pendencies
+        self::removeOldPendency($new_pendency, $old_pendency, $data_params);
+
+        $utilitiesModel = new Utilities();
+
+        foreach ($data as $item) {
+            $pendency = $item['pendency'];
+
+            // if type is individual
+            if ($item['type'] == '1') {
+
+                // we will receive co_applicants for individual type only
+
+                // handling data format for different cases
+                $co_applicants = is_array($item['co_applicants'][0]) ? array_column($item['co_applicants'], 'value') : $item['co_applicants'];
+
+                //getting pendencies of loan id
+                $sub_data = self::getPendency($item['loan_id'], $item['pendency']);
+
+                $data_params['pendency'] = $pendency;
+                // removing old co_applicants
+                self::removeOldPendency($co_applicants, array_column($sub_data, 'loan_co_app_enc_id'), $data_params, 1);
+
+                // iterating co_applicants
+                foreach ($co_applicants as $co_applicant) {
+
+                    // if not existing then adding one
+                    if (!checkExist($item['pendency'], $data_params['loan_id'], $co_applicant)) {
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $query = self::assignPendency($utilitiesModel->encrypt(), $pendency, $data_params['loan_id'], $data_params['user_id'], $co_applicant);
+                        if ($query['status'] != 200) {
+                            $transaction->rollBack();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query['error']]);
+                        }
+                    }
+                }
+            } else {
+                // if type is not individual i.e 2,3,4
+
+                // if not existing then adding one
+                if (!checkExist($item['pendency'], $data_params['loan_id'])) {
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $query = self::assignPendency($utilitiesModel->encrypt(), $pendency, $data_params['loan_id'], $data_params['user_id']);
+                    if ($query['status'] != 200) {
+                        $transaction->rollBack();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query['error']]);
+                    }
+                }
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
+    private function removeOldPendency($new, $existing, $data, $type = '')
+    {
+        $diff = array_diff($existing, $new);
+        $whereCondition = ['and'];
+        $whereCondition[] = ['is_deleted' => 0];
+        $whereCondition[] = ['loan_app_enc_id' => $data['loan_id']];
+        if (!$type) {
+            $whereCondition[] = ['in', 'pendencies_enc_id', $diff];
+        } else {
+            $whereCondition[] = ['pendencies_enc_id' => $data['pendency']];
+            $whereCondition[] = ['in', 'loan_co_app_enc_id', $diff];
+        }
+
+        Yii::$app->db->createCommand()
+            ->update(
+                LoanApplicationPendencies::tableName(),
+                // fields updating
+                ['is_deleted' => 1, 'updated_on' => date('Y-m-d H:i:s'), 'updated_by' => $data['user_id']],
+                // where condition
+                $whereCondition
+            )
+            ->execute();
+    }
+
+    private function getPendency($loan_id, $pendency_id = '')
+    {
+        $query = LoanApplicationPendencies::find()
+            ->alias('a')
+            ->select(['a.loan_co_app_enc_id', 'a.pendencies_enc_id'])
+            ->andWhere(['a.loan_app_enc_id' => $loan_id, 'a.is_deleted' => 0]);
+        if ($pendency_id) {
+            $query->andWhere(['a.pendencies_enc_id' => $pendency_id]);
+        }
+        $query = $query->asArray()
+            ->all();
+        return $query;
+    }
+
+    public function actionGetAssignedPendencies()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id']) || empty($params['product_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id or product_id"']);
+        }
+        $type = $params['type'] ?? '';
+        $query = FinancerLoanProductPendencies::find()
+            ->alias('a')
+            ->select([
+                'a.pendencies_enc_id', 'a.financer_loan_product_enc_id', 'a.name', 'a.type',
+                '(CASE WHEN a.type != 1 AND b.loan_pendency_enc_id IS NOT NULL THEN b.loan_pendency_enc_id END) as assigned_id',
+                '(CASE WHEN b.pendencies_enc_id IS NOT NULL THEN true ELSE false END) AS checked',
+                '(CASE WHEN a.type != 1 AND b2.loan_pendency_enc_id IS NOT NULL THEN true ELSE false END) as is_uploaded'
+            ])
+            ->joinWith(['loanApplicationPendencies b' => function ($b) use ($params) {
+                $b->select(['b.loan_pendency_enc_id', 'b.pendencies_enc_id', 'b.loan_co_app_enc_id value', 'b1.name label', '(CASE WHEN b2.loan_pendency_enc_id IS NOT NULL THEN TRUE ELSE FALSE END) AS is_uploaded']);
+                $b->onCondition(['b.is_deleted' => 0, 'b.loan_app_enc_id' => $params['loan_id']]);
+                $b->joinWith(['loanCoAppEnc b1'], false);
+                $b->joinWith(['loanApplicationPendencyDocuments b2'], false);
+            }])
+            ->andWhere(['a.is_deleted' => 0, 'a.financer_loan_product_enc_id' => $params['product_id']]);
+        if ($type) {
+            $query->andWhere(['not', ['b.pendencies_enc_id' => null]]);
+        }
+        $query = $query
+            ->orderBy(['a.type' => SORT_ASC])
+            ->groupBy(['a.pendencies_enc_id'])
+            ->asArray()
+            ->all();
+
+        if (!$query) {
+            return $this->response(404, ['status' => 404, 'message' => 'data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => LoanProductsController::pendency($query)]);
+    }
+
+    private function assignPendency($assign_pendency_id, $pendency_id, $loan_id, $user_id, $co_app_id = '')
+    {
+        $query = new LoanApplicationPendencies();
+        $query->loan_pendency_enc_id = $assign_pendency_id;
+        $query->pendencies_enc_id = $pendency_id;
+        $query->loan_app_enc_id = $loan_id;
+        $co_app_id ? ($query->loan_co_app_enc_id = $co_app_id) : '';
+        $query->created_by = $query->updated_by = $user_id;
+        $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
+        if (!$query->save()) {
+            return ['status' => 500, 'error' => $query->getErrors()];
+        }
+        return ['status' => 200];
+    }
+
+
+    public function actionUploadPendencyImage()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $image  = UploadedFile::getInstanceByName('file');
+        if (empty($params['loan_pendency_enc_id']) || empty($params['name']) || empty($image)) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_pendency_enc_id or name or file"']);
+        }
+        if ($image->error != 0) {
+            return $this->response(422, ['status' => 422, 'message' => 'error in image with code ' . $image->error]);
+        }
+        $type = explode('/', $image->type)[1];
+        $query = new LoanApplicationPendencyDocuments();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $query->pendency_documents_enc_id = $utilitiesModel->encrypt();
+        $query->loan_pendency_enc_id = $params['loan_pendency_enc_id'];
+        $query->name = $params['name'];
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $query->image = $utilitiesModel->encrypt() . '.' . $type;
+        $query->image_location = Yii::$app->getSecurity()->generateRandomString();
+        $path = Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . $query->image_location . DIRECTORY_SEPARATOR . $query->image;
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $result = $my_space->uploadFileSources($image->tempName, $path, "private", ['params' => ['ContentType' => $image->type]]);
+        if (!$result) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading image']);
+        }
+        $query->created_by = $query->updated_by = $user->user_enc_id;
+        $query->created_on = $query->updated_on = date('Y-m-d h:i:s');
+        if (!$query->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'saved successfully']);
+    }
+
+    public function actionGetPendencyImages()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
+        $query = LoanApplicationPendencyDocuments::find()
+            ->alias('a')
+            ->select([
+                'a.pendency_documents_enc_id', 'a.loan_pendency_enc_id', 'a.name', 'a.created_on', 'CONCAT(c.first_name, " ", COALESCE(c.last_name,"")) created_by', 'b.pendencies_enc_id', 'b1.name applicant_name',
+                'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . '",a.image_location, "/", a.image) image'
+            ])
+            ->joinWith(['loanPendencyEnc b' => function ($b) {
+                $b->joinWith(['loanCoAppEnc b1'], false);
+            }], false)
+            ->joinWith(['createdBy c'], false)
+            ->andWhere(['a.is_deleted' => 0, 'b.loan_app_enc_id' => $params['loan_id']])
+            ->asArray()
+            ->all();
+        if (!$query) {
+            return $this->response(404, ['status' => 404, 'message' => 'data not found']);
+        }
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($query as &$val) {
+            $val['image'] = $my_space->signedURL($val['image'], "15 minutes");
+        }
+        return $this->response(200, ['status' => 200, 'data' => $query]);
     }
 }
