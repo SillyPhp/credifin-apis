@@ -828,13 +828,17 @@ class CompanyDashboardController extends ApiBaseController
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
                 ])
-                ->joinWith(['loanProductsEnc lpe' => function ($lpe) {
-                    $lpe->joinWith(['financerLoanProductDisbursementCharges lpe1' => function ($lpe1) {
-                        $lpe1->joinWith(['assignedDisbursementCharges lpe2']);
-                        $lpe1->select(['lpe1.disbursement_charges_enc_id', 'lpe1.financer_loan_product_enc_id', 'lpe1.name']);
-                        $lpe1->onCondition(['lpe1.is_deleted' => 0]);
-                    }]);
-                }])
+                ->joinWith([
+                    'loanProductsEnc lpe' => function ($lpe) use ($params) {
+                        $lpe->select(['lpe.financer_loan_product_enc_id']);
+                        $lpe->joinWith(['financerLoanProductDisbursementCharges lpe1' => function ($lpe1) use ($params) {
+                            $lpe1->joinWith(['assignedDisbursementCharges lpe2' => function ($lpe2) use ($params) {
+                                $lpe2->onCondition(['lpe2.loan_app_enc_id' => $params['loan_id']]);
+                            }], false);
+                            $lpe1->select(['lpe1.disbursement_charges_enc_id', 'lpe1.financer_loan_product_enc_id', 'lpe1.name', 'lpe2.amount']);
+                            $lpe1->onCondition(['lpe1.is_deleted' => 0]);
+                        }]);
+                    }])
                 ->joinWith(['capitalRoiUpdatedBy ub'], false)
                 ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
@@ -944,25 +948,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
-
-            if (isset($loan['loanProductsEnc']['financerLoanProductDisbursementCharges']) && is_array($loan['loanProductsEnc']['financerLoanProductDisbursementCharges'])) {
-                $tmp = array();
-                foreach ($loan['loanProductsEnc']['financerLoanProductDisbursementCharges'] as &$item) {
-                    if (!empty($item['name']) && isset($item['assignedDisbursementCharges'])) {
-                        $amount = null;
-                        foreach ($item['assignedDisbursementCharges'] as $assignedCharge) {
-                            $amount = $assignedCharge['amount'];
-                            break;
-                        }
-                        $item['amount'] = $amount;
-                        unset($item['assignedDisbursementCharges']);
-                    }
-                    $tmp[] = $item;
-                    unset($item);
-                }
-                $loan['disbursement_charges'] = $tmp;
-            }
-
 
             // if loan application exists
             if ($loan) {

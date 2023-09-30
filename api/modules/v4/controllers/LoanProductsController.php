@@ -140,7 +140,7 @@ class LoanProductsController extends ApiBaseController
                     ->onCondition(['a.is_deleted' => 0]);
                 break;
             default:
-                return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error "Type is not valid"'];
+                return 'error "Type is not valid"';
         }
         $result = $query
             ->andWhere(['a.financer_loan_product_enc_id' => $product_id])
@@ -252,16 +252,16 @@ class LoanProductsController extends ApiBaseController
                     return $this->response(422, ['status' => 422, 'message' => 'Amount should be greater than 0']);
                 }
                 // Check if a record with the same charge_id exists
-                $existingRecord = AssignedDisbursementCharges::findOne([
+                $existing_record = AssignedDisbursementCharges::findOne([
                     'disbursement_charges_enc_id' => $charge['charge_id'],
                     'loan_app_enc_id' => $params['loan_id'],
                     'is_deleted' => 0,
                 ]);
 
-                if ($existingRecord) {
+                if ($existing_record) {
                     // Update the existing record's amount
-                    $existingRecord->amount = $charge['amount'];
-                    $existingRecord->save();
+                    $existing_record->amount = $charge['amount'];
+                    $existing_record->save();
                 } else {
                     // Create a new record
                     $model = new AssignedDisbursementCharges();
@@ -269,8 +269,12 @@ class LoanProductsController extends ApiBaseController
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $model->assigned_disbursement_charges_enc_id = $utilitiesModel->encrypt();
                     $model->disbursement_charges_enc_id = $charge['charge_id'];
-                    $model->amount = $charge['amount'];
+                    $financerCharge = FinancerLoanProductDisbursementCharges::findOne(['disbursement_charges_enc_id' => $charge['charge_id']]);
+                    if ($financerCharge !== null) {
+                        $model->name = $financerCharge->name;
+                    }
                     $model->loan_app_enc_id = $params['loan_id'];
+                    $model->amount = $charge['amount'];
                     $model->created_by = $model->updated_by = $user->user_enc_id;
                     $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
                     if (!$model->save()) {
