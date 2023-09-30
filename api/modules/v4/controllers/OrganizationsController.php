@@ -1812,7 +1812,7 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 'a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
-                'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'a.ptp_amount', 'a.ptp_date', 'b1a.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
@@ -1822,8 +1822,9 @@ class OrganizationsController extends ApiBaseController
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
             ])
             ->joinWith(['createdBy b' => function ($b) {
-                $b->joinWith(['userRoles0 b1'], false);
-                $b->joinWith(['designations d']);
+                $b->joinWith(['userRoles0 b1' => function ($b1) {
+                    $b1->joinWith(['designation b1a'], false);
+                }], false);
             }], false)
             ->joinWith(['branchEnc c' => function ($c) {
                 $c->joinWith(['cityEnc c1'], false);
@@ -1873,7 +1874,7 @@ class OrganizationsController extends ApiBaseController
                         } elseif ($key == 'branch') {
                             $model->andWhere(['c.location_enc_id' => $value]);
                         } elseif ($key == 'designation') {
-                            $model->andWhere(['like', 'd.' . $key, $value]);
+                            $model->andWhere(['like', 'b1a.' . $key, $value]);
                         } elseif ($key == 'ptp_status') {
                             $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
                         }
@@ -2325,7 +2326,12 @@ class OrganizationsController extends ApiBaseController
             $query = LoanAccounts::find()
                 ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
                 ->where(['is_deleted' => 0])
-                ->andWhere(['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false])
+                ->andWhere([
+                    'or',
+                    ['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'phone', '%' . $params['loan_number'] . '%', false],
+
+                ])
                 ->limit(20)
                 ->asArray()
                 ->all();
