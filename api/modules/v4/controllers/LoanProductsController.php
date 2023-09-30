@@ -140,7 +140,7 @@ class LoanProductsController extends ApiBaseController
                     ->onCondition(['a.is_deleted' => 0]);
                 break;
             default:
-                return 'error "Type is not valid"';
+                return false;
         }
         $result = $query
             ->andWhere(['a.financer_loan_product_enc_id' => $product_id])
