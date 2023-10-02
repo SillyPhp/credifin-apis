@@ -11,6 +11,7 @@ use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
+use common\models\extended\LoanCoApplicantsExtended;
 use common\models\extended\LoanPurposeExtended;
 use common\models\extended\Payments;
 use common\models\FinancerLoanProductPurpose;
@@ -221,11 +222,28 @@ class LoanApplication extends Model
                 }
             }
 
+            $loanCoApplicants = new LoanCoApplicantsExtended();
+            $loanCoApplicants->loan_co_app_enc_id = Yii::$app->security->generateRandomString(32);
+            $loanCoApplicants->loan_app_enc_id = $model->loan_app_enc_id;
+            $loanCoApplicants->borrower_type = 'Borrower';
+            $loanCoApplicants->relation = Null;
+            $loanCoApplicants->name = $this->applicant_name;
+            $loanCoApplicants->phone = $this->phone_no;
+            $loanCoApplicants->email = $this->email;
+            $loanCoApplicants->gender = $this->gender;
+            $loanCoApplicants->voter_card_number = $this->voter_card_number;
+            $loanCoApplicants->aadhaar_number = $this->aadhaar_number;
+            $loanCoApplicants->pan_number = $this->pan_number;
+            if (!$loanCoApplicants->save()) {
+            $transaction->rollback();
+            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
+            }
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
             $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
+            $loan_address->loan_co_app_enc_id = $loanCoApplicants->loan_co_app_enc_id;
             $loan_address->address = $this->address;
             $loan_address->city_enc_id = $this->city;
             $loan_address->state_enc_id = $this->state;

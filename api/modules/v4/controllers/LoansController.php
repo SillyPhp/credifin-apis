@@ -70,7 +70,8 @@ class LoansController extends ApiBaseController
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
                 'loan-update' => ['POST', 'OPTIONS'],
-                'loan-detail-images' => ['POST', 'OPTIONS']
+                'loan-detail-images' => ['POST', 'OPTIONS'],
+                'set-borrower' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -157,6 +158,7 @@ class LoansController extends ApiBaseController
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         }
     }
+
 
     public function actionUpdateLoan()
     {
@@ -906,7 +908,27 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
+    //action to add borrower as main borrower
+    public function actionSetBorrower()
+    {
+        // checking authorization
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_co_app_enc_id'])||empty($params['loan_co_app_enc_id'])){
+            return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
+        }else{
+            $model = new CoApplicantForm();
+            $response = $model->setBorrower($params,$user->user_enc_id);
+            if ($response['status']==200){
+                return $this->response(200, ['status' => 200, 'message' =>$response['message']]);
+            }else{
+                return $this->response(500, ['status' => 500, 'message' =>$response['message']]);
+            }
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
