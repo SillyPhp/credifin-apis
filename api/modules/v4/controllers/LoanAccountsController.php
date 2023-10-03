@@ -19,7 +19,8 @@ class LoanAccountsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'loan-accounts-upload' => ['POST', 'OPTIONS']
+                'loan-accounts-upload' => ['POST', 'OPTIONS'],
+                'get-emi-accounts' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -94,5 +95,36 @@ class LoanAccountsController extends ApiBaseController
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
+    }
+
+    public function actionGetEmiAccounts()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $query = LoanAccounts::find()
+            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
+            ->where(['is_deleted' => 0]);
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    $query->andWhere(['like', $key, $value]);
+                }
+            }
+        }
+        $count = $query->count();
+        $query = $query->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
+
+        if ($query) {
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
