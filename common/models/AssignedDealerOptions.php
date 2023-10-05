@@ -10,7 +10,6 @@ use Yii;
  * @property int $id Primary Id
  * @property string $assigned_dealer_options_enc_id Assigned Dealer Options Enc Id
  * @property string $organization_enc_id Organization Enc Id
- * @property string $vehicle_types Vehicle Types in json format
  * @property string $category Category
  * @property string $company_type Company Type
  * @property int $trade_certificate Trade Certificate
@@ -40,8 +39,7 @@ class AssignedDealerOptions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['assigned_dealer_options_enc_id', 'organization_enc_id', 'vehicle_types', 'category', 'company_type', 'trade_certificate', 'created_by', 'updated_on', 'updated_by'], 'required'],
-            [['vehicle_types'], 'string'],
+            [['assigned_dealer_options_enc_id', 'organization_enc_id', 'category', 'company_type', 'trade_certificate', 'created_by', 'updated_on', 'updated_by'], 'required'],
             [['trade_certificate', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_dealer_options_enc_id', 'organization_enc_id', 'category', 'company_type', 'created_by', 'updated_by'], 'string', 'max' => 100],
@@ -52,6 +50,25 @@ class AssignedDealerOptions extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'assigned_dealer_options_enc_id' => 'Assigned Dealer Options Enc ID',
+            'organization_enc_id' => 'Organization Enc ID',
+            'category' => 'Category',
+            'company_type' => 'Company Type',
+            'trade_certificate' => 'Trade Certificate',
+            'created_on' => 'Created On',
+            'created_by' => 'Created By',
+            'updated_on' => 'Updated On',
+            'updated_by' => 'Updated By',
+            'is_deleted' => 'Is Deleted',
+        ];
+    }
 
     /**
      * @return \yii\db\ActiveQuery

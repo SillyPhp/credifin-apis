@@ -74,6 +74,7 @@ class AuthController extends ApiBaseController
             'class' => Cors::className(),
             'cors' => [
                 'Origin' => ['https://www.empowerloans.in/'],
+                'Origin' => ['https://www.empowerloans.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
@@ -86,14 +87,14 @@ class AuthController extends ApiBaseController
     public function actionSignup()
     {
         try {
-
+            $user = $this->isAuthorized();
             $params = Yii::$app->request->post();
 
             if (!empty($params['user_type'])) {
                 if ($params['user_type'] == 'Financer') {
                     $scenario = 'Financer';
                 } elseif ($params['user_type'] == 'Dealer' && !empty($params['ref_id'])) {
-                    $scenario = 'Dealer';
+                    $scenario = $user ? 'FinancerDealer' : 'Dealer';
                     $params = self::_genUserPass($params);
                 } else {
                     $scenario = 'default';
@@ -103,6 +104,7 @@ class AuthController extends ApiBaseController
             }
 
             $model = new SignupForm(['scenario' => $scenario]);
+
 
             // loading data from post request to model
             if ($model->load($params)) {
@@ -120,7 +122,7 @@ class AuthController extends ApiBaseController
                         // creating user utilities model to get user data
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
-                        if (!($user_data['user_type'] == 'Individual' && $model->getScenario() == 'Dealer')) {
+                        if (($user_data['user_type'] != 'Individual' && $model->getScenario() != 'FinancerDealer')) {
                             $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
                             return $this->response(201, ['status' => 201, 'message' => $message]);
 

@@ -2,10 +2,14 @@
 
 namespace api\modules\v4\models;
 
+use api\modules\v4\controllers\DealersController;
+use api\modules\v4\controllers\DealsController;
 use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
+use common\models\AssignedDealerVehicleTypes;
 use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
+use common\models\FinancerVehicleTypes;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -39,7 +43,7 @@ class SignupForm extends Model
     public $user_id;
     public $organization_id;
     public $employee_code;
-    public $vehicle_types;
+    public $vehicle_type;
     public $brands;
     public $category;
     public $company_type;
@@ -54,14 +58,14 @@ class SignupForm extends Model
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
-            [['organization_name', 'vehicle_types', 'brands', 'category', 'company_type', 'trade_certificate'], 'required', 'on' => 'Dealer'],
+            [['organization_name', 'brands', 'category', 'company_type', 'vehicle_type', 'trade_certificate'], 'required', 'on' => 'FinancerDealer'],
 
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['vehicle_types', 'brands'], function () {
-                if (!is_array($this->brands) && !is_array($this->vehicle_types)) {
-                    $this->addError('vehicle_types', 'It must be an array!');
+            [['vehicle_type', 'brands'], function () {
+                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
+                    $this->addError('vehicle_type', 'It must be an array!');
                     $this->addError('brands', 'It must be an array!');
                 }
             }],
@@ -103,7 +107,6 @@ class SignupForm extends Model
         // transaction begin
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             // saving username for user
             $this->saveUsername($user_type);
 
@@ -119,7 +122,7 @@ class SignupForm extends Model
             $user->email = $this->email ? strtolower($this->email) : null;
             $user->initials_color = RandomColors::one();
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
-            $user->status = ($user_type == 'Individual') ? 'Active' : 'Pending';
+            $user->status = ($user_type == 'Individual' || $this->getScenario() == 'FinancerDealer') ? 'Active' : 'Pending';
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->last_visit = date('Y-m-d H:i:s');
             $user->last_visit_through = 'EL';
@@ -131,10 +134,6 @@ class SignupForm extends Model
                 throw new \Exception(json_encode($user->getErrors()));
             }
 
-            if ($this->getScenario() == 'Dealer') {
-                $this->dealerCreate();
-            }
-
             // if user_type Organization Admin or Organization name not empty for dealer user_type
             if ($user_type == 'Organization Admin' || (!empty($this->organization_name))) {
 
@@ -143,11 +142,17 @@ class SignupForm extends Model
 
                 // assigning organization id to user
                 $user->organization_enc_id = $this->organization_id;
+
+                $query = (new FinancerVehicleTypeForm)->vehicleType($user, $this->organization_id);
                 if (!$user->update()) {
                     throw new \Exception(json_encode($user->getErrors()));
                 }
             }
-
+//            print_r($this->organization_id);
+//            exit();
+            if ($this->getScenario() == 'Dealer' || $this->getScenario() == 'FinancerDealer') {
+                $this->dealerCreate($this->organization_id);
+            }
             // adding Referral code for new signed-up user
             $this->addReferralCode();
 
@@ -176,15 +181,17 @@ class SignupForm extends Model
         }
     }
 
-    private function dealerCreate()
+    private function dealerCreate($organization_id)
     {
         $ref = Referral::findOne(['code' => $this->ref_id]);
         if (!$ref['organization_enc_id']) {
             throw new \Exception(json_encode('Organization not found'));
         }
-        $options = new AssignedDealerOptions();
+
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
+        $options = new AssignedDealerOptions();
         $options->assigned_dealer_options_enc_id = $utilitiesModel->encrypt();
         $options->organization_enc_id = $ref['organization_enc_id'];
         $options->category = $this->category;
@@ -195,6 +202,7 @@ class SignupForm extends Model
         if (!$options->save()) {
             throw new \Exception(json_encode($options->getErrors()));
         }
+
         foreach ($this->brands as $value) {
             $brand = new AssignedDealerBrands();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -205,6 +213,19 @@ class SignupForm extends Model
             $brand->created_by = $brand->updated_by = $this->user_id;
             if (!$brand->save()) {
                 throw new \Exception(json_encode($brand->getErrors()));
+            }
+        }
+
+        foreach ($this->vehicle_type as $value) {
+            $type = new FinancerVehicleTypes();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $type->financer_vehicle_type_enc_id = $utilitiesModel->encrypt();
+            $type->organization_enc_id = $organization_id;
+            $type->vehicle_type = $value;
+            $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
+            $type->created_by = $type->updated_by = $this->user_id;
+            if (!$type->save()) {
+                throw new \Exception(json_encode($type->getErrors()));
             }
         }
     }
@@ -223,28 +244,13 @@ class SignupForm extends Model
     // saving organization data
     private function saveOrganization($user)
     {
-
         $organizationsModel = new Organizations();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
         $organizationsModel->name = $this->organization_name;
-//        $organizationsModel->email = strtolower($this->organization_email);
-
-
-        if (!empty($this->organization_email)) {
-            $organizationsModel->email = strtolower($this->organization_email);
-        } else {
-            $organizationsModel->email = strtolower($user->email);
-        }
-
-        if (!empty($this->organization_phone)) {
-            $organizationsModel->phone = $this->organization_phone;
-        } else {
-            $organizationsModel->phone = $user->phone;
-        }
-
-//        $organizationsModel->phone = $this->organization_phone;
+        $organizationsModel->email = !empty($this->organization_email) ? strtolower($this->organization_email) : strtolower($user->email);
+        $organizationsModel->phone = !empty($this->organization_phone) ? $this->organization_phone : $user->phone;
         $organizationsModel->website = $this->organization_website;
         $organizationsModel->initials_color = RandomColors::one();
         $organizationsModel->created_on = date('Y-m-d H:i:s');
