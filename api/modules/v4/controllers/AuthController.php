@@ -86,14 +86,27 @@ class AuthController extends ApiBaseController
     public function actionSignup()
     {
         try {
-
+            $user = $this->isAuthorized();
             $params = Yii::$app->request->post();
 
-            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
+            if (!empty($params['user_type'])) {
+                if ($params['user_type'] == 'Financer') {
+                    $scenario = 'Financer';
+                } elseif ($params['user_type'] == 'Dealer' && !empty($params['ref_id'])) {
+                    $scenario = $user ? 'FinancerDealer' : 'Dealer';
+                    $params = self::_genUserPass($params);
+                } else {
+                    $scenario = 'default';
+                }
+            } else {
+                $scenario = 'default';
+            }
+
+            $model = new SignupForm(['scenario' => $scenario]);
+
 
             // loading data from post request to model
-            if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->load($params)) {
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
@@ -108,7 +121,7 @@ class AuthController extends ApiBaseController
                         // creating user utilities model to get user data
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
-                        if ($user_data['user_type'] != 'Individual') {
+                        if (($user_data['user_type'] != 'Individual' && $model->getScenario() != 'FinancerDealer')) {
                             $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
                             return $this->response(201, ['status' => 201, 'message' => $message]);
 
@@ -131,6 +144,22 @@ class AuthController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
+
+    // this function is only used if a dealer is created by financer
+    private function _genUserPass($data)
+    {
+        while (true) {
+            $username = $data['organization_name'] . rand(100, 1000);
+            $checkUsers = Users::findOne(['username' => $username]);
+            if (!$checkUsers) {
+                $data['username'] = $username;
+                break;
+            }
+        }
+        $data['password'] = $data['phone'];
+        return $data;
+    }
+
 
     // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
