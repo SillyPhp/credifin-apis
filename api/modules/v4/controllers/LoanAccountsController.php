@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
+use common\models\EmiPaymentIssues;
 use common\models\LoanAccounts;
 use common\models\Utilities;
 use Yii;
@@ -20,7 +21,7 @@ class LoanAccountsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'loan-accounts-upload' => ['POST', 'OPTIONS'],
-                'get-emi-accounts' => ['POST', 'OPTIONS']
+                'emi-payment-issues' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -97,34 +98,40 @@ class LoanAccountsController extends ApiBaseController
         }
     }
 
-    public function actionGetEmiAccounts()
+    public function actionEmiPaymentIssues()
     {
-        if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
         $params = Yii::$app->request->post();
-        $limit = !empty($params['limit']) ? $params['limit'] : 10;
-        $page = !empty($params['page']) ? $params['page'] : 1;
-        $query = LoanAccounts::find()
-            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
-            ->where(['is_deleted' => 0]);
-        if (!empty($params['fields_search'])) {
-            foreach ($params['fields_search'] as $key => $value) {
-                if (!empty($value) || $value == '0') {
-                    $query->andWhere(['like', $key, $value]);
-                }
-            }
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
         }
-        $count = $query->count();
-        $query = $query->limit($limit)
-            ->offset(($page - 1) * $limit)
-            ->asArray()
-            ->all();
-        $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
+        $transaction = Yii::$app->db->beginTransaction();
 
-        if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
+        try {
+            $Payment_issues = new EmiPaymentIssues();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $Payment_issues->emi_payment_issues_enc_id = $utilitiesModel->encrypt();
+            $Payment_issues->loan_account_enc_id = $params['loan_account_enc_id'];
+            $Payment_issues->loan_app_enc_id = !empty($params['loan_app_enc_id']) ? $params['loan_app_enc_id'] : null;
+            $Payment_issues->reasons = $params['reasons'];
+            $Payment_issues->remarks = $params['remarks'];
+            $Payment_issues->created_by = $Payment_issues->updated_by = $user->user_enc_id;
+            $Payment_issues->created_on = $Payment_issues->updated_on = date('Y-m-d H:i:s');
+
+            if (!$Payment_issues->save()) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $Payment_issues->getErrors()]);
+            }
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'issues' => $Payment_issues]);
+
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
+
 }
