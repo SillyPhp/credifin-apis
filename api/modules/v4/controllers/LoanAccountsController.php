@@ -115,7 +115,7 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    // $loan->branch_enc_id = $branches[$data[array_search('Branch', $header)]];
+                    $loan->branch_enc_id = $branches[$data[array_search('Branch', $header)]];
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
