@@ -293,8 +293,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $dsa[] = $user->user_enc_id;
         } else {
-            $userUtilities = new UserUtilities();
-            $accessroles = $userUtilities->rolesArray;
+            $accessroles = UserUtilities::$rolesArray;
             $role = UserRoles::find()
                 ->alias('a')
                 ->where(['user_enc_id' => $user->user_enc_id])
@@ -2397,8 +2396,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $dsa[] = $user->user_enc_id;
             } else {
-                $userUtilities = new UserUtilities();
-                $accessroles = $userUtilities->rolesArray;
+                $accessroles = UserUtilities::$rolesArray;
                 $role = UserRoles::find()
                     ->alias('a')
                     ->where(['user_enc_id' => $user->user_enc_id])
@@ -2842,8 +2840,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $dsa[] = $user->user_enc_id;
             } else {
-                $userUtilities = new UserUtilities();
-                $accessroles = $userUtilities->rolesArray;
+                $accessroles = UserUtilities::$rolesArray;
                 $role = UserRoles::find()
                     ->alias('a')
                     ->where(['user_enc_id' => $user->user_enc_id])
