@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiPaymentIssues;
+use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
 use common\models\Utilities;
 use Yii;
@@ -110,7 +111,7 @@ class LoanAccountsController extends ApiBaseController
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-            $Payment_issues = new EmiPaymentIssues();
+            $Payment_issues = new EmiPaymentIssuesExtended();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $Payment_issues->emi_payment_issues_enc_id = $utilitiesModel->encrypt();
