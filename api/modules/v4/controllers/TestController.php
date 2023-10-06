@@ -81,7 +81,7 @@ class TestController extends ApiBaseController
             ->joinWith(['loanApplicationOptions e'], false)
             ->andWhere([
                 'AND',
-                ['between', 'a.created_on', $params['start_date'], $params['end_date']],
+                ['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
                 ['b.provider_enc_id' => $params['org_id']],
                 ['a.is_deleted' => 0],
             ])
