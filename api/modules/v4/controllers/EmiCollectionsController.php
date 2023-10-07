@@ -95,7 +95,7 @@ class EmiCollectionsController extends ApiBaseController
                 'and',
                 ['in', 'a.emi_payment_method', [4, 81]],
                 ['a.is_deleted' => 0],
-                ['between', 'a.created_on', $params['start_date'], $params['end_date']]
+                ['a.emi_payment_status' => 'pending']
             ])
             ->groupBy(['a.created_by']);
         if (!empty($params['branch_name'])) {
