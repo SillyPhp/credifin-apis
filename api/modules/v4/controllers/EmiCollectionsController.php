@@ -178,7 +178,7 @@ class EmiCollectionsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $org_id = $params['org_id'];
         $user_id = $params['user_id'];
-        $search = ['emi_payment_status' => 'pending', 'emi_payment_method' => 4];
+        $search = ['emi_payment_status' => 'pending', 'emi_payment_method' => [4, 81]];
         $json = (object)['user_enc_id' => $user_id];
         $query = OrganizationsController::_emiData($org_id, 0,  $search, $json)['data'];
 
