@@ -49,7 +49,6 @@ class ApiBaseController extends Controller
             // this response returns 200 code everytime in headers
             return $response;
         }
-
     }
 
     // getting status message from http code
@@ -138,7 +137,9 @@ class ApiBaseController extends Controller
 
     public function isSpecialUser($type = false)
     {
-        $user = $this->isAuthorized();
+        if(!$user = $this->isAuthorized()){
+            return false;
+        }
         if ($type) {
             return self::specialCheck($user->user_enc_id) ? $user : false;
         }

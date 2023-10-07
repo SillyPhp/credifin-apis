@@ -171,7 +171,7 @@ class EmiCollectionForm extends Model
             $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location, $path);
         }
         if (!$model->save()) {
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
+            throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
 
         $return = ['status' => 200, 'message' => 'Saved Successfully'];
@@ -190,9 +190,6 @@ class EmiCollectionForm extends Model
                 $options['brand'] = $this->brand;
                 $options['purpose'] = $this->loan_type;
                 $link = self::createLinks($options, $model->emi_payment_method);
-                if (!$link) {
-                    return ['status' => 500, 'message' => 'an error occurred while fetching link'];
-                }
                 $return['links'] = $link;
             }
         }
@@ -203,7 +200,7 @@ class EmiCollectionForm extends Model
     {
         $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
         if (!$keys) {
-            return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+            throw new \Exception('an error occurred while fetching razorpay credentials');
         }
         $api_key = $keys['api_key'];
         $api_secret = $keys['api_secret'];
@@ -213,14 +210,14 @@ class EmiCollectionForm extends Model
             $options['close_by'] = time() + 24 * 60 * 60;
             $link['qr'] = \common\models\payments\Payments::createQr($api, $options);
             if (!$link) {
-                return ['status' => 500, 'message' => 'an error occurred while creating qr'];
+                throw new \Exception('an error occurred while creating qr');
             }
         }
         if ($type == 2) {
             $options['close_by'] = time() + 24 * 60 * 60 * 7;
             $link['link'] = \common\models\payments\Payments::createLink($api, $options);
             if (!$link) {
-                return ['status' => 500, 'message' => 'an error occurred while creating link'];
+                throw new \Exception('an error occurred while creating link');
             }
         }
         return $link ?? false;
