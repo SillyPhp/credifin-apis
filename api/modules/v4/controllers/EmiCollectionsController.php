@@ -95,8 +95,9 @@ class EmiCollectionsController extends ApiBaseController
                 'and',
                 ['in', 'a.emi_payment_method', [4, 81]],
                 ['a.is_deleted' => 0],
-                ['between', 'a.created_on', $params['start_date'], $params['end_date']]
-            ]);
+                ['a.emi_payment_status' => 'pending']
+            ])
+            ->groupBy(['a.created_by']);
         if (!empty($params['branch_name'])) {
             $query->andWhere(['b4.location_enc_id' => $params['branch_name']]);
         }
@@ -112,7 +113,8 @@ class EmiCollectionsController extends ApiBaseController
                 ['like', 'b2.designation', $params['keyword']],
             ]);
         }
-        $query = $query->groupBy(['a.created_by'])
+        $count = $query->count();
+        $query = $query
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -125,7 +127,7 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query]);
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
         }
         return $this->response(200, ['status' => 404, 'message' => 'no data found']);
     }
@@ -176,7 +178,7 @@ class EmiCollectionsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $org_id = $params['org_id'];
         $user_id = $params['user_id'];
-        $search = ['emi_payment_status' => 'pending', 'emi_payment_method' => 4];
+        $search = ['emi_payment_status' => 'pending', 'emi_payment_method' => [4, 81]];
         $json = (object)['user_enc_id' => $user_id];
         $query = OrganizationsController::_emiData($org_id, 0,  $search, $json)['data'];
 
