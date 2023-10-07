@@ -2347,12 +2347,17 @@ class OrganizationsController extends ApiBaseController
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
         $params = Yii::$app->request->post();
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
         $query = LoanAccounts::find()
-            ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
-            ->where(['is_deleted' => 0]);
+            ->alias('a')
+            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock', 'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos', 'a.loan_account_number', 'a.collection_manager', 'a.last_emi_date', 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date', 'b.location_enc_id as branch_name'])
+            ->joinWith(['branchEnc b'])
+            ->andWhere(['a.is_deleted' => 0]);
+
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -2360,18 +2365,31 @@ class OrganizationsController extends ApiBaseController
                 }
             }
         }
+
+        if (!empty($params['bucket'])) {
+            $value = $params['bucket'];
+            $query->andWhere(['a.bucket' => $value]);
+        } else {
+            $query->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray();
+        }
+
         $count = $query->count();
         $query = $query->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
         $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
 
         if ($query) {
             return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
         }
+
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
+
 
     public function actionUpdatePendency()
     {
