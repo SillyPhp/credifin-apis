@@ -96,7 +96,8 @@ class EmiCollectionsController extends ApiBaseController
                 ['in', 'a.emi_payment_method', [4, 81]],
                 ['a.is_deleted' => 0],
                 ['between', 'a.created_on', $params['start_date'], $params['end_date']]
-            ]);
+            ])
+            ->groupBy(['a.created_by']);
         if (!empty($params['branch_name'])) {
             $query->andWhere(['b4.location_enc_id' => $params['branch_name']]);
         }
@@ -112,7 +113,8 @@ class EmiCollectionsController extends ApiBaseController
                 ['like', 'b2.designation', $params['keyword']],
             ]);
         }
-        $query = $query->groupBy(['a.created_by'])
+        $count = $query->count();
+        $query = $query
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -125,7 +127,7 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query]);
+            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count]);
         }
         return $this->response(200, ['status' => 404, 'message' => 'no data found']);
     }
