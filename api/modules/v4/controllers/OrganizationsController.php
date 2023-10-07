@@ -1664,10 +1664,7 @@ class OrganizationsController extends ApiBaseController
                 $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
                 return $this->response($save['status'], $save);
             } catch (\Exception $exception) {
-                return [
-                    'message' => $exception->getMessage(),
-                    'status' => false
-                ];
+                return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
             }
         }
     }
