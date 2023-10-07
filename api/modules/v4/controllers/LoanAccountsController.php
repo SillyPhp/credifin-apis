@@ -99,6 +99,9 @@ class LoanAccountsController extends ApiBaseController
             $transaction = Yii::$app->db->beginTransaction();
             $utilitiesModel = new Utilities();
             while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                $data = array_map(function($item) {
+                    return str_replace([' ', "\t", "\n", "\r", "\0", "\x0B"], '', trim($item));
+                }, $data);
                 if ($count) {
                     $header = $data;
                     $count = false;
