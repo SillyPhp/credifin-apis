@@ -3,6 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
+use common\models\EmiPaymentIssues;
+use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
 use common\models\Utilities;
 use Yii;
@@ -19,7 +21,8 @@ class LoanAccountsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'loan-accounts-upload' => ['POST', 'OPTIONS']
+                'loan-accounts-upload' => ['POST', 'OPTIONS'],
+                'emi-payment-issues' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -38,7 +41,7 @@ class LoanAccountsController extends ApiBaseController
 
     public function actionLoanAccountsUpload()
     {
-        
+
         $user = $this->isAuthorized();
         if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
             return $this->response(500, 'Not Authorized');
@@ -169,7 +172,7 @@ class LoanAccountsController extends ApiBaseController
                 $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 1000000000);
+                    $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
                     $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                     $loan->lms_loan_account_number = $data[0];
                     $loan->loan_account_number = trim($data[1]);
@@ -208,5 +211,41 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
     }
-    
+
+    public function actionEmiPaymentIssues()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $Payment_issues = new EmiPaymentIssuesExtended();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $Payment_issues->emi_payment_issues_enc_id = $utilitiesModel->encrypt();
+            $Payment_issues->loan_account_enc_id = $params['loan_account_enc_id'];
+            $Payment_issues->loan_app_enc_id = !empty($params['loan_app_enc_id']) ? $params['loan_app_enc_id'] : null;
+            $Payment_issues->reasons = $params['reasons'];
+            $Payment_issues->remarks = $params['remarks'];
+            $Payment_issues->created_by = $Payment_issues->updated_by = $user->user_enc_id;
+            $Payment_issues->created_on = $Payment_issues->updated_on = date('Y-m-d H:i:s');
+
+            if (!$Payment_issues->save()) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $Payment_issues->getErrors()]);
+            }
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'issues' => $Payment_issues]);
+
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
+        }
+    }
+
 }
