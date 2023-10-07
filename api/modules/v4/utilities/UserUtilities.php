@@ -21,7 +21,7 @@ use yii\db\Command;
 // this class is used to get user related data
 class UserUtilities
 {
-    public $rolesArray = ['State Credit Head', 'Operations Manager', 'Product Manager'];
+    public static $rolesArray = ['State Credit Head', 'Operations Manager', 'Product Manager'];
 
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
@@ -106,8 +106,7 @@ class UserUtilities
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
-            $userUtilities = new UserUtilities();
-            $accessroles = $userUtilities->rolesArray;
+            $accessroles = self::$rolesArray;
             if (in_array($user['designation'], $accessroles)) {
                 $user['specialAccessRole'] = true;
             } else {

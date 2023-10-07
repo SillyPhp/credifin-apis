@@ -1731,10 +1731,15 @@ class OrganizationsController extends ApiBaseController
         foreach ($data as $item) {
             $method = $def[$item['method']] ?? '';
             $amount = $item['amount'];
+            if(!isset($res[$method]['pending'])){
+                $res[$method]['pending']['sum'] = $res[$method]['pending']['count'] = 0;
+            }
             if ($item['status'] == 'paid') {
                 $res[$method]['sum'] += $amount;
                 $res[$method]['count'] += 1;
             } else {
+                $res[$method]['pending']['count'] += 1;
+                $res[$method]['pending']['sum'] += $amount;
                 $res['Pending']['sum'] += $amount;
                 $res['Pending']['count'] += 1;
             }
@@ -1793,7 +1798,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
     }
 
-    private function _emiData($data, $id_type, $search = '', $user = null)
+    public static function _emiData($data, $id_type, $search = '', $user = null)
     {
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
