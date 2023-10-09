@@ -2359,13 +2359,18 @@ class OrganizationsController extends ApiBaseController
 
         $query = LoanAccounts::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock', 'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos', 'a.loan_account_number', 'a.collection_manager', 'a.last_emi_date', 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date', 'b.location_enc_id as branch_name'])
+            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock',
+                'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos',
+                'a.loan_account_number', 'a.collection_manager', 'a.last_emi_date', 'a.name', 'a.phone',
+                'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date',
+                'a.created_on', 'a.last_emi_received_amount',
+                'a.last_emi_received_date', 'b.location_name as branch_name'])
             ->joinWith(['branchEnc b'])
             ->andWhere(['a.is_deleted' => 0]);
 
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
-                if (!empty($value) || $value == '0') {
+                if (!empty($value) || empty($params['bucket']) || $value == '0') {
                     $query->andWhere(['like', $key, $value]);
                 }
             }
