@@ -192,4 +192,26 @@ class EmiCollectionsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 404, 'message' => 'no data found']);
     }
+
+    public function actionEmiPendingPayments()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params['user_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "user_enc_id"']);
+        }
+        $pay = EmiCollection::find()
+            ->alias('a')
+            ->andWhere(['a.is_deleted' => 0, 'a.created_by' => $params['user_enc_id'], 'a.emi_payment_status' => 'pending'])
+            ->asArray()
+            ->all();
+
+        if ($pay) {
+            return $this->response(200, ['status' => 200, 'data' => $pay]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'no data found']);
+    }
 }
