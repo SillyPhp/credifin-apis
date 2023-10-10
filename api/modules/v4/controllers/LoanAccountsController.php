@@ -2,12 +2,14 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
 use common\models\Utilities;
+use common\models\spaces\Spaces;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -322,14 +324,17 @@ class LoanAccountsController extends ApiBaseController
 
     private function _emiAccData($lac)
     {
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $payment_modes = EmiCollectionForm::$payment_modes;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
-                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
+                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
-                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'a.created_on', 'a.emi_payment_status', 'a.reference_number'
+                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
+                'CASE WHEN a.other_doc_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
+                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
             ])
             ->joinWith(['createdBy b'], false)
             ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
@@ -337,6 +342,25 @@ class LoanAccountsController extends ApiBaseController
         $model = $model
             ->asArray()
             ->all();
+
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($model as $key => $value) {
+            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+            if ($value['other_doc_image']) {
+                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
+                $model[$key]['other_doc_image'] = $proof;
+            }
+            if ($value['borrower_image']) {
+                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
+                $model[$key]['borrower_image'] = $proof;
+            }
+            if ($value['pr_receipt_image']) {
+                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+                $model[$key]['pr_receipt_image'] = $proof;
+            }
+        }
         return ['data' => $model];
     }
 }
