@@ -1664,10 +1664,7 @@ class OrganizationsController extends ApiBaseController
                 $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
                 return $this->response($save['status'], $save);
             } catch (\Exception $exception) {
-                return [
-                    'message' => $exception->getMessage(),
-                    'status' => false
-                ];
+                return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
             }
         }
     }
@@ -1727,19 +1724,21 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
+            if (!in_array($item, ['Total', 'Pending']) && empty($method)) {
+                $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
+            }
         }
         foreach ($data as $item) {
-            $method = $def[$item['method']] ?? '';
+            $payment_method = $def[$item['method']] ?? '';
             $amount = $item['amount'];
-            if(!isset($res[$method]['pending'])){
-                $res[$method]['pending']['sum'] = $res[$method]['pending']['count'] = 0;
-            }
             if ($item['status'] == 'paid') {
-                $res[$method]['sum'] += $amount;
-                $res[$method]['count'] += 1;
+                $res[$payment_method]['sum'] += $amount;
+                $res[$payment_method]['count'] += 1;
             } else {
-                $res[$method]['pending']['count'] += 1;
-                $res[$method]['pending']['sum'] += $amount;
+                if(empty($method)){
+                    $res[$payment_method]['pending']['count'] += 1;
+                    $res[$payment_method]['pending']['sum'] += $amount;
+                }
                 $res['Pending']['sum'] += $amount;
                 $res['Pending']['count'] += 1;
             }
