@@ -137,6 +137,47 @@ class LoanAccountsController extends ApiBaseController
         }
     }
 
+    public function actionGetPaymentIssues()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
+        }
+        $data = EmiPaymentIssues::find()
+            ->alias('a')
+            ->joinWith(['createdBy b'])
+            ->andWhere(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->asArray()
+            ->all();
+
+        $res = [];
+        $issues = [
+            '1' => 'legal', '2' => 'Repo', '3' => 'accidental', '4' => 'health'
+        ];
+
+        foreach ($data as $datam) {
+            $reason = $datam['reasons'];
+            $pay_issues = !empty($issues[$reason]) ? $issues[$reason] : null;
+            $createdByName = $datam['createdBy']['first_name'] . ' ' . $datam['createdBy']['last_name'];
+
+            $res[] = [
+                'emi_payment_issues_enc_id' => $datam['emi_payment_issues_enc_id'],
+                'loan_account_enc_id' => $datam['loan_account_enc_id'],
+                'created_by' => $createdByName,
+                'created_on' => $datam['created_on'],
+                'remarks' => $datam['remarks'],
+                'reasons' => $pay_issues,
+            ];
+        }
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $res]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
     public function actionEmiAccountDetails()
     {
         if (!$this->isAuthorized()) {
@@ -147,29 +188,27 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
 
-        $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
-        $model = $this->_emiAccData($params, $lac)['data'];
-        if (!$model) {
-            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
-        }
-
         $data = LoanAccounts::find()
-            ->select(['loan_account_enc_id', 'loan_account_number', 'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
+            ->select(['loan_account_enc_id', 'loan_account_number',
+                'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis',
+                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'])
             ->andWhere(['is_deleted' => 0, 'loan_account_enc_id' => $params['loan_account_enc_id']])
             ->asArray()
             ->one();
 
+        $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+        $model = $this->_emiAccData($lac)['data'];
 
-        if ($data) {
+        if ($data || $model) {
             return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
         }
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
     }
 
-    private function _emiAccData($params, $lac)
+
+    private function _emiAccData($lac)
     {
-        $limit = !empty($params['limit']) ? $params['limit'] : 10;
-        $page = !empty($params['page']) ? $params['page'] : 1;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
@@ -180,15 +219,11 @@ class LoanAccountsController extends ApiBaseController
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number'
             ])
             ->joinWith(['createdBy b'], false)
-            ->orderBy(['a.created_on' => SORT_DESC]);
-//            ->andWhere(['a.is_deleted' => 0,'loan_account_enc_id' => $lac['loan_account_enc_id']]);
+            ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
 
         $model = $model
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
         return ['data' => $model];
-
     }
 }
