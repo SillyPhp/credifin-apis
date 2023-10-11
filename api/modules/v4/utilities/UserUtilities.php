@@ -179,11 +179,15 @@ class UserUtilities
     // finding user access token exists or not
     private function findToken($user_id, $source)
     {
-        return UserAccessTokens::findOne([
-            'user_enc_id' => $user_id,
-            'source' => $source,
-            'is_deleted' => 0
-        ]);
+        return UserAccessTokens::findOne(
+            [
+                'and',
+                ['user_enc_id' => $user_id],
+                ['source' => $source],
+                ['is_deleted' => 0],
+                ['>', 'access_token_expiration', date('Y-m-d H:i:s')]
+            ]
+        );
     }
 
     // if token exists updating its token and expire time

@@ -13,6 +13,9 @@ use common\models\AssignedSupervisor;
 use common\models\Cities;
 use common\models\ClaimedDeals;
 use common\models\ColumnPreferences;
+use common\models\CreditLoanApplicationReports;
+use common\models\CreditRequestedData;
+use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
@@ -2560,6 +2563,19 @@ class CompanyDashboardController extends ApiBaseController
             $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
             $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
 
+            $subquery = (new \yii\db\Query())
+                ->select([
+                    'k.created_by',
+                    'cibil' => 'SUM(CASE WHEN k2.request_source = "CIBIL" THEN 1 ELSE 0 END)',
+                    'equifax' => 'SUM(CASE WHEN k2.request_source = "EQUIFAX" THEN 1 ELSE 0 END)',
+                    'crif' => 'SUM(CASE WHEN k2.request_source = "CRIF" THEN 1 ELSE 0 END)',
+                ])
+                ->from(['k' => CreditLoanApplicationReports::tableName()])
+                ->join('INNER JOIN', ['k1' => CreditResponseData::tableName()], 'k1.response_enc_id = k.response_enc_id')
+                ->join('INNER JOIN', ['k2' => CreditRequestedData::tableName()], 'k2.request_enc_id = k1.request_enc_id')
+                ->groupBy(['k.created_by'])
+                ->andWhere(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
+
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select([
@@ -2603,19 +2619,11 @@ class CompanyDashboardController extends ApiBaseController
                         $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
-                    $k->groupBy(['k.created_by']);
-                    $k->select([
-                        'k.created_by',
-                        'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
-                        'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'
-                    ]);
-                    $k->joinWith(['responseEnc k1' => function ($k1) {
-                        $k1->joinWith(['requestEnc k2']);
-                    }], false);
-                    $k->onCondition(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
-                }])
+                ->joinWith([
+                    'creditLoanApplicationReports k' => function ($k) use ($subquery) {
+                        $k->from(['subquery' => $subquery]);
+                    }
+                ])
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
 
