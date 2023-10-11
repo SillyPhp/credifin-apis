@@ -13,6 +13,7 @@ use common\models\spaces\Spaces;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -239,6 +240,33 @@ class LoanAccountsController extends ApiBaseController
             $Payment_issues->created_by = $Payment_issues->updated_by = $user->user_enc_id;
             $Payment_issues->created_on = $Payment_issues->updated_on = date('Y-m-d H:i:s');
 
+//            if ($Payment_is = UploadedFile::getInstanceByName('image')) {
+//                $image = Yii::$app->getSecurity()->generateRandomString() . '.' . $Payment_is->extension;
+//                $image_location = Yii::$app->getSecurity()->generateRandomString();
+//                $base_path = Yii::$app->params->upload_directories->payment_issues->image . $image_location;
+//
+//                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+//                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+//                $result = $my_space->uploadFileSources($Payment_is->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $image, "public", ['params' => ['contentType' => $Payment_is->type]]);
+//
+//                $Payment_issues->image = $image;
+//                $Payment_issues->image_location = $image_location;
+//            }
+
+            $document = UploadedFile::getInstanceByName('document');
+            if ($document) {
+                $documents = Yii::$app->getSecurity()->generateRandomString() . '.' . $document->extension;
+                $documents_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->payment_issues->image . $documents_location;
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['contentType' => $document->type]]);
+
+                $Payment_issues->image = $documents;
+                $Payment_issues->image_location = $documents_location;
+            }
+
             if (!$Payment_issues->save()) {
                 $transaction->rollBack();
                 return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $Payment_issues->getErrors()]);
@@ -270,13 +298,26 @@ class LoanAccountsController extends ApiBaseController
 
         $res = [];
         $issues = [
-            '1' => 'legal', '2' => 'Repo', '3' => 'accidental', '4' => 'health'
+            '1' => 'Legal', '2' => 'Accident', '3' => 'Health'
         ];
 
         foreach ($data as $datam) {
             $reason = $datam['reasons'];
             $pay_issues = !empty($issues[$reason]) ? $issues[$reason] : null;
             $createdByName = $datam['createdBy']['first_name'] . ' ' . $datam['createdBy']['last_name'];
+            $createdByImage = $datam['createdBy'];
+            if ($createdByImage['image']) {
+                $createdByImage = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->users->image .
+                    $createdByImage['image_location'] . '/' . $createdByImage['image'];
+            } else {
+                $createdByImage = 'https://ui-avatars.com/api/?name=' .
+                    urlencode($createdByImage['first_name'] . ' ' . $createdByImage['last_name']) .
+                    '&size=200&rounded=true&background=' .
+                    str_replace('#', '', $createdByImage['initials_color']) .
+                    '&color=ffffff';
+            }
 
             $res[] = [
                 'emi_payment_issues_enc_id' => $datam['emi_payment_issues_enc_id'],
@@ -284,6 +325,7 @@ class LoanAccountsController extends ApiBaseController
                 'created_by' => $createdByName,
                 'created_on' => $datam['created_on'],
                 'remarks' => $datam['remarks'],
+                'image' => $createdByImage,
                 'reasons' => $pay_issues,
             ];
         }
@@ -331,6 +373,7 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
+                'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
