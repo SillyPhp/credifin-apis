@@ -12,6 +12,7 @@ use Yii;
  * @property string $loan_account_number Loan Account Number
  * @property string $lms_loan_account_number
  * @property string $collection_manager Collection Manager
+ * @property string $group_name Group Name
  * @property string $last_emi_date Last Emi Date
  * @property int $total_installments Total Installments
  * @property double $financed_amount Amount Financed
@@ -61,7 +62,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'created_on', 'updated_on'], 'safe'],
             [['total_installments', 'is_deleted'], 'integer'],
             [['financed_amount', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
-            [['loan_account_enc_id', 'loan_account_number', 'branch_enc_id', 'name', 'loan_type', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_account_enc_id', 'loan_account_number', 'group_name', 'branch_enc_id', 'name', 'loan_type', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['lms_loan_account_number'], 'string', 'max' => 20],
             [['collection_manager', 'stock', 'pos', 'advance_interest', 'bucket'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
