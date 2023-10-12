@@ -318,6 +318,14 @@ class LoanAccountsController extends ApiBaseController
                     str_replace('#', '', $createdByImage['initials_color']) .
                     '&color=ffffff';
             }
+            if (!empty($datam['image'])) {
+                $user_image = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->payment_issues->image .
+                    $datam['image_location'] . '/' . $datam['image'];
+            } else {
+                $user_image = '';
+            }
 
             $res[] = [
                 'emi_payment_issues_enc_id' => $datam['emi_payment_issues_enc_id'],
@@ -325,7 +333,8 @@ class LoanAccountsController extends ApiBaseController
                 'created_by' => $createdByName,
                 'created_on' => $datam['created_on'],
                 'remarks' => $datam['remarks'],
-                'image' => $createdByImage,
+                'user_image' => $createdByImage,
+                'image' => $user_image,
                 'reasons' => $pay_issues,
             ];
         }
