@@ -882,7 +882,7 @@ class LoanApplication extends Model
         }
     }
 
-    private function generateApplicationNumber($product_id, $branch_id, $purpose_id)
+    public static function generateApplicationNumber($product_id, $branch_id, $purpose_id)
     {
         $loan_num = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $product_id]);
         if (!$loan_num || !$loan_num['product_code']) {

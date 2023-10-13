@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%financer_loan_product_pendencies}}".
  *
@@ -19,6 +21,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property FinancerLoanProducts $financerLoanProductEnc
+ * @property LoanApplicationPendencies[] $loanApplicationPendencies
  */
 class FinancerLoanProductPendencies extends \yii\db\ActiveRecord
 {
@@ -70,5 +73,13 @@ class FinancerLoanProductPendencies extends \yii\db\ActiveRecord
     public function getFinancerLoanProductEnc()
     {
         return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPendencies()
+    {
+        return $this->hasMany(LoanApplicationPendencies::className(), ['pendencies_enc_id' => 'pendencies_enc_id']);
     }
 }

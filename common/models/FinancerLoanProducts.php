@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%financer_loan_products}}".
  *
@@ -17,6 +19,7 @@ namespace common\models;
  * @property int $is_deleted 0 false, 1 true
  *
  * @property ColumnPreferences[] $columnPreferences
+ * @property FinancerLoanProductDisbursementCharges[] $financerLoanProductDisbursementCharges
  * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
  * @property FinancerLoanProductImages[] $financerLoanProductImages
  * @property FinancerLoanProductLoginFeeStructure[] $financerLoanProductLoginFeeStructures
@@ -64,6 +67,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function getColumnPreferences()
     {
         return $this->hasMany(ColumnPreferences::className(), ['loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductDisbursementCharges()
+    {
+        return $this->hasMany(FinancerLoanProductDisbursementCharges::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
     }
 
     /**

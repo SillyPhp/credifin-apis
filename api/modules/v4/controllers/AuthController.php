@@ -13,6 +13,7 @@ use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserVerificationTokens;
 use common\models\Utilities;
@@ -43,7 +44,9 @@ class AuthController extends ApiBaseController
                 'otp-change-password',
                 'verify-phone',
                 'referral-logo',
-                'reset-old-password'
+                'reset-old-password',
+                'update-profile'
+
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -64,6 +67,7 @@ class AuthController extends ApiBaseController
                 'otp-change-password' => ['POST', 'OPTIONS'],
                 'referral-logo' => ['POST', 'OPTIONS'],
                 'reset-old-password' => ['POST', 'OPTIONS'],
+                'update-profile' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -82,14 +86,27 @@ class AuthController extends ApiBaseController
     public function actionSignup()
     {
         try {
-
+            $user = $this->isAuthorized();
             $params = Yii::$app->request->post();
 
-            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
+            if (!empty($params['user_type'])) {
+                if ($params['user_type'] == 'Financer') {
+                    $scenario = 'Financer';
+                } elseif ($params['user_type'] == 'Dealer' && !empty($params['ref_id'])) {
+                    $scenario = $user ? 'FinancerDealer' : 'Dealer';
+                    $params = self::_genUserPass($params);
+                } else {
+                    $scenario = 'default';
+                }
+            } else {
+                $scenario = 'default';
+            }
+
+            $model = new SignupForm(['scenario' => $scenario]);
+
 
             // loading data from post request to model
-            if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->load($params)) {
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
@@ -104,7 +121,7 @@ class AuthController extends ApiBaseController
                         // creating user utilities model to get user data
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
-                        if ($user_data['user_type'] != 'Individual') {
+                        if (($user_data['user_type'] != 'Individual' && $model->getScenario() != 'FinancerDealer')) {
                             $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
                             return $this->response(201, ['status' => 201, 'message' => $message]);
 
@@ -127,6 +144,22 @@ class AuthController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
+
+    // this function is only used if a dealer is created by financer
+    private function _genUserPass($data)
+    {
+        while (true) {
+            $username = str_replace([' ', '.', '@'], '', $data['organization_name']) . rand(100, 1000);
+            $checkUsers = Users::findOne(['username' => $username]);
+            if (!$checkUsers) {
+                $data['username'] = $username;
+                break;
+            }
+        }
+        $data['password'] = $data['phone'];
+        return $data;
+    }
+
 
     // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
@@ -689,5 +722,60 @@ class AuthController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionUpdateProfile()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $user_id = $user->user_enc_id;
+
+        if (empty($user_id)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing or invalid user_id']);
+        }
+
+        $user = Users::findOne(['user_enc_id' => $user_id]);
+
+        if (!$user) {
+            return $this->response(404, ['status' => 404, 'message' => 'User not found']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (!empty($params['email'])) {
+            $user->email = $params['email'];
+        }
+
+        if (!empty($params['phone'])) {
+            $user->phone = $params['phone'];
+        }
+
+        if (!empty($params['employee_code'])) {
+            $existingUserRoles = UserRoles::findOne(['employee_code' => $params['employee_code']]);
+            if ($existingUserRoles) {
+                return $this->response(400, ['status' => 400, 'message' => 'Employee code already exists']);
+            }
+
+            $user_role = UserRoles::findOne(['user_enc_id' => $user_id]);
+            if (!$user_role) {
+                $user_role = new UserRoles();
+                $user_role->user_enc_id = $user_id;
+            }
+            $user_role->employee_code = $params['employee_code'];
+
+            if (!$user_role->validate() || !$user_role->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while updating user role', 'errors' => $user_role->errors]);
+            }
+        }
+
+        $user->last_updated_on = date('Y-m-d H:i:s');
+
+        if (!$user->validate() || !$user->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred while updating user', 'errors' => $user->errors]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
     }
 }

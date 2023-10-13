@@ -12,6 +12,7 @@ use yii\web\Response;
 use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
 use api\modules\v4\models\Candidates;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\UserAccessTokens;
 
 // base controller for v4 api's
@@ -48,7 +49,6 @@ class ApiBaseController extends Controller
             // this response returns 200 code everytime in headers
             return $response;
         }
-
     }
 
     // getting status message from http code
@@ -133,6 +133,31 @@ class ApiBaseController extends Controller
         }
 
         return false;
+    }
+
+    public function isSpecialUser($type = false)
+    {
+        if(!$user = $this->isAuthorized()){
+            return false;
+        }
+        if ($type) {
+            return self::specialCheck($user->user_enc_id) ? $user : false;
+        }
+        return UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id) ? $user : false;
+    }
+
+    public static function specialCheck($user_id)
+    {
+        $accessroles = UserUtilities::$rolesArray;
+        $role = UserRoles::find()
+            ->alias('a')
+            ->where(['user_enc_id' => $user_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->joinWith(['designation b' => function ($b) use ($accessroles) {
+                $b->andWhere(['in', 'b.designation', $accessroles]);
+            }], true, 'INNER JOIN')
+            ->exists();
+        return $role;
     }
 
     // getting financer id from logged-in user. user can be dsa, connector, employee, financer
