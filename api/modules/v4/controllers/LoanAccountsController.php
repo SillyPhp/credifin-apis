@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
@@ -10,6 +11,8 @@ use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
 use common\models\Utilities;
 use common\models\spaces\Spaces;
+use common\models\VehicleRepossession;
+use common\models\VehicleRepossessionImages;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -27,7 +30,8 @@ class LoanAccountsController extends ApiBaseController
             'actions' => [
                 'loan-accounts-upload' => ['POST', 'OPTIONS'],
                 'emi-payment-issues' => ['POST', 'OPTIONS'],
-                'emi-account-details' => ['POST', 'OPTIONS']
+                'emi-account-details' => ['POST', 'OPTIONS'],
+                'vehicle-repossession' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -104,7 +108,7 @@ class LoanAccountsController extends ApiBaseController
             $transaction = Yii::$app->db->beginTransaction();
             $utilitiesModel = new Utilities();
             while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-                $data = array_map(function($item) {
+                $data = array_map(function ($item) {
                     return str_replace([' ', "\t", "\n", "\r", "\0", "\x0B"], '', trim($item));
                 }, $data);
                 if ($count) {
@@ -240,19 +244,6 @@ class LoanAccountsController extends ApiBaseController
             $Payment_issues->created_by = $Payment_issues->updated_by = $user->user_enc_id;
             $Payment_issues->created_on = $Payment_issues->updated_on = date('Y-m-d H:i:s');
 
-//            if ($Payment_is = UploadedFile::getInstanceByName('image')) {
-//                $image = Yii::$app->getSecurity()->generateRandomString() . '.' . $Payment_is->extension;
-//                $image_location = Yii::$app->getSecurity()->generateRandomString();
-//                $base_path = Yii::$app->params->upload_directories->payment_issues->image . $image_location;
-//
-//                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-//                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-//                $result = $my_space->uploadFileSources($Payment_is->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $image, "public", ['params' => ['contentType' => $Payment_is->type]]);
-//
-//                $Payment_issues->image = $image;
-//                $Payment_issues->image_location = $image_location;
-//            }
-
             $document = UploadedFile::getInstanceByName('document');
             if ($document) {
                 $documents = Yii::$app->getSecurity()->generateRandomString() . '.' . $document->extension;
@@ -350,6 +341,8 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
+
+
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
@@ -375,6 +368,9 @@ class LoanAccountsController extends ApiBaseController
 
     private function _emiAccData($lac)
     {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
         $model = EmiCollection::find()
@@ -391,7 +387,10 @@ class LoanAccountsController extends ApiBaseController
             ->joinWith(['createdBy b'], false)
             ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
 
+        $count = $model->count();
         $model = $model
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
@@ -413,6 +412,34 @@ class LoanAccountsController extends ApiBaseController
                 $model[$key]['pr_receipt_image'] = $proof;
             }
         }
-        return ['data' => $model];
+        return ['data' => $model, 'count' => $count];
+    }
+
+    public function actionVehicleRepossession()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $model = new VehicleRepoForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            $model->front = UploadedFile::getInstancesByName('front');
+            $model->back = UploadedFile::getInstancesByName('back');
+            $model->left = UploadedFile::getInstancesByName('left');
+            $model->right = UploadedFile::getInstancesByName('right');
+            if ($model->validate()) {
+                $rep = $model->vehicleRepo($user);
+                if ($rep['status'] == 201) {
+                    return $this->response(201, $rep);
+                } else {
+                    return $this->response(5001, $rep);
+                }
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
+            }
+
+        } else {
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+        }
     }
 }
