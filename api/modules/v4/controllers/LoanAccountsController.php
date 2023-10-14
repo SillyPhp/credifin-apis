@@ -6,6 +6,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
+use common\models\UserRoles;
 use common\models\Utilities;
 use Yii;
 use yii\filters\Cors;
@@ -85,8 +86,8 @@ class LoanAccountsController extends ApiBaseController
             "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
             "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
             "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
-            "KLEnull" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
-            "GGNnull" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
+            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
+            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
             "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
             "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
             "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
@@ -98,15 +99,18 @@ class LoanAccountsController extends ApiBaseController
             $count = true;
             $transaction = Yii::$app->db->beginTransaction();
             $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-                $data = array_map(function($item) {
-                    return str_replace([' ', "\t", "\n", "\r", "\0", "\x0B"], '', trim($item));
-                }, $data);
+            while (($data = fgetcsv($handle,)) !== FALSE) {
                 if ($count) {
                     $header = $data;
                     $count = false;
                     continue;
                 }
+
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
                 $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
@@ -122,6 +126,7 @@ class LoanAccountsController extends ApiBaseController
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
                     $loan->branch_enc_id = $branches[$data[array_search('Branch', $header)]];
+                    $loan->group_name = $data[array_search('GroupName', $header)];
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
@@ -134,15 +139,18 @@ class LoanAccountsController extends ApiBaseController
                 $loan->pos = $data[array_search('Pos', $header)];
                 $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
                 $loan->stock = $data[array_search('Stock', $header)];
-                $loan->collection_manager = $data[array_search('CollectionManager', $header)];
+                $collection_manager = UserRoles::findOne(['employee_code' => $data[array_search('CollectionManager', $header)]]);
+                if ($collection_manager && !empty($collection_manager['user_enc_id'])) {
+                    $loan->collection_manager = $collection_manager['user_enc_id'];
+                }
                 !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
                 $loan->updated_on = date('Y-m-d h:i:s');
                 $loan->updated_by = $user->user_enc_id;
                 if (!$loan->save()) {
+                    $transaction->rollBack();
                     print_r($loan->getErrors());
                     print_r($data);
                     exit();
-                    $transaction->rollBack();
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
                 }
             }
@@ -241,11 +249,9 @@ class LoanAccountsController extends ApiBaseController
             }
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'issues' => $Payment_issues]);
-
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
-
 }
