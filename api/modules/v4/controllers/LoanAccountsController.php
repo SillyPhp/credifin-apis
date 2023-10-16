@@ -125,6 +125,7 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
+                    $loan->group_name = $data[array_search('GroupName', $header)];
                     $tmp = $branches[$data[array_search('Branch', $header)]];
                     $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
                     if ($branch && !empty($branch['location_name'])) {
