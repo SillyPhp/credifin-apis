@@ -56,7 +56,7 @@ class VehicleRepoForm extends Model
 
             if (!$repo->save()) {
                 $transaction->rollBack();
-                return ['status' => 5000, 'message' => 'An error occurred while saving the data.', 'error' => $repo->getErrors()];
+                return ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $repo->getErrors()];
             }
 
             foreach ($this->front as $val) {
@@ -73,11 +73,11 @@ class VehicleRepoForm extends Model
             }
 
             $transaction->commit();
-            return ['status' => 200, 'data' => $repo];
+            return ['status' => 200, 'message' => 'successfully added'];
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 5003, 'message' => 'An error occurred', 'error' => $exception->getMessage()];
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => $exception->getMessage()];
         }
     }
 
@@ -95,21 +95,20 @@ class VehicleRepoForm extends Model
 
         $repo_im_in->image = Yii::$app->getSecurity()->generateRandomString() . '.' . $val->extension;
         $repo_im_in->image_location = Yii::$app->getSecurity()->generateRandomString() . '/';
-        $base_path = Yii::$app->params->upload_directories->repo_images->image . $repo_im_in->image_location . $repo_im_in->image;
+        $base_path = Yii::$app->params->upload_directories->repo_images->image . $repo_im_in->image_location;
 
-        $this->fileUpload($val, $base_path);
+        $this->fileUpload($val, $base_path, $repo_im_in->image);
 
         if (!$repo_im_in->save()) {
             throw new \Exception(json_encode($repo_im_in->getErrors()));
         }
     }
 
-    private function fileUpload($image, $base_path)
+    private function fileUpload($image, $base_path, $name)
     {
-        $type = $image->type;
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $image, "private", ['params' => ['ContentType' => $type]]);
+        $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $name, "public", ['params' => ['ContentType' => $image->type]]);
         if (!$result) {
             throw new \Exception('error occurred while uploading the image');
         }

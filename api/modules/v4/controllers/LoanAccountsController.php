@@ -17,6 +17,7 @@ use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use function GuzzleHttp\Promise\all;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -32,6 +33,8 @@ class LoanAccountsController extends ApiBaseController
                 'emi-payment-issues' => ['POST', 'OPTIONS'],
                 'emi-account-details' => ['POST', 'OPTIONS'],
                 'vehicle-repossession' => ['POST', 'OPTIONS'],
+                'get-repo-list' => ['POST', 'OPTIONS'],
+                'repo-details' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -342,7 +345,6 @@ class LoanAccountsController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
 
-
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
@@ -432,7 +434,7 @@ class LoanAccountsController extends ApiBaseController
                 if ($rep['status'] == 201) {
                     return $this->response(201, $rep);
                 } else {
-                    return $this->response(5001, $rep);
+                    return $this->response(500, $rep);
                 }
             } else {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
@@ -441,5 +443,120 @@ class LoanAccountsController extends ApiBaseController
         } else {
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         }
+    }
+
+    public function actionGetRepoList()
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = VehicleRepossession::find()
+            ->alias('a')
+            ->select(['a.vehicle_repossession_enc_id', 'a.loan_account_enc_id', 'a.vehicle_model', 'a.km_driven',
+                '(CASE WHEN a.insurance = "1" THEN "yes" ELSE "no" END) AS insurance',
+                '(CASE WHEN a.rc = "1" THEN "yes" ELSE "no" END) AS rc', 'a.registration_number', 'a.current_market_value',
+                'a.repossession_date', 'b.loan_account_number'])
+            ->joinWith(['loanAccountEnc b'], false)
+            ->andWhere(['a.is_deleted' => 0]);
+
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'registration_number' || $key == 'repossession_date') {
+                        $data->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'loan_account_number') {
+                        $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'insurance' || $key == 'rc') {
+                        if ($value == 'yes') {
+                            $data->andWhere([$key => 1]);
+                        } elseif ($value == 0) {
+                            $data->andWhere([$key => 0]);
+                        }
+                    } else {
+                        $data->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        $count = $data->count();
+        $data = $data
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionRepoDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['vehicle_repossession_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "vehicle_repossession_enc_id']);
+        }
+
+        $data = VehicleRepossessionImages::find()
+            ->alias('a')
+            ->andWhere(['a.is_deleted' => 0, 'a.vehicle_repossession_enc_id' => $params['vehicle_repossession_enc_id']])
+            ->joinWith(['vehicleRepossessionEnc b' => function ($b) {
+                $b->joinWith(['loanAccountEnc b1']);
+            }])
+            ->asArray()
+            ->all();
+
+        $images = ['front' => [], 'back' => [], 'left' => [], 'right' => []];
+
+        $issues = [
+            '1' => 'front', '2' => 'back', '3' => 'left', '4' => 'right'
+        ];
+
+        foreach ($data as $datam) {
+            $img_type = $datam['image_type'];
+            $image_type = $issues[$img_type];
+
+            if (!empty($datam['image'])) {
+                $user_image = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->repo_images->image .
+                    $datam['image_location'] . '' . $datam['image'];
+            } else {
+                $user_image = '';
+            }
+
+            $images[$image_type][] = [
+                'image' => $user_image,
+            ];
+        }
+
+        $result = [
+            'status' => 200,
+            'data' => [
+                'vehicle_repossession_enc_id' => $params['vehicle_repossession_enc_id'],
+                'vehicle_model' => $datam['vehicleRepossessionEnc']['vehicle_model'],
+                'loan_account_number' => $datam['vehicleRepossessionEnc']['loanAccountEnc']['loan_account_number'],
+                'km_driven' => $datam['vehicleRepossessionEnc']['km_driven'],
+                'registration_number' => $datam['vehicleRepossessionEnc']['registration_number'],
+                'current_market_value' => $datam['vehicleRepossessionEnc']['current_market_value'],
+                'repossession_date' => $datam['vehicleRepossessionEnc']['repossession_date'],
+                'insurance' => ($datam['vehicleRepossessionEnc']['repossession_date'] == 1) ? 'yes' : 'no',
+                'rc' => ($datam['vehicleRepossessionEnc']['repossession_date'] == 1) ? 'yes' : 'no',
+                'images' => $images,
+            ],
+        ];
+
+        if (!empty($images['front']) || !empty($images['back']) || !empty($images['left']) || !empty($images['right'])) {
+            return $this->response(200, $result);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
