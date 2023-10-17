@@ -67,15 +67,18 @@ class TestController extends ApiBaseController
                 'a.phone', 'c.address', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.pf', 'a.cibil_score',
                 'DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), "%d-%m-%Y") as emi_collection_date', 'a.chassis_number',
                 'DATE_FORMAT(DATE_ADD(STR_TO_DATE(a.emi_collection_date, "%Y-%m-%d"), INTERVAL a.number_of_emis MONTH), "%d-%m-%Y") AS last_date',
-                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model','f.name loan_type', 'a.amount', 'b.disbursement_approved', 'b.insurance_charges'
+                'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model','f.name loan_type', 'a.amount', 'b.disbursement_approved', 'b.insurance_charges',
+                'c.postal_code',
+                'CONCAT(g.first_name, " ", COALESCE(g.last_name)) as leadby',
+                'a.applicant_dob', 'a.voter_card_number'
             ])
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanApplicantResidentialInfos c' => function ($c) {
                 $c->joinWith(['stateEnc c1'], false);
             }], false)
             ->joinWith(['loanCoApplicants d' => function ($d) {
-                $d->select(['d.loan_app_enc_id', 'd.name', 'd1.address', 'd.phone', 'd.borrower_type', 'd.loan_co_app_enc_id']);
-                $d->onCondition(['d.is_deleted'  => 0]);
+                $d->select(['d.loan_app_enc_id', 'd.name', 'd1.address', 'd.co_applicant_dob', 'd1.postal_code', 'd.phone', 'd.borrower_type', 'd.loan_co_app_enc_id', 'd.aadhaar_number', 'd.voter_card_number', 'd.pan_number']);
+                $d->onCondition(['d.is_deleted' => 0]);
                 $d->joinWith(['loanApplicantResidentialInfos d1'], false);
             }], true)
             ->joinWith(['loanApplicationOptions e'], false)
@@ -85,7 +88,8 @@ class TestController extends ApiBaseController
                 ['b.provider_enc_id' => $params['org_id']],
                 ['a.is_deleted' => 0],
             ])
-            ->joinWith(['loanProductsEnc f'],false);
+            ->joinWith(['loanProductsEnc f'], false)
+            ->joinWith(['leadBy g'], false);
             if(!empty($params['loan_products_enc_id'])){
                 $query->andWhere(['a.loan_products_enc_id' => $params['loan_products_enc_id']]);
             }
