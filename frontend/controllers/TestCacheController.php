@@ -95,13 +95,15 @@ class TestCacheController extends Controller
         return $randomString;
     }
 
-    public function actionMoveToBorrower($page=1,$limit=100){
+    public function actionMoveToBorrower($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
         try {
             $offset = ($page - 1) * $limit;
             $model = LoanApplications::find()
+                ->where(['between','created_on',$start,$end])
                 ->limit($limit)
                 ->offset($offset)
                 ->asArray()->all();
+
             $transaction = Yii::$app->db->beginTransaction();
             $count = 0;
             foreach ($model as $mod) {
