@@ -9,6 +9,7 @@ use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
+use common\models\OrganizationLocations;
 use common\models\UserRoles;
 use common\models\Utilities;
 use common\models\spaces\Spaces;
@@ -117,7 +118,7 @@ class LoanAccountsController extends ApiBaseController
             $count = true;
             $transaction = Yii::$app->db->beginTransaction();
             $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle,)) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
                 if ($count) {
                     $header = $data;
                     $count = false;
@@ -143,8 +144,12 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    $loan->branch_enc_id = $branches[$data[array_search('Branch', $header)]];
                     $loan->group_name = $data[array_search('GroupName', $header)];
+                    $tmp = $branches[$data[array_search('Branch', $header)]];
+                    $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
+                    if ($branch && !empty($branch['location_name'])) {
+                        $loan->branch_enc_id = $branch;
+                    }
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
