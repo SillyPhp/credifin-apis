@@ -44,6 +44,7 @@ class VehicleRepoForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $repo->vehicle_repossession_enc_id = $utilitiesModel->encrypt();
             $repo->loan_account_enc_id = $params['loan_account_enc_id'];
+            $repo->financer_vehicle_brand_enc_id = $params['financer_vehicle_brand_enc_id'];
             $repo->vehicle_model = $params['vehicle_model'];
             $repo->km_driven = $params['km_driven'];
             $repo->insurance = $params['insurance'] == 'yes' ? 1 : 0;
