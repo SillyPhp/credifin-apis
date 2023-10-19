@@ -57,6 +57,8 @@ use yii\web\UploadedFile;
 
 class CompanyDashboardController extends ApiBaseController
 {
+    public $vehicleList = ["E-Rickshaw", "Used Commercial Vehicle Loan", "Used Car Loan", "EV Two Wheeler", "Two Wheeler"];
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -279,7 +281,12 @@ class CompanyDashboardController extends ApiBaseController
 
         //get user roles
         $specialroles = false;
+        $leadsAccessOnly = false;
         $roleUnderId = null;
+        if (in_array($user->username, ['Phf24', 'Sumit1992'])) {
+            $leadsAccessOnly = $user->username === 'Phf24' ? 'vehicle' : 'lap';
+        }
+
         // if user is organization/financer then getting its DSA's
         $dsa = [];
         if ($user->organization_enc_id) {
@@ -431,7 +438,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        if (!$user->organization_enc_id && !$specialroles) {
+        if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
@@ -647,6 +654,14 @@ class CompanyDashboardController extends ApiBaseController
             $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         }
 
+        if (!empty($leadsAccessOnly)) {
+            if ($leadsAccessOnly == 'vehicle') {
+                $where = ['lp.name' => $this->vehicleList];
+            } else {
+                $where = ['lp.name' => ['Loan Against Property', 'Capital LAP BC 10', 'Affordable Housing Loan BC 15']];
+            }
+            $loans->andWhere($where);
+        }
         $count = $loans->count();
 
         $loans = $loans
