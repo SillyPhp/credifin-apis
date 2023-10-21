@@ -1094,7 +1094,7 @@ class LoansController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         if (empty($params['loan_app_id'])) {
-            return $this->response( 422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
         }
         $credit_report = CreditLoanApplicationReports::find()
             ->alias('a')
@@ -1270,13 +1270,13 @@ class LoansController extends ApiBaseController
         }
         foreach ($res as &$value) {
             foreach ($value as &$item) {
-                if (is_array($item)){
+                if (is_array($item)) {
                     $item = array_unique($item);
                 }
             }
         }
         if ($res) {
-            return $this->response(200, ['status' => 200,  'data' => array_values($res)]);
+            return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'data not found']);
@@ -1321,7 +1321,7 @@ class LoansController extends ApiBaseController
             } else {
                 $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
             }
-            $phoneExists = $phoneExists->andWhere(['a.is_deleted' => 0])
+            $phoneExists = $phoneExists->andWhere(['a.is_deleted' => 0, 'a.source' => 'EmpowerFintech'])
                 ->exists();
 
 
@@ -1497,7 +1497,7 @@ class LoansController extends ApiBaseController
                 if (!is_array($params['value'])) {
                     return $this->response(500, ['status' => 500, 'message' => 'values must be in array']);
                 }
-                $purposes  = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
+                $purposes = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
                 if (!$purposes) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating purposes']);
                 }
@@ -1536,7 +1536,7 @@ class LoansController extends ApiBaseController
 
         $transaction = Yii::$app->db->beginTransaction();
         foreach ($purposes as $purpose) {
-            $purpose_check  = LoanPurpose::findOne(['financer_loan_purpose_enc_id' => $purpose, 'loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+            $purpose_check = LoanPurpose::findOne(['financer_loan_purpose_enc_id' => $purpose, 'loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
             if (!$purpose_check) {
                 $new_purpose = new LoanPurposeExtended();
                 $utilitiesModel = new Utilities();
@@ -1560,7 +1560,6 @@ class LoansController extends ApiBaseController
         $transaction->commit();
         return true;
     }
-
 
 
     public function actionAssignApplicationNumber()
@@ -1741,6 +1740,7 @@ class LoansController extends ApiBaseController
             $co_applicant ? $whereCondition['loan_co_app_enc_id'] = $co_applicant : '';
             return LoanApplicationPendencies::findOne($whereCondition) ? true : false;
         }
+
         // received pendencies from params
         $new_pendency = array_column($data, 'pendency');
 
@@ -1805,6 +1805,7 @@ class LoansController extends ApiBaseController
         $transaction->commit();
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
+
     private function removeOldPendency($new, $existing, $data, $type = '')
     {
         $diff = array_diff($existing, $new);
@@ -1905,7 +1906,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        $image  = UploadedFile::getInstanceByName('file');
+        $image = UploadedFile::getInstanceByName('file');
         if (empty($params['loan_pendency_enc_id']) || empty($params['name']) || empty($image)) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_pendency_enc_id or name or file"']);
         }

@@ -503,11 +503,11 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
         }
         if (!empty($params['fields_search']['start_date'])) {
-            $loans->andWhere(['>=', 'a.loan_status_updated_on', $params['fields_search']['start_date']]);
+            $loans->andWhere(['>=', 'a.created_on', $params['fields_search']['start_date']]);
         }
 
         if (!empty($params['fields_search']['end_date'])) {
-            $loans->andWhere(['<=', 'a.loan_status_updated_on', $params['fields_search']['end_date']]);
+            $loans->andWhere(['<=', 'a.created_on', $params['fields_search']['end_date']]);
         }
 
 
