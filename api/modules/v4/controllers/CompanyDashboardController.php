@@ -811,9 +811,6 @@ class CompanyDashboardController extends ApiBaseController
     {
         // checking user authorization
         if ($user = $this->isAuthorized()) {
-            $user_id = $user->user_enc_id;
-            $juniors = LoanApplication::getting_reporting_ids($user_id, 1);
-            $juniors[] = $user_id;
 
             // getting date before 1 month
             $date = new \DateTime('now');
@@ -847,12 +844,6 @@ class CompanyDashboardController extends ApiBaseController
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
-                ])
-                ->joinWith([
-                    'createdBy s' => function ($s) {
-                        $s->select(['sas.organization_enc_id']);
-                        $s->joinWith(['userRoles0 sas']);
-                    }
                 ])
                 ->joinWith([
                     'loanProductsEnc lpe' => function ($lpe) use ($params) {
@@ -972,20 +963,8 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
                 //                }])
-                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
-
-            if ($user->organization_enc_id) {
-                $loan->andWhere(
-                    ['sas.organization_enc_id' => $user->organization_enc_id]
-                );
-            } else {
-                $loan->andWhere([
-                    'or',
-                    ['a.managed_by' => $user_id],
-                    ['in', 'a.lead_by', $juniors]
-                ]);
-            }
-            $loan =  $loan->asArray()
+                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+                ->asArray()
                 ->one();
 
             // if loan application exists
