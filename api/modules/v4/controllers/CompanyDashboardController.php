@@ -503,11 +503,11 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
         }
         if (!empty($params['fields_search']['start_date'])) {
-            $loans->andWhere(['>=', 'a.loan_status_updated_on', $params['fields_search']['start_date']]);
+            $loans->andWhere(['>=', 'a.created_on', $params['fields_search']['start_date']]);
         }
 
         if (!empty($params['fields_search']['end_date'])) {
-            $loans->andWhere(['<=', 'a.loan_status_updated_on', $params['fields_search']['end_date']]);
+            $loans->andWhere(['<=', 'a.created_on', $params['fields_search']['end_date']]);
         }
 
 
@@ -811,6 +811,9 @@ class CompanyDashboardController extends ApiBaseController
     {
         // checking user authorization
         if ($user = $this->isAuthorized()) {
+            $user_id = $user->user_enc_id;
+            $juniors = LoanApplication::getting_reporting_ids($user_id, 1);
+            $juniors[] = $user_id;
 
             // getting date before 1 month
             $date = new \DateTime('now');
@@ -846,6 +849,12 @@ class CompanyDashboardController extends ApiBaseController
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
                 ])
                 ->joinWith([
+                    'createdBy s' => function ($s) {
+                        $s->select(['sas.organization_enc_id']);
+                        $s->joinWith(['userRoles0 sas']);
+                    }
+                ])
+                ->joinWith([
                     'loanProductsEnc lpe' => function ($lpe) use ($params) {
                         $lpe->select(['lpe.financer_loan_product_enc_id']);
                         $lpe->joinWith(['financerLoanProductDisbursementCharges lpe1' => function ($lpe1) use ($params) {
@@ -855,7 +864,8 @@ class CompanyDashboardController extends ApiBaseController
                             $lpe1->select(['lpe1.disbursement_charges_enc_id', 'lpe1.financer_loan_product_enc_id', 'lpe1.name', 'lpe2.amount']);
                             $lpe1->onCondition(['lpe1.is_deleted' => 0]);
                         }]);
-                    }])
+                    }
+                ])
                 ->joinWith(['capitalRoiUpdatedBy ub'], false)
                 ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
@@ -962,8 +972,20 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
                 //                }])
-                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
-                ->asArray()
+                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
+
+            if ($user->organization_enc_id) {
+                $loan->andWhere(
+                    ['sas.organization_enc_id' => $user->organization_enc_id]
+                );
+            } else {
+                $loan->andWhere([
+                    'or',
+                    ['a.managed_by' => $user_id],
+                    ['in', 'a.lead_by', $juniors]
+                ]);
+            }
+            $loan =  $loan->asArray()
                 ->one();
 
             // if loan application exists

@@ -790,8 +790,12 @@ class LoanApplication extends Model
         throw new \Exception(json_encode($token->getErrors()));
     }
 
-    public function getting_reporting_ids($user_id)
+    public static function getting_reporting_ids($user_id, $type = 0)
     {
+        // type 1 for child reporting persons and 0(default) for parent reporting persons
+        $rep = $type ? 'user_enc_id' : 'reporting_person';
+        $user = $type ? 'reporting_person' : 'user_enc_id';
+
         $marked = [];
         $data = [];
         while (true) {
@@ -803,13 +807,13 @@ class LoanApplication extends Model
 
             $query = UserRoles::find()
                 ->alias('a')
-                ->select(['a.reporting_person'])
-                ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
+                ->select(['a.' . $rep])
+                ->where(['a.' . $user => $user_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
 
-            if (!empty($query['reporting_person'])) {
-                $user_id = $query['reporting_person'];
+            if (!empty($query[$rep])) {
+                $user_id = $query[$rep];
                 if (!in_array($user_id, $data)) {
                     $data[] = $user_id;
                 } else {
