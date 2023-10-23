@@ -41,6 +41,9 @@ use Yii;
  * @property Users $updatedBy
  * @property Users $createdBy
  * @property OrganizationLocations $branchEnc
+ * @property Users $collectionManager
+ * @property VehicleRepoComments[] $vehicleRepoComments
+ * @property VehicleRepossession[] $vehicleRepossessions
  */
 class LoanAccounts extends \yii\db\ActiveRecord
 {
@@ -71,6 +74,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
+            [['collection_manager'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['collection_manager' => 'user_enc_id']],
         ];
     }
 
@@ -104,5 +108,29 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getBranchEnc()
     {
         return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollectionManager()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'collection_manager']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleRepoComments()
+    {
+        return $this->hasMany(VehicleRepoComments::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleRepossessions()
+    {
+        return $this->hasMany(VehicleRepossession::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 }
