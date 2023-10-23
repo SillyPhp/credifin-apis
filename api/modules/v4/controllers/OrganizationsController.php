@@ -200,7 +200,8 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'b.city_enc_id', 'a.status'])
+                ->addSelect(["CONCAT(a.location_name , ', ', b.name) as value"])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()
@@ -2123,10 +2124,12 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 'a.notice_enc_id',
                 'a.notice', 'a.type',
-                '(CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END) as image',
-                '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
-            ]);
+            ])
+        ->addSelect([
+            "(CASE WHEN a.status = 'Active' THEN TRUE ELSE FALSE END) as status",
+            "(CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, "https") . "', a.image_location, '/', a.image) ELSE NULL END) as image"
+        ]);
         if (isset($params['status']) && $params['status']) {
             $notice->andWhere(['a.status' => $params['status']]);
         }
