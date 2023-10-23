@@ -808,8 +808,12 @@ class LoanApplication extends Model
         throw new \Exception(json_encode($token->getErrors()));
     }
 
-    public function getting_reporting_ids($user_id)
+    public static function getting_reporting_ids($user_id, $type = 0)
     {
+        // type 1 for child reporting persons and 0(default) for parent reporting persons
+        $rep = $type ? 'user_enc_id' : 'reporting_person';
+        $user = $type ? 'reporting_person' : 'user_enc_id';
+
         $marked = [];
         $data = [];
         while (true) {
@@ -821,13 +825,13 @@ class LoanApplication extends Model
 
             $query = UserRoles::find()
                 ->alias('a')
-                ->select(['a.reporting_person'])
-                ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
+                ->select(['a.' . $rep])
+                ->where(['a.' . $user => $user_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
 
-            if (!empty($query['reporting_person'])) {
-                $user_id = $query['reporting_person'];
+            if (!empty($query[$rep])) {
+                $user_id = $query[$rep];
                 if (!in_array($user_id, $data)) {
                     $data[] = $user_id;
                 } else {
@@ -845,8 +849,8 @@ class LoanApplication extends Model
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
         $shared = Users::findOne(['user_enc_id' => $user_id]);
-        $shared_by = $shared->first_name ." ". $shared->last_name;
-        if (!empty($reporting_persons_ids)){
+        $shared_by = $shared->first_name . " " . $shared->last_name;
+        if (!empty($reporting_persons_ids)) {
             $all_notifications = [];
             foreach ($reporting_persons_ids as $value) {
                 $query = new SharedLoanApplications();
@@ -862,7 +866,7 @@ class LoanApplication extends Model
                 $query->created_on = date('Y-m-d H:i:s');
                 if (!$query->save()) {
                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
-                }else {
+                } else {
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $notification = [
                         'notification_enc_id' => $utilitiesModel->encrypt(),
@@ -875,9 +879,9 @@ class LoanApplication extends Model
                     array_push($all_notifications, $notification);
                 }
             }
-            if(!empty($all_notifications)){
+            if (!empty($all_notifications)) {
                 $notification_users = new UserUtilities();
-                $notification_users ->saveNotification($all_notifications);
+                $notification_users->saveNotification($all_notifications);
             }
         }
     }
@@ -929,11 +933,11 @@ class LoanApplication extends Model
         $incremental = LoanApplications::find()
             ->alias('a')
             ->select(['a.application_number'])
-           // ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
-               ->where(['AND',
-               ['LIKE', 'application_number', $loan_num['product_code']],
-               ['LIKE', 'application_number', $cityCode.$branchCode],
-               ['LIKE', 'application_number', $currentMonth.$currentYear]])
+            // ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
+            ->where(['AND',
+                ['LIKE', 'application_number', $loan_num['product_code'] . '-'],
+                ['LIKE', 'application_number', $cityCode . $branchCode],
+                ['LIKE', 'application_number', '-' . $currentMonth . $currentYear]])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->one();
 
@@ -949,51 +953,52 @@ class LoanApplication extends Model
         }
     }
 
-    public function updateLoanAccountPurpose($options){
-        $loan_account = LoanApplications::findOne(['loan_app_enc_id'=>$options['loan_id']]);
+    public function updateLoanAccountPurpose($options)
+    {
+        $loan_account = LoanApplications::findOne(['loan_app_enc_id' => $options['loan_id']]);
         $loan_account_number = $loan_account->application_number;
-        $purpose_id =  $options['purposes'];
-        if (empty($loan_account_number)||$loan_account_number==NUll){
+        $purpose_id = $options['purposes'];
+        if (empty($loan_account_number) || $loan_account_number == NUll) {
             $product_id = $loan_account->loan_products_enc_id;
             $branches = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id','b.branch_enc_id','a.application_number'])
-                ->where(['a.loan_app_enc_id'=>$options['loan_id']])
-                ->joinWith(['assignedLoanProviders b'],false,'INNER JOIN')
+                ->select(['a.loan_app_enc_id', 'b.branch_enc_id', 'a.application_number'])
+                ->where(['a.loan_app_enc_id' => $options['loan_id']])
+                ->joinWith(['assignedLoanProviders b'], false, 'INNER JOIN')
                 ->asArray()->one();
             $branch_id = $branches['branch_enc_id'];
-            $new_loan_account_number = $this->generateApplicationNumber($product_id,$branch_id,$options['purposes']);
+            $new_loan_account_number = $this->generateApplicationNumber($product_id, $branch_id, $options['purposes']);
         }
-        $loan_account_number_array = explode("-",$loan_account_number);
-         if (count($loan_account_number_array)>=4) {
-             if ($purpose_id) {
-                 $purposes = FinancerLoanProductPurpose::find()
-                     ->select('purpose_code')
-                     ->andWhere(['in', 'financer_loan_product_purpose_enc_id', $purpose_id])
-                     ->asArray()
-                     ->all();
+        $loan_account_number_array = explode("-", $loan_account_number);
+        if (count($loan_account_number_array) >= 4) {
+            if ($purpose_id) {
+                $purposes = FinancerLoanProductPurpose::find()
+                    ->select('purpose_code')
+                    ->andWhere(['in', 'financer_loan_product_purpose_enc_id', $purpose_id])
+                    ->asArray()
+                    ->all();
 
-                 $purposeCodeArray = [];
-                 foreach ($purposes as $purpose) {
-                     if (!empty($purpose['purpose_code'])) {
-                         $purposeCodeArray[] = $purpose['purpose_code'];
-                     }
-                 }
-                 $purposeCodeArray = array_unique($purposeCodeArray);
-                 $purposeCode = implode($purposeCodeArray);
-                 if ($purposeCode!==''||$purposeCode!==Null){
-                     if (count($loan_account_number_array)==5){
-                         $loan_account_number_array[1] = $purposeCode;
-                         $new_loan_account_number =  implode("-",$loan_account_number_array);
-                     }elseif (count($loan_account_number_array)==4){
-                         $loan_account_number_array = $this->array_insert($loan_account_number_array,1,$purposeCode);
-                         $new_loan_account_number =  implode("-",$loan_account_number_array);
-                     }
-                 }
-                 $loan_account->application_number = $new_loan_account_number;
-                 $loan_account->save();
-             }
-         }
+                $purposeCodeArray = [];
+                foreach ($purposes as $purpose) {
+                    if (!empty($purpose['purpose_code'])) {
+                        $purposeCodeArray[] = $purpose['purpose_code'];
+                    }
+                }
+                $purposeCodeArray = array_unique($purposeCodeArray);
+                $purposeCode = implode($purposeCodeArray);
+                if ($purposeCode !== '' || $purposeCode !== Null) {
+                    if (count($loan_account_number_array) == 5) {
+                        $loan_account_number_array[1] = $purposeCode;
+                        $new_loan_account_number = implode("-", $loan_account_number_array);
+                    } elseif (count($loan_account_number_array) == 4) {
+                        $loan_account_number_array = $this->array_insert($loan_account_number_array, 1, $purposeCode);
+                        $new_loan_account_number = implode("-", $loan_account_number_array);
+                    }
+                }
+                $loan_account->application_number = $new_loan_account_number;
+                $loan_account->save();
+            }
+        }
     }
 
     public function array_insert($array, $position, $insert)
@@ -1001,7 +1006,7 @@ class LoanApplication extends Model
         if (is_int($position)) {
             array_splice($array, $position, 0, $insert);
         } else {
-            $pos   = array_search($position, array_keys($array));
+            $pos = array_search($position, array_keys($array));
             $array = array_merge(
                 array_slice($array, 0, $pos),
                 $insert,

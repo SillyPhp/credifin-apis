@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
@@ -1825,6 +1826,7 @@ class OrganizationsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
+        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id,1);
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
@@ -1848,7 +1850,8 @@ class OrganizationsController extends ApiBaseController
                 $c->joinWith(['cityEnc c1'], false);
             }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
-            ->andWhere(['a.is_deleted' => 0]);
+            ->andWhere(['a.is_deleted' => 0])
+            ->orWhere(['a.created_by' => $juniors]);
 
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);

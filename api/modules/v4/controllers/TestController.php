@@ -46,7 +46,7 @@ class TestController extends ApiBaseController
         return $behaviors;
     }
 
-    
+
 
 
     public function actionTestxl()
@@ -70,7 +70,7 @@ class TestController extends ApiBaseController
                 'c1.name state', 'e.dealer_name', 'e.vehicle_type', 'e.vehicle_making_year', 'e.vehicle_brand', 'e.vehicle_model','f.name loan_type', 'a.amount', 'b.disbursement_approved', 'b.insurance_charges',
                 'c.postal_code',
                 'CONCAT(g.first_name, " ", COALESCE(g.last_name)) as leadby',
-                'a.applicant_dob', 'a.voter_card_number'
+                'a.applicant_dob', 'a.voter_card_number', 'a.created_on login_date', 'a.loan_status_updated_on disbursement_date'
             ])
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanApplicantResidentialInfos c' => function ($c) {
