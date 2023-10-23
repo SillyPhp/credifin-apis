@@ -452,16 +452,23 @@ class OrganizationsController extends ApiBaseController
             if (!$lender) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+
+            $subquery = (new \yii\db\Query())
+                ->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name'])
+                ->from(['c' => FinancerLoanProductDocuments::tableName()])
+                ->join('LEFT JOIN', ['c1' => CertificateTypes::tableName()], 'c1.certificate_type_enc_id = c.certificate_type_enc_id')
+                ->andWhere(['c.is_deleted' => 0])
+                ->orderBy(['c.sequence' => SORT_ASC]);
+
             $certificates = FinancerLoanProducts::find()
                 ->alias('a')
                 ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
-                ->innerJoinWith(['financerLoanProductDocuments c' => function ($c) {
-                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name']);
-                    $c->joinWith(['certificateTypeEnc c1'], false);
-                    $c->orderBy(['c.sequence' => SORT_ASC]);
-                    $c->onCondition(['c.is_deleted' => 0]);
-                }])
+                ->innerJoinWith([
+                    'financerLoanProductDocuments c' => function ($k) use ($subquery) {
+                        $k->from(['subquery' => $subquery]);
+                    }
+                ])
                 ->where([
                     'b.organization_enc_id' => $lender, 'b.is_deleted' => 0, 'a.is_deleted' => 0
                 ])
@@ -1061,11 +1068,10 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Organization not found']);
             }
             $subquery = (new \yii\db\Query())
-                ->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence','c1.status_color'])
-                ->from(['c' => FinancerLoanProductStatus::tableName()])
-                ->join('LEFT JOIN', ['c1' => LoanStatus::tableName()], 'c1.loan_status_enc_id = c.loan_status_enc_id')
+                ->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose'])
+                ->from(['c' => FinancerLoanProductPurpose::tableName()])
                 ->andWhere(['c.is_deleted' => 0])
-                ->orderBy(['c1.sequence' => SORT_ASC]);
+                ->orderBy(['c.sequence' => SORT_ASC]);
 
             $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
@@ -1091,6 +1097,7 @@ class OrganizationsController extends ApiBaseController
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
             if ($loan_products) {
                 return $this->response(200, ['status' => 200, 'loan_products' => $loan_products]);
             }
@@ -2316,15 +2323,22 @@ class OrganizationsController extends ApiBaseController
         if (!$lender) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+        $subquery = (new \yii\db\Query())
+            ->select([])
+            ->from(['c' => FinancerLoanProductImages::tableName()])
+            ->andWhere(['c.is_deleted' => 0])
+            ->orderBy(['c.sequence' => SORT_ASC])
+            ->andWhere(['c.is_deleted' => 0]);
+
         $images = FinancerLoanProducts::find()
             ->alias('a')
             ->select(['a.financer_loan_product_enc_id', 'a.name'])
-            ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
-            ->innerJoinWith(['financerLoanProductImages c' => function ($c) {
-                $c->select(['c.product_image_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.name']);
-                $c->orderBy(['c.sequence' => SORT_ASC]);
-                $c->onCondition(['c.is_deleted' => 0]);
-            }])
+            ->joinWith(['assignedFinancerLoanTypeEnc b'], false,'INNER JOIN')
+            ->innerJoinWith([
+                'financerLoanProductImages c' => function ($k) use ($subquery) {
+                    $k->from(['subquery' => $subquery]);
+                }
+            ])
             ->where([
                 'b.organization_enc_id' => $lender,
                 'a.is_deleted' => 0,
