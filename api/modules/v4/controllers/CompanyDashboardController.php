@@ -335,6 +335,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
                 'a.amount',
+                'h.name applicant_name',
                 'a.amount_received',
                 'a.amount_due',
                 'a.scholarship',
@@ -349,7 +350,9 @@ class CompanyDashboardController extends ApiBaseController
                 'a.created_by',
                 'a.lead_by',
                 'a.managed_by',
-                'lp.name as loan_product'
+                'lp.name as loan_product',
+                'i.updated_on',
+                'a.created_on'
             ])
             ->addSelect([
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -357,10 +360,10 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
                     ELSE CONCAT('SELF (',cb.first_name, ' ', COALESCE(cb.last_name, ''), ')')
                 END) as creator_name",
-                "(CASE
-                    WHEN h.borrower_type = 'Borrower' THEN h.name
-                    ELSE a.applicant_name
-                END) as applicant_name",
+//                "(CASE
+//                    WHEN h.borrower_type = 'Borrower' THEN h.name
+//                    ELSE a.applicant_name
+//                END) as applicant_name",
                 "(CASE 
                     WHEN a.lead_by IS NOT NULL THEN '0' 
                     ELSE '1' 
@@ -379,18 +382,7 @@ class CompanyDashboardController extends ApiBaseController
                 $cr->joinWith(['userTypeEnc ute'], false);
             }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
-                $h->select([
-                    'h.loan_app_enc_id',
-                    'h.relation',
-                    'h.name',
-                    'h.annual_income',
-                    '(CASE
-                        WHEN h.employment_type = "0" THEN "Non Working"
-                        WHEN h.employment_type = "1" THEN "Salaried"
-                        WHEN h.employment_type = "2" THEN "Self Employed"
-                        ELSE "N/A"
-                    END) as employment_type',
-                ]);
+                $h->andOnCondition(['h.borrower_type'=>'Borrower']);
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                 $i->joinWith(['providerEnc j']);
@@ -407,8 +399,8 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanProductsEnc lp'], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
-                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
-                    'CASE WHEN n1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", n1.image_location, "/", n1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(n1.first_name," ",n1.last_name), "&size=200&rounded=false&background=", REPLACE(n1.initials_color, "#", ""), "&color=ffffff") END image'
+                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone',
+                    "CASE WHEN n1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', n1.image_location, '/', n1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(n1.first_name,' ',n1.last_name), '&size=200&rounded=false&background=', REPLACE(n1.initials_color, '#', ''), '&color=ffffff') END image"
                 ])
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
@@ -737,8 +729,8 @@ class CompanyDashboardController extends ApiBaseController
         $query = AssignedLoanProvider::find()
             ->alias('a')
             ->select([
-                'COUNT(CASE WHEN a.status = "33" THEN b.loan_app_enc_id END) as completed',
-                'COUNT(CASE WHEN a.status != "33" AND a.status != "0" THEN b.loan_app_enc_id END) as pending',
+                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
+                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
             ])
             ->joinWith(['loanApplicationEnc b'], false)
             ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
