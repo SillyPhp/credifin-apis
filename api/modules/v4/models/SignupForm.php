@@ -8,6 +8,7 @@ use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
 use common\models\AssignedDealerVehicleTypes;
 use common\models\AssignedSupervisor;
+use common\models\BankDetails;
 use common\models\EmailLogs;
 use common\models\FinancerVehicleTypes;
 use common\models\Organizations;
@@ -46,7 +47,12 @@ class SignupForm extends Model
     public $vehicle_type;
     public $brands;
     public $category;
-    public $company_type;
+    public $dealer_type;
+    public $account_name;
+    public $bank_name;
+    public $account_number;
+    public $ifsc_code;
+//    public $company_type;
     public $trade_certificate;
 
     // rules for form
@@ -58,17 +64,17 @@ class SignupForm extends Model
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
-            [['organization_name', 'brands', 'category', 'company_type', 'vehicle_type', 'trade_certificate'], 'required', 'on' => 'FinancerDealer'],
+            [['organization_name', 'category', 'trade_certificate', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'dealer_type'], 'required', 'on' => 'FinancerDealer'],
 
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
+            [['username', 'email', 'vehicle_type', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['vehicle_type', 'brands'], function () {
-                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
-                    $this->addError('vehicle_type', 'It must be an array!');
-                    $this->addError('brands', 'It must be an array!');
-                }
-            }],
+//            [['vehicle_type', 'brands'], function () {
+//                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
+//                    $this->addError('vehicle_type', 'It must be an array!');
+//                    $this->addError('brands', 'It must be an array!');
+//                }
+//            }],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],
             [['password'], 'string', 'length' => [8, 20]],
@@ -153,6 +159,7 @@ class SignupForm extends Model
             if ($this->getScenario() == 'Dealer' || $this->getScenario() == 'FinancerDealer') {
                 $this->dealerCreate($this->organization_id);
             }
+
             // adding Referral code for new signed-up user
             $this->addReferralCode();
 
@@ -177,7 +184,7 @@ class SignupForm extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollback();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
 
@@ -195,7 +202,14 @@ class SignupForm extends Model
         $options->assigned_dealer_options_enc_id = $utilitiesModel->encrypt();
         $options->organization_enc_id = $ref['organization_enc_id'];
         $options->category = $this->category;
-        $options->company_type = $this->company_type;
+        if ($this->dealer_type == 'vehicle') {
+            $options->dealer_type = 0;
+        } else if ($this->dealer_type == 'electronics') {
+            $options->dealer_type = 1;
+        } else {
+            throw new \Exception('Invalid dealer_type value');
+        }
+
         $options->trade_certificate = $this->trade_certificate ? 1 : 0;
         $options->created_on = $options->updated_on = date('Y-m-d H:i:s');
         $options->created_by = $options->updated_by = $this->user_id;
@@ -203,32 +217,51 @@ class SignupForm extends Model
             throw new \Exception(json_encode($options->getErrors()));
         }
 
-        foreach ($this->brands as $value) {
-            $brand = new AssignedDealerBrands();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $brand->assigned_dealer_brands_enc_id = $utilitiesModel->encrypt();
-            $brand->organization_enc_id = $ref['organization_enc_id'];
-            $brand->financer_vehicle_brand_enc_id = $value;
-            $brand->created_on = $brand->updated_on = date('Y-m-d H:i:s');
-            $brand->created_by = $brand->updated_by = $this->user_id;
-            if (!$brand->save()) {
-                throw new \Exception(json_encode($brand->getErrors()));
+        $bankDetails = new BankDetails();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $bankDetails->bank_details_enc_id = $utilitiesModel->encrypt();
+        $bankDetails->name = $this->account_name;
+        $bankDetails->bank_name = $this->bank_name;
+        $bankDetails->bank_account_number = $this->account_number;
+        $bankDetails->ifsc_code = $this->ifsc_code;
+        $bankDetails->created_on = $bankDetails->updated_on = date('Y-m-d H:i:s');
+        $bankDetails->created_by = $bankDetails->updated_by = $this->user_id;
+        if (!$bankDetails->save()) {
+            throw new \Exception(json_encode($bankDetails->getErrors()));
+        }
+
+        if ($this->dealer_type == 0 && is_array($this->brands)) {
+            foreach ($this->brands as $value) {
+                $brand = new AssignedDealerBrands();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $brand->assigned_dealer_brands_enc_id = $utilitiesModel->encrypt();
+                $brand->organization_enc_id = $ref['organization_enc_id'];
+                $brand->financer_vehicle_brand_enc_id = $value;
+                $brand->created_on = $brand->updated_on = date('Y-m-d H:i:s');
+                $brand->created_by = $brand->updated_by = $this->user_id;
+                if (!$brand->save()) {
+                    throw new \Exception(json_encode($brand->getErrors()));
+                }
             }
         }
 
-        foreach ($this->vehicle_type as $value) {
-            $type = new FinancerVehicleTypes();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $type->financer_vehicle_type_enc_id = $utilitiesModel->encrypt();
-            $type->organization_enc_id = $organization_id;
-            $type->vehicle_type = $value;
-            $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
-            $type->created_by = $type->updated_by = $this->user_id;
-            if (!$type->save()) {
-                throw new \Exception(json_encode($type->getErrors()));
+        if ($this->dealer_type == 0 && is_array($this->vehicle_type)) {
+            foreach ($this->vehicle_type as $value) {
+                $type = new FinancerVehicleTypes();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $type->financer_vehicle_type_enc_id = $utilitiesModel->encrypt();
+                $type->organization_enc_id = $organization_id;
+                $type->vehicle_type = $value;
+                $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
+                $type->created_by = $type->updated_by = $this->user_id;
+                if (!$type->save()) {
+                    throw new \Exception(json_encode($type->getErrors()));
+                }
             }
         }
     }
+
 
     // saving username data
     private function saveUsername($user_type)

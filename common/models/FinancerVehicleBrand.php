@@ -19,13 +19,14 @@ use Yii;
  * @property string $updated_on
  * @property int $is_deleted
  *
+ * @property AssignedDealerBrands[] $assignedDealerBrands
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
+ * @property VehicleRepossession[] $vehicleRepossessions
  */
 class FinancerVehicleBrand extends \yii\db\ActiveRecord
 {
-
     /**
      * {@inheritdoc}
      */
@@ -40,16 +41,24 @@ class FinancerVehicleBrand extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_vehicle_brand_enc_id', 'organization_enc_id', 'brand_name', 'created_by'], 'required'],
+            [['financer_vehicle_brand_enc_id', 'organization_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_vehicle_brand_enc_id', 'organization_enc_id', 'brand_name', 'logo', 'logo_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['financer_vehicle_brand_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDealerBrands()
+    {
+        return $this->hasMany(AssignedDealerBrands::className(), ['financer_vehicle_brand_enc_id' => 'financer_vehicle_brand_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -73,5 +82,13 @@ class FinancerVehicleBrand extends \yii\db\ActiveRecord
     public function getOrganizationEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleRepossessions()
+    {
+        return $this->hasMany(VehicleRepossession::className(), ['financer_vehicle_brand_enc_id' => 'financer_vehicle_brand_enc_id']);
     }
 }
