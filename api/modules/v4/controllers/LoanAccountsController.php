@@ -756,7 +756,7 @@ class LoanAccountsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $data = EmiPaymentIssuesExtended::find()
             ->alias('a')
-            ->select(['a.remarks', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
+            ->select(['a.remarks', 'a.loan_account_enc_id', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
                 , 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by', 'b.emi_amount'
                 , 'b.last_emi_received_amount'
             ])
@@ -798,7 +798,7 @@ class LoanAccountsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $data = EmiPaymentIssuesExtended::find()
             ->alias('a')
-            ->select(['a.remarks', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
+            ->select(['a.remarks', 'a.loan_account_enc_id', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
                 , 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
             ])
             ->joinWith(['loanAccountEnc b'], false)
@@ -839,7 +839,7 @@ class LoanAccountsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $data = EmiPaymentIssuesExtended::find()
             ->alias('a')
-            ->select(['a.remarks', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
+            ->select(['a.remarks', 'a.loan_account_enc_id', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.image_location, "/", a.image) END image'
                 , 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
             ])
             ->joinWith(['loanAccountEnc b'], false)
