@@ -17,6 +17,7 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Services;
+use common\models\spaces\Spaces;
 use common\models\Usernames;
 use common\models\UserRoles;
 use common\models\Users;
@@ -24,6 +25,7 @@ use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 // this signup form is used to signup users with type Individual, Financer, Employee, DSA, Dealer, Connector
 class SignupForm extends Model
@@ -217,19 +219,26 @@ class SignupForm extends Model
             throw new \Exception(json_encode($options->getErrors()));
         }
 
-        $bankDetails = new BankDetails();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $bankDetails->bank_details_enc_id = $utilitiesModel->encrypt();
-        $bankDetails->name = $this->account_name;
-        $bankDetails->bank_name = $this->bank_name;
-        $bankDetails->bank_account_number = $this->account_number;
-        $bankDetails->ifsc_code = $this->ifsc_code;
-        $bankDetails->created_on = $bankDetails->updated_on = date('Y-m-d H:i:s');
-        $bankDetails->created_by = $bankDetails->updated_by = $this->user_id;
-        if (!$bankDetails->save()) {
-            throw new \Exception(json_encode($bankDetails->getErrors()));
+        if ($this->bank_name && $this->account_number && $this->account_name && $this->ifsc_code) {
+            $bankDetails = new BankDetails();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $bankDetails->bank_details_enc_id = $utilitiesModel->encrypt();
+            $bankDetails->name = $this->account_name;
+            $bankDetails->bank_name = $this->bank_name;
+            $bankDetails->bank_account_number = $this->account_number;
+            $bankDetails->ifsc_code = $this->ifsc_code;
+            $bankDetails->created_on = $bankDetails->updated_on = date('Y-m-d H:i:s');
+            $bankDetails->created_by = $bankDetails->updated_by = $this->user_id;
+            if (!$bankDetails->save()) {
+                throw new \Exception(json_encode($bankDetails->getErrors()));
+            }
+        } else {
+            if ($this->bank_name || $this->account_number || $this->account_name || $this->ifsc_code) {
+                throw new \Exception('please fill all bank details');
+            }
         }
+
 
         if ($this->dealer_type == 0 && is_array($this->brands)) {
             foreach ($this->brands as $value) {
@@ -292,6 +301,26 @@ class SignupForm extends Model
         $utilitiesModel->variables['table_name'] = Organizations::tableName();
         $utilitiesModel->variables['field_name'] = 'slug';
         $organizationsModel->slug = $utilitiesModel->create_slug();
+
+
+        $logo = UploadedFile::getInstanceByName('logo');
+
+        $organizationsModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
+        $base_path = Yii::$app->params->upload_directories->organizations->logo . $organizationsModel->logo_location . '/';
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $organizationsModel->logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+        $type = $logo->type;
+        if (!empty($organizationsModel->save())) {
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $organizationsModel->logo, "public", ['params' => ['ContentType' => $type]]);
+            if ($result) {
+                return $this->response(200, ['status' => 200, 'message' => 'saved Successfully']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading logo']);
+            }
+        }
+
         if (!$organizationsModel->validate() || !$organizationsModel->save()) {
             throw new \Exception(json_encode($organizationsModel->getErrors()));
         }

@@ -1489,7 +1489,7 @@ class LoansController extends ApiBaseController
         if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
         }
-        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
+        if (in_array($params['type'], ['invoice_number', 'assign_dealer', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
             $type = $params['type'];
 
             // if type is 'purposes' then calling a private function to update purposes

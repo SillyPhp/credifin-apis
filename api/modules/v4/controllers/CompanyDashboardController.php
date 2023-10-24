@@ -1362,15 +1362,18 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
-                'or',
-                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['employee_search']],
-                ['like', 'b.username', $params['employee_search']],
-                ['like', 'b.email', $params['employee_search']],
-                ['like', 'b.phone', $params['employee_search']],
-                ['like', 'a.employee_code', $params['employee_search']],
+                'and',
+                [
+                    'or',
+                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', 'b.username', $params['employee_search']],
+                    ['like', 'b.email', $params['employee_search']],
+                    ['like', 'b.phone', $params['employee_search']],
+                    ['like', 'a.employee_code', $params['employee_search']],
+                ],
+                ['b.status' => 'active'],
             ]);
         }
 
@@ -1399,7 +1402,7 @@ class CompanyDashboardController extends ApiBaseController
             ->select([
                 'a.role_enc_id',
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
-                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
+                'a.employee_joining_date', 'a.user_enc_id', 'a.user_enc_id as id', 'b.username', 'b.email', 'b.phone', 'CONCAT(b.first_name," ",b.last_name) name', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
                 'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'
             ])
             ->joinWith(['userEnc b'], false)
@@ -1412,14 +1415,18 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Dealer', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
         // filter dealer search on dealer name, username, email and phone
-        if ($params != null && !empty($params['dealer_search'])) {
+        if ($params != null && !empty($params['employee_search'])) {
             $dealer->andWhere([
-                'or',
-                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['dealer_search']],
-                ['like', 'b.username', $params['dealer_search']],
-                ['like', 'b.email', $params['dealer_search']],
-                ['like', 'b.phone', $params['dealer_search']],
-                ['like', 'a.employee_code', $params['dealer_search']],
+                'and',
+                [
+                    'or',
+                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', 'b.username', $params['employee_search']],
+                    ['like', 'b.email', $params['employee_search']],
+                    ['like', 'b.phone', $params['employee_search']],
+                    ['like', 'a.employee_code', $params['employee_search']],
+                ],
+                ['b.status' => 'active'],
             ]);
         }
 
@@ -1501,66 +1508,75 @@ class CompanyDashboardController extends ApiBaseController
     // employee search
     public function actionEmployeeSearch($employee_search, $type, $loan_id = null)
     {
-        if ($user = $this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
 
-            $params = Yii::$app->request->post();
+        $params = Yii::$app->request->post();
 
-            // getting and adding in params
-            $params['employee_search'] = $employee_search;
-            $params['type'] = $type;
-            $params['loan_id'] = $loan_id;
+        // getting and adding in params
+        $params['employee_search'] = $employee_search;
+        $params['type'] = $type;
+        $params['loan_id'] = $loan_id;
 
-            // getting lender of this user
-            $lender = $this->getFinancerId($user);
+        // getting lender of this user
+        $lender = $this->getFinancerId($user);
 
-            // if lender not found
-            if (!$lender) {
-                return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
+        // if lender not found
+        if (!$lender) {
+            return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
+        }
+
+        // getting employee list already assigned to this loan_id
+        $already_exists = SharedLoanApplications::find()
+            ->select(['shared_to'])
+            ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
+            ->asArray()
+            ->all();
+
+        // extracting shared to ids
+        $already_exists_ids = [];
+        if ($already_exists) {
+            foreach ($already_exists as $e) {
+                $already_exists_ids[] = $e['shared_to'];
             }
+        }
 
-            // getting employee list already assigned to this loan_id
-            $already_exists = SharedLoanApplications::find()
-                ->select(['shared_to'])
-                ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
-                ->asArray()
-                ->all();
+        // assigning already exists in params
+        $params['alreadyExists'] = $already_exists_ids;
 
-            // extracting shared to ids
-            $already_exists_ids = [];
-            if ($already_exists) {
-                foreach ($already_exists as $e) {
-                    $already_exists_ids[] = $e['shared_to'];
-                }
-            }
+        // getting employees list
 
-            // assigning already exists in params
-            $params['alreadyExists'] = $already_exists_ids;
-
-            // getting employees list
+        // if type employees
+        if ($params['type'] == 'employees') {
             $employees = $this->employeesList($lender, $params);
 
-            // if type employees
-            if ($params['type'] == 'employees') {
+            // if employees exists
+            if ($employees) {
 
-                // if employees exists
-                if ($employees) {
+                // looping employees
+                foreach ($employees as $key => $val) {
 
-                    // looping employees
-                    foreach ($employees as $key => $val) {
-
-                        // adding lead_by and managed_by = false in employees
-                        $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
-                        $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
-                        $employees[$key]['id'] = $val['user_enc_id'];
-                        $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
-                    }
+                    // adding lead_by and managed_by = false in employees
+                    $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
+                    $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
+                    $employees[$key]['id'] = $val['user_enc_id'];
+                    $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
                 }
             }
-
-            return $this->response(200, ['status' => 200, 'list' => $employees]);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        } elseif ($params['type'] == 'dealer') {
+            $dealer = $this->dealerList($lender, $params);
+            if ($dealer) {
+                foreach ($dealer as $key => $val) {
+                    $employees[$key]['id'] = $val['user_enc_id'];
+                    $dealer[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
+                }
+            }
         }
+        if ($params['type'] == 'dealer') {
+            return $this->response(200, ['status' => 200, 'list' => $dealer]);
+        }
+        return $this->response(200, ['status' => 200, 'list' => $employees]);
     }
 
     public function actionChangeStatus()

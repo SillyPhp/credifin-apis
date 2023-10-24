@@ -116,66 +116,6 @@ class DealersController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'Not found']);
     }
 
-    public function actionDealerSearch($dealer_search, $type, $loan_id = null)
-    {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-
-        $params['dealer_search'] = $dealer_search;
-        $params['type'] = $type;
-        $params['loan_id'] = $loan_id;
-
-        $lender = $this->getFinancerId($user);
-
-        // if lender not found
-        if (!$lender) {
-            return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
-        }
-
-        // getting employee list already assigned to this loan_id
-        $already_exists = UserTypes::find()
-            ->select(['user_type'])
-            ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
-            ->asArray()
-            ->all();
-
-        // extracting shared to ids
-        $already_exists_ids = [];
-        if ($already_exists) {
-            foreach ($already_exists as $e) {
-                $already_exists_ids[] = $e['shared_to'];
-            }
-        }
-
-        // assigning already exists in params
-        $params['alreadyExists'] = $already_exists_ids;
-
-        // getting employees list
-        $employees = $this->employeesList($lender, $params);
-
-        // if type employees
-        if ($params['type'] == 'employees') {
-
-            // if employees exists
-            if ($employees) {
-
-                // looping employees
-                foreach ($employees as $key => $val) {
-
-                    // adding lead_by and managed_by = false in employees
-                    $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
-                    $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
-                    $employees[$key]['id'] = $val['user_enc_id'];
-                    $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
-                }
-            }
-        }
-
-        return $this->response(200, ['status' => 200, 'list' => $employees]);
-    }
-
 }
 
 
