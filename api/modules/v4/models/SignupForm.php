@@ -7,6 +7,7 @@ use api\modules\v4\controllers\DealsController;
 use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
 use common\models\AssignedDealerVehicleTypes;
+use common\models\AssignedFinancerDealers;
 use common\models\AssignedSupervisor;
 use common\models\BankDetails;
 use common\models\EmailLogs;
@@ -104,7 +105,7 @@ class SignupForm extends Model
     public function save()
     {
         // if user type is Employee or Dealer it will be saved as it is PA0iwUzc4y
-        if ($this->user_type == 'Financer') {
+        if ($this->user_type == 'Financer' || $this->getScenario() == 'FinancerDealer') {
             // if user_type is financer its type will be saved as Organization Admin and for financer (Loans) service assigned in selected_services
             $user_type = 'Organization Admin';
         } else {
@@ -169,7 +170,7 @@ class SignupForm extends Model
             }
 
             // if user_type Employee or Dealer then saving user role for them
-            if (($user_type == 'Employee' || $user_type == 'Dealer') && !empty($this->ref_id)) {
+            if (($user_type == 'Employee' || $user_type == 'Dealer' || $this->getScenario() == 'FinancerDealer') && !empty($this->ref_id)) {
                 $this->addUserRole($user->user_type_enc_id);
             }
 
@@ -198,9 +199,21 @@ class SignupForm extends Model
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
+        $assignDealer = new AssignedFinancerDealers();
+        $assignDealer->assigned_dealer_enc_id = $utilitiesModel->encrypt();
+        $assignDealer->assigned_financer_enc_id = $ref['organization_enc_id'];
+        $assignDealer->dealer_enc_id = $organization_id;
+        $assignDealer->created_on = $assignDealer->updated_on = date('Y-m-d H:i:s');
+        $assignDealer->created_by = $assignDealer->updated_by = $this->user_id;
+        if (!$assignDealer->save()) {
+            throw new \Exception(json_encode($assignDealer->getErrors()));
+        }
+
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
         $options = new AssignedDealerOptions();
         $options->assigned_dealer_options_enc_id = $utilitiesModel->encrypt();
-        $options->organization_enc_id = $ref['organization_enc_id'];
+        $options->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
         $options->category = $this->category;
         if ($this->dealer_type == 'vehicle') {
             $options->dealer_type = 0;
@@ -210,7 +223,7 @@ class SignupForm extends Model
             throw new \Exception('Invalid dealer_type value');
         }
 
-        $options->trade_certificate = $this->trade_certificate ? 1 : 0;
+        $options->trade_certificate = $this->trade_certificate == 'yes' ? 1 : 0;
         $options->created_on = $options->updated_on = date('Y-m-d H:i:s');
         $options->created_by = $options->updated_by = $this->user_id;
         if (!$options->save()) {
@@ -238,12 +251,12 @@ class SignupForm extends Model
         }
 
 
-        if ($this->dealer_type == 0 && is_array($this->brands)) {
+        if ($this->dealer_type == 'vehicle' && is_array($this->brands)) {
             foreach ($this->brands as $value) {
                 $brand = new AssignedDealerBrands();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $brand->assigned_dealer_brands_enc_id = $utilitiesModel->encrypt();
-                $brand->organization_enc_id = $ref['organization_enc_id'];
+                $brand->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
                 $brand->financer_vehicle_brand_enc_id = $value;
                 $brand->created_on = $brand->updated_on = date('Y-m-d H:i:s');
                 $brand->created_by = $brand->updated_by = $this->user_id;
@@ -253,13 +266,13 @@ class SignupForm extends Model
             }
         }
 
-        if ($this->dealer_type == 0 && is_array($this->vehicle_type)) {
+        if ($this->dealer_type == 'vehicle' && is_array($this->vehicle_type)) {
             foreach ($this->vehicle_type as $value) {
-                $type = new FinancerVehicleTypes();
+                $type = new AssignedDealerVehicleTypes();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $type->financer_vehicle_type_enc_id = $utilitiesModel->encrypt();
-                $type->organization_enc_id = $organization_id;
-                $type->vehicle_type = $value;
+                $type->assigned_dealer_vehicle_type_enc_id = $utilitiesModel->encrypt();
+                $type->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
+                $type->financer_vehicle_type_enc_id = $value;
                 $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
                 $type->created_by = $type->updated_by = $this->user_id;
                 if (!$type->save()) {
