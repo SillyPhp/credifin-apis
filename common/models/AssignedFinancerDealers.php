@@ -15,7 +15,10 @@ namespace common\models;
  * @property string $updated_by Foreign key to users table
  * @property int $is_deleted 0 as false, 1 as true
  *
+ * @property AssignedDealerOptions[] $assignedDealerOptions
  * @property Organizations $dealerEnc
+ * @property Users $createdBy
+ * @property Users $updatedBy
  */
 class AssignedFinancerDealers extends \yii\db\ActiveRecord
 {
@@ -39,7 +42,17 @@ class AssignedFinancerDealers extends \yii\db\ActiveRecord
             [['assigned_dealer_enc_id', 'assigned_financer_enc_id', 'dealer_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_dealer_enc_id'], 'unique'],
             [['dealer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['dealer_enc_id' => 'organization_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDealerOptions()
+    {
+        return $this->hasMany(AssignedDealerOptions::className(), ['assigned_dealer_enc_id' => 'assigned_dealer_enc_id']);
     }
 
     /**
@@ -48,5 +61,21 @@ class AssignedFinancerDealers extends \yii\db\ActiveRecord
     public function getDealerEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'dealer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
     }
 }

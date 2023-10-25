@@ -6,7 +6,9 @@ use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedDealerVehicleTypes;
 use common\models\AssignedDeals;
+use common\models\AssignedFinancerDealers;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
@@ -1287,7 +1289,7 @@ class CompanyDashboardController extends ApiBaseController
                 $connector = $this->connectorsList($dsa_id, $params);
 
                 // getting dealer's list
-                $dealer = $this->dealerList($org_id, $params);
+                $dealer = $this->dealerList($params);
 
                 return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer, 'deleted' => $deleted]);
             } else {
@@ -1394,25 +1396,21 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
-    private function dealerList($org_id, $params = null)
+    private function dealerList($params)
     {
         // getting dealer data
-        $dealer = UserRoles::find()
+        $dealer = AssignedFinancerDealers::find()
             ->alias('a')
             ->select([
-                'a.role_enc_id',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
-                'a.employee_joining_date', 'a.user_enc_id', 'a.user_enc_id as id', 'b.username', 'b.email', 'b.phone', 'CONCAT(b.first_name," ",b.last_name) name', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'
+                'a.assigned_financer_enc_id', 'a.assigned_dealer_enc_id',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
+                'b.username', 'b.email', 'b.phone', 'd.name', 'b.first_name', 'b.last_name', 'b.status'
             ])
-            ->joinWith(['userEnc b'], false)
-            ->joinWith(['userTypeEnc c'], false)
-            ->joinWith(['designation d'], false)
-            ->joinWith(['reportingPerson e'], false)
-            ->joinWith(['branchEnc f' => function ($f) {
-                $f->joinWith(['cityEnc f1']);
-            }], false)
-            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Dealer', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['assignedDealerOptions c'], false)
+            ->joinWith(['dealerEnc d'], false)
+            ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id'], 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
         // filter dealer search on dealer name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
@@ -1439,7 +1437,7 @@ class CompanyDashboardController extends ApiBaseController
 
         // checking if this dealer already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
-            $dealer->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
+            $dealer->andWhere(['not', ['b.user_enc_id' => $params['alreadyExists']]]);
         }
 
         return $dealer->asArray()
