@@ -66,9 +66,9 @@ class SignupForm extends Model
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
-            [['organization_name', 'category', 'trade_certificate', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'dealer_type'], 'required', 'on' => 'FinancerDealer'],
+            [['organization_name', 'category', 'trade_certificate', 'dealer_type'], 'required', 'on' => 'FinancerDealer'],
 
-            [['username', 'email', 'vehicle_type', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
+            [['username', 'email', 'vehicle_type', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
 //            [['vehicle_type', 'brands'], function () {
@@ -117,7 +117,6 @@ class SignupForm extends Model
         try {
             // saving username for user
             $this->saveUsername($user_type);
-
             // saving user data
             $user = new Candidates();
             $utilitiesModel = new \common\models\Utilities();
@@ -156,8 +155,7 @@ class SignupForm extends Model
                     throw new \Exception(json_encode($user->getErrors()));
                 }
             }
-//            print_r($this->organization_id);
-//            exit();
+
             if ($this->getScenario() == 'Dealer' || $this->getScenario() == 'FinancerDealer') {
                 $this->dealerCreate($this->organization_id);
             }
@@ -303,26 +301,23 @@ class SignupForm extends Model
         $organizationsModel->slug = $utilitiesModel->create_slug();
 
 
-        $logo = UploadedFile::getInstanceByName('logo');
-
-        $organizationsModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->organizations->logo . $organizationsModel->logo_location . '/';
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $organizationsModel->logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
-        $type = $logo->type;
-        if (!empty($organizationsModel->save())) {
+        $logo = UploadedFile::getInstanceByName('dealer_logo');
+        if ($logo) {
+            $organizationsModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->organizations->logo . $organizationsModel->logo_location . '/';
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $organizationsModel->logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+            $type = $logo->type;
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
             $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $organizationsModel->logo, "public", ['params' => ['ContentType' => $type]]);
-            if ($result) {
-                return $this->response(200, ['status' => 200, 'message' => 'saved Successfully']);
-            } else {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading logo']);
+            if (!$result) {
+                throw new \Exception('Failed to upload logo');
             }
         }
 
-        if (!$organizationsModel->validate() || !$organizationsModel->save()) {
-            throw new \Exception(json_encode($organizationsModel->getErrors()));
+        if (!$organizationsModel->save()) {
+            throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($organizationsModel->errors, 0, false)));
         }
 
         return $organizationsModel->organization_enc_id;
