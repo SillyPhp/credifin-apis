@@ -454,9 +454,6 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
-                    //                    if (empty($params['fields_search'])) {
-                    //                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-                    //                    }
                     break;
                 case 'tvr':
                     $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {
@@ -528,11 +525,14 @@ class CompanyDashboardController extends ApiBaseController
                         if ($key == 'apply_date') {
                             $loans->andWhere(['like', 'a.created_on', $val]);
                         } else {
+                            if ($key=='applicant_name'):
+                                $loans->andWhere(['like', 'h.name', $val]);
+                                else:
                             // else checking other fields with their names
                             $loans->andWhere(['like', 'a.' . $key, $val]);
+                                endif;
                         }
                     }
-
 
                     // key match to "i" table array
                     if (in_array($key, $i)) {
@@ -584,6 +584,7 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere([
                 'or',
                 ['like', 'a.applicant_name', $params['search_keyword']],
+                ['like', 'h.name', $params['search_keyword']],
                 ['like', 'a.loan_type', $params['search_keyword']],
                 ['like', 'a.amount', $params['search_keyword']],
                 ['like', 'a.created_on', $params['search_keyword']],
