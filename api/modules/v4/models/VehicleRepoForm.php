@@ -2,12 +2,14 @@
 
 namespace api\modules\v4\models;
 
+use common\models\LoanActionRequests;
 use common\models\spaces\Spaces;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use mysql_xdevapi\Exception;
 use yii\base\Model;
 use common\models\Utilities;
+use yii\web\UploadedFile;
 use Yii;
 
 class VehicleRepoForm extends Model
@@ -39,10 +41,10 @@ class VehicleRepoForm extends Model
         }
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $repo = new VehicleRepossession();
+            $repo = new LoanActionRequests;
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $repo->vehicle_repossession_enc_id = $utilitiesModel->encrypt();
+            $repo->request_enc_id = $utilitiesModel->encrypt();
             $repo->loan_account_enc_id = $params['loan_account_enc_id'];
             $repo->financer_vehicle_brand_enc_id = $params['financer_vehicle_brand_enc_id'];
             $repo->vehicle_model = $params['vehicle_model'];
@@ -52,8 +54,17 @@ class VehicleRepoForm extends Model
             $repo->registration_number = !empty($params['registration_number']) ? $params['registration_number'] : null;
             $repo->current_market_value = $params['current_value'];
             $repo->repossession_date = $params['repossession_date'];
+            $repo->reasons = 4;
             $repo->created_by = $repo->updated_by = $user->user_enc_id;
             $repo->created_on = $repo->updated_on = date('Y-m-d H:i:s');
+
+            if($image = UploadedFile::getInstanceByName('rc_image')){
+                $repo->rc_image = Yii::$app->getSecurity()->generateRandomString() . '.' . $image->extension;
+                $repo->rc_image_location = Yii::$app->getSecurity()->generateRandomString() . '/';
+                $base_path = Yii::$app->params->upload_directories->repo_images->image . $repo->rc_image_location;
+
+                $this->fileUpload($image, $base_path, $repo->rc_image);        
+            }
 
             if (!$repo->save()) {
                 $transaction->rollBack();
@@ -61,16 +72,16 @@ class VehicleRepoForm extends Model
             }
 
             foreach ($this->front as $val) {
-                $this->saveImages($val, $repo->vehicle_repossession_enc_id, $user->user_enc_id, 1);
+                $this->saveImages($val, $repo->request_enc_id, $user->user_enc_id, 1);
             }
             foreach ($this->back as $val) {
-                $this->saveImages($val, $repo->vehicle_repossession_enc_id, $user->user_enc_id, 2);
+                $this->saveImages($val, $repo->request_enc_id, $user->user_enc_id, 2);
             }
             foreach ($this->left as $val) {
-                $this->saveImages($val, $repo->vehicle_repossession_enc_id, $user->user_enc_id, 3);
+                $this->saveImages($val, $repo->request_enc_id, $user->user_enc_id, 3);
             }
             foreach ($this->right as $val) {
-                $this->saveImages($val, $repo->vehicle_repossession_enc_id, $user->user_enc_id, 4);
+                $this->saveImages($val, $repo->request_enc_id, $user->user_enc_id, 4);
             }
 
             $transaction->commit();
