@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 use common\models\Categories;
+use common\models\CreditLoanApplicationReports;
+use common\models\LoanApplicantResidentialInfo;
+use common\models\LoanCoApplicants;
 use common\models\OpenTitles;
 use common\models\User;
 use common\models\Usernames;
@@ -204,6 +207,127 @@ class TestCacheController extends Controller
                 'title' => 'Oops!!',
                 'message' => 'Data Not Found'
             ];
+        }
+    }
+
+    public function actionMoveToBorrower($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+        try {
+            $offset = ($page - 1) * $limit;
+            $model = LoanApplications::find()
+                ->where(['between','created_on',$start,$end])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()->all();
+
+            $transaction = Yii::$app->db->beginTransaction();
+            $count = 0;
+            foreach ($model as $mod) {
+                $dataModel = new LoanCoApplicants();
+                $dataModel->loan_co_app_enc_id = $mod['loan_app_enc_id'];
+                $dataModel->loan_app_enc_id = $mod['loan_app_enc_id'];
+                $dataModel->name = $mod['applicant_name'];
+                $dataModel->email = $mod['email'];
+                $dataModel->cibil_score = $mod['cibil_score'];
+                $dataModel->equifax_score = $mod['equifax_score'];
+                $dataModel->crif_score = $mod['crif_score'];
+                $dataModel->phone = $mod['phone'];
+                $dataModel->relation = Null;
+                $dataModel->borrower_type = 'Borrower';
+                $dataModel->employment_type = Null;
+                $dataModel->gender = $mod['gender'];
+                $dataModel->annual_income = $mod['yearly_income'];
+                $dataModel->co_applicant_dob = $mod['applicant_dob'];
+                $dataModel->image = $mod['image'];
+                $dataModel->image_location = $mod['image_location'];
+                $dataModel->pan_number = $mod['pan_number'];
+                $dataModel->aadhaar_number = $mod['aadhaar_number'];
+                $dataModel->voter_card_number = $mod['voter_card_number'];
+                $dataModel->driving_license_number = Null;
+                $dataModel->aadhaar_link_phone_number = $mod['aadhaar_link_phone_number'];
+                $dataModel->created_by = $mod['created_by'];
+                $dataModel->created_on = $mod['created_on'];
+                $dataModel->updated_on = $mod['updated_on'];
+                $dataModel->updated_by = $mod['updated_by'];
+                $dataModel->is_deleted = $mod['is_deleted'];
+                if (!$dataModel->save()) {
+                    $transaction->rollBack();
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($dataModel->errors, 0, false)));
+                }
+                $count++;
+            }
+            echo $count.' entry moved to database';
+            $transaction->commit();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+    }
+    public function actionMoveResidence($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+        try {
+            $offset = ($page - 1) * $limit;
+            $model = LoanApplications::find()
+                ->where(['between','created_on',$start,$end])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()->all();
+            $transaction = Yii::$app->db->beginTransaction();
+            $count = 0;
+            foreach ($model as $mod) {
+                $datamodel = LoanApplicantResidentialInfo::find()
+                    ->where(['loan_app_enc_id'=>$mod['loan_app_enc_id']])
+                    ->andWhere([
+                        'or',
+                        ['loan_co_app_enc_id'=>null],
+                        ['loan_co_app_enc_id'=>''],
+                        ['loan_co_app_enc_id'=>Null],
+                    ])->one();
+                if ($datamodel){
+                    $datamodel->loan_co_app_enc_id = $datamodel->loan_app_enc_id;
+                    if (!$datamodel->save()) {
+                        $transaction->rollBack();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($datamodel->errors, 0, false)));
+                    }
+                    $count++;
+                }
+            }
+            echo $count.' entry moved to database';
+            $transaction->commit();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+    }
+
+    public function actionMoveCredits($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+        try {
+            $offset = ($page - 1) * $limit;
+            $model = LoanApplications::find()
+                ->where(['between','created_on',$start,$end])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()->all();
+            $transaction = Yii::$app->db->beginTransaction();
+            $count = 0;
+            foreach ($model as $mod) {
+                $datamodel = CreditLoanApplicationReports::find()
+                    ->where(['loan_app_enc_id'=>$mod['loan_app_enc_id']])
+                    ->andWhere([
+                        'or',
+                        ['loan_co_app_enc_id'=>null],
+                        ['loan_co_app_enc_id'=>''],
+                        ['loan_co_app_enc_id'=>Null],
+                    ])->one();
+                if ($datamodel){
+                    $datamodel->loan_co_app_enc_id = $datamodel->loan_app_enc_id;
+                    if (!$datamodel->save()) {
+                        $transaction->rollBack();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($datamodel->errors, 0, false)));
+                    }
+                    $count++;
+                }
+            }
+            echo $count.' entry moved to database';
+            $transaction->commit();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
         }
     }
 }
