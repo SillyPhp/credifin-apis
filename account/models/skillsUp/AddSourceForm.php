@@ -58,9 +58,10 @@ class AddSourceForm extends Model
             $base_path = Yii::$app->params->upload_directories->feed_sources->image . $sources->image_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $sources->image = $utilitiesModel->encrypt() . '.' . $this->image->extension;
+            $type = $this->image->type;
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $my_space->uploadFile($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $sources->image, "public");
+            $my_space->uploadFileSources($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $sources->image, "public",['params' => ['ContentType' => $type]]);
         }
         if (!$sources->save()) {
             return [

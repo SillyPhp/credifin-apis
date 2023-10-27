@@ -9,7 +9,7 @@ $description = "This page is about the privacy policy of EmpowerYouth. Empower Y
 $image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/privacy-policy/privacy-policy.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -207,6 +207,7 @@ $this->params['seo_tags'] = [
                                 Privacy Policy and the terms of use of these service providers can be accessed on their
                                 respective websites.
                             </li>
+                            <li>If you want to delete the account from our website, just write us an email on info@empoweryouth.com stating the reason to delete the account.</li>
                         </ul>
 
                         <div class="point1 point-head">5. THIRD-PARTY Website and Contents Thereof</div>

@@ -24,6 +24,7 @@ use Yii;
  * @property int $has_taken_addmission o as no 1 as yes
  * @property double $loan_amount
  * @property string $college_institute_name
+ * @property string $tags multiple and single tags
  * @property string $course_name
  * @property string $source source of data
  * @property string $purpose purpose of this particular data
@@ -35,6 +36,7 @@ use Yii;
  * @property string $status
  * @property string $status_date
  * @property string $comments
+ * @property string $message
  * @property string $address
  * @property string $state
  * @property string $city
@@ -44,6 +46,8 @@ use Yii;
  * @property string $managed_by
  * @property string $care_by
  * @property string $lead_by
+ * @property string $loan_type
+ * @property string $loan_purpose Add Loan Purpose
  * @property int $loan_for 1 for College/University, 2 for School, 3 for other institute
  * @property int $admission_taken 1 as true, 0 as false
  * @property string $created_on
@@ -54,7 +58,11 @@ use Yii;
  * @property string $calling_date Which date Executive called to Lead
  * @property int $priority Immediate, Urgent, High, Medium, Low  as 1,2,3,4,5
  * @property int $is_deleted 0 as false, 1 as true
+ * @property int $phone_status 0 as false, 1 as true
+ * @property int $email_status 0 as false, 1 as true
+ * @property int $signup_status 0 as false, 1 as true
  *
+ * @property AssignLeadsComments[] $assignLeadsComments
  * @property LeadApplicationCalling[] $leadApplicationCallings
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
@@ -64,6 +72,7 @@ use Yii;
  * @property LeadsApplicationsCallingLogs[] $leadsApplicationsCallingLogs
  * @property LeadsCollegePreference[] $leadsCollegePreferences
  * @property LeadsParentInformation[] $leadsParentInformations
+ * @property LeadsVehicleDetails[] $leadsVehicleDetails
  * @property LoanApplications[] $loanApplications
  */
 class LeadsApplications extends \yii\db\ActiveRecord
@@ -79,57 +88,34 @@ class LeadsApplications extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function rules()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'application_enc_id' => Yii::t('app', 'Application Enc ID'),
-            'application_number' => Yii::t('app', 'Application Number'),
-            'first_name' => Yii::t('app', 'First Name'),
-            'last_name' => Yii::t('app', 'Last Name'),
-            'student_mobile_number' => Yii::t('app', 'Student Mobile Number'),
-            'contact_2' => Yii::t('app', 'Contact 2'),
-            'contact_3' => Yii::t('app', 'Contact 3'),
-            'gender' => Yii::t('app', 'Gender'),
-            'student_email' => Yii::t('app', 'Student Email'),
-            'email_2' => Yii::t('app', 'Email 2'),
-            'email_3' => Yii::t('app', 'Email 3'),
-            'voter_id' => Yii::t('app', 'Voter ID'),
-            'dob' => Yii::t('app', 'Dob'),
-            'has_taken_addmission' => Yii::t('app', 'Has Taken Addmission'),
-            'loan_amount' => Yii::t('app', 'Loan Amount'),
-            'college_institute_name' => Yii::t('app', 'College Institute Name'),
-            'course_name' => Yii::t('app', 'Course Name'),
-            'source' => Yii::t('app', 'Source'),
-            'purpose' => Yii::t('app', 'Purpose'),
-            'module' => Yii::t('app', 'Module'),
-            'user_type' => Yii::t('app', 'User Type'),
-            'course_fee_annual' => Yii::t('app', 'Course Fee Annual'),
-            'application_fee_recieved' => Yii::t('app', 'Application Fee Recieved'),
-            'filled_by' => Yii::t('app', 'Filled By'),
-            'status' => Yii::t('app', 'Status'),
-            'status_date' => Yii::t('app', 'Status Date'),
-            'comments' => Yii::t('app', 'Comments'),
-            'address' => Yii::t('app', 'Address'),
-            'state' => Yii::t('app', 'State'),
-            'city' => Yii::t('app', 'City'),
-            'pin_zip_code' => Yii::t('app', 'Pin Zip Code'),
-            'cast_category' => Yii::t('app', 'Cast Category'),
-            'is_number_verified' => Yii::t('app', 'Is Number Verified'),
-            'managed_by' => Yii::t('app', 'Managed By'),
-            'care_by' => Yii::t('app', 'Care By'),
-            'lead_by' => Yii::t('app', 'Lead By'),
-            'loan_for' => Yii::t('app', 'Loan For'),
-            'admission_taken' => Yii::t('app', 'Admission Taken'),
-            'created_on' => Yii::t('app', 'Created On'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'last_updated_by' => Yii::t('app', 'Last Updated By'),
-            'last_updated_on' => Yii::t('app', 'Last Updated On'),
-            'assign_date' => Yii::t('app', 'Assign Date'),
-            'calling_date' => Yii::t('app', 'Calling Date'),
-            'priority' => Yii::t('app', 'Priority'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            [['application_enc_id', 'application_number'], 'required'],
+            [['gender', 'status', 'comments', 'message', 'address', 'loan_type'], 'string'],
+            [['dob', 'created_on', 'last_updated_on', 'assign_date', 'calling_date'], 'safe'],
+            [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_number_verified', 'loan_for', 'admission_taken', 'priority', 'is_deleted', 'phone_status', 'email_status', 'signup_status'], 'integer'],
+            [['loan_amount', 'course_fee_annual'], 'number'],
+            [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'email_2', 'email_3', 'voter_id', 'state', 'city', 'pin_zip_code', 'cast_category', 'managed_by', 'care_by', 'lead_by', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['student_mobile_number', 'contact_2', 'contact_3', 'status_date'], 'string', 'max' => 50],
+            [['college_institute_name', 'course_name', 'source', 'purpose', 'module', 'user_type', 'loan_purpose'], 'string', 'max' => 200],
+            [['tags'], 'string', 'max' => 500],
+            [['application_enc_id'], 'unique'],
+            [['application_number'], 'unique'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
+            [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
+            [['care_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['care_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignLeadsComments()
+    {
+        return $this->hasMany(AssignLeadsComments::className(), ['lead_enc_id' => 'application_enc_id']);
     }
 
     /**
@@ -202,6 +188,14 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function getLeadsParentInformations()
     {
         return $this->hasMany(LeadsParentInformation::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLeadsVehicleDetails()
+    {
+        return $this->hasMany(LeadsVehicleDetails::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**

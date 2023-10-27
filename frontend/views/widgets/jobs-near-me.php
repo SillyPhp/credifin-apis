@@ -950,13 +950,13 @@ function card(){
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
                         $('#header-main').css('z-index','1002');
-                        $('.near-me-content').css('z-index','1001');
+                        $('.near-me-content .ui-draggable-dragging').css('z-index','1001');
                      },
                      stop: function() { 
                         $('#sticky').removeClass('drag-on');
                         $('#review-internships').removeClass('drop-on');
                         $('#header-main').css('z-index','1000');
-                        $('.near-me-content').css('z-index','0');
+                        // $('.near-me-content').css('z-index','0');
                      },
                 });
             });

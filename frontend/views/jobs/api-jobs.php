@@ -6,6 +6,16 @@ use frontend\models\script\ImageScript;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
+$date = new DateTime($get['created_at']);
+$now = new DateTime();
+$diff = date_diff($now, $date);
+$diff = $date->diff($now)->format("%d");
+
+if($diff > 30){
+    $get['last_date'] = Date('d:m:y', strtotime('+30 days'));
+}
+
+
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 if (!isset($get['company_logo']) || empty($get['company_logo'])) {
@@ -58,7 +68,7 @@ if (empty($app['story_image']) || $app['story_image'] == 1) {
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -73,7 +83,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -310,6 +320,7 @@ if (Yii::$app->params->options->showSchema) {
             "title" : "<?= $get['title']; ?>",
             "description" : "<?= str_replace('"', "" ,str_replace("'","",$get['description'])) ?>",
             "datePosted" : "<?= $get['created_at'] ?>",
+            "validThrough" : "<?= $get['last_date'] ?>",
             "employmentType" : "<?= $get['type'] ?>",
             "hiringOrganization" : {
                 "@type" : "Organization",
@@ -329,6 +340,7 @@ if (Yii::$app->params->options->showSchema) {
     </script>
     <?php
 }
+
 ?>
 <script>
     function copyToClipboard() {
@@ -433,6 +445,7 @@ border: 1px solid #eee;
     box-shadow: 0 0 10px 0px #eee;
     clear: both;
     width: 100%;
+    word-break: break-all;
 }
 .d-head {
     font-size: 18px;
@@ -1097,7 +1110,7 @@ $this->registerCss("
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         padding-left: 50px;
     }
     .job-single-sec .job-overview ul li i {

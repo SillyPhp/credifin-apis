@@ -391,12 +391,15 @@ $script = <<< JS
     }
   })
  }
- $(document).on('click','input[name="pRadio"]',function(e) {
+$(document).on('click','input[name="pRadio"]',function(e) {
    var p = $('input[name="pRadio"]:checked').val();
         $('#hidden_profile').val(p);
         goNext(p);
  })
- function goNext(id) {
+$(document).on('click','input[name="tRadio"]',function(e) {
+   window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();
+ })
+function goNext(id) {
     tabs1.hide();
     ajaxFunction(id)
     tabs2.show();
@@ -406,7 +409,7 @@ $script = <<< JS
     // BTnext.hide();
  }
  
- $(document).on('click','#tab_key_back',function(e) {
+$(document).on('click','#tab_key_back',function(e) {
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
     var tabs2 = $('#tab_index_2');
@@ -421,7 +424,7 @@ $script = <<< JS
     BTskip.hide();
  }); 
  
-  $(document).on('click','.tab_key_continue',function(e) {
+$(document).on('click','.tab_key_continue',function(e) {
    e.preventDefault();
      if ($('input[name="tRadio"]').length!=0){
          if ($('input[name="tRadio"]:checked').length==0){
@@ -434,9 +437,9 @@ $script = <<< JS
 $(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
    skipable();
-   })
+})
 
- function skipable() {
+function skipable() {
    swal({
     title: "",
     text: "Continue Without Template ?",
@@ -453,8 +456,8 @@ $(document).on('click','#tab_key_skip',function(e) {
          }
      }
     );
- }  
- function ajaxFunction(id, noTemp) {
+ }
+function ajaxFunction(id, noTemp) {
     var oppType = type == 'internships' ? 'Internship' : 'Job';
    $.ajax({
      url:'/api/v3/job/get-templates',
@@ -484,7 +487,7 @@ $(document).on('click','#tab_key_skip',function(e) {
        }
      }
    })
- }
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

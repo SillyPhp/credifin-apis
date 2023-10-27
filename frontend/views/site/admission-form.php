@@ -12,7 +12,7 @@ $keywords = "empower youth, college, university, admission, education loan";
 $description = "Do Not let monetary constraints stop your from getting admission in your dream College/University";
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -27,7 +27,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -742,6 +742,7 @@ function updateValue(t){
         data['type'] = t.attr('data-type');
         data['value'] = t.val();
         data['lead_app_id'] = localStorage.getItem('lead_app_id');
+        data['loan_type'] = 'Education Loan';
         if (data['type'] == 'leadCollegePreference') {
             data['sequence'] = sequence;
         }

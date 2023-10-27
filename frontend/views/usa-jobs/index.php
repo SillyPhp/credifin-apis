@@ -345,7 +345,7 @@ $this->registerCss("
     padding: 8px 0px 8px 0px;
     background-color:#00a0e3;
 }
-.agency-count a {
+.agency-count a, .agency-count span {
     font-family: roboto;
     color: #fff;
     padding: 4px 6px;
@@ -653,9 +653,11 @@ body{
 .head-bg{
     background:url('" . Url::to('@eyAssets/images/pages/jobs/usa-jobs-bg.png') . "');
     background-repeat: no-repeat;
-    background-size: 100% 100%;
-    padding: 105px 0px;
-    height: 400px;
+    background-size: cover;
+    min-height: 400px;display: flex;
+    align-items: flex-end;
+    background-position: right top;
+    min-height: 400px;
 }
 .search-box{
     width: 100%;
@@ -940,6 +942,29 @@ display:none;
 @media only screen and ( max-width:834px){
   .card-box{min-height: 24em;}
 }
+
+@media only screen and (max-width: 571px){
+    .head-bg{
+        align-items: center;
+    }
+}
+@media only screen and (max-width: 991px){
+    .card-box{
+        min-height: 24em;
+    }
+    .card-box .icon{
+        display: block;
+        width: fit-content;
+        margin: auto;
+    }
+    .card-box .text{
+        text-align: center;
+    }
+    .card-box .usa-read{
+        right: 50%;
+        transform: translateX(50%);
+    }
+}
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');
@@ -964,8 +989,7 @@ var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-   if (keyword)
-      {
+   if (keyword) {
           window.location.assign('/usa-jobs/search/'+keyword.replace(/\s+/g, '-'));
       }
 });

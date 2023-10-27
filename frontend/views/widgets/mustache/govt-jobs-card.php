@@ -269,6 +269,9 @@ a.application-title.capitalize.org_name {
 .comps-name-1{
     padding-left: 15px;
 }
+.application-card-description{
+    min-height:135px;
+}
 .application-card-description h5 {
     font-family: 'Roboto';
     font-weight: 500;

@@ -662,6 +662,7 @@ hr{
 }
 .intro_1 a{
     color: #fff;
+    line-height: 1.3;
 }
 .intro_1 a:hover{
     text-decoration:underline
@@ -838,7 +839,7 @@ hr{
 }
 .intro_1 {
     width: 100%;
-    margin: 0px 0px 15px;
+    margin: 15px 0px 15px;
     color: white;
     font-size: 12px;
     line-height: 0px;
@@ -853,21 +854,23 @@ hr{
     z-index: 20;
     width: 100%;
     top: 0;
-    left: 0;
+    left: 50%;
     transition: all 0.6s;
 }
 .logo-1 img {
-    width: 58px;
-    height: auto;
+    height: 50px;
+    width: auto;
     text-align: center;
-    margin: 13px auto;
+    margin: auto;
+    object-fit: contain;
 }
 .logo-1 {
     border-radius: 15%;
     background-color: white;
     width: 70px;
-    height: 40px;
+    height: 58px;
     margin: 0px 0px;
+    padding: 4px;
 }
 }
 

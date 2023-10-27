@@ -29,30 +29,49 @@ function webDate($webDate)
 ?>
 
 <section class="header-web">
-    <div class="back-shadow"></div>
-    <div class="container-fluid">
-        <div class="row flex-set">
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="header-txt">
-                    <h1>Webinars</h1>
-                    <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
-                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="webinar-head-text">                
+                    <h1>WEBINARS</h1>
+                    <p>Introducing Empower Youth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
+                    <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="webinar-head-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar-head-img.png'); ?>" alt="">
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <?php
 if ($upcomingWebinar) {
 ?>
-<section class="upcoming-web">
+<section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Upcoming Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="heading-style">Upcoming Webinars</div>
+            </div>
+            <?php
+            if($webinars_count > 6) {?>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a id="course-list-btn" href="<?= Url::to('/webinars/list') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php }?>
         </div>
         <div class="row">
             <?php
-
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -76,8 +95,8 @@ if ($upcomingWebinar) {
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a
-                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                <div class="web-title">
+                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
                                 </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
@@ -108,7 +127,7 @@ if ($upcomingWebinar) {
                                     </div>
                                     <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                <?php if (in_array(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
                                     <div class="register-btns">
                                         <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
                                             Registered</a>
@@ -134,7 +153,9 @@ if ($upcomingWebinar) {
 <section class="how-it-works">
     <div class="container">
         <div class="row">
-            <div class="heading-style">How To Join A Webinar</div>
+            <div class="col-md-12">
+                <div class="heading-style">How To Join A Webinar</div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
@@ -265,7 +286,19 @@ if ($optedWebinar) {
 <section class="past-web">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Past Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="heading-style">Past Webinars</div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a  href="<?= Url::to('/webinars/list?past=true') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <?php
@@ -320,30 +353,37 @@ if ($optedWebinar) {
         </div>
     </div>
 </section>
-
-<section class="webinar-on-device">
+<?= $this->render('/widgets/godaddy_offer', [
+    //    'course' => 'Web Design Course',
+        'discount' => '20',
+        'webinar' => true,
+]); ?>
+<!-- <section class="webinar-on-device">
     <div class="container">
         <div class="row">
-            <h1 class="heading-style">Engage from anywhere on any device</h1>
+            <div class="col-md-12">
+                    <div class="heading-style">Engage from anywhere on any device</div>
+            </div>
         </div>
-        <div class="row steps">
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+        <div class="row">
+            <div class="engage-left">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+                        </div>
+                        On your Desktop
                     </div>
-                    On your Desktop
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        </div>
+                        On your Tablet
                     </div>
-                    On your Tablet
                 </div>
-            </div>
-            <div class="col-sm-4">
+                <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
@@ -351,14 +391,17 @@ if ($optedWebinar) {
                     On your Smartphone
                 </div>
             </div>
+            </div>
         </div>
     </div>
-</section>
+</section> -->  
 
 <section class="speakers">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Webinars Speaker</div>
+            <div class="col-md-12">
+                <div class="heading-style">Webinars Speaker</div>
+            </div>
         </div>
         <div class="row">
             <div class="loader_screen">
@@ -446,6 +489,82 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+.type-1{
+    margin-bottom: 15px;
+}
+.type-1 div a:focus{
+    color:#fff;
+}
+html {
+    scroll-behavior: smooth;
+  }
+/*=====WEBINAR HEADER=====*/
+.header-web{
+    min-height: 450px;
+    background: linear-gradient(96.87deg, #0E0624 8.52%, #2F2451 50.75%, #0E0624 92.34%);
+    display: flex;
+    align-items: center;
+}
+.webinar-head-text h1 {
+    font-size: 55px;
+    font-weight: 900;
+    color: #fff;
+    font-family: 'Roboto';
+    line-height: 1;
+    margin-bottom: 0;
+}
+.webinar-head-text p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.5;
+    max-width: 420px;
+    letter-spacing: 1px;
+}
+.header-web .row {
+    display: flex;
+    align-items: center;
+}
+.webinar-head-img {
+    width: 301px;
+    display: block;
+    margin: auto;
+}
+header-web {
+    padding-top: 0 !important;
+}
+a.view-all-btn {
+    display: inline-block;
+    border: 2px solid #ef5281;
+    padding: 5px 30px;
+    margin-top: 20px;
+    border-radius: 6px;
+    color: #ef5281;
+    position: relative;
+    z-index: 2;
+    transition: all linear .2s;
+    font-weight: 700;
+}
+a.view-all-btn::before{
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 100%;
+    background: #ef5281;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: all linear .2s;
+}
+a.view-all-btn:hover{
+    color: #fff;
+}
+a.view-all-btn:hover::before{
+    width: 100%;
+    transition: all linear .2s;
+}
+
 .how-it-works .step {
     text-align: center;
     background-color: #fff;
@@ -867,44 +986,6 @@ color: #fff !important;
 	transform: translateY(-3px);
 	transition: all .2s;
 }
-.header-web {
-    background: url(/assets/themes/ey/images/pages/webinar/webinar-landing-bg.png) right top;
-    position: relative;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.back-shadow {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 0;
-    z-index: 0;
-    background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 77.58%);
-}
-.header-txt h1 {
-    font-size: 44px;
-    font-family: roboto;
-    font-weight: 700;
-    margin-top: 0px;
-    color: #fff;
-    margin-bottom: 0;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-.header-txt h2 {
-    font-size: 20px;
-    font-family: roboto;
-    margin: 0 0 0 8px;
-    color: #fff;
-    font-weight: 500;
-    text-transform: capitalize;
-}
 .header-img {
     width: 350px;
     margin: auto;
@@ -985,14 +1066,14 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
-    min-height: 360px;
+    min-height: 390px;
 }
 .web-img {
 	position: relative;
 }
 .web-img img{
 	height: 200px;
-	object-fit: cover;
+	object-fit: fill;
 	width: 100%;
 }
 .web-detail-date {
@@ -1056,6 +1137,9 @@ color: #fff !important;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	height: 70px;
+}
+.web-des p{
+    margin:0;
 }
 .web-info{
     display: flex;
@@ -1122,7 +1206,7 @@ color: #fff !important;
 .reg img {
     width: 35px;
     border-radius: 81px;
-    height: 30px;
+    height: 35px;
     object-fit: cover;
     border: 2px solid #fff;
 }
@@ -1237,6 +1321,20 @@ color: #fff !important;
     transform: translate3d(0, -2px, 0);
   }
 }
+@media (min-width: 1024px) and (max-width: 1199px){
+    .reg-img{
+        width: 30px;
+        height: 30px;
+    }
+}
+@media only screen and (max-width: 1024px){
+    .reg2.reg, .reg3.reg {
+        margin-left: -25px;
+    }
+    .btn-drib {
+        font-size: 12px;
+    }
+}
 @media only screen and (min-width: 992px){
     .webinar-on-device .icon{
         min-width: 250px;
@@ -1252,6 +1350,30 @@ color: #fff !important;
     .header-txt h1{margin-top:40px;}
     .header-txt h2{font-size:18px;}
     .header-img{width:300px;}
+    
+    
+    .webinar-head-img{
+        width: 200px;
+    }
+    .header-web{
+        justify-content: space-between;
+        min-height: 400px;
+    }
+    .webinar-head-text p{
+        font-size: 14px;
+    }
+    .webinar-head-text h1{
+        font-size: 45px;
+    }
+}
+@media only screen and (max-width: 767px){
+    .header-web {
+        padding-top: 80px;
+        display: block;
+    }
+    .header-web .row{
+        display: block;
+    }
 }
 @media only screen and (max-width: 767px) and (min-width: 300px){
     .header-txt h1{
@@ -1272,6 +1394,14 @@ color: #fff !important;
     }
     .back-shadow{
         background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 166.58%);
+    }
+    
+    .webinar-head-img {
+        position: absolute;
+        width: 145px;
+        right: 46px;
+        bottom: -74px;
+        opacity: .2;
     }
 }
 ");

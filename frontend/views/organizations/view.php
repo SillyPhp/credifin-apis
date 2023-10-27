@@ -9,7 +9,7 @@ $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -446,13 +446,6 @@ $round_avg = round($overall_avg);
                                         <div class="col-md-3 col-sm-4 col-xs-12">
                                             <div class="benefit-box">
                                                 <div class="bb-icon">
-                                                    <?php
-                                                    if (!empty($benefits['icon'])) {
-                                                        $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                    } else {
-                                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                    }
-                                                    ?>
                                                     <img src="<?= Url::to($benefits['icon']); ?>"
                                                          alt="<?= htmlspecialchars_decode($benefits['benefit']); ?>"/>
                                                 </div>

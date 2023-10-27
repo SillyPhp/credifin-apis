@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                         Teacher Loan
                                 </div>
                             </a>
-                            <a href="#" target="_blank">
+                            <a target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
                                         <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
@@ -198,6 +198,20 @@ $this->registerCss('
     .loan-vector-txt h2 {
         font-size: 28pt;
         line-height: 40px;
+    }
+    .loanFlex a{
+        width: 100%;
+        }
+}
+@media screen and (max-width: 500px) and (min-width: 320px) {
+    .loan-vector-txt h2 {
+        font-size: 22pt;
+    }
+    .loan-vector-txt {
+        padding-top: 10px;
+    }
+    .loan-vector-txt p {
+        font-size: 18px;
     }
 }
 ');

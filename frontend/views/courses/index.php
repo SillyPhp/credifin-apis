@@ -1,6 +1,7 @@
 <?php
 $this->params['header_dark'] = false;
 $this->title = "Acquire And Find Best Courses From Top Institutes";
+
 use yii\helpers\Url;
 
 $keywords = "Best Courses from Top Institutes,  ";
@@ -11,7 +12,7 @@ $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-imag
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -26,7 +27,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -74,7 +75,13 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
-    <?= $this->render('/webinars/webinar-carousel')?>
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
     <section class="popular-skills">
         <h3>Popular Categories</h3>
@@ -241,7 +248,7 @@ if (Yii::$app->user->isGuest) {
     <script id="courses-categories" type="text/template">
         {{#.}}
         <div class="col-md-2 col-sm-4 col-xs-6 pc-main">
-            <a href="/courses/courses-list?cat={{title}}">
+            <a href="/courses/courses-list?cat={{title_cleaned}}">
                 <div class="newset">
                     <div class="imag">
                         <img src="/assets/themes/ey/images/pages/learning-corner/{{icon_name}}.png" alt="{{title}}"/>
@@ -780,13 +787,11 @@ $("#categories").html(Mustache.render(categories_template, browse.navigation_cat
 $.ajax({
     method: "POST",
     url : window.location.href,
+    data: {limit:9},
     success: function(response) {
-            response = JSON.parse(response);
-        if(response.detail == "Not found.") {
-            console.log('cards not found');
-        } else{
+        if(response.data && response.data.length) {
             var template = $('#course-card').html();
-            var rendered = Mustache.render(template,response.results);
+            var rendered = Mustache.render(template,response.data);
             $('#card-main').append(rendered);
             $('.c-author').each(function() {
                 var strVal = $.trim($(this).text());

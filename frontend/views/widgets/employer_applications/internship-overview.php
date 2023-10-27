@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\ArrayHelper;
+
 if (!empty($placement_locations)) {
     $location = ArrayHelper::map($placement_locations, 'city_enc_id', 'name');
     $total_vac = 0;
@@ -35,40 +37,46 @@ if (!empty($placement_locations)) {
         </li>
         <li><i class="fas fa-puzzle-piece"></i>
             <div class="for-flex">
-            <h3>Stipend Type</h3><span><?= $wage_type; ?></span>
+                <h3>Stipend Type</h3><span><?= $wage_type; ?></span>
             </div>
         </li>
         <li><i class="far fa-money-bill-alt"></i>
             <div class="for-flex">
-                <h3>Stipend Amount</h3><span><?= (($ammount_value)? $ammount_value : 'N/A') ?></span>
+                <h3>Stipend Amount</h3><span><?= (($ammount_value) ? $ammount_value : 'N/A') ?></span>
             </div>
         </li>
-        <li><i class="fas fa-gift"></i>
-            <div class="for-flex">
-                <h3>Preplacement Offer</h3><span><?= $offer; ?></span>
-            </div>
-        </li>
+        <?php
+        if ($offer == 'Yes') {
+            ?>
+            <li><i class="fas fa-gift"></i>
+                <div class="for-flex">
+                    <h3>Preplacement Offer</h3><span><?= $offer; ?></span>
+                </div>
+            </li>
+            <?php
+        }
+        ?>
         <?php setlocale(LC_MONETARY, 'en_IN'); ?>
         <li><i class="fas fa-mars-double"></i>
             <div class="for-flex">
                 <h3>Gender</h3><span><?php
-                switch ($gender) {
-                    case 0:
-                        echo 'No Preference';
-                        break;
-                    case 1:
-                        echo 'Male';
-                        break;
-                    case 2:
-                        echo 'Female';
-                        break;
-                    case 3:
-                        echo 'Transgender';
-                        break;
-                    default:
-                        echo 'not found';
-                }
-                ?></span>
+                    switch ($gender) {
+                        case 0:
+                            echo 'No Preference';
+                            break;
+                        case 1:
+                            echo 'Male';
+                            break;
+                        case 2:
+                            echo 'Female';
+                            break;
+                        case 3:
+                            echo 'Transgender';
+                            break;
+                        default:
+                            echo 'not found';
+                    }
+                    ?></span>
             </div>
         </li>
         <li><i class="fas fa-chart-line"></i>

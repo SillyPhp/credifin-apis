@@ -4,9 +4,9 @@ use yii\helpers\Url;
 
 ?>
 <script id="org-cards" type="text/template">
-    <div class="top-cities">
+    <div class="top-cities" id="cities-carousel">
         {{#.}}
-        <a href="/{{slug}}">
+        <a href="/{{slug}}" class="item">
             <div class="top-cities-img">
                 <img src="{{logo}}" alt="{{name}}" title="{{name}}">
             </div>
@@ -57,6 +57,28 @@ $this->registerCss('
     height: 100%;
     object-fit: contain;
 }
+
+@media only screen and (max-width: 767px){
+    #cities-carousel .top-cities-img {
+        margin: 0 auto;
+    }
+    #cities-carousel .owl-controls .owl-nav .owl-prev {
+        left: 0 !important;
+        top: 20px;
+    }
+    #cities-carousel .owl-controls .owl-nav .owl-next {
+        right: 0 !important;
+        top: 20px;
+    }
+    #cities-carousel .owl-controls .owl-nav .owl-prev i, #cities-carousel .owl-controls .owl-nav .owl-next i{
+        font-size: 40px !important;
+    }
+    #cities-carousel .top-cities-img {
+        width: 88px;
+        height: 88px;
+    }
+}
+
 ');
 $userCity = Yii::$app->userData->currentCity;
 if($userCity){
@@ -65,6 +87,34 @@ if($userCity){
     $cityName = 0;
 }
 $script = <<< JS
+
+$(document).ready(function () {
+    if ($(window).width() > 767){
+        $('.top-cities').removeAttr('id');
+    }
+    $('#cities-carousel').owlCarousel({
+        loop:true,
+        margin:10,
+        nav:true,
+        navText: [
+            "<i class='fa fa-angle-left'></i>",
+            "<i class='fa fa-angle-right'></i>"
+          ],
+        responsive:{
+            0:{
+                items:2
+            },
+            600:{
+                items:3
+            },
+            1000:{
+                items:5
+            }
+        }
+    })
+});
+
+
 let userCity = "$cityName";
 if(userCity != "0"){
     $('#trendingCityName').text(userCity);

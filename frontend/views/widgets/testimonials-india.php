@@ -121,6 +121,7 @@ $this->registerCss('
     font-family: lora;
     color: #fff;
     font-size: 30px;
+    font-weight: 600;
     letter-spacing: 0.3px;
 }
 .text p {
@@ -217,6 +218,9 @@ $this->registerCss('
     }
 }
 @media only screen and (max-width: 766px) and (min-width: 320px) {
+    .test-flex{
+        display: block;
+    }
     .testimonial-bg{
         width: 100%;
     }

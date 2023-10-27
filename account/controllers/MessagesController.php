@@ -6,6 +6,7 @@ use common\models\AppliedApplications;
 use common\models\ConversationMessages;
 use common\models\ConversationParticipants;
 use common\models\Conversations;
+use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\Users;
 use Yii;
@@ -14,8 +15,9 @@ use yii\web\Controller;
 use yii\db\Expression;
 use common\models\Utilities;
 use yii\helpers\Html;
+use yii\web\Response;
 
-class ChatController extends Controller{
+class MessagesController extends Controller{
 
     public function actionSearchUser(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
@@ -214,7 +216,7 @@ class ChatController extends Controller{
     }
 
     public function actionTest(){
-      if(Yii::$app->user->identity->organization->organization_enc_id){
+        if(Yii::$app->user->identity->organization->organization_enc_id){
             $applied_ids = [];
             $applied_candidates = AppliedApplications::find()
                 ->alias('a')
@@ -237,34 +239,34 @@ class ChatController extends Controller{
               ->asArray()
               ->all();
 
-      }else{
+        }else{
             $organization_ids = [];
             $applied_applications = AppliedApplications::find()
-                                    ->alias('a')
-                                    ->select(['a.applied_application_enc_id', 'a.application_enc_id', 'b.organization_enc_id'])
-                                    ->joinWith(['applicationEnc b' => function($x){
-                                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
-                                    }], false)
-                                    ->where(['a.is_deleted' => 0])
-                                    ->andWhere([
-                                        'or',
-                                        ['a.status' => 'Accepted'],
-                                        ['a.status' => 'Hired']
-                                    ])
-                                    ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-                                    ->groupBy(['b.organization_enc_id'])
-                                    ->limit(10)
-                                    ->asArray()
-                                    ->all();
-          foreach ($applied_applications as $a){
-              array_push($organization_ids, $a['organization_enc_id']);
-          }
-          $applicable_organizations = Organizations::find()
-              ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
-              ->where(['in', 'organization_enc_id', $organization_ids])
-              ->asArray()
-              ->all();
-      }
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'a.application_enc_id', 'b.organization_enc_id'])
+                ->joinWith(['applicationEnc b' => function($x){
+                    $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                }], false)
+                ->where(['a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['a.status' => 'Accepted'],
+                    ['a.status' => 'Hired']
+                ])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->groupBy(['b.organization_enc_id'])
+                ->limit(10)
+                ->asArray()
+                ->all();
+            foreach ($applied_applications as $a){
+                array_push($organization_ids, $a['organization_enc_id']);
+            }
+            $applicable_organizations = Organizations::find()
+                ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                ->where(['in', 'organization_enc_id', $organization_ids])
+                ->asArray()
+                ->all();
+        }
     }
 
     public function actionGetRandomValues(){
@@ -486,7 +488,92 @@ class ChatController extends Controller{
         return false;
     }
 
+
+    private function _JobsOfCompany($appType){
+        $allApplication = EmployerApplications::find()
+            ->alias('a')
+            ->select(['c.name job_title','a.application_enc_id','a.application_for','a.slug','pe.name', 'pe.icon', 'a.title', 'a.type','ate.name application_type',
+                'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration',])
+            ->joinWith(['title b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+            }], false, 'INNER JOIN')
+            ->joinWith(['applicationTypeEnc ate'], false)
+            ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                $b->onCondition(['o.is_deleted' => 0]);
+                $b->joinWith(['locationEnc s' => function ($b) {
+                    $b->joinWith(['cityEnc t'], false);
+                }], false);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
+            }])
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.is_deleted' => 0, 'ate.name' => $appType, 'a.status' => 'Active'])
+            ->joinWith(['applicationOptions ao'], false)
+            ->groupBy(['a.application_enc_id'])
+            ->asArray()
+            ->all();
+        if($allApplication){
+            foreach ($allApplication as $key => $value){
+                if(!$value['applicationPlacementLocations']){
+                    unset($allApplication[$key]['applicationPlacementLocations']);
+                }
+            }
+        }
+        return $allApplication;
+    }
+
+    public function actionGetAppliedCandidates(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $job_id=Yii::$app->request->post('job_id');
+
+            $applied_users=AppliedApplications::find()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'a.created_by','c.phone', 'c.username','c.initials_color',
+                    'CASE WHEN c.last_name IS NOT NULL THEN CONCAT(c.first_name, " ", c.last_name) ELSE c.first_name END name',
+                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("'. Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image).'", c.image_location, "/", c.image) ELSE NULL END image',
+                    'cc.name city'])
+                ->joinWith(['createdBy c'=>function($c){
+                    $c->joinWith(['cityEnc cc']);
+                }],false)
+                ->where(['a.application_enc_id' => $job_id])
+                ->asArray()
+                ->all();
+
+            $result = [
+                'status' => 200,
+                'applied_users' =>$applied_users,
+            ];
+
+            return $result;
+        }
+    }
+    public function actionGetAllApplications(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type=Yii::$app->request->post('type');
+
+            $allApplication=$this->_JobsOfCompany($type);
+            $result = null;
+            if($allApplication){
+                $result = [
+                    'status' => 200,
+                    'allApplication' =>$allApplication,
+                ];
+            }else{
+                $result = [
+                    'status' => 201,
+                    'message' => 'Some Error Occurred'
+                ];
+            }
+
+            return $result;
+        }
+    }
+
     public function actionChatPage(){
         return $this->render('chat-page');
     }
+
 }

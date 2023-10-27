@@ -131,6 +131,7 @@ $("#inputfield").keypress(function(e){
         $.each($model->clone_skills,function(i,v) {
             addTags(v,value = "");
         });
+        skils_update('$model->title_id');
     }   
 $(document).on('click','#shownlist span a', function(event){
 		event.preventDefault();

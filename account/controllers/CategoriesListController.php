@@ -2,11 +2,14 @@
 
 namespace account\controllers;
 
+use common\models\ApplicationEmployeeBenefits;
+use common\models\OrganizationEmployeeBenefits;
 use common\models\Qualifications;
 use common\models\SpokenLanguages;
 use common\models\Users;
 use common\models\Utilities;
 use Yii;
+use yii\helpers\Url;
 use common\models\CategoriesList;
 use yii\web\Controller;
 use yii\web\Response;
@@ -17,16 +20,18 @@ use common\models\Categories;
 use common\models\EducationalRequirements;
 use common\models\InterviewProcessFields;
 use common\models\Designations;
+use yii\helpers\ArrayHelper;
+use yii\db\Expression;
 
 class CategoriesListController extends Controller
 {
-    public function actionLoadTitles($id='', $type = 'Jobs')
+    public function actionLoadTitles($id = '', $type = 'Jobs')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
-            ->joinWith(['assignedCategories b'],false)
+            ->joinWith(['assignedCategories b'], false)
             ->andWhere([
                 'b.assigned_to' => $type,
                 'b.parent_enc_id' => $id,
@@ -42,21 +47,22 @@ class CategoriesListController extends Controller
         return $categories;
     }
 
-    public function actionLoadStreams($q=null)
+    public function actionLoadStreams($q = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return Qualifications::find()
-            ->select(['qualification_enc_id id','name'])
+            ->select(['qualification_enc_id id', 'name'])
             ->where('name LIKE "' . $q . '%"')
             ->limit(20)
             ->asArray()
             ->all();
     }
-    public function actionLoadCandidate($q=null)
+
+    public function actionLoadCandidate($q = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return Users::find()
-            ->select(['first_name','last_name'])
+            ->select(['first_name', 'last_name'])
             ->andWhere([
                 'or',
                 ['like', 'first_name', $q],
@@ -66,6 +72,7 @@ class CategoriesListController extends Controller
             ->asArray()
             ->all();
     }
+
     public function actionCategories($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -89,7 +96,7 @@ class CategoriesListController extends Controller
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
-            ->joinWith(['assignedCategories b'],false)
+            ->joinWith(['assignedCategories b'], false)
             ->where('a.name LIKE "%' . $q . '%"')
             ->andWhere([
                 'b.assigned_to' => $type,
@@ -105,7 +112,7 @@ class CategoriesListController extends Controller
         return json_encode($categories);
     }
 
-    public function actionJobProfiles($q,$parent=null)
+    public function actionJobProfiles($q, $parent = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $categories = AssignedCategories::find()
@@ -113,8 +120,8 @@ class CategoriesListController extends Controller
             ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-            ->where('b.name LIKE "% '.$q.'%" OR b.name LIKE "'.$q.'%"')
-            ->andWhere(['a.parent_enc_id' => $parent,'a.status'=>'Approved'])
+            ->where('b.name LIKE "% ' . $q . '%" OR b.name LIKE "' . $q . '%"')
+            ->andWhere(['a.parent_enc_id' => $parent, 'a.status' => 'Approved'])
             ->limit(6)
             ->asArray()
             ->all();
@@ -128,7 +135,7 @@ class CategoriesListController extends Controller
             ->select(['language value'])
             ->distinct()
             ->where('language LIKE "%' . $q . '%"')
-            ->andWhere(['status'=>'Publish'])
+            ->andWhere(['status' => 'Publish'])
             ->asArray()
             ->all();
 
@@ -154,6 +161,59 @@ class CategoriesListController extends Controller
             ->asArray()
             ->all();
         return json_encode($listvalues);
+    }
+
+    public function actionEmployeeBenefits()
+    {
+        $id = Yii::$app->request->post("data");
+        $bene = ApplicationEmployeeBenefits::find()
+            ->alias('z')
+            ->select([new Expression(' "1" as is_checked'),'z.benefit_enc_id', 'z.application_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = ""  THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->benefits->icon . '",b.icon_location, "/", b.icon) END icon'])
+            ->joinWith(['applicationEnc a' => function ($a) use ($id) {
+                $a->joinWith(['title a1' => function ($a1) use ($id) {
+                    $a1->andWhere(['a1.category_enc_id' => $id]);
+                    $a1->andWhere(['a1.is_deleted' => 0]);
+                }]);
+                $a->andWhere(['a.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['benefitEnc b' => function ($b) {
+                $b->andWhere(['b.is_deleted' => 0]);
+            }], false)
+            ->andWhere(['z.is_deleted' => 0, 'z.is_available' => 1])
+            ->orderBy(['z.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+        $benefit = OrganizationEmployeeBenefits::find()
+            ->alias('a')
+            ->select([new Expression(' "0" as is_checked'),'a.benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = ""  THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->benefits->icon . '",b.icon_location, "/", b.icon) END icon'])
+            ->joinWith(['benefitEnc b'], false)
+            ->where([
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.is_deleted' => 0,
+            ])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+        $benefits = array_merge($bene, $benefit);
+        if($benefits){
+            $benefits = self::unique_multi_array($benefits,'benefit_enc_id');
+        }
+        return json_encode($benefits);
+    }
+
+    private function unique_multi_array($array, $key) {
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+
+        foreach($array as $val) {
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];
+                $temp_array[$i] = $val;
+            }
+            $i++;
+        }
+        return $temp_array;
     }
 
     public function actionJobQualifications()
@@ -327,7 +387,7 @@ class CategoriesListController extends Controller
         }
     }
 
-    public function actionProfiles($type= 'Jobs')
+    public function actionProfiles($type = 'Jobs')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $primaryfields = Categories::find()
@@ -337,17 +397,17 @@ class CategoriesListController extends Controller
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
-            ->andWhere(['b.status'=>'Approved'])
+            ->andWhere(['b.status' => 'Approved'])
             ->asArray()
             ->all();
         return $primaryfields;
     }
 
-    public function actionGroups($q=null,$type=null,$is_parent=null)
+    public function actionGroups($q = null, $type = null, $is_parent = null)
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $sql = "SELECT DISTINCT `a`.`name` AS `word`, `a`.`category_enc_id` AS `id` FROM ".Categories::tableName()." `a` INNER JOIN ".AssignedCategories::tableName()." as `b` ON b.category_enc_id = a.category_enc_id WHERE (`b`.`parent_enc_id` IS NULL) AND (name LIKE '{$q}%' OR name LIKE '% {$q}%') AND (`b`.`status`='Approved') LIMIT 10";
+            $sql = "SELECT DISTINCT `a`.`name` AS `word`, `a`.`category_enc_id` AS `id` FROM " . Categories::tableName() . " `a` INNER JOIN " . AssignedCategories::tableName() . " as `b` ON b.category_enc_id = a.category_enc_id WHERE (`b`.`parent_enc_id` IS NULL) AND (name LIKE '{$q}%' OR name LIKE '% {$q}%') AND (`b`.`status`='Approved') LIMIT 10";
             $p = Yii::$app->db->createCommand($sql)
                 ->queryAll();
             return $p;

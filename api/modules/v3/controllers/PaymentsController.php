@@ -5,6 +5,7 @@ use common\models\EducationLoanPayments;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use Razorpay\Api\Api;
 
 class PaymentsController extends  ApiBaseController
 {
@@ -17,8 +18,9 @@ class PaymentsController extends  ApiBaseController
             'actions' => [
                 'get-status' => ['GET'],
                 'retry-payment' => ['POST', 'OPTIONS'],
-                'update-transection' => ['POST', 'OPTIONS'],
-                'institute-update-transection' => ['POST', 'OPTIONS'],
+                'update-transactions' => ['POST', 'OPTIONS'],
+                'institute-update-transactions' => ['POST', 'OPTIONS'],
+                'webhook' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -83,7 +85,7 @@ class PaymentsController extends  ApiBaseController
         }
     }
 
-    public function actionUpdateTransections()
+    public function actionUpdateTransactions()
     {
         date_default_timezone_set('Asia/Kolkata');
         $options = Yii::$app->request->post();
@@ -99,7 +101,7 @@ class PaymentsController extends  ApiBaseController
         }
 
     }
-    public function actionInstituteUpdateTransections()
+    public function actionInstituteUpdateTransactions()
     {
         date_default_timezone_set('Asia/Kolkata');
         $options = Yii::$app->request->post();
@@ -113,6 +115,38 @@ class PaymentsController extends  ApiBaseController
         }else{
             return $this->response(401, ['status' => 401, 'message' => 'Attribute Values Not Found']);
         }
+    }
 
+    public function actionWebhook(){
+            $data = Yii::$app->request->post();
+            if (isset($data['event'])) {
+                $order_id = $data['payload']['payment']['entity']['order_id'];
+                if ($data['contains'][0]=='payment_link'){
+                    $order_id = $data['payload']['payment_link']['entity']['id'];
+                }
+                $payment_id = $data['payload']['payment']['entity']['id'];
+                $status = $data['payload']['payment']['entity']['status'];
+                $model = EducationLoanPayments::findOne(['payment_token'=>$order_id]);
+                $method = $data['payload']['payment']['entity']['method'];
+                if ($data['event'] == "payment.failed") {
+                    $method .= $data['payload']['payment']['entity']['error_code'];
+                    $method .= " ";
+                    $method .= $data['payload']['payment']['entity']['error_description'];
+                    $method .= " ";
+                    $method .= $data['payload']['payment']['entity']['error_source'];
+                    $method .= " ";
+                    $method .= $data['payload']['payment']['entity']['error_step'];
+                    $method .= " ";
+                    $method .= $data['payload']['payment']['entity']['error_reason'];
+                }
+                $model->payment_id = $payment_id;
+                $model->payment_status = $status;
+                $model->remarks = $method;
+                if ($model->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+                }
+            }
     }
 }

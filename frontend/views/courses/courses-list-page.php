@@ -5,26 +5,27 @@ use yii\helpers\Url;
 
 ?>
 
-<section class="head-search">
-    <div class="search-bar">
-        <div class="search-head">
-            <div class="c-heading">Search All type of Courses which you want to do</div>
+    <section class="head-search">
+        <div class="search-bar">
+            <div class="search-head">
+                <div class="c-heading">Search All type of Courses which you want to do</div>
+            </div>
+            <div class="search-box1">
+                <form action="<?= Url::to('/courses/courses-list') ?>">
+                    <input type="text" placeholder="Search" name="keyword" value="<?= $_GET['keyword'] ?? ''; ?>"/>
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
         </div>
-        <div class="search-box1">
-            <form action="<?= Url::to('/courses/courses-list') ?>">
-                <input type="text" placeholder="Search" name="keyword" value="<?= $_GET['keyword'];?>"/>
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section>
-    <div class="container">
-        <div class="row" id="list-main"></div>
-        <?= $this->render('/widgets/preloader-application-card'); ?>
+    <section>
+        <div class="container">
+            <div class="row" id="list-main"></div>
+            <?= $this->render('/widgets/preloader-application-card'); ?>
         <a href="#" id="loadMore" class="ajax-paginate-link load-more loading_more">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:transparent;display:block;" width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+            <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:transparent;display:block;"
+                 width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                 <g transform="translate(50,50)">
                     <g transform="scale(0.9)">
                         <g transform="translate(-50,-50)">
@@ -133,13 +134,12 @@ function getCourseList(){
            $('.load-more-spinner').css('visibility', 'visible');
         },
         success: function(response) {
-            response = JSON.parse(response);
             $('.loader-main').hide();
             $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.count == 0) {
+            if(!response.data || !response.data.length) {
                 $('#loadMore').hide();
                 load_more_cards = false;
                 var alreadyExist = $('#list-main').children().length;
@@ -149,7 +149,7 @@ function getCourseList(){
             } else{
                 page++;
                 var template = $('#course-card').html();
-                var rendered = Mustache.render(template,response.results);
+                var rendered = Mustache.render(template,response.data);
                 $('#list-main').append(rendered);
                 $('.c-author').each(function() {
                     var strVal = $.trim($(this).text());

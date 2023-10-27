@@ -769,7 +769,27 @@ a:hover{
 }
 .job-card-sidebar-candidate i{
   margin-right: 5px;
-}    
+} 
+@media only screen and (max-width: 768px){
+    .portlet>.portlet-title>.actions{
+        float: unset;
+    }
+    .page-content{
+        padding: 30px 8px;
+    }
+    .portlet>.portlet-title>.caption{
+        float: unset;
+    }
+    .portlet.light>.portlet-title{
+        text-align: center;
+    }
+}   
+@media only screen and (max-width: 375px){
+    .tab-empty-icon img{
+        max-width: 100%;
+        height: unset;
+    }
+}
 ');
 $script = <<<JS
 

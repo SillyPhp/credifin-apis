@@ -307,6 +307,7 @@ $this->registerCss('
 }
 .ey-logo img{
     max-height: 45px;
+    max-width: 182px;
 }
 .ey-menu-main {
     -webkit-box-flex:16;
@@ -678,7 +679,7 @@ $this->registerCss('
     -ms-flex: 1 0 100%;
     flex: 1 0 100%;
     max-width: 100%;
-    padding: 30px;
+    padding: 30px 15px;
     padding-top:50px;
 }
 
@@ -690,7 +691,7 @@ $this->registerCss('
 .ey-mobile-menu .ey-mob-menu-main-items {
     list-style: none;
     margin: 0 0 20px;
-    padding: 0;
+    padding: 20px 0 0 0;
     max-height: 90vh;
     overflow: scroll;
 }

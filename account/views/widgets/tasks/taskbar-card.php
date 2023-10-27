@@ -44,7 +44,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
     </div>
 </header>
 
-<section class="card card-transparent nd-shadow">
+<section class="card card-transparent nd-shadow mb-5">
     <div class="card-body">
         <section class="card card-group">
             <div id="accordion" class="task_sec w-100">
@@ -96,6 +96,9 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 </div>
 <?php
 $this->registerCss("
+.mb-5{
+    margin-bottom: 20px;
+}
 .modal-backdrop{
     z-index: 9998 !Important;
 }
@@ -358,8 +361,8 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 ");
 $script = <<< JS
     $(document).on('click', '.edit-org-logo', function() {
-        // $("#loadData").modal('show');
-        // $('.load-content').load('/account/dashboard/update-profile');
+        $("#loadData").modal('show');
+        $('.load-content').load('/account/dashboard/update-profile');
     });
     var ps = new PerfectScrollbar('.widget-todo-list');
     var page = 0;

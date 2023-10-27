@@ -3,19 +3,14 @@
 use yii\helpers\Url;
 ?>
 
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+    <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
     
-    
-
+    <?= $this->render('/widgets/godaddy_offer'); ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/testimonials') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
-    
-
-
-
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -299,33 +294,33 @@ if ($blogs['blogs']) {
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({
-loop: true,
-nav: true,
-dots: false,
-pauseControls: true,
-margin: 20,
-responsiveClass: true,
-navText: [
-'<i class="fa fa-angle-left set_icon"></i>',
-'<i class="fa fa-angle-right set_icon"></i>'
-],
-responsive: {
-0: {
-items: 1
-},
-568: {
-items: 2
-},
-600: {
-items: 3
-},
-1000: {
-items: 6
-},
-1400: {
-items: 7
-}
-}
+    loop: true,
+    nav: true,
+    dots: false,
+    pauseControls: true,
+    margin: 20,
+    responsiveClass: true,
+    navText: [
+        '<i class="fa fa-angle-left set_icon"></i>',
+        '<i class="fa fa-angle-right set_icon"></i>'
+    ],
+    responsive: {
+        0: {
+            items: 1
+        },
+        568: {
+            items: 2
+        },
+        600: {
+            items: 3
+        },
+        1000: {
+            items: 6
+        },
+        1400: {
+            items: 7
+        }
+    }
 });
 $('.faqs').click(function () {
     arrow= $(this).find('.collaspe-trigger')
@@ -337,14 +332,14 @@ $('.faqs').click(function () {
 });
 var num = '+918727985888';
 $(document).on("keypress",'#whatsAppText', function(e) {
-     if (e.keyCode == 13) {
-         if ($(this).val()!=''){
-             window.open('https://api.whatsapp.com/send?phone='+num+'&text=' + $(this).val(), '_blank', 'width=800,height=400,left=200,top=100');
+    if (e.keyCode == 13) {
+        if ($(this).val()!=''){
+            window.open('https://api.whatsapp.com/send?phone='+num+'&text=' + $(this).val(), '_blank', 'width=800,height=400,left=200,top=100');
             return false; // prevent the button click from happening   
-         }else{
-             alert('Enter Text');
-         }
+        } else{
+            alert('Enter Text');
         }
+    }
 });
 $(document).on("keypress",'#telegramText', function(e) {
      if (e.keyCode == 13) {
@@ -406,6 +401,7 @@ $this->registerCss('
     padding: 10px 20px;
     color: #fff;
     background: #43d854;
+    display: inline-block;
 }
 .whats-btn a:hover{
     color: #43d854;
@@ -419,6 +415,7 @@ $this->registerCss('
     padding: 10px 22px;
     color: #fff;
     background: #00405d;
+    display: inline-block;
 }
 .tele-btn a:hover {
     color: #00405d;
@@ -427,8 +424,9 @@ $this->registerCss('
     transition: .3s ease-in-out;
 }
 .chat {
-    padding: 30px;
-    display: -webkit-inline-box;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
 }
 .bgeEd {
     background-color: #edf4fc;
@@ -502,12 +500,12 @@ $this->registerCss('
     font-family: roboto;
     border-radius: 4px;
     cursor: pointer;
+    position:relative;
 }
 .questions-faq li a {
     color: #333;
     display: block;
     font-size: 15px;
-    position:relative;
     font-weight:500;
 }
 .questions-faq li .collapse {
@@ -515,8 +513,8 @@ $this->registerCss('
 }
 .collaspe-trigger {
     position: absolute;
-    top: 0px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     cursor: pointer;
     transition: 0.3s ease-in all;
 }
@@ -1019,6 +1017,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-weight: bold;
     text-align: justify;
+    margin-bottom: 10px;
 }
 .mt20{
     margin-top: 20px;
@@ -1126,7 +1125,7 @@ $this->registerCss('
 
 .l-help-block1{
     box-shadow: 0 0 10px rgb(0,0,0,.2);
-    padding: 22px 20px;
+    padding: 22px 15px;
     margin-bottom:20px;
     background:#fff;
     min-height: 180px;
@@ -1166,11 +1165,11 @@ $this->registerCss('
      }
 }
 @media only screen and (max-width: 375px) {
-   .whats-btn a{
-    padding: 10px 7px;
+   .edu-des .edu-hw-title{
+       font-size: 16px;
    }
-   .tele-btn a{
-    padding: 10px 7px;
+   .edu-des edu-hw-description{
+       font-size: 14px;
    }
 }
 @media screen and (max-width: 590px) and (min-width:320px) {
@@ -1209,6 +1208,6 @@ $this->registerCss('
     .faq-s-bg{
      display: none;
     }
-    }
+}
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');

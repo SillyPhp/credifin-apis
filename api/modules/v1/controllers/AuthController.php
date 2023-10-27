@@ -290,7 +290,7 @@ class AuthController extends ApiBaseController
     private function newToken($user_id, $source)
     {
         $token = new UserAccessTokens();
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s');
         $token->access_token_enc_id = time() . mt_rand(10, 99);
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
@@ -341,7 +341,7 @@ class AuthController extends ApiBaseController
 
     private function onlyTokens($token)
     {
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s');
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);

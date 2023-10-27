@@ -52,6 +52,8 @@ namespace common\models;
  * @property string $signed_up_through from where user has first signed up
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
+ * @property LoanApplications[] $loanApplications3
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property IndianGovtDepartments[] $indianGovtDepartments
  * @property UsaDepartments[] $usaDepartments
  * @property UsaProfileCodes[] $usaProfileCodes
@@ -85,6 +87,12 @@ namespace common\models;
  * @property AssignedCollegeCourses[] $assignedCollegeCourses0
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements0
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners0
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners1
+* mas * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes
+ * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes0
+ * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes1
  * @property AssignedIndianJobs[] $assignedIndianJobs
  * @property AssignedIndianJobs[] $assignedIndianJobs0
  * @property AssignedIndustries[] $assignedIndustries
@@ -374,6 +382,10 @@ namespace common\models;
  * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations0
  * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserOtherDetails[] $userOtherDetails
+ * @property UserRoles[] $userRoles
+ * @property UserRoles[] $userRoles0
+ * @property UserRoles[] $userRoles1
+ * @property UserRoles[] $userRoles2
  * @property UserVerificationTokens[] $userVerificationTokens
  * @property UserWebinarInterest[] $userWebinarInterests
  * @property UserWebinarInterest[] $userWebinarInterests0
@@ -404,6 +416,7 @@ namespace common\models;
  * @property WebinarSessions[] $webinarSessions
  * @property WebinarSpeakers[] $webinarSpeakers
  * @property WebinarSpeakers[] $webinarSpeakers0
+ * @property SharedLoanApplications[] $sharedLoanApplications
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -421,7 +434,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'user_type_enc_id', 'initials_color'], 'required'],
+            [['user_enc_id', 'username', 'password', 'auth_key', 'first_name', 'user_type_enc_id', 'initials_color'], 'required'],
             [['description', 'objective', 'user_of', 'status', 'last_visit_through', 'signed_up_through'], 'string'],
             [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],
@@ -4125,6 +4138,37 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles()
+    {
+        return $this->hasMany(UserRoles::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles0()
+    {
+        return $this->hasMany(UserRoles::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles1()
+    {
+        return $this->hasMany(UserRoles::className(), ['reporting_person' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles2()
+    {
+        return $this->hasMany(UserRoles::className(), ['updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -4221,8 +4265,82 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ShortlistedApplicants::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
     public function getSkillsUpPosts0()
     {
         return $this->hasMany(SkillsUpPosts::className(), ['created_by' => 'user_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['loan_partner_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners0()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners1()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes()
+    {
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes0()
+    {
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes1()
+    {
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['financer_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSharedLoanApplications()
+    {
+        return $this->hasMany(SharedLoanApplications::className(), ['shared_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplications3()
+    {
+        return $this->hasMany(LoanApplications::className(), ['lead_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['created_by' => 'user_enc_id']);
+    }
 }
+

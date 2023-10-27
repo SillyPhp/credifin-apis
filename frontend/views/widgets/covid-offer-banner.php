@@ -61,11 +61,11 @@ use yii\helpers\Url;
       <div class="col-sm-5"></div>
       <div class="col-sm-6">
         <div class="covid-offer-text">
-          <h4>COVID RELIEF OFFER</h4>
-        <h1>0 Processing Fee</h1>
-        <p>Pay no processing fees for any education loan to attend your dream college</p>
-        <h6 class="offer-valid">Offer valid till 5th of November</h6>
-        <a href="<?= $availUrl ?>" class="avail-btn">
+          <!-- <h4>godaddy academy offers</h4> -->
+        <h1>50% OFF<br> Processing Fee</h1>
+        <p>Pay half processing fee for School Fee Finance</p>
+        <!-- <h6 class="offer-valid">Offer valid till 5th of November</h6> -->
+        <a href="<?= ($availUrl) ? $availUrl : "/education-loans/school-fee-finance/apply" ?>" class="avail-btn">
                         <span>Avail Now</span>
                         <div class="arrows">
                             <i class="fas fa-chevron-right"></i>
@@ -113,6 +113,7 @@ $this->registerCss('
       font-weight: 800;
     color: #FFFFFF;
     margin: 0;
+    text-transform: capatalize;
   }
   .covid-offer-banner h1{
     color: #FFD65F;
@@ -120,6 +121,7 @@ $this->registerCss('
       font-size: 50px;
       font-weight: 800;
     font-family: roboto;
+    line-height: 1;
   }
   .avail-btn {
     width: 112px;
@@ -132,6 +134,7 @@ $this->registerCss('
     position: relative;
     overflow: hidden;
     margin-top: 2px;
+    margin-top: 15px;
 }
 .avail-btn span{
     margin-left: -20px;

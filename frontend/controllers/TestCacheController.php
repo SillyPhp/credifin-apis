@@ -17,6 +17,7 @@ use common\models\LoanApplications;
 use common\models\Posts;
 use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
+use common\models\EmiCollection;
 use common\models\RandomColors;
 use common\models\Utilities;
 use yii\helpers\Url;

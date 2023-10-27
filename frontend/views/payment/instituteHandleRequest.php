@@ -2,10 +2,10 @@
     <h3 id="text">Please Don't Refresh The Page, Processing Your Payment...</h3>
 </div>
 <?php
-Yii::$app->view->registerJs('var status = "' . $get['razorpay_invoice_status'] . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var status = "' . $payment->status . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var payment_id = "' . $get['razorpay_payment_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var signature = "' . $get['razorpay_signature'] . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var invoice_id = "' . $get['razorpay_invoice_receipt'] . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var invoice_id = "' . $get['razorpay_payment_link_id'] . '"', \yii\web\View::POS_HEAD);
 $this->registerCss("
 #pre_loader{
 display:none,
@@ -31,7 +31,7 @@ display: inline-block;
 $script = <<< JS
 function paymentAccept(status,payment_id,signature,invoice_id){
  $.ajax({
-'url':'/api/v3/payments/institute-update-transections',
+'url':'/api/v3/payments/institute-update-transactions',
 'method':'POST',
 'data':{
     'status':status,
@@ -47,7 +47,7 @@ function paymentAccept(status,payment_id,signature,invoice_id){
     if (res.response.status==200){
              swal({
                         title: "",
-                        text: "Your Application Fee Transection Is Saved Successfully",
+                        text: "Your Application Fee Transaction Is Saved Successfully",
                         type:'success',
                         showCancelButton: false,  
                         confirmButtonClass: "btn-primary",

@@ -30,7 +30,7 @@ if($type == 'internships'){
                         </div><!-- Heading -->
                         <div class="cat-sec">
                             <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'canada')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>">
@@ -38,7 +38,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'us')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>">
@@ -46,7 +46,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'singapore')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>">
@@ -54,7 +54,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'india')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>">
@@ -66,7 +66,7 @@ if($type == 'internships'){
                         </div>
                         <div class="cat-sec">
                             <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'germany')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>">
@@ -74,7 +74,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'uk')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>">
@@ -82,7 +82,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'thailand')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>">
@@ -90,7 +90,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'china')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>">
@@ -102,7 +102,7 @@ if($type == 'internships'){
                         </div>
                         <div class="cat-sec">
                             <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'japan')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/japan.png') ?>">
@@ -110,7 +110,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'malaysia')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/malaysia.png') ?>">
@@ -118,7 +118,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'spain')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/spain.png') ?>">
@@ -126,7 +126,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'italy')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/italy.png') ?>">
@@ -138,7 +138,7 @@ if($type == 'internships'){
                         </div>
                         <div class="cat-sec">
                             <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'france')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/france.png') ?>">
@@ -146,7 +146,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'australia')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/australia.png') ?>">
@@ -154,7 +154,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'new-zealand')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/newzealan.png') ?>">
@@ -162,7 +162,7 @@ if($type == 'internships'){
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url .'hong-kong')?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/hong-kong.png') ?>">

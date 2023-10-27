@@ -1054,6 +1054,7 @@ class JobsController extends Controller
             ->one();
         if (Yii::$app->user->identity->organization && $application) {
             $model = new ApplicationForm();
+            $model->benefit_selection = 1;
             $type = 'Clone_Jobs';
             $primary_cat = $model->getPrimaryFields();
             $questionnaire = $model->getQuestionnnaireList();

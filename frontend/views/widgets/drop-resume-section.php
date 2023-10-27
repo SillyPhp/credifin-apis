@@ -134,6 +134,10 @@ $this->registerCss('
 .drop-btn {
     margin-top: 25px;
 }
+.dr-box img {
+    width: 100%;
+    max-width: 60px;
+}
 .activate-drop {
     color: #fff;
     background-color: #00a0e3;
@@ -279,6 +283,9 @@ $this->registerCss('
     }
     .drop-image {
         display: none;
+    }
+    .dr-how-text h3 {
+        font-size: 22px;    
     }
 }
 ');

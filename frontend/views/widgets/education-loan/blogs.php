@@ -34,7 +34,7 @@ use yii\helpers\Url;
                 <a href="<?= Url::to('/blog/'.$blog['slug']) ?>"  target="_blank">
                     <div class="col-item">
                         <div class="photo">
-                            <img src="<?= $image ?>" class="" alt="<?= $param ?>" title="<?= $param ?>">
+                            <img src="/<?= $image ?>" class="" alt="<?= $param ?>" title="<?= $param ?>">
                         </div>
                         <div class="info">
                             <div class="row">

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use api\modules\v3\models\OrganizationList;
+use Cassandra\Date;
 use common\models\AssignedCollegeCourses;
 use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
@@ -27,16 +28,19 @@ use yii\web\HttpException;
 use yii\web\Response;
 
 
-class EducationLoansController extends Controller {
+class EducationLoansController extends Controller
+{
 
-    public function actionPressReleases() {
+    public function actionPressReleases()
+    {
         $data = self::getPressReleasData();
         return $this->render('press-releases', [
             'data' => $data
         ]);
     }
 
-    private function getPressReleasData($option = []) {
+    private function getPressReleasData($option = [])
+    {
         $data = PressReleasePubliser::find()
             ->andWhere(['is_deleted' => 0])
             ->orderBy(['sequence' => SORT_ASC]);
@@ -46,7 +50,8 @@ class EducationLoansController extends Controller {
         return $data->asArray()->all();
     }
 
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         $route = ltrim(Yii::$app->request->url, '/');
         if ($route === "") {
             $route = "/";
@@ -56,7 +61,8 @@ class EducationLoansController extends Controller {
         return parent::beforeAction($action);
     }
 
-    public function actionIndex($ref_id = null) {
+    public function actionIndex($ref_id = null)
+    {
         if ($ref_id) {
             $referralData = Referral::findOne(['code' => $ref_id]);
             if ($referralData):
@@ -80,7 +86,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionApply($ref_id = null, $lead_id = null) {
+    public function actionApply($ref_id = null, $lead_id = null)
+    {
         if (!Yii::$app->user->identity->organization->organization_enc_id):
             $india = Countries::findOne(['name' => 'India'])->country_enc_id;
             $referrerUrl = trim(Yii::$app->request->referrer, '/');
@@ -99,14 +106,16 @@ class EducationLoansController extends Controller {
             return $this->render('apply-general-loan-form', [
                 'india' => $india,
                 'lead_id' => $lead_id,
-                'action_name' => $action_name
+                'action_name' => $action_name,
+                'ref_code' => $referralData->code,
             ]);
         else:
             throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
         endif;
     }
 
-    public function actionApplyLoan($id) {
+    public function actionApplyLoan($id)
+    {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
             ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'logo', 'logo_location',
@@ -120,7 +129,8 @@ class EducationLoansController extends Controller {
         }
     }
 
-    public function actionTeachersLoanApplyForm() {
+    public function actionTeachersLoanApplyForm()
+    {
         if (!Yii::$app->user->identity->organization->organization_enc_id):
             return $this->render('teachers-loan-form');
         else:
@@ -128,19 +138,23 @@ class EducationLoansController extends Controller {
         endif;
     }
 
-    public function actionEducationLoanView() {
+    public function actionEducationLoanView()
+    {
         return $this->render('education-loan-view');
     }
 
-    public function actionLoanViewCollege() {
+    public function actionLoanViewCollege()
+    {
         return $this->render('loan-view-college');
     }
 
-    public function actionLoanCollegeIndex() {
+    public function actionLoanCollegeIndex()
+    {
         return $this->render('loan-college-index');
     }
 
-    public function actionEducationLoanUniversity() {
+    public function actionEducationLoanUniversity()
+    {
         $this->layout = 'widget-layout';
         $model = new AdmissionForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -153,7 +167,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionSchoolFeeLoanApply($ref_id = null, $lead_id = null) {
+    public function actionSchoolFeeLoanApply($ref_id = null, $lead_id = null)
+    {
         if (!Yii::$app->user->identity->organization->organization_enc_id):
 //        return $this->render('school-fee-loan-form');
             return $this->actionApply($ref_id, $lead_id);
@@ -162,7 +177,8 @@ class EducationLoansController extends Controller {
         endif;
     }
 
-    public function actionLeads() {
+    public function actionLeads()
+    {
         $this->layout = 'main-secondary';
         $model = new LeadsForm();
         if ($model->load(Yii::$app->request->post())) {
@@ -180,14 +196,15 @@ class EducationLoansController extends Controller {
                     'status' => 201,
                     'title' => 'Error',
                     'message' => 'Some Input Error Please Varify Your Information'
-                ];;
+                ];
             }
         } else {
             return $this->render('leads-form', ['model' => $model]);
         }
     }
 
-    public function actionStudyInUsa() {
+    public function actionStudyInUsa()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -210,7 +227,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionStudyInAustralia() {
+    public function actionStudyInAustralia()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -233,7 +251,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionStudyInCanada() {
+    public function actionStudyInCanada()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -256,7 +275,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionStudyInIndia() {
+    public function actionStudyInIndia()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -279,7 +299,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionStudyInEurope() {
+    public function actionStudyInEurope()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -302,7 +323,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionStudyAbroad() {
+    public function actionStudyAbroad()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -325,7 +347,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionRefinance() {
+    public function actionRefinance()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -347,7 +370,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionAnnualFeeFinancing() {
+    public function actionAnnualFeeFinancing()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -380,7 +404,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    private function _loanColleges($loan_name) {
+    private function _loanColleges($loan_name)
+    {
         $loan_colleges = OrganizationLoanSchemes::find()
             ->alias('a')
             ->select(['a.loan_type_enc_id', 'b.name', 'b.logo', 'b.logo_location', 'b.organization_enc_id',
@@ -399,7 +424,8 @@ class EducationLoansController extends Controller {
         return $loan_colleges;
     }
 
-    public function actionSchoolFeeFinance() {
+    public function actionSchoolFeeFinance()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -425,7 +451,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionInterestFree() {
+    public function actionInterestFree()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -451,7 +478,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionEducationInstitutionLoan() {
+    public function actionEducationInstitutionLoan()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -473,12 +501,14 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    public function actionLoanCalculator() {
+    public function actionLoanCalculator()
+    {
         $this->layout = 'widget-layout';
         return $this->render('calc');
     }
 
-    public function actionLoanForTeachers() {
+    public function actionLoanForTeachers()
+    {
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -500,7 +530,8 @@ class EducationLoansController extends Controller {
         ]);
     }
 
-    private function getBlogsByTags($tags) {
+    private function getBlogsByTags($tags)
+    {
         $blogs = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.title', 'a.featured_image', 'a.featured_image_location', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug',
@@ -522,11 +553,13 @@ class EducationLoansController extends Controller {
         return ['blogs' => $blogs, 'count' => $count];
     }
 
-    public function actionTermsAndConditions() {
+    public function actionTermsAndConditions()
+    {
         return $this->render('terms-and-conditions');
     }
 
-    public function actionFaq() {
+    public function actionFaq()
+    {
         return $this->render('faq');
     }
 }

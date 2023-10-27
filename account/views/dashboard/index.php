@@ -896,6 +896,52 @@ p{
 .ans span:first-child{
     border-color: #00a0e3;
 }
+
+@media only screen and (max-width: 767px){
+    .review-list-toggler{
+        top: 4px;
+        left: 15px;
+    }
+    .quizCards .quiz-card{
+        flex-direction: column;
+    }
+    .view-link{
+        display: inline-block;
+    }
+    .quiz-card > div {
+        margin-bottom: 10px;
+    }
+}
+@media only screen and (max-width: 780px){
+    .view-btn{
+        flex-basis: 100px;
+        max-height: 50px;
+    }
+}
+@media only screen and (max-width: 425px){
+    .page-container-bg-solid .page-content {
+        padding: 0;
+    }
+    .portlet.light {
+        padding: 12px 8px 15px;
+    }
+    .questionnaire.portlet.light .portlet-body{
+        overflow-x: scroll;
+    }
+    .questionnaire .tab-empty-icon img{
+        hieght: unset;
+        max-width: unset;
+    }
+    .questionnaire .tab-empty-text{
+        font-size: 20px;
+    }
+    .sidebar-hide .calendar-inner{
+        max-width: calc(100% - 0px);
+    }
+    .calendar-events{
+        width: 100%;
+    }
+}   
 ");
 $script = <<< JS
     $(document).ready(function(){

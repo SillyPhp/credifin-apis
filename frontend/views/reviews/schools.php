@@ -436,7 +436,7 @@ review-benifit{
     padding:25px 25px;
     border-radius:10px;
     position:absolute;
-    top:50%;
+    top:60%;
     transform:translateY(-50%);
     left:10px;
     z-index:999;

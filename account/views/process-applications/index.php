@@ -5,6 +5,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+
+
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
     case 'Jobs':
@@ -425,12 +427,12 @@ usort($locations, "cmp");
             <?php
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
+//                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
                            aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
@@ -834,6 +836,7 @@ usort($locations, "cmp");
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
                                     </div>
+
                                     <ul>
                                         <!--                                            <li>-->
                                         <!--                                                <a href="#">-->
@@ -935,7 +938,7 @@ usort($locations, "cmp");
                                             <?php
                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
-                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
+//                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#"
@@ -946,7 +949,7 @@ usort($locations, "cmp");
                                                            }
                                                        } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                        <?= $roundName ?>
+                                                        <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
                                                 <?php
@@ -985,6 +988,7 @@ usort($locations, "cmp");
                                 <tr>
                                     <th>Question</th>
                                     <th>Process Name</th>
+                                    <th class="set-width-down">Print Questionnaire</th>
                                 </tr>
                                 </thead>
                                 <tbody class="qu_data">
@@ -998,7 +1002,11 @@ usort($locations, "cmp");
                                                target="_blank"><?= $list_que['name']; ?></a>
                                         </td>
                                         <td><?= $list_que['field_label']; ?></td>
-
+                                        <td>
+                                            <a href="javascript:;" data-toggle="tooltip" data-placement="top" title="Print" class="print-bttn" data-href="<?= Url::to($linkQ, 'https') ?>?print=true" target="_blank">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
@@ -1101,6 +1109,15 @@ usort($locations, "cmp");
 </div>
 <?php
 $this->registerCss('
+.set-width-down{
+    width:180px;
+    text-align:center;
+}
+.print-bttn{
+    text-align: center;
+    display: block;
+    color: #00a0e3;
+}
 .expired-ji p{
     position: absolute;
     right: 0;
@@ -1115,6 +1132,18 @@ $this->registerCss('
     font-size:12px;
     text-transform:uppercase;
 }
+.Can-num p{
+    text-align: right;
+    margin: 0;
+    padding-top: 13px;
+    font-size: 18px;
+}
+.Can-num p i{
+    font-size: 15px;
+    margin-right: 5px;
+    color: #00a0e3;
+}
+
 .has-success #phone-input {
     border-color: #c2cad8;
 }
@@ -2426,6 +2455,9 @@ overflow: hidden;
     max-width: 30px;
     margin-right: 8px;
 }
+.modal-backdrop.in{
+    display: none !important;
+}
 @media (min-width:1400px){
     .sticky{
         max-width: 1140px;
@@ -3134,6 +3166,11 @@ function downloadAs(url, name) {
     });
 };
 $('#myHeader li:nth-child(2) > a').trigger('click');
+
+$(document).on('click','.print-bttn', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

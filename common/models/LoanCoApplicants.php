@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -15,7 +13,9 @@ use Yii;
  * @property int $cibil_score cibil score
  * @property string $phone
  * @property string $relation
- * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
+ * @property string $borrower_type borrower type
+ * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
+ * @property int $employment_type  1 as Salaried, 2 as Self Employed, 3 as Non Working
  * @property double $annual_income
  * @property string $co_applicant_dob
  * @property string $image
@@ -24,13 +24,18 @@ use Yii;
  * @property string $occupation
  * @property int $address 0 new address,1 same as applicant
  * @property string $pan_number co borrower pan card number
+ * @property string $voter_card_number
  * @property string $aadhaar_number
+ * @property string $driving_license_number Driving License Number
+ * @property string $marital_status Marital Status
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_on
  * @property string $updated_by
+ * @property int $is_deleted 0 as true, 1 as false
  *
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanCertificates[] $loanCertificates
  * @property LoanApplications $loanAppEnc
@@ -53,19 +58,28 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
-            [['cibil_score', 'employment_type', 'years_in_current_house', 'address'], 'integer'],
-            [['relation'], 'string'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id'], 'required'],
+            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
+            [['relation', 'borrower_type', 'marital_status'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
-            [['phone', 'pan_number','aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['voter_card_number', 'driving_license_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 
     /**

@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\helpers\Url;
@@ -161,7 +162,18 @@ $this->params['header_dark'] = false;
 </section>
 <?= $this->render('/widgets/product-offerings') ?>
 
-<?= $this->render('/webinars/webinar-carousel')?>
+<?php
+    if($data = Yii::$app->webinarSlides->check()) {
+        echo $this->render('/webinars/webinar-carousel', [
+                'webinars'=>$data,
+        ]);
+    }
+?>
+
+<!-- Godaddy Offer start -->
+<?= $this->render('/widgets/godaddy_offer', ['webinar' => true]); ?>
+<!-- Godaddy Offer end -->
+
 
 
 <div id="app-data"></div>
@@ -706,6 +718,12 @@ how-icon{
     padding:9px 20px;
     background:none;
   }
+
+@media only screen and (max-width: 1199px) {
+    .job-search-sec {
+        transform: translateY(-38%) translateX(-50%);
+    }
+}
 
 @media screen and (max-width: 767px){
     .how-icon{
@@ -1323,7 +1341,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
         if(hcActive.length > 0){
             hcActive[0].classList.remove('hcActive');
         }
-        console.log(searchForm.values);
         if(divActive.classList.contains('hcActive')){
            return false
         }else{
@@ -1352,7 +1369,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
                 default:
                     searchForm.setAttribute('action', '/search');
                     searchInput.setAttribute('placeholder', 'Keyword');
-                    console.log(showDiv);
             }
            if(showDiv == 'loanHeaderContent') {
                headerContent.querySelector('.header-search-bar').style.display = 'none';
