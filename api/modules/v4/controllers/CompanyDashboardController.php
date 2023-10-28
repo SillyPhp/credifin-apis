@@ -2682,79 +2682,78 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionProductListStats()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-
-            if (!empty($params["provider_id"])) {
-                $provider_id = $params["provider_id"];
-            } else {
-                $provider_id = $this->getFinancerId($user);
-            }
-            $limit = !empty($params["limit"]) ? $params["limit"] : 10;
-            $page = !empty($params["page"]) ? $params["page"] : 1;
-            $productStats = LoanApplications::find()
-                ->alias("c")
-                ->select([
-                    "c.loan_products_enc_id",
-                    "c3.name AS product_name",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' THEN c.loan_app_enc_id END) AS total_cases",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) AS new_lead",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) AS sanctioned",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) AS rejected",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) AS disbursed",
-                    "SUM(CASE WHEN c1.status = '31' THEN c1.disbursement_approved ELSE 0 END) AS disbursed_amount",
-
-
-                    "SUM(CASE WHEN c1.insurance_charges = null THEN 0 ELSE ' ' END) AS insurance_charges_amount",
-                    "SUM(CASE WHEN c1.disbursement_approved = null THEN 0 ELSE ' ' END) AS disbursed_approval_amount",
-                    "SUM(CASE WHEN c1.soft_sanction = null THEN 0 ELSE ' ' END) AS soft_sanctioned_amount",
-                    "SUM(CASE WHEN c1.soft_approval = null THEN 0 ELSE ' ' END) AS soft_approval_amount",
-
-                    "SUM(CASE WHEN c1.status = '32' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS rejected_amount",
-                    "SUM(CASE WHEN c1.status = '28' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS cni_amount",
-                    "SUM(CASE WHEN c1.status = '30' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS sanctioned_amount",
-                    "SUM(CASE WHEN  c.amount = null THEN 0 ELSE '' END) AS total_amount",
-                ])
-                ->joinWith(["assignedLoanProviders c1" => function ($c1) {
-                    $c1->joinWith(["status0 c2"]);
-                }], false)
-                ->joinWith(["loanProductsEnc c3"], false)
-
-                ->andWhere(["c1.provider_enc_id" => $provider_id])
-                ->andWhere(["not", ["c.loan_products_enc_id" => null]])
-                ->andWhere(["between", "c.created_on", $params["start_date"], $params["end_date"]])
-
-                ->groupBy(["c.loan_products_enc_id"]);
-
-
-            if (!empty($params["branch_name"])) {
-                $productStats->andWhere(["c1.branch_enc_id" => $params["branch_name"]]);
-            }
-            if (isset($params["field"]) && !empty($params["field"]) && isset($params["order_by"]) && !empty($params["order_by"])) {
-                $productStats->orderBy(["c." . $params["field"] => $params["order_by"] == 0 ? SORT_ASC : SORT_DESC]);
-            }
-            if (isset($params["keyword"]) && !empty($params["keyword"])) {
-                $productStats->andWhere([
-                    "or",
-                    ["like", "concat(a.first_name,' ',a.last_name)", $params["keyword"]],
-                    ["like", "a.phone", $params["keyword"]],
-                    ["like", "a.username", $params["keyword"]],
-                    ["like", "a.email", $params["keyword"]],
-                    ["like", "b1.designation", $params["keyword"]],
-                    ["like", "concat(b2.first_name, ' ' ,b2.last_name)", $params["keyword"]],
-                    ["like", "b3.location_name", $params["keyword"]],
-                ]);
-            }
-            $count = $productStats->count();
-            $productStats = $productStats
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
-            return $this->response(200, ["status" => 200, "data" => $productStats, "count" => $count]);
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ["status" => 401, "message" => "unauthorised"]);
         }
+        $params = Yii::$app->request->post();
+
+        if (!empty($params["provider_id"])) {
+            $provider_id = $params["provider_id"];
+        } else {
+            $provider_id = $this->getFinancerId($user);
+        }
+        $limit = !empty($params["limit"]) ? $params["limit"] : 10;
+        $page = !empty($params["page"]) ? $params["page"] : 1;
+        $productStats = LoanApplications::find()
+            ->alias("c")
+            ->select([
+                "c.loan_products_enc_id",
+                "c3.name AS product_name",
+                "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' THEN c.loan_app_enc_id END) AS total_cases",
+                "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) AS new_lead",
+                "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) AS sanctioned",
+                "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) AS rejected",
+                "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) AS disbursed",
+                "SUM(CASE WHEN c1.status = '31' THEN c1.disbursement_approved ELSE 0 END) AS disbursed_amount",
+
+
+                "SUM(CASE WHEN c1.insurance_charges = null THEN 0 ELSE ' ' END) AS insurance_charges_amount",
+                "SUM(CASE WHEN c1.disbursement_approved = null THEN 0 ELSE ' ' END) AS disbursed_approval_amount",
+                "SUM(CASE WHEN c1.soft_sanction = null THEN 0 ELSE ' ' END) AS soft_sanctioned_amount",
+                "SUM(CASE WHEN c1.soft_approval = null THEN 0 ELSE ' ' END) AS soft_approval_amount",
+
+                "SUM(CASE WHEN c1.status = '32' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS rejected_amount",
+                "SUM(CASE WHEN c1.status = '28' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS cni_amount",
+                "SUM(CASE WHEN c1.status = '30' THEN IF(c1.soft_sanction, c1.soft_sanction, IF(c1.soft_approval, c1.soft_approval, c.amount)) ELSE 0 END) AS sanctioned_amount",
+                "SUM(CASE WHEN  c.amount = null THEN 0 ELSE '' END) AS total_amount",
+            ])
+            ->joinWith(["assignedLoanProviders c1" => function ($c1) {
+                $c1->joinWith(["status0 c2"]);
+            }], false)
+            ->joinWith(["loanProductsEnc c3"], false)
+
+            ->andWhere(["c1.provider_enc_id" => $provider_id])
+            ->andWhere(["not", ["c.loan_products_enc_id" => null]])
+            ->andWhere(["between", "c.created_on", $params["start_date"], $params["end_date"]])
+
+            ->groupBy(["c.loan_products_enc_id"]);
+
+
+        if (!empty($params["branch_name"])) {
+            $productStats->andWhere(["c1.branch_enc_id" => $params["branch_name"]]);
+        }
+        if (isset($params["field"]) && !empty($params["field"]) && isset($params["order_by"]) && !empty($params["order_by"])) {
+            $productStats->orderBy(["c." . $params["field"] => $params["order_by"] == 0 ? SORT_ASC : SORT_DESC]);
+        }
+        if (isset($params["keyword"]) && !empty($params["keyword"])) {
+            $productStats->andWhere([
+                "or",
+                ["like", "concat(a.first_name,' ',a.last_name)", $params["keyword"]],
+                ["like", "a.phone", $params["keyword"]],
+                ["like", "a.username", $params["keyword"]],
+                ["like", "a.email", $params["keyword"]],
+                ["like", "b1.designation", $params["keyword"]],
+                ["like", "concat(b2.first_name, ' ' ,b2.last_name)", $params["keyword"]],
+                ["like", "b3.location_name", $params["keyword"]],
+            ]);
+        }
+        $count = $productStats->count();
+        $productStats = $productStats
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        return $this->response(200, ["status" => 200, "data" => $productStats, "count" => $count]);
     }
 
     public function actionUploadApplicantImage()
