@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
@@ -1735,7 +1736,7 @@ class OrganizationsController extends ApiBaseController
                 $res[$payment_method]['sum'] += $amount;
                 $res[$payment_method]['count'] += 1;
             } else {
-                if(empty($method)){
+                if (empty($method)) {
                     $res[$payment_method]['pending']['count'] += 1;
                     $res[$payment_method]['pending']['sum'] += $amount;
                 }
@@ -1811,6 +1812,7 @@ class OrganizationsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
+        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
@@ -1834,12 +1836,13 @@ class OrganizationsController extends ApiBaseController
                 $c->joinWith(['cityEnc c1'], false);
             }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
-            ->andWhere(['a.is_deleted' => 0]);
+            ->andWhere(['a.is_deleted' => 0])
+            ->orWhere(['a.created_by' => $juniors]);
 
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id)) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf'])) {
             $model->andWhere(['a.created_by' => $user->user_enc_id]);
         }
         if (isset($lac)) {

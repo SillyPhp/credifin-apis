@@ -503,11 +503,11 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
         }
         if (!empty($params['fields_search']['start_date'])) {
-            $loans->andWhere(['>=', 'a.loan_status_updated_on', $params['fields_search']['start_date']]);
+            $loans->andWhere(['>=', 'a.created_on', $params['fields_search']['start_date']]);
         }
 
         if (!empty($params['fields_search']['end_date'])) {
-            $loans->andWhere(['<=', 'a.loan_status_updated_on', $params['fields_search']['end_date']]);
+            $loans->andWhere(['<=', 'a.created_on', $params['fields_search']['end_date']]);
         }
 
 
@@ -855,7 +855,8 @@ class CompanyDashboardController extends ApiBaseController
                             $lpe1->select(['lpe1.disbursement_charges_enc_id', 'lpe1.financer_loan_product_enc_id', 'lpe1.name', 'lpe2.amount']);
                             $lpe1->onCondition(['lpe1.is_deleted' => 0]);
                         }]);
-                    }])
+                    }
+                ])
                 ->joinWith(['capitalRoiUpdatedBy ub'], false)
                 ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
