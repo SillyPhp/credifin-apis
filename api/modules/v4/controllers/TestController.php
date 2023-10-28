@@ -121,12 +121,12 @@ class TestController extends ApiBaseController
             $cibils = $this->CreditReports($item["loan_app_enc_id"]);
             if (!empty($cibils)) {
 
-                if (in_array($item["loan_app_enc_id"], $cibils)) {
+                if (in_array($item["loan_app_enc_id"], array_keys($cibils))) {
                     $item["cibil_score"] = $cibils[$item["loan_app_enc_id"]];
                 }
                 if (!empty($item["loanCoApplicants"])) {
                     foreach ($item["loanCoApplicants"] as &$loanCoApplicant) {
-                        if (in_array($loanCoApplicant["loan_co_app_enc_id"], $cibils)) {
+                        if (in_array($loanCoApplicant["loan_co_app_enc_id"], array_keys($cibils))) {
                             $loanCoApplicant["cibil_score"] = $cibils[$loanCoApplicant["loan_co_app_enc_id"]];
                         }
                     }
@@ -140,21 +140,14 @@ class TestController extends ApiBaseController
     {
         $credit_report = CreditLoanApplicationReports::find()
             ->alias("a")
-            ->select([
-                "a.response_enc_id", "b1.request_source", "c.borrower_type", "c.name",
-                "a.created_on", "a.loan_co_app_enc_id", "a.loan_app_enc_id"
-            ])
+            ->select(["a.response_enc_id", "a.loan_co_app_enc_id", "a.loan_app_enc_id"])
             ->joinWith(["responseEnc b" => function ($b) {
-                $b->select(["b.response_enc_id", "b1.request_source", "b.response_body"]);
-                $b->joinWith(["requestEnc b1"], false);
-                $b->andWhere(["b1.request_source" => "CIBIL"]);
+                $b->select(["b.response_enc_id", "b.response_body"]);
+                $b->joinWith(["requestEnc b1" => function ($b1) {
+                    $b1->andOnCondition(["b1.request_source" => "CIBIL"]);
+                }], false, "INNER JOIN");
             }])
-            ->joinWith(["loanCoAppEnc c"], false)
-            ->andWhere([
-                "a.loan_app_enc_id" => $loan_id,
-                "b1.request_source" => "CIBIL"
-            ])
-            ->offset(0)
+            ->andWhere(["a.loan_app_enc_id" => $loan_id])
             ->asArray()
             ->all();
         $res = [];
