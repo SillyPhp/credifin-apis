@@ -1414,10 +1414,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['assignedDealerOptions c'], false)
             ->joinWith(['dealerEnc d'], false)
             ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id']])
-            ->andWhere(['or',
-                ['a.is_deleted' => 0],
-                ['b.is_deleted' => 0]
-            ])
+            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
             ->orderby(['a.created_on' => SORT_DESC]);
 
 //        if (!empty($params['field_search'])) {
