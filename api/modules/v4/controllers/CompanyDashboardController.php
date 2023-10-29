@@ -2985,7 +2985,7 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
-                ->where(['b.is_deleted' => 0, 'b.form_type' => 'others']);
+                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $employeeAmount->andWhere(['b.lead_by' => $dsa]);
