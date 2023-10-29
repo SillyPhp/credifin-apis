@@ -43,6 +43,8 @@ namespace common\models;
  * @property string $pan_number
  * @property string $voter_card_number
  * @property string $invoice_number Invoice Number
+ * @property string $invoice_date
+ * @property string $assigned_dealer
  * @property string $rc_number Rc Number
  * @property string $chassis_number Chassis Number
  * @property string $battery_number Battery Number
@@ -110,6 +112,7 @@ namespace common\models;
  * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $capitalRoiUpdatedBy
  * @property Users $registryStatusUpdatedBy
+ * @property Organizations $assignedDealer
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $collegeEnc
@@ -153,9 +156,9 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'number_of_emis', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
+            [['applicant_dob', 'candidate_status_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi', 'roi'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'assigned_dealer', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -169,6 +172,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
             [['capital_roi_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['capital_roi_updated_by' => 'user_enc_id']],
             [['registry_status_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['registry_status_updated_by' => 'user_enc_id']],
+            [['assigned_dealer'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_dealer' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
@@ -385,6 +389,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getRegistryStatusUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'registry_status_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDealer()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_dealer']);
     }
 
     /**
