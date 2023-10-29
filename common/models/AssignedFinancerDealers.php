@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%assigned_financer_dealers}}".
  *
@@ -15,7 +17,9 @@ namespace common\models;
  * @property string $updated_by Foreign key to users table
  * @property int $is_deleted 0 as false, 1 as true
  *
+ * @property AssignedDealerBrands[] $assignedDealerBrands
  * @property AssignedDealerOptions[] $assignedDealerOptions
+ * @property AssignedDealerVehicleTypes[] $assignedDealerVehicleTypes
  * @property Organizations $dealerEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -50,9 +54,25 @@ class AssignedFinancerDealers extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAssignedDealerBrands()
+    {
+        return $this->hasMany(AssignedDealerBrands::className(), ['assigned_dealer_enc_id' => 'assigned_dealer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAssignedDealerOptions()
     {
         return $this->hasMany(AssignedDealerOptions::className(), ['assigned_dealer_enc_id' => 'assigned_dealer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDealerVehicleTypes()
+    {
+        return $this->hasMany(AssignedDealerVehicleTypes::className(), ['assigned_dealer_enc_id' => 'assigned_dealer_enc_id']);
     }
 
     /**

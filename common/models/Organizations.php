@@ -45,61 +45,115 @@ use Yii;
  * @property int $is_phone_verified Is Organization Phone Verified (0 as False, 1 as True)
  * @property int $is_startup Is Organization a Startup (0 as No, 1 as Yes)
  * @property int $is_erexx_registered Is College Erexx Based (0 as False, 1 as True)
+ * @property int $is_erexx_approved 0 as false, 1 as true
+ * @property int $has_loan_featured 0 as false, 1 as true
+ * @property int $has_skillup_featured 0 as false, 1 as true
  * @property int $has_placement_rights 1 for Has erexx rights
+ * @property int $contact_status 1 as Contacted, 2 as Profile Completed, 3 Campus Hiring Started
  * @property string $status Organization Status (Active, Inactive, Pending)
  * @property int $is_claimed  0 as not, 1 as yes
  * @property int $is_deleted Is Organization Deleted (0 as False, 1 as True)
  *
+ * @property AssignedCategories[] $assignedCategories
+ * @property AssignedCollegeCourses[] $assignedCollegeCourses
+ * @property AssignedFinancerDealers[] $assignedFinancerDealers
+ * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes
+ * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes0
+ * @property AssignedLenderServices[] $assignedLenderServices
+ * @property AssignedLoanProvider[] $assignedLoanProviders
+ * @property AssignedOrganizationFeeComponent[] $assignedOrganizationFeeComponents
+ * @property AssignedQuizTo[] $assignedQuizTos
+ * @property AssignedSupervisor[] $assignedSupervisors
  * @property AssignedTags[] $assignedTags
+ * @property AssignedWebinarTo[] $assignedWebinarTos
+ * @property BankDetails[] $bankDetails
  * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates
- * @property HiringProcessTemplates[] $hiringProcessEncs
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
- * @property QuestionnaireTemplates[] $questionnnaireEncs
- * @property OrganizationLabels[] $organizationLabels
+ * @property ClaimServiceableLocations[] $claimServiceableLocations
+ * @property ClaimServiceableLocations[] $claimServiceableLocations0
+ * @property CollegeCourses[] $collegeCourses
+ * @property CollegeCutoff[] $collegeCutoffs
+ * @property CollegeInfrastructureDetail[] $collegeInfrastructureDetails
+ * @property CollegePlacementHighlights[] $collegePlacementHighlights
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses
+ * @property CollegeScholarships[] $collegeScholarships
+ * @property CollegeSettings[] $collegeSettings
  * @property ConversationParticipants[] $conversationParticipants
+ * @property Credentials[] $credentials
  * @property Designations[] $designations
+ * @property DropResumeOrgApplication[] $dropResumeOrgApplications
+ * @property DropResumeUnselectedTitles[] $dropResumeUnselectedTitles
  * @property EducationalRequirements[] $educationalRequirements
+ * @property EmailLogs[] $emailLogs
  * @property EmployeeBenefits[] $employeeBenefits
  * @property EmployerApplications[] $employerApplications
+ * @property ErexxActivityTracks[] $erexxActivityTracks
+ * @property ErexxCollaborators[] $erexxCollaborators
+ * @property ErexxCollaborators[] $erexxCollaborators0
+ * @property ErexxEmployerApplications[] $erexxEmployerApplications
+ * @property ErexxWhatsappInvitation[] $erexxWhatsappInvitations
+ * @property EsignAgreementDetails[] $esignAgreementDetails
+ * @property EsignDocumentsTemplates[] $esignDocumentsTemplates
+ * @property EsignOrganizationTracking[] $esignOrganizationTrackings
+ * @property FinancerAssignedDesignations[] $financerAssignedDesignations
+ * @property FinancerLoanNegativeLocation[] $financerLoanNegativeLocations
+ * @property FinancerNoticeBoard[] $financerNoticeBoards
+ * @property FinancerRewards[] $financerRewards
+ * @property FinancerVehicleBrand[] $financerVehicleBrands
+ * @property FinancerVehicleTypes[] $financerVehicleTypes
  * @property FollowedOrganizations[] $followedOrganizations
- * @property Users[] $userEncs
  * @property JobDescription[] $jobDescriptions
+ * @property LoanApplicationLogs[] $loanApplicationLogs
+ * @property LoanApplicationPartners[] $loanApplicationPartners
+ * @property LoanApplicationPartners[] $loanApplicationPartners0
+ * @property LoanApplications[] $loanApplications
+ * @property LoanApplications[] $loanApplications0
  * @property LoanSanctionReports[] $loanSanctionReports
+ * @property MockAssignedBoards[] $mockAssignedBoards
+ * @property MockCourses[] $mockCourses
+ * @property MockQuizPool[] $mockQuizPools
+ * @property OpenAssignedTitles[] $openAssignedTitles
+ * @property OrganizationApps[] $organizationApps
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationBlogInformation[] $organizationBlogInformations
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
  * @property OrganizationEmployees[] $organizationEmployees
+ * @property OrganizationFeeAmount[] $organizationFeeAmounts
  * @property OrganizationImages[] $organizationImages
  * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
+ * @property OrganizationLabels[] $organizationLabels
+ * @property OrganizationLoanSchemes[] $organizationLoanSchemes
+ * @property OrganizationLoanSchemes[] $organizationLoanSchemes0
  * @property OrganizationLocations[] $organizationLocations
+ * @property OrganizationOtherDetails[] $organizationOtherDetails
  * @property OrganizationProducts[] $organizationProducts
  * @property OrganizationQuestionnaire[] $organizationQuestionnaires
  * @property OrganizationReviews[] $organizationReviews
  * @property OrganizationVideos[] $organizationVideos
- * @property Users $createdBy
- * @property Users $lastUpdatedBy
- * @property BusinessActivities $businessActivityEnc
  * @property Industries $industryEnc
+ * @property Users $lastUpdatedBy
+ * @property Users $createdBy
  * @property OrganizationTypes $organizationTypeEnc
+ * @property BusinessActivities $businessActivityEnc
+ * @property QuizSponsors[] $quizSponsors
+ * @property RatingSystem[] $ratingSystems
  * @property Referral[] $referrals
- * @property Users[] $userEncs0
+ * @property Users[] $userEncs
  * @property ReferralSignUpTracking[] $referralSignUpTrackings
+ * @property RejectionReasons[] $rejectionReasons
  * @property Reviews[] $reviews
  * @property Roles[] $roles
+ * @property SalaryReviews[] $salaryReviews
  * @property SelectedServices[] $selectedServices
+ * @property ShortlistedApplicants[] $shortlistedApplicants
  * @property ShortlistedOrganizations[] $shortlistedOrganizations
  * @property Skills[] $skills
- * @property UserOtherDetails[] $userOtherDetails
- * @property UserTasks[] $userTasks
- * @property UserVerificationTokens[] $userVerificationTokens
- * @property Users[] $users
- * @property ErexxCollaborators[] $erexxCollaborators
- * @property ErexxCollaborators[] $erexxCollaborators0
+ * @property UserRoles[] $userRoles
  */
 class Organizations extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -107,7 +161,7 @@ class Organizations extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -115,21 +169,101 @@ class Organizations extends \yii\db\ActiveRecord
             [['organization_enc_id', 'name', 'slug', 'initials_color', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
-            [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_erexx_registered', 'has_placement_rights', 'is_claimed', 'is_deleted'], 'integer'],
+            [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_erexx_registered', 'is_erexx_approved', 'has_loan_featured', 'has_skillup_featured', 'has_placement_rights', 'contact_status', 'is_claimed', 'is_deleted'], 'integer'],
             [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'industry_enc_id', 'name', 'slug', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'tag_line', 'website', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin'], 'string', 'max' => 50],
             [['initials_color'], 'string', 'max' => 7],
             [['phone', 'fax'], 'string', 'max' => 15],
-            [['email'], 'unique'],
             [['slug'], 'unique'],
             [['organization_enc_id'], 'unique'],
+            [['email'], 'unique'],
             [['phone'], 'unique'],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['business_activity_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['business_activity_enc_id' => 'business_activity_enc_id']],
             [['industry_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['industry_enc_id' => 'industry_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['organization_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationTypes::className(), 'targetAttribute' => ['organization_type_enc_id' => 'organization_type_enc_id']],
+            [['business_activity_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['business_activity_enc_id' => 'business_activity_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedCategories()
+    {
+        return $this->hasMany(AssignedCategories::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedCollegeCourses()
+    {
+        return $this->hasMany(AssignedCollegeCourses::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerDealers()
+    {
+        return $this->hasMany(AssignedFinancerDealers::className(), ['dealer_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes()
+    {
+        return $this->hasMany(AssignedFinancerLoanType::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes0()
+    {
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLenderServices()
+    {
+        return $this->hasMany(AssignedLenderServices::className(), ['provider_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanProviders()
+    {
+        return $this->hasMany(AssignedLoanProvider::className(), ['provider_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedOrganizationFeeComponents()
+    {
+        return $this->hasMany(AssignedOrganizationFeeComponent::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedQuizTos()
+    {
+        return $this->hasMany(AssignedQuizTo::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedSupervisors()
+    {
+        return $this->hasMany(AssignedSupervisor::className(), ['assigned_organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -143,9 +277,17 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationOtherDetails()
+    public function getAssignedWebinarTos()
     {
-        return $this->hasMany(OrganizationOtherDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
+        return $this->hasMany(AssignedWebinarTo::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBankDetails()
+    {
+        return $this->hasMany(BankDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -159,14 +301,6 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getHiringProcessEncs()
-    {
-        return $this->hasMany(HiringProcessTemplates::className(), ['hiring_process_enc_id' => 'hiring_process_enc_id'])->viaTable('{{%bookmarked_hiring_templates}}', ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getBookmarkedQuestionnaireTemplates()
     {
         return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['organization_enc_id' => 'organization_enc_id']);
@@ -175,9 +309,73 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestionnnaireEncs()
+    public function getClaimServiceableLocations()
     {
-        return $this->hasMany(QuestionnaireTemplates::className(), ['questionnaire_enc_id' => 'questionnnaire_enc_id'])->viaTable('{{%bookmarked_questionnaire_templates}}', ['organization_enc_id' => 'organization_enc_id']);
+        return $this->hasMany(ClaimServiceableLocations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClaimServiceableLocations0()
+    {
+        return $this->hasMany(ClaimServiceableLocations::className(), ['claim_college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeCourses()
+    {
+        return $this->hasMany(CollegeCourses::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeCutoffs()
+    {
+        return $this->hasMany(CollegeCutoff::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeInfrastructureDetails()
+    {
+        return $this->hasMany(CollegeInfrastructureDetail::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegePlacementHighlights()
+    {
+        return $this->hasMany(CollegePlacementHighlights::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeRecruitmentByCourses()
+    {
+        return $this->hasMany(CollegeRecruitmentByCourse::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeScholarships()
+    {
+        return $this->hasMany(CollegeScholarships::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeSettings()
+    {
+        return $this->hasMany(CollegeSettings::className(), ['college_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -191,6 +389,14 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCredentials()
+    {
+        return $this->hasMany(Credentials::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getDesignations()
     {
         return $this->hasMany(Designations::className(), ['organization_enc_id' => 'organization_enc_id']);
@@ -199,9 +405,33 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getDropResumeOrgApplications()
+    {
+        return $this->hasMany(DropResumeOrgApplication::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDropResumeUnselectedTitles()
+    {
+        return $this->hasMany(DropResumeUnselectedTitles::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEducationalRequirements()
     {
         return $this->hasMany(EducationalRequirements::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmailLogs()
+    {
+        return $this->hasMany(EmailLogs::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -223,17 +453,121 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFollowedOrganizations()
+    public function getErexxActivityTracks()
     {
-        return $this->hasMany(FollowedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+        return $this->hasMany(ErexxActivityTracks::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserEncs()
+    public function getErexxCollaborators()
     {
-        return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%followed_organizations}}', ['organization_enc_id' => 'organization_enc_id']);
+        return $this->hasMany(ErexxCollaborators::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxCollaborators0()
+    {
+        return $this->hasMany(ErexxCollaborators::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxEmployerApplications()
+    {
+        return $this->hasMany(ErexxEmployerApplications::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxWhatsappInvitations()
+    {
+        return $this->hasMany(ErexxWhatsappInvitation::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEsignAgreementDetails()
+    {
+        return $this->hasMany(EsignAgreementDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEsignDocumentsTemplates()
+    {
+        return $this->hasMany(EsignDocumentsTemplates::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEsignOrganizationTrackings()
+    {
+        return $this->hasMany(EsignOrganizationTracking::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerAssignedDesignations()
+    {
+        return $this->hasMany(FinancerAssignedDesignations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanNegativeLocations()
+    {
+        return $this->hasMany(FinancerLoanNegativeLocation::className(), ['financer_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerNoticeBoards()
+    {
+        return $this->hasMany(FinancerNoticeBoard::className(), ['financer_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerRewards()
+    {
+        return $this->hasMany(FinancerRewards::className(), ['financer_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerVehicleBrands()
+    {
+        return $this->hasMany(FinancerVehicleBrand::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerVehicleTypes()
+    {
+        return $this->hasMany(FinancerVehicleTypes::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFollowedOrganizations()
+    {
+        return $this->hasMany(FollowedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -247,9 +581,89 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanApplicationLogs()
+    {
+        return $this->hasMany(LoanApplicationLogs::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPartners()
+    {
+        return $this->hasMany(LoanApplicationPartners::className(), ['provider_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPartners0()
+    {
+        return $this->hasMany(LoanApplicationPartners::className(), ['partner_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplications()
+    {
+        return $this->hasMany(LoanApplications::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplications0()
+    {
+        return $this->hasMany(LoanApplications::className(), ['assigned_dealer' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanSanctionReports()
     {
         return $this->hasMany(LoanSanctionReports::className(), ['loan_provider_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockAssignedBoards()
+    {
+        return $this->hasMany(MockAssignedBoards::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockCourses()
+    {
+        return $this->hasMany(MockCourses::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizPools()
+    {
+        return $this->hasMany(MockQuizPool::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOpenAssignedTitles()
+    {
+        return $this->hasMany(OpenAssignedTitles::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationApps()
+    {
+        return $this->hasMany(OrganizationApps::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -287,6 +701,14 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationFeeAmounts()
+    {
+        return $this->hasMany(OrganizationFeeAmount::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrganizationImages()
     {
         return $this->hasMany(OrganizationImages::className(), ['organization_enc_id' => 'organization_enc_id']);
@@ -303,9 +725,41 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationLabels()
+    {
+        return $this->hasMany(OrganizationLabels::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationLoanSchemes()
+    {
+        return $this->hasMany(OrganizationLoanSchemes::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationLoanSchemes0()
+    {
+        return $this->hasMany(OrganizationLoanSchemes::className(), ['loan_provider_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrganizationLocations()
     {
         return $this->hasMany(OrganizationLocations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationOtherDetails()
+    {
+        return $this->hasMany(OrganizationOtherDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -335,41 +789,9 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationLabels()
-    {
-        return $this->hasMany(OrganizationLabels::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOrganizationVideos()
     {
         return $this->hasMany(OrganizationVideos::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastUpdatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBusinessActivityEnc()
-    {
-        return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'business_activity_enc_id']);
     }
 
     /**
@@ -383,9 +805,49 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrganizationTypeEnc()
     {
         return $this->hasOne(OrganizationTypes::className(), ['organization_type_enc_id' => 'organization_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBusinessActivityEnc()
+    {
+        return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'business_activity_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizSponsors()
+    {
+        return $this->hasMany(QuizSponsors::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingSystems()
+    {
+        return $this->hasMany(RatingSystem::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -399,7 +861,7 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserEncs0()
+    public function getUserEncs()
     {
         return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%referral}}', ['organization_enc_id' => 'organization_enc_id']);
     }
@@ -410,6 +872,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getReferralSignUpTrackings()
     {
         return $this->hasMany(ReferralSignUpTracking::className(), ['sign_up_org_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRejectionReasons()
+    {
+        return $this->hasMany(RejectionReasons::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -431,9 +901,25 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getSalaryReviews()
+    {
+        return $this->hasMany(SalaryReviews::className(), ['company_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSelectedServices()
     {
         return $this->hasMany(SelectedServices::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -455,48 +941,8 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserOtherDetails()
+    public function getUserRoles()
     {
-        return $this->hasMany(UserOtherDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserTasks()
-    {
-        return $this->hasMany(UserTasks::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserVerificationTokens()
-    {
-        return $this->hasMany(UserVerificationTokens::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
-    {
-        return $this->hasMany(Users::className(), ['organization_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getErexxCollaborators()
-    {
-        return $this->hasMany(ErexxCollaborators::className(), ['college_enc_id' => 'organization_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getErexxCollaborators0()
-    {
-        return $this->hasMany(ErexxCollaborators::className(), ['organization_enc_id' => 'organization_enc_id']);
+        return $this->hasMany(UserRoles::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 }
