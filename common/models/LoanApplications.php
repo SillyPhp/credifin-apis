@@ -43,6 +43,8 @@ namespace common\models;
  * @property string $pan_number
  * @property string $voter_card_number
  * @property string $invoice_number Invoice Number
+ * @property string $invoice_date
+ * @property string $assigned_dealer
  * @property string $rc_number Rc Number
  * @property string $chassis_number Chassis Number
  * @property string $battery_number Battery Number
@@ -89,6 +91,7 @@ namespace common\models;
  * @property BillDetails[] $billDetails
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property EducationLoanPayments[] $educationLoanPayments
+ * @property EmiPaymentIssues[] $emiPaymentIssues
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
@@ -99,6 +102,7 @@ namespace common\models;
  * @property LoanApplicationOptions[] $loanApplicationOptions
  * @property LoanApplicationPartners[] $loanApplicationPartners
  * @property LoanApplicationPd[] $loanApplicationPds
+ * @property LoanApplicationPendencies[] $loanApplicationPendencies
  * @property LoanApplicationRecords[] $loanApplicationRecords
  * @property LoanApplicationReleasePayment[] $loanApplicationReleasePayments
  * @property LoanApplicationSchoolFee[] $loanApplicationSchoolFees
@@ -118,6 +122,7 @@ namespace common\models;
  * @property Users $leadBy
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
+ * @property Organizations $assignedDealer
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
  * @property LoanApplicationsReferences[] $loanApplicationsReferences
  * @property LoanAuditTrail[] $loanAuditTrails
@@ -153,9 +158,9 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'number_of_emis', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
+            [['applicant_dob', 'candidate_status_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi', 'roi'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'assigned_dealer', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -176,6 +181,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
+            [['assigned_dealer'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_dealer' => 'organization_enc_id']],
         ];
     }
 
@@ -217,6 +223,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getEducationLoanPayments()
     {
         return $this->hasMany(EducationLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmiPaymentIssues()
+    {
+        return $this->hasMany(EmiPaymentIssues::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -297,6 +311,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplicationPds()
     {
         return $this->hasMany(LoanApplicationPd::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPendencies()
+    {
+        return $this->hasMany(LoanApplicationPendencies::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -449,6 +471,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplications()
     {
         return $this->hasMany(LoanApplications::className(), ['parent_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDealer()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_dealer']);
     }
 
     /**
