@@ -2,13 +2,12 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%bank_details}}".
  *
  * @property int $id Id
  * @property string $bank_details_enc_id Bank Details Enc Id
+ * @property string $organization_enc_id
  * @property string $name Name
  * @property string $bank_name Bank name
  * @property string $bank_account_number Bank Account Number
@@ -21,6 +20,7 @@ use Yii;
  *
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property Organizations $organizationEnc
  */
 class BankDetails extends \yii\db\ActiveRecord
 {
@@ -41,10 +41,11 @@ class BankDetails extends \yii\db\ActiveRecord
             [['bank_details_enc_id', 'name', 'bank_name', 'bank_account_number', 'ifsc_code', 'created_by', 'updated_on', 'updated_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['bank_details_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['bank_details_enc_id', 'organization_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['name', 'bank_name', 'bank_account_number', 'ifsc_code'], 'string', 'max' => 50],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -62,5 +63,13 @@ class BankDetails extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEnc()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 }

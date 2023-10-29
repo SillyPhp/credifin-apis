@@ -55,8 +55,11 @@ class SignupForm extends Model
     public $bank_name;
     public $account_number;
     public $ifsc_code;
-//    public $company_type;
+    public $financing_facility;
     public $trade_certificate;
+    public $dealership_date;
+    public $agreement_status;
+    public $since_with_financer;
 
     // rules for form
     public function rules()
@@ -69,7 +72,7 @@ class SignupForm extends Model
             }],
             [['organization_name', 'category', 'trade_certificate', 'dealer_type'], 'required', 'on' => 'FinancerDealer'],
 
-            [['username', 'email', 'vehicle_type', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
+            [['username', 'email', 'vehicle_type', 'since_with_financer', 'financing_facility', 'dealership_date', 'agreement_status', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
 //            [['vehicle_type', 'brands'], function () {
@@ -215,15 +218,29 @@ class SignupForm extends Model
         $options->assigned_dealer_options_enc_id = $utilitiesModel->encrypt();
         $options->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
         $options->category = $this->category;
-        if ($this->dealer_type == 'vehicle') {
-            $options->dealer_type = 0;
-        } else if ($this->dealer_type == 'electronics') {
-            $options->dealer_type = 1;
-        } else {
-            throw new \Exception('Invalid dealer_type value');
-        }
-
+        $options->dealer_type = ($this->dealer_type == 'vehicle') ? 0 : (($this->dealer_type == 'electronics') ? 1 : null);
         $options->trade_certificate = $this->trade_certificate == 'yes' ? 1 : 0;
+        $options->trade_advance = $this->financing_facility;
+        $options->agreement_status = $this->agreement_status;
+        $options->dealership_date = !empty($this->dealership_date) ? $this->dealership_date : null;
+        $options->since_with_financer = !empty($this->since_with_financer) ? $this->since_with_financer : null;
+
+//        $options->tc_number = $this->tc_number;
+//        $logo = UploadedFile::getInstanceByName('tc_logo');
+//        if ($logo) {
+//            $options->tc_logo_location = \Yii::$app->getSecurity()->generateRandomString();
+//            $base_path = Yii::$app->params->upload_directories->tc_logo->logo . $options->tc_logo_location . '/';
+//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//            $options->tc_logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+//            $type = $logo->type;
+//            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+//            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+//            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $options->tc_logo, "public", ['params' => ['ContentType' => $type]]);
+//            if (!$result) {
+//                throw new \Exception('Failed to upload logo');
+//            }
+//        }
+
         $options->created_on = $options->updated_on = date('Y-m-d H:i:s');
         $options->created_by = $options->updated_by = $this->user_id;
         if (!$options->save()) {
@@ -236,6 +253,7 @@ class SignupForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $bankDetails->bank_details_enc_id = $utilitiesModel->encrypt();
             $bankDetails->name = $this->account_name;
+            $bankDetails->organization_enc_id = $organization_id;
             $bankDetails->bank_name = $this->bank_name;
             $bankDetails->bank_account_number = $this->account_number;
             $bankDetails->ifsc_code = $this->ifsc_code;
