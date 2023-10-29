@@ -409,7 +409,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }])
-            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0])
             ->andWhere([
                 'or',
                 [
@@ -963,7 +963,7 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
                 //                }])
-                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->asArray()
                 ->one();
 
