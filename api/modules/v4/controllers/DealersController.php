@@ -4,6 +4,9 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\FinancerVehicleTypeForm;
 use common\models\FinancerVehicleTypes;
+use common\models\SharedLoanApplications;
+use common\models\UserRoles;
+use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
@@ -99,6 +102,7 @@ class DealersController extends ApiBaseController
             ->select([
                 'a.financer_vehicle_type_enc_id',
                 'a.vehicle_type',
+//                '(CASE WHEN a.dealer_type = "0" Then "vehicle" WHEN a.dealer_type = "1" Then "electronics" ELSE NULL END) as dealer_type',
                 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_types->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE NULL END icon'
             ])
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])

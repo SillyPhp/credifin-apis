@@ -6,7 +6,9 @@ use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedDealerVehicleTypes;
 use common\models\AssignedDeals;
+use common\models\AssignedFinancerDealers;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
@@ -837,7 +839,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->select([
                     'a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'CONCAT(ub.first_name, " ", ub.last_name) AS capital_roi_updated_by', 'a.registry_status', 'a.registry_status_updated_on', 'CONCAT(rs.first_name, " ", rs.last_name) AS registry_status_updated_by',
-                    'a.applicant_name', 'lpe.name  as loan_product', 'a.cibil_score', 'a.equifax_score', 'a.crif_score', 'a.chassis_number', 'a.rc_number', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
+                    'a.applicant_name', 'lpe.name  as loan_product', 'a.cibil_score', 'a.equifax_score', 'a.crif_score', 'a.chassis_number', 'a.rc_number', 'a.invoice_number', 'a.invoice_date', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
                     'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image',
                     'CASE WHEN rs.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", rs.image_location, "/", rs.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(rs.first_name," ",rs.last_name), "&size=200&rounded=false&background=", REPLACE(rs.initials_color, "#", ""), "&color=ffffff") END rs_image',
                     'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
@@ -1287,7 +1289,7 @@ class CompanyDashboardController extends ApiBaseController
                 $connector = $this->connectorsList($dsa_id, $params);
 
                 // getting dealer's list
-                $dealer = $this->dealerList($org_id, $params);
+                $dealer = $this->dealerList($params);
 
                 return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer, 'deleted' => $deleted]);
             } else {
@@ -1362,15 +1364,18 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
-                'or',
-                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['employee_search']],
-                ['like', 'b.username', $params['employee_search']],
-                ['like', 'b.email', $params['employee_search']],
-                ['like', 'b.phone', $params['employee_search']],
-                ['like', 'a.employee_code', $params['employee_search']],
+                'and',
+                [
+                    'or',
+                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', 'b.username', $params['employee_search']],
+                    ['like', 'b.email', $params['employee_search']],
+                    ['like', 'b.phone', $params['employee_search']],
+                    ['like', 'a.employee_code', $params['employee_search']],
+                ],
+                ['b.status' => 'active'],
             ]);
         }
 
@@ -1391,35 +1396,35 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
-    private function dealerList($org_id, $params = null)
+    private function dealerList($params)
     {
         // getting dealer data
-        $dealer = UserRoles::find()
+        $dealer = AssignedFinancerDealers::find()
             ->alias('a')
             ->select([
-                'a.role_enc_id',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
-                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'
+                'a.assigned_financer_enc_id', 'a.assigned_dealer_enc_id',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
+                'b.username', 'b.email', 'b.phone', 'd.name', 'b.first_name', 'b.last_name', 'b.status'
             ])
-            ->joinWith(['userEnc b'], false)
-            ->joinWith(['userTypeEnc c'], false)
-            ->joinWith(['designation d'], false)
-            ->joinWith(['reportingPerson e'], false)
-            ->joinWith(['branchEnc f' => function ($f) {
-                $f->joinWith(['cityEnc f1']);
-            }], false)
-            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Dealer', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['assignedDealerOptions c'], false)
+            ->joinWith(['dealerEnc d'], false)
+            ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id'], 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
         // filter dealer search on dealer name, username, email and phone
-        if ($params != null && !empty($params['dealer_search'])) {
+        if ($params != null && !empty($params['employee_search'])) {
             $dealer->andWhere([
-                'or',
-                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['dealer_search']],
-                ['like', 'b.username', $params['dealer_search']],
-                ['like', 'b.email', $params['dealer_search']],
-                ['like', 'b.phone', $params['dealer_search']],
-                ['like', 'a.employee_code', $params['dealer_search']],
+                'and',
+                [
+                    'or',
+                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', 'b.username', $params['employee_search']],
+                    ['like', 'b.email', $params['employee_search']],
+                    ['like', 'b.phone', $params['employee_search']],
+                    ['like', 'a.employee_code', $params['employee_search']],
+                ],
+                ['b.status' => 'active'],
             ]);
         }
 
@@ -1432,7 +1437,7 @@ class CompanyDashboardController extends ApiBaseController
 
         // checking if this dealer already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
-            $dealer->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
+            $dealer->andWhere(['not', ['b.user_enc_id' => $params['alreadyExists']]]);
         }
 
         return $dealer->asArray()
@@ -1501,66 +1506,75 @@ class CompanyDashboardController extends ApiBaseController
     // employee search
     public function actionEmployeeSearch($employee_search, $type, $loan_id = null)
     {
-        if ($user = $this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
 
-            $params = Yii::$app->request->post();
+        $params = Yii::$app->request->post();
 
-            // getting and adding in params
-            $params['employee_search'] = $employee_search;
-            $params['type'] = $type;
-            $params['loan_id'] = $loan_id;
+        // getting and adding in params
+        $params['employee_search'] = $employee_search;
+        $params['type'] = $type;
+        $params['loan_id'] = $loan_id;
 
-            // getting lender of this user
-            $lender = $this->getFinancerId($user);
+        // getting lender of this user
+        $lender = $this->getFinancerId($user);
 
-            // if lender not found
-            if (!$lender) {
-                return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
+        // if lender not found
+        if (!$lender) {
+            return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
+        }
+
+        // getting employee list already assigned to this loan_id
+        $already_exists = SharedLoanApplications::find()
+            ->select(['shared_to'])
+            ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
+            ->asArray()
+            ->all();
+
+        // extracting shared to ids
+        $already_exists_ids = [];
+        if ($already_exists) {
+            foreach ($already_exists as $e) {
+                $already_exists_ids[] = $e['shared_to'];
             }
+        }
 
-            // getting employee list already assigned to this loan_id
-            $already_exists = SharedLoanApplications::find()
-                ->select(['shared_to'])
-                ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
-                ->asArray()
-                ->all();
+        // assigning already exists in params
+        $params['alreadyExists'] = $already_exists_ids;
 
-            // extracting shared to ids
-            $already_exists_ids = [];
-            if ($already_exists) {
-                foreach ($already_exists as $e) {
-                    $already_exists_ids[] = $e['shared_to'];
-                }
-            }
+        // getting employees list
 
-            // assigning already exists in params
-            $params['alreadyExists'] = $already_exists_ids;
-
-            // getting employees list
+        // if type employees
+        if ($params['type'] == 'employees') {
             $employees = $this->employeesList($lender, $params);
 
-            // if type employees
-            if ($params['type'] == 'employees') {
+            // if employees exists
+            if ($employees) {
 
-                // if employees exists
-                if ($employees) {
+                // looping employees
+                foreach ($employees as $key => $val) {
 
-                    // looping employees
-                    foreach ($employees as $key => $val) {
-
-                        // adding lead_by and managed_by = false in employees
-                        $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
-                        $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
-                        $employees[$key]['id'] = $val['user_enc_id'];
-                        $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
-                    }
+                    // adding lead_by and managed_by = false in employees
+                    $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
+                    $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
+                    $employees[$key]['id'] = $val['user_enc_id'];
+                    $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
                 }
             }
-
-            return $this->response(200, ['status' => 200, 'list' => $employees]);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        } elseif ($params['type'] == 'dealer') {
+            $dealer = $this->dealerList($lender, $params);
+            if ($dealer) {
+                foreach ($dealer as $key => $val) {
+                    $employees[$key]['id'] = $val['user_enc_id'];
+                    $dealer[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
+                }
+            }
         }
+        if ($params['type'] == 'dealer') {
+            return $this->response(200, ['status' => 200, 'list' => $dealer]);
+        }
+        return $this->response(200, ['status' => 200, 'list' => $employees]);
     }
 
     public function actionChangeStatus()

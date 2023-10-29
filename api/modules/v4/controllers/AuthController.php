@@ -115,6 +115,7 @@ class AuthController extends ApiBaseController
                 if ($model->validate()) {
                     // saving user data
                     $data = $model->save();
+//                    print_r($model);exit();
 
                     // if user saved successfully
                     if ($data['status'] == 201) {
