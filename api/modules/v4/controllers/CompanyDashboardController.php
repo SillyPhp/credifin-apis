@@ -1408,13 +1408,42 @@ class CompanyDashboardController extends ApiBaseController
                 'a.assigned_financer_enc_id', 'a.assigned_dealer_enc_id', 'a.dealer_enc_id',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
                 'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
-                'b.username', 'b.email', 'b.phone', 'd.name', 'b.first_name', 'b.last_name', 'b.status', 'c.dealership_date'
+                'b.username', 'b.email', 'b.phone', 'd.name', 'CONCAT(b.first_name," ",COALESCE(b.last_name, "")) as contact_person', 'b.status', 'c.dealership_date'
             ])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['assignedDealerOptions c'], false)
             ->joinWith(['dealerEnc d'], false)
-            ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id'], 'a.is_deleted' => 0, 'b.is_deleted' => 0])
+            ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id']])
+            ->andWhere(['or',
+                ['a.is_deleted' => 0],
+                ['b.is_deleted' => 0]
+            ])
             ->orderby(['a.created_on' => SORT_DESC]);
+
+//        if (!empty($params['field_search'])) {
+//            foreach ($params['field_search'] as $key => $value) {
+//                if (!empty($value)) {
+//                    if ($key == 'dealership_date') {
+//                        $dealer->andWhere(['c.' . $key => $value]);
+//                    } elseif ($key == 'phone') {
+//                        $dealer->andWhere(['b.' . $key => $value]);
+//                    } elseif ($key == 'first_name' && $key == 'last_name') {
+//                        $dealer->andWhere(['like', 'b.' . $key, $value]);
+//                    } elseif ($key == 'name') {
+//                        $dealer->andWhere(['like', 'd.' . $key, $value]);
+//                    } elseif ($key == 'dealer_type') {
+//                        if ($value == 'electronics') {
+//                            $dealer->andWhere([$key => 1]);
+//                        } elseif ($value == 0) {
+//                            $dealer->andWhere([$key => 0]);
+//                        }
+//                    } else {
+//                        $dealer->andWhere(['like', $key, $value]);
+//                    }
+//                }
+//            }
+//        }
+
 
         // filter dealer search on dealer name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
