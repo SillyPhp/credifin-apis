@@ -7,6 +7,7 @@ use common\models\AssignedFinancerDealers;
 use common\models\BankDetails;
 use common\models\FinancerVehicleTypes;
 use common\models\OrganizationLocations;
+use common\models\UserRoles;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
@@ -103,6 +104,12 @@ class DealersController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+
 
         $financer_list = FinancerVehicleTypes::find()
             ->alias('a')
@@ -112,7 +119,7 @@ class DealersController extends ApiBaseController
 //                '(CASE WHEN a.dealer_type = "0" Then "vehicle" WHEN a.dealer_type = "1" Then "electronics" ELSE NULL END) as dealer_type',
                 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_types->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE NULL END icon'
             ])
-            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->asArray()
             ->all();
 

@@ -1417,29 +1417,32 @@ class CompanyDashboardController extends ApiBaseController
             ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
             ->orderby(['a.created_on' => SORT_DESC]);
 
-//        if (!empty($params['field_search'])) {
-//            foreach ($params['field_search'] as $key => $value) {
-//                if (!empty($value)) {
-//                    if ($key == 'dealership_date') {
-//                        $dealer->andWhere(['c.' . $key => $value]);
-//                    } elseif ($key == 'phone') {
-//                        $dealer->andWhere(['b.' . $key => $value]);
-//                    } elseif ($key == 'first_name' && $key == 'last_name') {
-//                        $dealer->andWhere(['like', 'b.' . $key, $value]);
-//                    } elseif ($key == 'name') {
-//                        $dealer->andWhere(['like', 'd.' . $key, $value]);
-//                    } elseif ($key == 'dealer_type') {
-//                        if ($value == 'electronics') {
-//                            $dealer->andWhere([$key => 1]);
-//                        } elseif ($value == 0) {
-//                            $dealer->andWhere([$key => 0]);
-//                        }
-//                    } else {
-//                        $dealer->andWhere(['like', $key, $value]);
-//                    }
-//                }
-//            }
-//        }
+        if (!empty($params['field_search'])) {
+            foreach ($params['field_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'dealership_date') {
+                        $dealer->andWhere(['c.' . $key => $value]);
+                    } elseif ($key == 'category') {
+                        $dealer->andWhere(['like', 'c.' . $key, $value]);
+                    } elseif ($key == 'email' || $key == 'phone') {
+                        $dealer->andWhere(['or',
+                            ['like', 'b.email', $value],
+                            ['like', 'b.phone', $value]
+                        ]);
+                    } elseif ($key == 'username') {
+                        $dealer->andWhere(['like', 'b.' . $key, $value]);
+                    } elseif ($key == 'contact_person') {
+                        $dealer->andWhere(['like', 'CONCAT(b.first_name," ",COALESCE(b.last_name, ""))', $value]);
+                    } elseif ($key == 'name') {
+                        $dealer->andWhere(['like', 'd.' . $key, $value]);
+                    } elseif ($key == 'dealer_type') {
+                        $dealer->andWhere(['c.dealer_type' => ($value == 'electronics' ? 1 : 0)]);
+                    } else {
+                        $dealer->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
 
 
         // filter dealer search on dealer name, username, email and phone
@@ -3418,6 +3421,11 @@ class CompanyDashboardController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
 
         $financerList = FinancerVehicleBrand::find()
             ->alias('a')
@@ -3426,7 +3434,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.brand_name',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
             ])
-            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->asArray()
             ->all();
 
