@@ -1291,10 +1291,7 @@ class CompanyDashboardController extends ApiBaseController
                 // getting connectors list
                 $connector = $this->connectorsList($dsa_id, $params);
 
-                // getting dealer's list
-                $dealer = $this->dealerList($params);
-
-                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer, 'deleted' => $deleted]);
+                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'deleted' => $deleted]);
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
@@ -1399,83 +1396,7 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
-    private function dealerList($params)
-    {
-        // getting dealer data
-        $dealer = AssignedFinancerDealers::find()
-            ->alias('a')
-            ->select([
-                'a.assigned_financer_enc_id', 'a.assigned_dealer_enc_id', 'a.dealer_enc_id',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
-                'b.username', 'b.email', 'b.phone', 'd.name', 'CONCAT(b.first_name," ",COALESCE(b.last_name, "")) as contact_person', 'b.status', 'c.dealership_date'
-            ])
-            ->joinWith(['createdBy b'], false)
-            ->joinWith(['assignedDealerOptions c'], false)
-            ->joinWith(['dealerEnc d'], false)
-            ->where(['a.assigned_financer_enc_id' => $params['assigned_financer_enc_id']])
-            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
-            ->orderby(['a.created_on' => SORT_DESC]);
 
-        if (!empty($params['field_search'])) {
-            foreach ($params['field_search'] as $key => $value) {
-                if (!empty($value)) {
-                    if ($key == 'dealership_date') {
-                        $dealer->andWhere(['c.' . $key => $value]);
-                    } elseif ($key == 'category') {
-                        $dealer->andWhere(['like', 'c.' . $key, $value]);
-                    } elseif ($key == 'email' || $key == 'phone') {
-                        $dealer->andWhere(['or',
-                            ['like', 'b.email', $value],
-                            ['like', 'b.phone', $value]
-                        ]);
-                    } elseif ($key == 'username') {
-                        $dealer->andWhere(['like', 'b.' . $key, $value]);
-                    } elseif ($key == 'contact_person') {
-                        $dealer->andWhere(['like', 'CONCAT(b.first_name," ",COALESCE(b.last_name, ""))', $value]);
-                    } elseif ($key == 'name') {
-                        $dealer->andWhere(['like', 'd.' . $key, $value]);
-                    } elseif ($key == 'dealer_type') {
-                        $dealer->andWhere(['c.dealer_type' => ($value == 'electronics' ? 1 : 0)]);
-                    } else {
-                        $dealer->andWhere(['like', $key, $value]);
-                    }
-                }
-            }
-        }
-
-
-        // filter dealer search on dealer name, username, email and phone
-        if ($params != null && !empty($params['employee_search'])) {
-            $dealer->andWhere([
-                'and',
-                [
-                    'or',
-                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
-                    ['like', 'b.username', $params['employee_search']],
-                    ['like', 'd.name', $params['employee_search']],
-                    ['like', 'b.email', $params['employee_search']],
-                    ['like', 'b.phone', $params['employee_search']],
-                ],
-                ['b.status' => 'active'],
-            ]);
-        }
-
-        // filter dealer search on dealer reporting person
-        //        if ($params != null && !empty($params['reporting_person'])) {
-        //            $dealer->andWhere([
-        //                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
-        //            ]);
-        //        }
-
-        // checking if this dealer already exists in list from frontend
-        if ($params != null && !empty($params['alreadyExists'])) {
-            $dealer->andWhere(['not', ['b.user_enc_id' => $params['alreadyExists']]]);
-        }
-
-        return $dealer->asArray()
-            ->all();
-    }
 
     // getting dsa list
     private function dsaList($user_id, $params = null)
@@ -1536,8 +1457,9 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
+
     // employee search
-    public function actionEmployeeSearch($employee_search, $type, $loan_id = null, $financer_id = null)
+    public function actionEmployeeSearch($employee_search, $type, $loan_id = null)
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -1549,7 +1471,6 @@ class CompanyDashboardController extends ApiBaseController
         $params['employee_search'] = $employee_search;
         $params['type'] = $type;
         $params['loan_id'] = $loan_id;
-        $params['assigned_financer_enc_id'] = $financer_id;
         // getting lender of this user
         $lender = $this->getFinancerId($user);
 
@@ -1597,17 +1518,6 @@ class CompanyDashboardController extends ApiBaseController
                     $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
                 }
             }
-        } elseif ($params['type'] == 'dealer') {
-            $dealer = $this->dealerList($params);
-            if ($dealer) {
-                foreach ($dealer as $key => $val) {
-                    $dealer[$key]['id'] = $val['dealer_enc_id'];
-                    $dealer[$key]['name'] = $val['name'];
-                }
-            }
-        }
-        if ($params['type'] == 'dealer') {
-            return $this->response(200, ['status' => 200, 'list' => $dealer]);
         }
         return $this->response(200, ['status' => 200, 'list' => $employees]);
     }
