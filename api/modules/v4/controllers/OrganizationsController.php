@@ -1084,7 +1084,7 @@ class OrganizationsController extends ApiBaseController
                     ]);
                 }], false)
                 ->joinWith([
-                    'financerLoanProductStatuses c' => function ($k) use ($subquery) {
+                    'financerLoanProductPurposes c' => function ($k) use ($subquery) {
                         $k->from(['subquery' => $subquery]);
                     }
                 ])

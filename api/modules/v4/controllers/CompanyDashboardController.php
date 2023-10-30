@@ -47,6 +47,7 @@ use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
+use Razorpay\Api\Api;
 use Yii;
 use yii\db\Expression;
 use yii\filters\Cors;
@@ -841,7 +842,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->from(['d4' => CreditLoanApplicationReports::tableName()])
                 ->join('INNER JOIN', ['d5' => CreditResponseData::tableName()], 'd5.response_enc_id = d4.response_enc_id')
                 ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
-                ->groupBy(['d4.loan_co_app_enc_id'])
+                ->orderBy(['created_on' => SORT_DESC])
                 ->andWhere(['d4.is_deleted' => 0]);
 
 
@@ -876,22 +877,8 @@ class CompanyDashboardController extends ApiBaseController
                     $d->joinWith([
                         'creditLoanApplicationReports d4' => function ($k) use ($subquery) {
                             $k->from(['subquery' => $subquery]);
-                          //  $k->orderBy(['subquery.created_on' => SORT_DESC]);
                         }
                     ]);
-//                    $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
-//                        $d4->select([
-//                            'd4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on',
-//                            'DATEDIFF("' . $date . '", d4.created_on) as days_till_now',
-//                            'd6.request_source'
-//                        ]);
-//                        $d4->joinWith(['responseEnc d5' => function ($d5) {
-//                            $d5->joinWith(['requestEnc d6'], false);
-//                        }], false);
-//                        $d4->andOnCondition(['d4.is_deleted' => 0]);
-//                        $d4->orderBy(['d4.created_on' => SORT_DESC]);
-//                    }]);
-//                    $d->groupBy(['d.loan_co_app_enc_id']);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', "CONCAT(e1.first_name,' ',e1.last_name) created_by"]);
@@ -934,11 +921,11 @@ class CompanyDashboardController extends ApiBaseController
                 ])->joinWith(['sharedTo k1'], false)
                 ->onCondition(['k.is_deleted' => 0]);
                 }])
-//                ->joinWith(['assignedLoanPayments p' => function ($p) {
-//                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount']);
-//                    $p->orderBy(['p1.created_on' => SORT_DESC]);
-//                    $p->joinWith(['loanPaymentsEnc p1'], false);
-//                }])
+                ->joinWith(['assignedLoanPayments p' => function ($p) {
+                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount']);
+                    $p->orderBy(['p1.created_on' => SORT_DESC]);
+                    $p->joinWith(['loanPaymentsEnc p1'], false);
+                }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 ->joinWith(['loanApplicationTvrs l' => function ($m) {
                     $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
@@ -3460,7 +3447,6 @@ class CompanyDashboardController extends ApiBaseController
     {
         $emiList = LoanApplications::find()
             ->alias('a')
-            //            ->distinct()
             ->select([
                 'a.loan_app_enc_id', 'b1.emi_collection_enc_id', 'b1.amount', 'b.assigned_loan_payments_enc_id', 'b.loan_app_enc_id', 'b1.loan_account_number',
                 'b1.payment_method'
@@ -3482,16 +3468,14 @@ class CompanyDashboardController extends ApiBaseController
     {
         $assignedList = LoanApplications::find()
             ->alias('a')
-            ->distinct()
-            ->select(['a.loan_app_enc_id'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->select(['b.assigned_loan_payments_enc_id', 'b1.loan_payments_enc_id', 'b.loan_app_enc_id']);
                 $b->joinWith(['loanPaymentsEnc b1' => function ($b1) {
                     $b1->select([
                         'b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
-                        '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE "Manual" END) as mode', 'b1.reference_number',
-                        '(CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . '", b1.image_location, "/",b1.image) ELSE NULL END) as receipt',
-                        'b1.remarks', 'b1.created_on', 'CONCAT(b3.first_name, " ", b3.last_name) as created_by', 'CONCAT(b4.first_name, " ", b4.last_name) as updated_by', 'b1.updated_on'
+                        "(CASE WHEN b1.payment_link_type = '0' Then 'Link' WHEN b1.payment_link_type = '1' Then 'QR' ELSE 'Manual' END) as mode", 'b1.reference_number',
+                        "(CASE WHEN b1.image IS NOT NULL THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . "', b1.image_location, '/',b1.image) ELSE NULL END) as receipt",
+                        'b1.remarks', 'b1.created_on', "CONCAT(b3.first_name, ' ', b3.last_name) as created_by", "CONCAT(b4.first_name, ' ', b4.last_name) as updated_by", 'b1.updated_on'
                     ]);
                     $b1->joinWith(['loanPaymentsDetails b2' => function ($b2) {
                         $b2->select(['b2.loan_payments_enc_id', 'b2.no_dues_name', 'b2.no_dues_amount']);
