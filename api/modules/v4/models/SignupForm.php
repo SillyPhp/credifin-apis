@@ -268,8 +268,8 @@ class SignupForm extends Model
             }
         }
 
-
-        if ($this->dealer_type == 'vehicle' && is_array($this->brands)) {
+        $this->brands = explode(',', $this->brands);
+        if ($this->dealer_type == 'vehicle' && !empty($this->brands)) {
             foreach ($this->brands as $value) {
                 $brand = new AssignedDealerBrands();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
