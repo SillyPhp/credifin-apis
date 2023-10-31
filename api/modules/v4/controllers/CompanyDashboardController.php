@@ -285,8 +285,8 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ['Phf24', 'Sumit1992'])) {
-            $leadsAccessOnly = $user->username === 'Phf24' ? 'vehicle' : 'lap';
+        if (in_array($user->username, ["Phf24", "satparkash", "shgarima21", "Sumit1992"])) {
+            $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
         }
 
         // if user is organization/financer then getting its DSA's
