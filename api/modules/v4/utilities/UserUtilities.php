@@ -8,6 +8,7 @@ use common\models\Notifications;
 use common\models\NotificationTokens;
 use common\models\Organizations;
 use common\models\PushNotifications;
+use common\models\Referral;
 use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use yii\helpers\Url;
@@ -106,6 +107,8 @@ class UserUtilities
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
+            $refOrg = Referral::findOne(['organization_enc_id' => $user['organization_enc_id']]);
+            $user['organization_ref_code'] = $refOrg->code;
             $accessroles = self::$rolesArray;
             if (in_array($user['designation'], $accessroles)) {
                 $user['specialAccessRole'] = true;
