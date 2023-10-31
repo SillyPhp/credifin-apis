@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -11,6 +13,8 @@ namespace common\models;
  * @property string $name
  * @property string $email
  * @property int $cibil_score cibil score
+ * @property int $equifax_score
+ * @property int $crif_score
  * @property string $phone
  * @property string $relation
  * @property string $borrower_type borrower type
@@ -59,20 +63,22 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     {
         return [
             [['loan_co_app_enc_id', 'loan_app_enc_id'], 'required'],
-            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
+            [['cibil_score', 'equifax_score', 'crif_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
             [['relation', 'borrower_type', 'marital_status'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number', 'driving_license_number'], 'string', 'max' => 20],
+            [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
+            [['driving_license_number'], 'string', 'max' => 30],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
