@@ -101,6 +101,33 @@ class CoApplicantForm extends Model
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
+    public function setBorrower($options,$user){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $object1 = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $options['loan_co_app_enc_id']]);
+            $object2 = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $options['old_loan_co_app_enc_id']]);
+            $object1->borrower_type = $options['borrower_type'];
+            $object1->updated_by = $user;
+            $object1->updated_on = date('Y-m-d H:i:s');
+            $object2->borrower_type = $options['old_borrower_type'];
+            $object2->updated_by = $user;
+            $object2->updated_on = date('Y-m-d H:i:s');
+            if (!$object1->update()) {
+                $transaction->rollBack();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($object1->errors, 0, false)));
+            }
+            if (!$object2->update()) {
+                $transaction->rollBack();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($object2->errors, 0, false)));
+            }
+            $transaction->commit();
+            return ['status' => 200, 'message' => 'successfully updated'];
+        }catch
+        (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
+        }
+    }
 
     // updating co-applicant
     public function update()

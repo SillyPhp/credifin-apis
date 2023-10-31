@@ -74,6 +74,8 @@ class LoansController extends ApiBaseController
                 'check-number' => ['POST', 'OPTIONS'],
                 'loan-update' => ['POST', 'OPTIONS'],
                 'loan-detail-images' => ['POST', 'OPTIONS'],
+                'set-borrower' => ['POST', 'OPTIONS'],
+                'loan-detail-images' => ['POST', 'OPTIONS'],
                 'get-assigned-pendencies' => ['POST', 'OPTIONS'],
                 'assign-pendency' => ['POST', 'OPTIONS'],
             ]
@@ -162,6 +164,7 @@ class LoansController extends ApiBaseController
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         }
     }
+
 
     public function actionUpdateLoan()
     {
@@ -916,7 +919,27 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
+    //action to add borrower as main borrower
+    public function actionSetBorrower()
+    {
+        // checking authorization
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_co_app_enc_id'])||empty($params['loan_co_app_enc_id'])){
+            return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
+        }else{
+            $model = new CoApplicantForm();
+            $response = $model->setBorrower($params,$user->user_enc_id);
+            if ($response['status']==200){
+                return $this->response(200, ['status' => 200, 'message' =>$response['message']]);
+            }else{
+                return $this->response(500, ['status' => 500, 'message' =>$response['message']]);
+            }
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
@@ -1416,7 +1439,7 @@ class LoansController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.old_value', 'a.new_value',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"
             ])
             ->joinWith(['user b'], false)
             ->where(['a.loan_id' => $params['loan_id']])
@@ -1486,7 +1509,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
+        if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
         }
         if (in_array($params['type'], ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
