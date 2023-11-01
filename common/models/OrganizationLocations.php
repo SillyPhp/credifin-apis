@@ -54,11 +54,11 @@ class OrganizationLocations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location_enc_id', 'organization_enc_id', 'location_name', 'location_for', 'address', 'city_enc_id', 'created_by'], 'required'],
+            [['location_enc_id', 'organization_enc_id', 'location_name', 'address', 'city_enc_id', 'created_by'], 'required'],
             [['description', 'status'], 'string'],
             [['latitude', 'longitude'], 'number'],
             [['sequence', 'is_deleted'], 'integer'],
-            [['created_on', 'last_updated_on'], 'safe'],
+            [['created_on', 'last_updated_on', 'location_for'], 'safe'],
             [['location_enc_id', 'organization_enc_id', 'website', 'organization_code', 'address', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['location_name', 'email'], 'string', 'max' => 50],
             [['location_for', 'phone'], 'string', 'max' => 15],

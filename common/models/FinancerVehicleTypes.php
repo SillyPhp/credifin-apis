@@ -19,6 +19,7 @@ use Yii;
  * @property string $updated_on
  * @property int $is_deleted
  *
+ * @property AssignedDealerVehicleTypes[] $assignedDealerVehicleTypes
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
@@ -39,7 +40,7 @@ class FinancerVehicleTypes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_vehicle_type_enc_id', 'organization_enc_id', 'vehicle_type', 'created_by'], 'required'],
+            [['financer_vehicle_type_enc_id', 'organization_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_vehicle_type_enc_id', 'organization_enc_id', 'vehicle_type', 'icon', 'icon_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
@@ -49,25 +50,12 @@ class FinancerVehicleTypes extends \yii\db\ActiveRecord
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
-
     /**
-     * {@inheritdoc}
+     * @return \yii\db\ActiveQuery
      */
-    public function attributeLabels()
+    public function getAssignedDealerVehicleTypes()
     {
-        return [
-            'id' => 'ID',
-            'financer_vehicle_type_enc_id' => 'Financer Vehicle Type Enc ID',
-            'organization_enc_id' => 'Organization Enc ID',
-            'vehicle_type' => 'Vehicle Type',
-            'icon' => 'Icon',
-            'icon_location' => 'Icon Location',
-            'created_by' => 'Created By',
-            'created_on' => 'Created On',
-            'updated_by' => 'Updated By',
-            'updated_on' => 'Updated On',
-            'is_deleted' => 'Is Deleted',
-        ];
+        return $this->hasMany(AssignedDealerVehicleTypes::className(), ['financer_vehicle_type_enc_id' => 'financer_vehicle_type_enc_id']);
     }
 
     /**
