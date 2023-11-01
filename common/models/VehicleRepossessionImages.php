@@ -21,7 +21,7 @@ use Yii;
  *
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property VehicleRepossession $vehicleRepossessionEnc
+ * @property LoanActionRequests $vehicleRepossessionEnc
  */
 class VehicleRepossessionImages extends \yii\db\ActiveRecord
 {
@@ -46,7 +46,7 @@ class VehicleRepossessionImages extends \yii\db\ActiveRecord
             [['vehicle_repossession_images_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['vehicle_repossession_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => VehicleRepossession::className(), 'targetAttribute' => ['vehicle_repossession_enc_id' => 'vehicle_repossession_enc_id']],
+            [['vehicle_repossession_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanActionRequests::className(), 'targetAttribute' => ['vehicle_repossession_enc_id' => 'request_enc_id']],
         ];
     }
 
@@ -72,6 +72,6 @@ class VehicleRepossessionImages extends \yii\db\ActiveRecord
      */
     public function getVehicleRepossessionEnc()
     {
-        return $this->hasOne(VehicleRepossession::className(), ['vehicle_repossession_enc_id' => 'vehicle_repossession_enc_id']);
+        return $this->hasOne(LoanActionRequests::className(), ['request_enc_id' => 'vehicle_repossession_enc_id']);
     }
 }
