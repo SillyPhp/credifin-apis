@@ -7,7 +7,9 @@ use api\modules\v4\controllers\DealsController;
 use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
 use common\models\AssignedDealerVehicleTypes;
+use common\models\AssignedFinancerDealers;
 use common\models\AssignedSupervisor;
+use common\models\BankDetails;
 use common\models\EmailLogs;
 use common\models\FinancerVehicleTypes;
 use common\models\Organizations;
@@ -16,6 +18,7 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Services;
+use common\models\spaces\Spaces;
 use common\models\Usernames;
 use common\models\UserRoles;
 use common\models\Users;
@@ -23,6 +26,7 @@ use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 // this signup form is used to signup users with type Individual, Financer, Employee, DSA, Dealer, Connector
 class SignupForm extends Model
@@ -46,8 +50,16 @@ class SignupForm extends Model
     public $vehicle_type;
     public $brands;
     public $category;
-    public $company_type;
+    public $dealer_type;
+    public $account_name;
+    public $bank_name;
+    public $account_number;
+    public $ifsc_code;
+    public $financing_facility;
     public $trade_certificate;
+    public $dealership_date;
+    public $agreement_status;
+    public $since_with_financer;
 
     // rules for form
     public function rules()
@@ -58,17 +70,17 @@ class SignupForm extends Model
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
-            [['organization_name', 'brands', 'category', 'company_type', 'vehicle_type', 'trade_certificate'], 'required', 'on' => 'FinancerDealer'],
+            [['organization_name', 'category', 'trade_certificate', 'dealer_type'], 'required', 'on' => 'FinancerDealer'],
 
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
+            [['username', 'email', 'vehicle_type', 'since_with_financer', 'financing_facility', 'dealership_date', 'agreement_status', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['vehicle_type', 'brands'], function () {
-                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
-                    $this->addError('vehicle_type', 'It must be an array!');
-                    $this->addError('brands', 'It must be an array!');
-                }
-            }],
+//            [['vehicle_type', 'brands'], function () {
+//                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
+//                    $this->addError('vehicle_type', 'It must be an array!');
+//                    $this->addError('brands', 'It must be an array!');
+//                }
+//            }],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],
             [['password'], 'string', 'length' => [8, 20]],
@@ -96,7 +108,7 @@ class SignupForm extends Model
     public function save()
     {
         // if user type is Employee or Dealer it will be saved as it is PA0iwUzc4y
-        if ($this->user_type == 'Financer') {
+        if ($this->user_type == 'Financer' || $this->getScenario() == 'FinancerDealer') {
             // if user_type is financer its type will be saved as Organization Admin and for financer (Loans) service assigned in selected_services
             $user_type = 'Organization Admin';
         } else {
@@ -109,7 +121,6 @@ class SignupForm extends Model
         try {
             // saving username for user
             $this->saveUsername($user_type);
-
             // saving user data
             $user = new Candidates();
             $utilitiesModel = new \common\models\Utilities();
@@ -148,11 +159,11 @@ class SignupForm extends Model
                     throw new \Exception(json_encode($user->getErrors()));
                 }
             }
-//            print_r($this->organization_id);
-//            exit();
+
             if ($this->getScenario() == 'Dealer' || $this->getScenario() == 'FinancerDealer') {
                 $this->dealerCreate($this->organization_id);
             }
+
             // adding Referral code for new signed-up user
             $this->addReferralCode();
 
@@ -162,7 +173,7 @@ class SignupForm extends Model
             }
 
             // if user_type Employee or Dealer then saving user role for them
-            if (($user_type == 'Employee' || $user_type == 'Dealer') && !empty($this->ref_id)) {
+            if (($user_type == 'Employee' || $user_type == 'Dealer' || $this->getScenario() == 'FinancerDealer') && !empty($this->ref_id)) {
                 $this->addUserRole($user->user_type_enc_id);
             }
 
@@ -177,7 +188,7 @@ class SignupForm extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollback();
-            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
 
@@ -191,44 +202,104 @@ class SignupForm extends Model
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
+        $assignDealer = new AssignedFinancerDealers();
+        $assignDealer->assigned_dealer_enc_id = $utilitiesModel->encrypt();
+        $assignDealer->assigned_financer_enc_id = $ref['organization_enc_id'];
+        $assignDealer->dealer_enc_id = $organization_id;
+        $assignDealer->created_on = $assignDealer->updated_on = date('Y-m-d H:i:s');
+        $assignDealer->created_by = $assignDealer->updated_by = $this->user_id;
+        if (!$assignDealer->save()) {
+            throw new \Exception(json_encode($assignDealer->getErrors()));
+        }
+
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
         $options = new AssignedDealerOptions();
         $options->assigned_dealer_options_enc_id = $utilitiesModel->encrypt();
-        $options->organization_enc_id = $ref['organization_enc_id'];
+        $options->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
         $options->category = $this->category;
-        $options->company_type = $this->company_type;
-        $options->trade_certificate = $this->trade_certificate ? 1 : 0;
+        $options->dealer_type = ($this->dealer_type == 'vehicle') ? 0 : (($this->dealer_type == 'electronics') ? 1 : null);
+        $options->trade_certificate = $this->trade_certificate == 'yes' ? 1 : 0;
+        $options->trade_advance = $this->financing_facility;
+        $options->agreement_status = $this->agreement_status;
+        $options->dealership_date = !empty($this->dealership_date) ? $this->dealership_date : null;
+        $options->since_with_financer = !empty($this->since_with_financer) ? $this->since_with_financer : null;
+
+//        $options->tc_number = $this->tc_number;
+//        $logo = UploadedFile::getInstanceByName('tc_logo');
+//        if ($logo) {
+//            $options->tc_logo_location = \Yii::$app->getSecurity()->generateRandomString();
+//            $base_path = Yii::$app->params->upload_directories->tc_logo->logo . $options->tc_logo_location . '/';
+//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//            $options->tc_logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+//            $type = $logo->type;
+//            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+//            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+//            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $options->tc_logo, "public", ['params' => ['ContentType' => $type]]);
+//            if (!$result) {
+//                throw new \Exception('Failed to upload logo');
+//            }
+//        }
+
         $options->created_on = $options->updated_on = date('Y-m-d H:i:s');
         $options->created_by = $options->updated_by = $this->user_id;
         if (!$options->save()) {
             throw new \Exception(json_encode($options->getErrors()));
         }
 
-        foreach ($this->brands as $value) {
-            $brand = new AssignedDealerBrands();
+        if ($this->bank_name && $this->account_number && $this->account_name && $this->ifsc_code) {
+            $bankDetails = new BankDetails();
+            $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $brand->assigned_dealer_brands_enc_id = $utilitiesModel->encrypt();
-            $brand->organization_enc_id = $ref['organization_enc_id'];
-            $brand->financer_vehicle_brand_enc_id = $value;
-            $brand->created_on = $brand->updated_on = date('Y-m-d H:i:s');
-            $brand->created_by = $brand->updated_by = $this->user_id;
-            if (!$brand->save()) {
-                throw new \Exception(json_encode($brand->getErrors()));
+            $bankDetails->bank_details_enc_id = $utilitiesModel->encrypt();
+            $bankDetails->name = $this->account_name;
+            $bankDetails->organization_enc_id = $organization_id;
+            $bankDetails->bank_name = $this->bank_name;
+            $bankDetails->bank_account_number = $this->account_number;
+            $bankDetails->ifsc_code = $this->ifsc_code;
+            $bankDetails->created_on = $bankDetails->updated_on = date('Y-m-d H:i:s');
+            $bankDetails->created_by = $bankDetails->updated_by = $this->user_id;
+            if (!$bankDetails->save()) {
+                throw new \Exception(json_encode($bankDetails->getErrors()));
+            }
+        } else {
+            if ($this->bank_name || $this->account_number || $this->account_name || $this->ifsc_code) {
+                throw new \Exception('please fill all bank details');
             }
         }
 
-        foreach ($this->vehicle_type as $value) {
-            $type = new FinancerVehicleTypes();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $type->financer_vehicle_type_enc_id = $utilitiesModel->encrypt();
-            $type->organization_enc_id = $organization_id;
-            $type->vehicle_type = $value;
-            $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
-            $type->created_by = $type->updated_by = $this->user_id;
-            if (!$type->save()) {
-                throw new \Exception(json_encode($type->getErrors()));
+
+        if ($this->dealer_type == 'vehicle' && is_array($this->brands)) {
+            foreach ($this->brands as $value) {
+                $brand = new AssignedDealerBrands();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $brand->assigned_dealer_brands_enc_id = $utilitiesModel->encrypt();
+                $brand->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
+                $brand->financer_vehicle_brand_enc_id = $value;
+                $brand->created_on = $brand->updated_on = date('Y-m-d H:i:s');
+                $brand->created_by = $brand->updated_by = $this->user_id;
+                if (!$brand->save()) {
+                    throw new \Exception(json_encode($brand->getErrors()));
+                }
+            }
+        }
+
+        if ($this->dealer_type == 'vehicle' && is_array($this->vehicle_type)) {
+            foreach ($this->vehicle_type as $value) {
+                $type = new AssignedDealerVehicleTypes();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $type->assigned_dealer_vehicle_type_enc_id = $utilitiesModel->encrypt();
+                $type->assigned_dealer_enc_id = $assignDealer->assigned_dealer_enc_id;
+                $type->financer_vehicle_type_enc_id = $value;
+                $type->created_on = $type->updated_on = date('Y-m-d H:i:s');
+                $type->created_by = $type->updated_by = $this->user_id;
+                if (!$type->save()) {
+                    throw new \Exception(json_encode($type->getErrors()));
+                }
             }
         }
     }
+
 
     // saving username data
     private function saveUsername($user_type)
@@ -259,8 +330,25 @@ class SignupForm extends Model
         $utilitiesModel->variables['table_name'] = Organizations::tableName();
         $utilitiesModel->variables['field_name'] = 'slug';
         $organizationsModel->slug = $utilitiesModel->create_slug();
-        if (!$organizationsModel->validate() || !$organizationsModel->save()) {
-            throw new \Exception(json_encode($organizationsModel->getErrors()));
+
+
+        $logo = UploadedFile::getInstanceByName('dealer_logo');
+        if ($logo) {
+            $organizationsModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->organizations->logo . $organizationsModel->logo_location . '/';
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $organizationsModel->logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+            $type = $logo->type;
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $organizationsModel->logo, "public", ['params' => ['ContentType' => $type]]);
+            if (!$result) {
+                throw new \Exception('Failed to upload logo');
+            }
+        }
+
+        if (!$organizationsModel->save()) {
+            throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($organizationsModel->errors, 0, false)));
         }
 
         return $organizationsModel->organization_enc_id;
