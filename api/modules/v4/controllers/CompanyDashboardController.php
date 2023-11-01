@@ -408,7 +408,6 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }])
-            ->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0])
             ->andWhere([
                 'or',
                 [
@@ -659,6 +658,7 @@ class CompanyDashboardController extends ApiBaseController
             }
             $loans->andWhere($where);
         }
+        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
         $count = $loans->count();
 
         $loans = $loans
