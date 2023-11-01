@@ -217,4 +217,7 @@ class TestCacheController extends Controller
         }
     }
 
+    public function actionOwner(){
+        $data = new LoanCoApplicants();
+    }
 }

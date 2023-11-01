@@ -75,7 +75,6 @@ class LoansController extends ApiBaseController
                 'loan-update' => ['POST', 'OPTIONS'],
                 'loan-detail-images' => ['POST', 'OPTIONS'],
                 'set-borrower' => ['POST', 'OPTIONS'],
-                'loan-detail-images' => ['POST', 'OPTIONS'],
                 'get-assigned-pendencies' => ['POST', 'OPTIONS'],
                 'assign-pendency' => ['POST', 'OPTIONS'],
             ]
