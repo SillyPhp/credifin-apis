@@ -1788,11 +1788,11 @@ class OrganizationsController extends ApiBaseController
         }
         $display_data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(CASE WHEN a.is_deleted = 0 THEN a.amount END) total_amount', 'COUNT(CASE WHEN a.is_deleted = 0 THEN a.loan_account_number END) as total_emis', 'CONCAT(b.location_name , ", ", b1.name) as branch_name'])
+            ->select(['a.customer_name', 'a.loan_account_number', 'SUM(CASE WHEN a.emi_payment_status = "pending" THEN a.amount END) pending_payment', 'SUM(CASE WHEN a.emi_payment_status = "paid" && a.is_deleted = 0 THEN a.amount END) as paid_payment', 'a.loan_type', 'a.phone', 'SUM(CASE WHEN a.is_deleted = 0 THEN a.amount END) total_amount', 'COUNT(CASE WHEN a.is_deleted = 0 THEN a.loan_account_number END) as total_emis', 'CONCAT(b.location_name , ", ", b1.name) as branch_name'])
             ->joinWith(['branchEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b1']);
             }], false)
-            ->where(['a.loan_account_number' => $lac])
+            ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
