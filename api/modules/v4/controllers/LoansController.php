@@ -1508,7 +1508,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
+        if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
         }
         if (in_array($params['type'], ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
