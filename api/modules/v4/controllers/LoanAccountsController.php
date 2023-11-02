@@ -880,7 +880,7 @@ class LoanAccountsController extends ApiBaseController
             ->joinWith(['userRoles0 b' => function ($b) {
                 $b->joinWith('designation d');
             }], false)
-            ->where(['d.designation' => 'Telecaller', 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+            ->where(['d.designation' => 'Tele Caller Collection', 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
 
