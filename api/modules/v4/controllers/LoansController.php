@@ -74,6 +74,7 @@ class LoansController extends ApiBaseController
                 'check-number' => ['POST', 'OPTIONS'],
                 'loan-update' => ['POST', 'OPTIONS'],
                 'loan-detail-images' => ['POST', 'OPTIONS'],
+                'set-borrower' => ['POST', 'OPTIONS'],
                 'get-assigned-pendencies' => ['POST', 'OPTIONS'],
                 'assign-pendency' => ['POST', 'OPTIONS'],
             ]
@@ -162,6 +163,7 @@ class LoansController extends ApiBaseController
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         }
     }
+
 
     public function actionUpdateLoan()
     {
@@ -916,7 +918,27 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
+    //action to add borrower as main borrower
+    public function actionSetBorrower()
+    {
+        // checking authorization
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_co_app_enc_id'])||empty($params['loan_co_app_enc_id'])){
+            return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
+        }else{
+            $model = new CoApplicantForm();
+            $response = $model->setBorrower($params,$user->user_enc_id);
+            if ($response['status']==200){
+                return $this->response(200, ['status' => 200, 'message' =>$response['message']]);
+            }else{
+                return $this->response(500, ['status' => 500, 'message' =>$response['message']]);
+            }
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
@@ -1416,7 +1438,7 @@ class LoansController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.old_value', 'a.new_value',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"
             ])
             ->joinWith(['user b'], false)
             ->where(['a.loan_id' => $params['loan_id']])
@@ -1652,8 +1674,8 @@ class LoansController extends ApiBaseController
                     $b->select([
                         'b.certificate_enc_id', 'b.loan_app_enc_id', 'b.short_description', 'b.certificate_type_enc_id',
                         'b.number', 'c1.name', 'b.created_on',
-                        'CONCAT(c2.first_name," ",COALESCE(c2.last_name, "")) created_by',
-                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",b.proof_image_location, "/", b.proof_image) image'
+                        "CONCAT(c2.first_name,' ',COALESCE(c2.last_name, '')) created_by",
+                        "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',b.proof_image_location, '/', b.proof_image) image"
                     ]);
                     $b->joinWith(['certificateTypeEnc c1'], false);
                     $b->joinWith(['createdBy c2'], false);
@@ -1664,8 +1686,8 @@ class LoansController extends ApiBaseController
                 $loan->joinWith(['loanApplicationImages b' => function ($b) {
                     $b->select([
                         'b.loan_application_image_enc_id', 'b.loan_app_enc_id', 'b.name',
-                        'b.created_on', 'CONCAT(b1.first_name," ",COALESCE(b1.last_name, "")) created_by',
-                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . '",b.image_location, "/", b.image) image'
+                        'b.created_on', "CONCAT(b1.first_name,' ',COALESCE(b1.last_name, '')) created_by",
+                        "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . "',b.image_location, '/', b.image) image"
 
                     ]);
                     $b->joinWith(['createdBy b1'], false);
@@ -1858,12 +1880,12 @@ class LoansController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.pendencies_enc_id', 'a.financer_loan_product_enc_id', 'a.name', 'a.type',
-                '(CASE WHEN a.type != 1 AND b.loan_pendency_enc_id IS NOT NULL THEN b.loan_pendency_enc_id END) as assigned_id',
+                '(CASE WHEN a.type != 1 AND ANY_VALUE(b.loan_pendency_enc_id) IS NOT NULL THEN ANY_VALUE(b.loan_pendency_enc_id) END) as assigned_id',
                 '(CASE WHEN b.pendencies_enc_id IS NOT NULL THEN true ELSE false END) AS checked',
-                '(CASE WHEN a.type != 1 AND b2.loan_pendency_enc_id IS NOT NULL THEN true ELSE false END) as is_uploaded'
+                '(CASE WHEN a.type != 1 AND ANY_VALUE(b2.loan_pendency_enc_id) IS NOT NULL THEN true ELSE false END) as is_uploaded'
             ])
             ->joinWith(['loanApplicationPendencies b' => function ($b) use ($params) {
-                $b->select(['b.loan_pendency_enc_id', 'b.pendencies_enc_id', 'b.loan_co_app_enc_id value', 'b1.name label', '(CASE WHEN b2.loan_pendency_enc_id IS NOT NULL THEN TRUE ELSE FALSE END) AS is_uploaded']);
+                $b->select(['ANY_VALUE(b.loan_pendency_enc_id) loan_pendency_enc_id', 'b.pendencies_enc_id', 'b.loan_co_app_enc_id value', 'b1.name label', '(CASE WHEN ANY_VALUE(b2.loan_pendency_enc_id) IS NOT NULL THEN TRUE ELSE FALSE END) AS is_uploaded']);
                 $b->onCondition(['b.is_deleted' => 0, 'b.loan_app_enc_id' => $params['loan_id']]);
                 $b->joinWith(['loanCoAppEnc b1'], false);
                 $b->joinWith(['loanApplicationPendencyDocuments b2'], false);
@@ -1950,8 +1972,8 @@ class LoansController extends ApiBaseController
         $query = LoanApplicationPendencyDocuments::find()
             ->alias('a')
             ->select([
-                'a.pendency_documents_enc_id', 'a.loan_pendency_enc_id', 'a.name', 'a.created_on', 'CONCAT(c.first_name, " ", COALESCE(c.last_name,"")) created_by', 'b.pendencies_enc_id', 'b1.name applicant_name',
-                'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . '",a.image_location, "/", a.image) image'
+                'a.pendency_documents_enc_id', 'a.loan_pendency_enc_id', 'a.name', 'a.created_on', "CONCAT(c.first_name, ' ', COALESCE(c.last_name,'')) created_by", 'b.pendencies_enc_id', 'b1.name applicant_name',
+                "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . "',a.image_location, '/', a.image) image"
             ])
             ->joinWith(['loanPendencyEnc b' => function ($b) {
                 $b->joinWith(['loanCoAppEnc b1'], false);
