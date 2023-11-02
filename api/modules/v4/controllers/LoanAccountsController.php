@@ -2,15 +2,30 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\LoanAccounts;
+use common\models\LoanActionComments;
+use common\models\LoanActionRequests;
+use common\models\OrganizationLocations;
 use common\models\UserRoles;
 use common\models\Utilities;
+use common\models\spaces\Spaces;
+use common\models\Users;
+use common\models\VehicleRepoComments;
+use common\models\VehicleRepossession;
+use common\models\VehicleRepossessionImages;
 use Yii;
+use yii\helpers\Url;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use yii\db\Query;
+use function GuzzleHttp\Promise\all;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -23,7 +38,17 @@ class LoanAccountsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'loan-accounts-upload' => ['POST', 'OPTIONS'],
-                'emi-payment-issues' => ['POST', 'OPTIONS']
+                'emi-payment-issues' => ['POST', 'OPTIONS'],
+                'emi-account-details' => ['POST', 'OPTIONS'],
+                'vehicle-repossession' => ['POST', 'OPTIONS'],
+                'get-repo-list' => ['POST', 'OPTIONS'],
+                'repo-details' => ['POST', 'OPTIONS'],
+                'save-repo-comments' => ['POST', 'OPTIONS'],
+                'get-legal-list' => ['POST', 'OPTIONS'],
+                'get-acc-list' => ['POST', 'OPTIONS'],
+                'get-health-list' => ['POST', 'OPTIONS'],
+                'get-telecaller-list' => ['POST', 'OPTIONS'],
+                'assign-telecaller' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -99,7 +124,7 @@ class LoanAccountsController extends ApiBaseController
             $count = true;
             $transaction = Yii::$app->db->beginTransaction();
             $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle,)) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
                 if ($count) {
                     $header = $data;
                     $count = false;
@@ -125,8 +150,12 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    $loan->branch_enc_id = $branches[$data[array_search('Branch', $header)]];
                     $loan->group_name = $data[array_search('GroupName', $header)];
+                    $tmp = $branches[$data[array_search('Branch', $header)]];
+                    $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
+                    if ($branch && !empty($branch['location_name'])) {
+                        $loan->branch_enc_id = $branch;
+                    }
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
@@ -232,16 +261,29 @@ class LoanAccountsController extends ApiBaseController
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-            $Payment_issues = new EmiPaymentIssuesExtended();
+            $Payment_issues = new LoanActionRequests();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $Payment_issues->emi_payment_issues_enc_id = $utilitiesModel->encrypt();
+            $Payment_issues->request_enc_id = $utilitiesModel->encrypt();
             $Payment_issues->loan_account_enc_id = $params['loan_account_enc_id'];
-            $Payment_issues->loan_app_enc_id = !empty($params['loan_app_enc_id']) ? $params['loan_app_enc_id'] : null;
             $Payment_issues->reasons = $params['reasons'];
             $Payment_issues->remarks = $params['remarks'];
             $Payment_issues->created_by = $Payment_issues->updated_by = $user->user_enc_id;
             $Payment_issues->created_on = $Payment_issues->updated_on = date('Y-m-d H:i:s');
+
+            $document = UploadedFile::getInstanceByName('document');
+            if ($document) {
+                $documents = Yii::$app->getSecurity()->generateRandomString() . '.' . $document->extension;
+                $documents_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->payment_issues->image . $documents_location;
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['ContentType' => $document->type]]);
+
+                $Payment_issues->request_image = $documents;
+                $Payment_issues->request_image_location = $documents_location;
+            }
 
             if (!$Payment_issues->save()) {
                 $transaction->rollBack();
@@ -253,5 +295,648 @@ class LoanAccountsController extends ApiBaseController
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
+    }
+
+    public function actionGetPaymentIssues()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
+        }
+        $data = EmiPaymentIssues::find()
+            ->alias('a')
+            ->joinWith(['createdBy b'])
+            ->andWhere(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->asArray()
+            ->all();
+
+        $res = [];
+        $issues = [
+            '1' => 'Legal', '2' => 'Accident', '3' => 'Health'
+        ];
+
+        foreach ($data as $datam) {
+            $reason = $datam['reasons'];
+            $pay_issues = !empty($issues[$reason]) ? $issues[$reason] : null;
+            $createdByName = $datam['createdBy']['first_name'] . ' ' . $datam['createdBy']['last_name'];
+            $createdByImage = $datam['createdBy'];
+            if ($createdByImage['image']) {
+                $createdByImage = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->users->image .
+                    $createdByImage['image_location'] . '/' . $createdByImage['image'];
+            } else {
+                $createdByImage = 'https://ui-avatars.com/api/?name=' .
+                    urlencode($createdByImage['first_name'] . ' ' . $createdByImage['last_name']) .
+                    '&size=200&rounded=true&background=' .
+                    str_replace('#', '', $createdByImage['initials_color']) .
+                    '&color=ffffff';
+            }
+            if (!empty($datam['image'])) {
+                $user_image = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->payment_issues->image .
+                    $datam['image_location'] . '/' . $datam['image'];
+            } else {
+                $user_image = '';
+            }
+
+            $res[] = [
+                'emi_payment_issues_enc_id' => $datam['emi_payment_issues_enc_id'],
+                'loan_account_enc_id' => $datam['loan_account_enc_id'],
+                'created_by' => $createdByName,
+                'created_on' => $datam['created_on'],
+                'remarks' => $datam['remarks'],
+                'user_image' => $createdByImage,
+                'image' => $user_image,
+                'reasons' => $pay_issues,
+            ];
+        }
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $res]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionEmiAccountDetails()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+
+        $data = LoanAccounts::find()
+            ->select([
+                'loan_account_enc_id', 'loan_account_number',
+                'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis',
+                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'
+            ])
+            ->andWhere(['is_deleted' => 0, 'loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->asArray()
+            ->one();
+
+        $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+        $model = $this->_emiAccData($lac)['data'];
+
+        if ($data || $model) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+    }
+
+
+    private function _emiAccData($lac)
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $payment_modes = EmiCollectionForm::$payment_modes;
+        $model = EmiCollection::find()
+            ->alias('a')
+            ->select([
+                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
+                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
+                'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
+                'CASE WHEN a.other_doc_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
+                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
+            ])
+            ->joinWith(['createdBy b'], false)
+            ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
+
+        $count = $model->count();
+        $model = $model
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($model as $key => $value) {
+            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+            if ($value['other_doc_image']) {
+                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
+                $model[$key]['other_doc_image'] = $proof;
+            }
+            if ($value['borrower_image']) {
+                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
+                $model[$key]['borrower_image'] = $proof;
+            }
+            if ($value['pr_receipt_image']) {
+                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+                $model[$key]['pr_receipt_image'] = $proof;
+            }
+        }
+        return ['data' => $model, 'count' => $count];
+    }
+
+    public function actionVehicleRepossession()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+
+        $model = new VehicleRepoForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            $model->front = UploadedFile::getInstancesByName('front');
+            $model->back = UploadedFile::getInstancesByName('back');
+            $model->left = UploadedFile::getInstancesByName('left');
+            $model->right = UploadedFile::getInstancesByName('right');
+            if ($model->validate()) {
+                $rep = $model->vehicleRepo($user);
+
+                if ($rep['status'] == 201) {
+                    return $this->response(201, $rep);
+                } else {
+                    return $this->response(500, $rep);
+                }
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
+            }
+        } else {
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+        }
+    }
+
+    public function actionGetRepoList()
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = LoanActionRequests::find()
+            ->alias('a')
+            ->select([
+                'a.request_enc_id', 'a.loan_account_enc_id', 'a.vehicle_model', 'a.km_driven',
+                '(CASE WHEN a.insurance = "1" THEN "yes" ELSE "no" END) AS insurance',
+                '(CASE WHEN a.rc = "1" THEN "yes" ELSE "no" END) AS rc', 'a.registration_number', 'a.current_market_value',
+                'a.repossession_date', 'b.loan_account_number', 'CONCAT(c.first_name," ",c.last_name) created_by', 'd.brand_name'
+            ])
+            ->joinWith(['loanAccountEnc b'], false)
+            ->joinWith(['createdBy c'], false)
+            ->joinWith(['financerVehicleBrandEnc d'], false)
+            ->andWhere(['a.is_deleted' => 0, 'a.reasons' => 4]);
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'registration_number' || $key == 'repossession_date') {
+                        $data->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'loan_account_number') {
+                        $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'brand_name') {
+                        $data->andWhere(['like', 'd.' . $key, $value]);
+                    } elseif ($key == 'insurance' || $key == 'rc') {
+                        if ($value == 'yes') {
+                            $data->andWhere([$key => 1]);
+                        } elseif ($value == 0) {
+                            $data->andWhere([$key => 0]);
+                        }
+                    } else {
+                        $data->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        $count = $data->count();
+        $data = $data
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionRepoDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['request_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "request_enc_id']);
+        }
+
+        $data = VehicleRepossessionImages::find()
+            ->alias('a')
+            ->andWhere(['a.is_deleted' => 0, 'a.vehicle_repossession_enc_id' => $params['request_enc_id']])
+            ->joinWith(['vehicleRepossessionEnc b' => function ($b) {
+                $b->joinWith(['loanAccountEnc b1']);
+                $b->joinWith(['financerVehicleBrandEnc b5']);
+            }])
+            ->asArray()
+            ->all();
+
+        $images = ['front' => [], 'back' => [], 'left' => [], 'right' => []];
+
+        $issues = [
+            '1' => 'front', '2' => 'back', '3' => 'left', '4' => 'right'
+        ];
+
+        foreach ($data as $datam) {
+            $img_type = $datam['image_type'];
+            $image_type = $issues[$img_type];
+
+            if (!empty($datam['image'])) {
+                $user_image = Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->repo_images->image .
+                    $datam['image_location'] . '' . $datam['image'];
+            } else {
+                $user_image = '';
+            }
+
+            $images[$image_type][] = [
+                'image' => $user_image,
+            ];
+        }
+
+        $result = [
+            'status' => 200,
+            'data' => [
+                'request_enc_id' => $params['request_enc_id'],
+                'vehicle_model' => $datam['vehicleRepossessionEnc']['vehicle_model'],
+                'loan_account_number' => $datam['vehicleRepossessionEnc']['loanAccountEnc']['loan_account_number'],
+                'loan_acc_enc_id' => $datam['vehicleRepossessionEnc']['loanAccountEnc']['loan_account_enc_id'],
+                'km_driven' => $datam['vehicleRepossessionEnc']['km_driven'],
+                'registration_number' => $datam['vehicleRepossessionEnc']['registration_number'],
+                'current_market_value' => $datam['vehicleRepossessionEnc']['current_market_value'],
+                'repossession_date' => $datam['vehicleRepossessionEnc']['repossession_date'],
+                'insurance' => ($datam['vehicleRepossessionEnc']['insurance'] == 1) ? 'yes' : 'no',
+                'rc' => ($datam['vehicleRepossessionEnc']['rc'] == 1) ? 'yes' : 'no',
+                'rc_image' => $datam['vehicleRepossessionEnc']['rc_image'] ? Yii::$app->params->digitalOcean->baseUrl .
+                    Yii::$app->params->digitalOcean->rootDirectory .
+                    Yii::$app->params->upload_directories->repo_images->image .
+                    $datam['vehicleRepossessionEnc']['rc_image_location'] . '' . $datam['vehicleRepossessionEnc']['rc_image'] : "",
+                'brand_name' => $datam['vehicleRepossessionEnc']['financerVehicleBrandEnc']['brand_name'],
+                'images' => $images,
+                'comments' => [],
+            ],
+        ];
+
+        if (!empty($images['front']) || !empty($images['back']) || !empty($images['left']) || !empty($images['right'])) {
+            return $this->response(200, $result);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionSaveRepoComments()
+    {
+
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['request_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "request_enc_id"']);
+        }
+
+        if (empty($params['comment'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
+        }
+
+        if (empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+        }
+
+        $type = 'error';
+
+        if (!empty($params['type'])) {
+            if ($params['type'] == 'legal') {
+                $type = 1;
+            } elseif ($params['type'] == 'accident') {
+                $type = 2;
+            } elseif ($params['type'] == 'health') {
+                $type = 3;
+            } elseif ($params['type'] == 'repossession') {
+                $type = 4;
+            }
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $comment = new LoanActionComments();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $comment->comment_enc_id = $utilitiesModel->encrypt();
+            $comment->request_enc_id = $params['request_enc_id'];
+            $comment->comment = $params['comment'];
+            $comment->type = $type;
+            $comment->created_by = $user->user_enc_id;
+            $comment->created_on = date('Y-m-d H:i:s');
+            if (!$comment->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
+            }
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'data' => $comment]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => $exception->getMessage()];
+        }
+    }
+
+    public function actionGetRepoComments()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        if (empty($params['request_enc_id']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "request_enc_id or type"']);
+        }
+
+        $type = $params['type'];
+        $query = $this->repoCommentsDetails($params['request_enc_id'], $type);
+
+        if (!$query) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $query]);
+    }
+
+    private function repoCommentsDetails($request_enc_id, $type)
+    {
+        $query = LoanActionComments::find()
+            ->alias('a')
+            ->select([
+                'a.request_enc_id', 'a.comment', 'a.type', 'a.created_on',
+                'CONCAT(f1.first_name," ",f1.last_name) created_by',
+                'CASE WHEN f1.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",f1.image_location, "/", f1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f1.first_name," ",f1.last_name), "&size=200&rounded=true&background=", REPLACE(f1.initials_color, "#", ""), "&color=ffffff") END user_image',
+                'CASE WHEN f2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", f2.logo_location, "/", f2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f2.name, "&size=200&rounded=false&background=", REPLACE(f2.initials_color, "#", ""), "&color=ffffff") END logo',
+            ])
+            ->joinWith(['createdBy f1' => function ($b3) {
+                $b3->joinWith(['organizations f2']);
+            }])
+            ->onCondition(['a.is_deleted' => 0]);
+
+        switch ($type) {
+            case "legal":
+                $query->andWhere(['a.type' => '1']);
+                break;
+
+            case "accident":
+                $query->andWhere(['a.type' => '2']);
+                break;
+
+            case "health":
+                $query->andWhere(['a.type' => '3']);
+                break;
+
+            case "repossession":
+                $query->andWhere(['a.type' => '4']);
+                break;
+
+            default:
+                return false;
+        }
+        $result = $query
+            ->andWhere(['a.request_enc_id' => $request_enc_id])
+            ->asArray()
+            ->all();
+
+        if ($type == 'type' && $result) {
+            $result = self::repoIssue($result);
+        }
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    public static function repoIssue($data)
+    {
+        $names = ["1" => 'Legal', "2" => 'Accident', "3" => 'Health', "4" => 'Repossession'];
+        $res = [];
+        foreach ($data as $datum) {
+            $res[$names[$datum['type']]][] = $datum;
+        }
+        return $res;
+    }
+
+
+    public function actionGetLegalList()
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = LoanActionRequests::find()
+            ->alias('a')
+            ->select([
+                'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
+                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by', 'b.emi_amount', 'b.last_emi_received_amount'
+            ])
+            ->joinWith(['loanAccountEnc b'], false)
+            ->joinWith(['createdBy c'], false)
+            ->andWhere(['a.reasons' => 1, 'a.is_deleted' => 0]);
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'loan_account_number') {
+                        $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'created_by') {
+                        $data->andWhere(['like', 'c.' . $key, $value]);
+                    } else {
+                        $data->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        $count = $data->count();
+        $data = $data
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionGetAccList()
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = LoanActionRequests::find()
+            ->alias('a')
+            ->select([
+                'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
+                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
+            ])
+            ->joinWith(['loanAccountEnc b'], false)
+            ->joinWith(['createdBy c'], false)
+            ->andWhere(['a.reasons' => 2, 'a.is_deleted' => 0]);
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'loan_account_number') {
+                        $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'created_by') {
+                        $data->andWhere(['like', 'c.' . $key, $value]);
+                    } else {
+                        $data->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        $count = $data->count();
+        $data = $data
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionGetHealthList()
+    {
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = LoanActionRequests::find()
+            ->alias('a')
+            ->select([
+                'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
+                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
+            ])
+            ->joinWith(['loanAccountEnc b'], false)
+            ->joinWith(['createdBy c'], false)
+            ->andWhere(['a.reasons' => 3, 'a.is_deleted' => 0]);
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'loan_account_number') {
+                        $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'created_by') {
+                        $data->andWhere(['like', 'c.' . $key, $value]);
+                    } else {
+                        $data->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+        $count = $data->count();
+        $data = $data
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionGetTelecallerList()
+    {
+        $user = $this->isAuthorized();
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+
+        $data = Users::find()
+            ->alias('a')
+            ->select(['a.user_enc_id', 'CONCAT(a.first_name," ",a.last_name) as name'])
+            ->joinWith(['userRoles0 b' => function ($b) {
+                $b->joinWith('designation d');
+            }], false)
+            ->where(['d.designation' => 'Telecaller', 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionAssignTelecaller()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        if (empty($params['caller_ids']) || empty($params['bucket'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "caller_ids" or "bucket"']);
+        }
+        $loanAccounts = (new Query())
+            ->from([LoanAccounts::tableName()])
+            ->select(['loan_account_enc_id', 'bucket'])
+            ->where(['bucket' => $params['bucket'], 'is_deleted' => 0]);
+        foreach ($loanAccounts->batch(100) as $rows) {
+            $assignment = $this->assignCasesToTelecallers($params['caller_ids'],  $rows);
+            foreach ($assignment as $caseName => $telecaller) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(LoanAccounts::tableName(), ['assigned_caller' => $telecaller['user_enc_id'], 'updated_by' => $user->user_enc_id, 'updated_on' => date('Y-m-d H:i:s')], ['loan_account_enc_id' => $caseName])
+                    ->execute();
+                if (!$update) {
+                    return false;
+                }
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Successfully Updated']);
+    }
+
+    function assignCasesToTelecallers($telecallers, $cases)
+    {
+        if (count($telecallers) <= 0 || count($cases) <= 0) {
+            return "Both telecallers and cases must not be empty.";
+        }
+        $telecallerCount = count($telecallers);
+        $caseCount = count($cases);
+        if ($telecallerCount >= $caseCount) {
+            return "There are more telecallers than cases, so every case can have a unique telecaller.";
+        }
+
+        $assignment = array();
+        for ($i = 0; $i < $caseCount; $i++) {
+            $telecaller = $telecallers[$i % $telecallerCount];
+            $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
+        }
+        return $assignment;
     }
 }
