@@ -842,7 +842,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
            $subquery = (new \yii\db\Query())
-               ->distinct()
                ->select([
                         'ANY_VALUE(report_enc_id) report_enc_id','ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id','d4.loan_co_app_enc_id',
                         'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
@@ -853,7 +852,8 @@ class CompanyDashboardController extends ApiBaseController
             ->join('INNER JOIN', ['d5' => CreditResponseData::tableName()], 'd5.response_enc_id = d4.response_enc_id')
             ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
             ->orderBy(['created_on' => SORT_DESC])
-            ->andWhere(['d4.is_deleted' => 0]);
+            ->andWhere(['d4.is_deleted' => 0])
+            ->groupBy(['d4.loan_co_app_enc_id']);
 
             // getting loan detail
             $loan = LoanApplications::find()
