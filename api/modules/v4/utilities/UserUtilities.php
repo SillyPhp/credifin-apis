@@ -261,7 +261,7 @@ class UserUtilities
             ->alias('a')
             ->select(['c.user_enc_id'])
             ->joinWith(['providerEnc b' => function ($b) {
-                $b->joinWith(['userEncs0 c'], false);
+                $b->joinWith(['userEncs c'], false);
             }], false)
             ->where(['a.loan_application_enc_id' => $loan_id])
             ->asArray()
