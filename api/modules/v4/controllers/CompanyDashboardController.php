@@ -854,21 +854,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
                 ->orderBy(['created_on' => SORT_DESC])
                 ->andWhere(['d4.is_deleted' => 0]);
-
-            $subquery1 = (new \yii\db\Query())
-                ->distinct()
-                ->select([
-                    'zx.report_enc_id','zx.loan_app_enc_id loan_app_enc_id','zx.loan_co_app_enc_id',
-                    'j11.file_url', 'j11.filename',
-                    'zx.created_on', "DATEDIFF('" . $date . "', zx.created_on) as days_till_now",
-                    'j22.request_source'
-                ])
-                ->from(['zx' => CreditLoanApplicationReports::tableName()])
-                ->join('INNER JOIN', ['j11' => CreditResponseData::tableName()], 'j11.response_enc_id = zx.response_enc_id')
-                ->join('INNER JOIN', ['j22' => CreditRequestedData::tableName()], 'j22.request_enc_id = j11.request_enc_id')
-                ->orderBy(['created_on' => SORT_DESC])
-                ->andWhere(['zx.loan_co_app_enc_id' => null])
-                ->andWhere(['zx.is_deleted' => 0]);
             // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
@@ -952,8 +937,9 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
                 ->joinWith([
-                    'creditLoanApplicationReports zx' => function ($k) use ($subquery1) {
-                        $k->from(['subquery1' => $subquery1]);
+                    'creditLoanApplicationReports zx' => function ($k) use ($subquery) {
+                        $k->from(['subquery' => $subquery]);
+                        $k->andWhere(['subquery.loan_co_app_enc_id' => null]);
                     }
                 ])
                 ->joinWith(['sharedLoanApplications k' => function ($k) {
