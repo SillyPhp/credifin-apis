@@ -502,7 +502,7 @@ class LoanApplications extends \yii\db\ActiveRecord
      */
     public function getLoanAuditTrails()
     {
-        return $this->hasMany(LoanAuditTrail::className(), ['loan_id' => 'loan_app_enc_id']);
+        return $this->hasMany(LoanAuditTrail::className(), ['foreign_id' => 'loan_app_enc_id']);
     }
 
     /**
