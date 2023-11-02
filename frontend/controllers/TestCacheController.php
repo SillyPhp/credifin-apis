@@ -221,6 +221,7 @@ class TestCacheController extends Controller
                 $model = $model->where(['between','created_on',$start,$end]);
             }
             $model = $model->limit($limit)
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
 
@@ -276,6 +277,7 @@ class TestCacheController extends Controller
                 $model = $model->where(['between','created_on',$start,$end]);
             }
             $model = $model->limit($limit)
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
             $transaction = Yii::$app->db->beginTransaction();
@@ -315,6 +317,7 @@ class TestCacheController extends Controller
                 $model = $model->where(['between','created_on',$start,$end]);
             }
             $model = $model->limit($limit)
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
 
