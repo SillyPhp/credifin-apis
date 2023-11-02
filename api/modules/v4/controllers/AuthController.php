@@ -150,7 +150,8 @@ class AuthController extends ApiBaseController
     private function _genUserPass($data)
     {
         while (true) {
-            $username = str_replace([' ', '.', '@'], '', $data['organization_name']) . rand(100, 1000);
+            $username = str_replace(['.', '@'], '', $data['organization_name']);
+            $username = substr(implode('', array_slice(explode(' ', $username), 0, 2)), 0, 12) . rand(100, 1000);
             $checkUsers = Users::findOne(['username' => $username]);
             if (!$checkUsers) {
                 $data['username'] = $username;
