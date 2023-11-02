@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use common\models\LoanApplications;
-use common\models\Users;
 use Yii;
 
 /**
@@ -18,10 +16,9 @@ use Yii;
  * @property string $stamp
  * @property int $user_id
  * @property string $model_id
- * @property string $loan_id
+ * @property string $foreign_id
  *
  * @property Users $user
- * @property LoanApplications $loan
  */
 class LoanAuditTrail extends \yii\db\ActiveRecord
 {
@@ -43,28 +40,8 @@ class LoanAuditTrail extends \yii\db\ActiveRecord
             [['action', 'model', 'stamp', 'model_id'], 'required'],
             [['stamp'], 'safe'],
             [['user_id'], 'integer'],
-            [['action', 'model', 'field', 'model_id', 'loan_id'], 'string', 'max' => 255],
+            [['action', 'model', 'field', 'model_id', 'foreign_id'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['loan_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_id' => 'loan_app_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('app', 'ID'),
-            'old_value' => Yii::t('app', 'Old Value'),
-            'new_value' => Yii::t('app', 'New Value'),
-            'action' => Yii::t('app', 'Action'),
-            'model' => Yii::t('app', 'Model'),
-            'field' => Yii::t('app', 'Field'),
-            'stamp' => Yii::t('app', 'Stamp'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'model_id' => Yii::t('app', 'Model ID'),
-            'loan_id' => Yii::t('app', 'Loan ID'),
         ];
     }
 
@@ -74,13 +51,5 @@ class LoanAuditTrail extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoan()
-    {
-        return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_id']);
     }
 }

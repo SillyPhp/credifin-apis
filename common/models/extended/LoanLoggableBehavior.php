@@ -12,19 +12,24 @@ use common\models\Users;
 
 class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
 {
-    public $loan_id;
+    public $enc_id;
     public $className = '';
     public $type;
 
     public function leaveTrail($action, $name = null, $value = null, $old_value = null)
     {
-
         if ($this->active) {
             $log = new LoanAuditTrail();
-            if (isset($this->owner->loan_app_enc_id)) {
-                $this->loan_id = $this->owner->loan_app_enc_id;
-            } else {
-                $this->loan_id = isset($this->owner->loan_application_enc_id) ? $this->owner->loan_application_enc_id : $this->owner->loan_id;
+            if (isset($this->owner->loan_app_enc_id)){
+                $this->enc_id = $this->owner->loan_app_enc_id;
+            }elseif(isset($this->owner->loan_id)){
+                $this->enc_id = $this->owner->loan_id;
+            }elseif(isset($this->owner->emi_collection_enc_id)){
+                $this->enc_id = $this->owner->emi_collection_enc_id;
+            }elseif(isset($this->owner->loan_account_enc_id)){
+                $this->enc_id = $this->owner->loan_account_enc_id;
+            }elseif(isset($this->owner->cash_report_enc_id)){
+                $this->enc_id = $this->owner->cash_report_enc_id;
             }
             $log->model = $this->className;
             $log->old_value = $old_value;
@@ -32,7 +37,7 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
             $log->action = $action;
             $log->model_id = (string)$this->getNormalizedPk();
             $log->field = $name;
-            $log->loan_id = $this->loan_id;
+            $log->foreign_id = $this->enc_id;
             $log->stamp = $this->storeTimestamp ? time() : date($this->dateFormat); // If we are storing a timestamp lets get one else lets get the date
             if ($this->getUserId()) {
                 $log->user_id = (string)$this->getUserId(); // Lets get the user id
