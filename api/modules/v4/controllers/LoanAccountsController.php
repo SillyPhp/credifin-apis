@@ -306,12 +306,17 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
         }
-        $data = EmiPaymentIssues::find()
+      
+
+        $data = LoanActionRequests::find()
             ->alias('a')
+            ->select([ 'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by', 
+                'a.request_image', 'a.request_image_location', 'a.created_on'])
             ->joinWith(['createdBy b'])
             ->andWhere(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->asArray()
             ->all();
+
 
         $res = [];
         $issues = [
@@ -335,17 +340,17 @@ class LoanAccountsController extends ApiBaseController
                     str_replace('#', '', $createdByImage['initials_color']) .
                     '&color=ffffff';
             }
-            if (!empty($datam['image'])) {
+            if (!empty($datam['request_image'])) {
                 $user_image = Yii::$app->params->digitalOcean->baseUrl .
                     Yii::$app->params->digitalOcean->rootDirectory .
                     Yii::$app->params->upload_directories->payment_issues->image .
-                    $datam['image_location'] . '/' . $datam['image'];
+                    $datam['request_image_location'] . '/' . $datam['request_image'];
             } else {
                 $user_image = '';
             }
 
             $res[] = [
-                'emi_payment_issues_enc_id' => $datam['emi_payment_issues_enc_id'],
+                'request_enc_id' => $datam['request_enc_id'],
                 'loan_account_enc_id' => $datam['loan_account_enc_id'],
                 'created_by' => $createdByName,
                 'created_on' => $datam['created_on'],
