@@ -277,9 +277,12 @@ class TestCacheController extends Controller
                 $model = $model->where(['between','created_on',$start,$end]);
             }
             $model = $model->limit($limit)
+                ->select(['count(id)'])
                 ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
+            print_r($model);
+            die();
             $transaction = Yii::$app->db->beginTransaction();
             $count = 0;
             foreach ($model as $mod) {
