@@ -2522,9 +2522,9 @@ class CompanyDashboardController extends ApiBaseController
             $subquery = (new \yii\db\Query())
                 ->select([
                     'k.created_by',
-                    'cibil' => 'SUM(CASE WHEN k2.request_source = "CIBIL" THEN 1 ELSE 0 END)',
-                    'equifax' => 'SUM(CASE WHEN k2.request_source = "EQUIFAX" THEN 1 ELSE 0 END)',
-                    'crif' => 'SUM(CASE WHEN k2.request_source = "CRIF" THEN 1 ELSE 0 END)',
+                    'cibil' => "SUM(CASE WHEN k2.request_source = 'CIBIL' THEN 1 ELSE 0 END)",
+                    'equifax' => "SUM(CASE WHEN k2.request_source = 'EQUIFAX' THEN 1 ELSE 0 END)",
+                    'crif' => "SUM(CASE WHEN k2.request_source = 'CRIF' THEN 1 ELSE 0 END)",
                 ])
                 ->from(['k' => CreditLoanApplicationReports::tableName()])
                 ->join('INNER JOIN', ['k1' => CreditResponseData::tableName()], 'k1.response_enc_id = k.response_enc_id')
@@ -2535,13 +2535,14 @@ class CompanyDashboardController extends ApiBaseController
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select([
-                    'a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
-                    //                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" and c2.loan_status !="New Lead" and c2.loan_status !="Sanctioned" and c2.loan_status !="CNI" THEN c.loan_app_enc_id END) as active',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and (c2.loan_status = "Rejected" or c2.loan_status = "CNI") THEN c.loan_app_enc_id END) as rejected',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
+                    'a.user_enc_id',
+                    "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
+                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation)', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) as new_lead",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) as sanctioned",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) as rejected",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) as disbursed",
                 ])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -2581,7 +2582,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 ])
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->groupBy(['a.user_enc_id']);
+                ->groupBy(['a.user_enc_id','b.employee_code']);
 
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
@@ -2590,12 +2591,12 @@ class CompanyDashboardController extends ApiBaseController
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $employeeStats->andWhere([
                     'or',
-                    ['like', 'concat(a.first_name," ",a.last_name)', $params['keyword']],
+                    ['like', "CONCAT(a.first_name,' ',a.last_name)", $params['keyword']],
                     ['like', 'a.phone', $params['keyword']],
                     ['like', 'a.username', $params['keyword']],
                     ['like', 'a.email', $params['keyword']],
                     ['like', 'b1.designation', $params['keyword']],
-                    ['like', 'concat(b2.first_name," ",b2.last_name)', $params['keyword']],
+                    ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
                     ['like', 'b3.location_name', $params['keyword']],
                 ]);
             }
