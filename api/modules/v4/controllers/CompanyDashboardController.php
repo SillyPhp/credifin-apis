@@ -842,7 +842,6 @@ class CompanyDashboardController extends ApiBaseController
             }
 
            $subquery = (new \yii\db\Query())
-               ->distinct()
                ->select([
                         'ANY_VALUE(report_enc_id) report_enc_id','ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id','d4.loan_co_app_enc_id',
                         'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
@@ -881,6 +880,7 @@ class CompanyDashboardController extends ApiBaseController
                         'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
                         "CASE WHEN d.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',d.image_location, d.image) ELSE NULL END image",
                     ]);
+                    $d->groupBy(['d.loan_co_app_enc_id']);
                     $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
                         $d1->joinWith(['cityEnc d2'], false);
                         $d1->joinWith(['stateEnc d3'], false);
