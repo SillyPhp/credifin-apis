@@ -286,7 +286,7 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "satparkash", "shgarima21", "Sumit1992"])) {
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
             $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
         }
 
@@ -408,7 +408,6 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }])
-            ->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0])
             ->andWhere([
                 'or',
                 [
@@ -659,6 +658,7 @@ class CompanyDashboardController extends ApiBaseController
             }
             $loans->andWhere($where);
         }
+        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
         $count = $loans->count();
 
         $loans = $loans
