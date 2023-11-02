@@ -194,4 +194,5 @@ class EmiCollectionsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 404, 'message' => 'no data found']);
     }
+
 }

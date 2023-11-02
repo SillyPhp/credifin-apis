@@ -31,6 +31,7 @@ use Yii;
  * @property string $emi_date Emi Date
  * @property double $last_emi_received_amount Last emi received amount
  * @property string $last_emi_received_date Last emi received date
+ * @property string $assigned_caller
  * @property string $created_on Created On
  * @property string $created_by Created By
  * @property string $updated_on Updated On
@@ -41,6 +42,9 @@ use Yii;
  * @property Users $updatedBy
  * @property Users $createdBy
  * @property OrganizationLocations $branchEnc
+ * @property Users $collectionManager
+ * @property VehicleRepoComments[] $vehicleRepoComments
+ * @property VehicleRepossession[] $vehicleRepossessions
  */
 class LoanAccounts extends \yii\db\ActiveRecord
 {
@@ -62,15 +66,17 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'created_on', 'updated_on'], 'safe'],
             [['total_installments', 'is_deleted'], 'integer'],
             [['financed_amount', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
-            [['loan_account_enc_id', 'loan_account_number', 'group_name', 'branch_enc_id', 'name', 'loan_type', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_account_enc_id', 'loan_account_number', 'group_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['lms_loan_account_number'], 'string', 'max' => 20],
             [['collection_manager', 'stock', 'pos', 'advance_interest', 'bucket'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
             [['loan_account_enc_id'], 'unique'],
             [['loan_account_number'], 'unique'],
+            [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
+            [['collection_manager'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['collection_manager' => 'user_enc_id']],
         ];
     }
 
@@ -80,6 +86,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getEmiPaymentIssues()
     {
         return $this->hasMany(EmiPaymentIssues::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+      /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedCaller()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'assigned_caller']);
     }
 
     /**
@@ -104,5 +118,29 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getBranchEnc()
     {
         return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollectionManager()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'collection_manager']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleRepoComments()
+    {
+        return $this->hasMany(VehicleRepoComments::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleRepossessions()
+    {
+        return $this->hasMany(VehicleRepossession::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 }

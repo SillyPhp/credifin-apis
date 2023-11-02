@@ -53,7 +53,7 @@ class CreditReportsController extends ApiBaseController
             $creditReport = CreditLoanApplicationReports::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'b.applicant_name', 'b.loan_type', 'c.file_url', 'c.created_by', 'c1.request_source', 'concat(d.first_name," ",d.last_name) created_by_name','e.name as co_applicant_name','e.relation','e.borrower_type'])
+                ->select(['a.loan_app_enc_id', 'b.applicant_name', 'b.loan_type', 'c.file_url', 'c.created_by', 'c1.request_source', "CONCAT(d.first_name,' ',d.last_name) created_by_name",'e.name as co_applicant_name','e.relation','e.borrower_type'])
                 ->joinWith(['loanAppEnc b' => function ($b) {
                     $b->joinWith(['assignedLoanProviders b1']);
                 }], false)
