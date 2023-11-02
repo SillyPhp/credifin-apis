@@ -842,6 +842,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
             $subquery = (new \yii\db\Query())
+                ->distinct()
                 ->select([
                     'd4.report_enc_id','d4.loan_app_enc_id loan_app_enc_id','d4.loan_co_app_enc_id',
                     'd5.file_url', 'd5.filename',
@@ -855,6 +856,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['d4.is_deleted' => 0]);
 
             $subquery1 = (new \yii\db\Query())
+                ->distinct()
                 ->select([
                     'zx.report_enc_id','zx.loan_app_enc_id loan_app_enc_id','zx.loan_co_app_enc_id',
                     'j11.file_url', 'j11.filename',
@@ -909,22 +911,6 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['cityEnc d2'], false);
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
-//                    $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
-//                        $d4->select([
-//                            'd4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on',
-//                            'DATEDIFF("' . $date . '", d4.created_on) as days_till_now',
-//                            'd6.request_source'
-//                        ]);
-//                        $d4->joinWith(['responseEnc d5' => function ($d5) {
-//                            $d5->joinWith(['requestEnc d6'], false);
-//                        }], false);
-//                        $d4->onCondition([
-//                            'and',
-//                            ['d4.is_deleted' => 0],
-//                        ]);
-//                        $d4->orderBy(['d4.created_on' => SORT_DESC]);
-//                    }]);
-//                    $d->groupBy(['d.loan_co_app_enc_id']);
                     $d->joinWith([
                         'creditLoanApplicationReports d4' => function ($k) use ($subquery) {
                             $k->from(['subquery' => $subquery]);
@@ -965,23 +951,12 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['cityEnc i1'], false);
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
-//                ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
-//                    $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source', 'DATEDIFF("' . $date . '", j.created_on) as days_till_now'])
-//                        ->joinWith(['responseEnc j1' => function ($j1) {
-//                            $j1->joinWith(['requestEnc j2'], false);
-//                        }], false);
-//                    $j->onCondition([
-//                        'and',
-//                        ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
-//                    ]);
-//                    $j->orderBy(['j.created_on' => SORT_DESC]);
-//                }])
                 ->joinWith([
-                        'creditLoanApplicationReports zx' => function ($k) use ($subquery1) {
-                            $k->from(['subquery' => $subquery1]);
-                        }
+                    'creditLoanApplicationReports zx' => function ($k) use ($subquery1) {
+                        $k->from(['subquery1' => $subquery1]);
+                    }
                 ])
-                ->joinWith(['sharedLoanApplications j' => function ($k) {
+                ->joinWith(['sharedLoanApplications k' => function ($k) {
                     $k->select([
                         'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
                         'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
