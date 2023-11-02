@@ -29,14 +29,6 @@ class TestCacheController extends Controller
       print_r($x);
     }
 
-    private  function generateAllCloudAuthHeader($requestHttpMethod, $Request_URL, $payload){
-        try {
-            $returnArr = [];
-
-            $AppId = '4d53bce03ec34c0a911182d4c228ee6c:';
-            $USER_TOKEN = '786df557-a7ed-4368-a491-e931ba349aba';
-            $USER_SECRET = 'b621f322-e85e-47ff-b965-e731a26e5872';
-
     private function generate_username($string_name=null, $rand_no = 200){
         $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
         $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
