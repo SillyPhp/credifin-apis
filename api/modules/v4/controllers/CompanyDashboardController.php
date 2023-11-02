@@ -336,46 +336,38 @@ class CompanyDashboardController extends ApiBaseController
                 'a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
+                'CONCAT(k.first_name, " ", COALESCE(k.last_name,"")) employee_name',
+                '(CASE
+                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name," ",COALESCE(lb.last_name, ""))
+                    ELSE CONCAT("SELF (",cb.first_name, " ", COALESCE(cb.last_name, ""), ")")
+                END) as creator_name',
+                '(CASE 
+                    WHEN a.lead_by IS NOT NULL THEN "0" 
+                    ELSE "1" 
+                END) as is_self',
+                'a.applicant_name',
                 'a.amount',
-                'h.name applicant_name',
                 'a.amount_received',
                 'a.amount_due',
                 'a.scholarship',
                 'a.loan_type',
+                'REPLACE(g.name, "&amp;", "&") as org_name',
                 'a.loan_products_enc_id',
                 'a.semesters',
                 'a.years',
                 'a.phone',
                 'a.email',
                 'a.applicant_current_city as city',
+                '(CASE
+                    WHEN a.gender = "1" THEN "Male"
+                    WHEN a.gender = "2" THEN "Female"
+                    ELSE "N/A"
+                END) as gender',
                 'a.applicant_dob as dob',
                 'a.created_by',
                 'a.lead_by',
                 'a.managed_by',
-                'lp.name as loan_product',
-                'i.updated_on',
-                'a.created_on'
-            ])
-            ->addSelect([
-                "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
-                "(CASE
-                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
-                    ELSE CONCAT('SELF (',cb.first_name, ' ', COALESCE(cb.last_name, ''), ')')
-                END) as creator_name",
-//                "(CASE
-//                    WHEN h.borrower_type = 'Borrower' THEN h.name
-//                    ELSE a.applicant_name
-//                END) as applicant_name",
-                "(CASE 
-                    WHEN a.lead_by IS NOT NULL THEN '0' 
-                    ELSE '1' 
-                END) as is_self",
-                "REPLACE(g.name, '&amp;', '&') as org_name",
-                "(CASE
-                    WHEN a.gender = '1' THEN 'Male'
-                    WHEN a.gender = '2' THEN 'Female'
-                    ELSE 'N/A'
-                END) as gender"
+                'lp.name as loan_product'
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
@@ -388,7 +380,18 @@ class CompanyDashboardController extends ApiBaseController
                 $cr->joinWith(['userTypeEnc ute'], false);
             }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
-                $h->andOnCondition(['h.borrower_type' => 'Borrower']);
+                $h->select([
+                    'h.loan_app_enc_id',
+                    'h.relation',
+                    'h.name',
+                    'h.annual_income',
+                    '(CASE
+                        WHEN h.employment_type = "0" THEN "Non Working"
+                        WHEN h.employment_type = "1" THEN "Salaried"
+                        WHEN h.employment_type = "2" THEN "Self Employed"
+                        ELSE "N/A"
+                    END) as employment_type',
+                ]);
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                 $i->joinWith(['providerEnc j']);
@@ -405,8 +408,8 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanProductsEnc lp'], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
-                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone',
-                    "CASE WHEN n1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', n1.image_location, '/', n1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(n1.first_name,' ',n1.last_name), '&size=200&rounded=false&background=', REPLACE(n1.initials_color, '#', ''), '&color=ffffff') END image"
+                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', 'concat(n1.first_name," ",n1.last_name) name', 'n1.phone',
+                    'CASE WHEN n1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", n1.image_location, "/", n1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(n1.first_name," ",n1.last_name), "&size=200&rounded=false&background=", REPLACE(n1.initials_color, "#", ""), "&color=ffffff") END image'
                 ])
                     ->joinWith(['sharedTo n1'], false)
                     ->onCondition(['n.is_deleted' => 0]);
@@ -524,19 +527,17 @@ class CompanyDashboardController extends ApiBaseController
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
+
                 if (!empty($val) || $val == '0') {
                     // key match to "a" table array
                     if (in_array($key, $a)) {
+
                         // if key is apply_date then checking created_on time
                         if ($key == 'apply_date') {
                             $loans->andWhere(['like', 'a.created_on', $val]);
                         } else {
-                            if ($key == 'applicant_name'):
-                                $loans->andWhere(['like', 'h.name', $val]);
-                            else:
-                                // else checking other fields with their names
-                                $loans->andWhere(['like', 'a.' . $key, $val]);
-                            endif;
+                            // else checking other fields with their names
+                            $loans->andWhere(['like', 'a.' . $key, $val]);
                         }
                     }
 
@@ -597,7 +598,6 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere([
                 'or',
                 ['like', 'a.applicant_name', $params['search_keyword']],
-                ['like', 'h.name', $params['search_keyword']],
                 ['like', 'a.loan_type', $params['search_keyword']],
                 ['like', 'a.amount', $params['search_keyword']],
                 ['like', 'a.created_on', $params['search_keyword']],
