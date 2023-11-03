@@ -71,7 +71,7 @@ class LoanAuditTrail extends ActiveRecord
             'stamp' => Yii::t('loanaudittrail','Stamp'),
             'user_id' => Yii::t('loanaudittrail','User'),
             'model_id' => Yii::t('loanaudittrail','ID'),
-            'loan_id' => Yii::t('loanaudittrail', 'Loan ID'),
+            'foreign_id' => Yii::t('loanaudittrail', 'Loan ID'),
         ];
     }
 
@@ -87,7 +87,7 @@ class LoanAuditTrail extends ActiveRecord
             ['field', 'string', 'max' => 255],
             ['model_id', 'string', 'max' => 255],
             ['user_id', 'string', 'max' => 255],
-            ['loan_id', 'string', 'max' => 255],
+            ['foreign_id', 'string', 'max' => 255],
             [['old_value', 'new_value'], 'safe']
         ];
     }
@@ -109,9 +109,9 @@ class LoanAuditTrail extends ActiveRecord
     public function getLoan()
     {
         if(isset(Yii::$app->params['audittrail.model']) && isset(Yii::$app->params['audittrail.model'])){
-            return $this->hasOne(Yii::$app->params['audittrail.model'], ['loan_app_enc_id' => 'loan_id']);
+            return $this->hasOne(Yii::$app->params['audittrail.model'], ['loan_app_enc_id' => 'foreign_id']);
         }else{
-            return $this->hasOne('common\models\LoanApplications', ['loan_app_enc_id' => 'loan_id']);
+            return $this->hasOne('common\models\LoanApplications', ['loan_app_enc_id' => 'foreign_id']);
         }
     }
 
