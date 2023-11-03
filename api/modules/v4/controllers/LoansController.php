@@ -1130,6 +1130,7 @@ class LoansController extends ApiBaseController
             }])
             ->joinWith(['loanCoAppEnc c'], false)
             ->andWhere(['a.loan_app_enc_id' => $params['loan_app_id']])
+            ->orderBy(['a.created_on' => SORT_ASC])
             ->asArray()
             ->all();
         $check = [
@@ -1160,14 +1161,16 @@ class LoansController extends ApiBaseController
                             if (array_key_exists(0, $array['ScoreSegment'])) {
                                 foreach ($array['ScoreSegment'] as $val) {
                                     if (is_array($val)) {
-                                        $score = ltrim($val['Score'], 0);
-                                        if ($score != '-1') {
+                                        if ($val["ScoreName"] == "CIBILTUSC3") {
+                                            $score = ltrim($val["Score"], 0);
                                             $res[$value['loan_co_app_enc_id']]['cibil_score'] = $score;
+                                            break;
                                         }
                                     }
                                 }
                             } else {
-                                $res[$value['loan_co_app_enc_id']]['cibil_score'] = ltrim($array['ScoreSegment']['Score'], 0);
+                                $score = ltrim($array['ScoreSegment']['Score'], 0);
+                                $res[$value['loan_co_app_enc_id']]['cibil_score'] = $score;
                             }
                         }
                         if (!empty($array['TelephoneSegment'])) {
@@ -1255,8 +1258,8 @@ class LoansController extends ApiBaseController
                         $xpath = new \DOMXPath($doc);
                         $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT';
                         try {
-
-                            $res[$value['loan_co_app_enc_id']]['crif_score'][] = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                        $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                            $res[$value['loan_co_app_enc_id']]['crif_score'] = $score;
                         } catch (\Exception $e) {
                         }
                         $endPath = '-VARIATIONS/VARIATION/VALUE';
