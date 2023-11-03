@@ -307,13 +307,14 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
         }
       
-
         $data = LoanActionRequests::find()
             ->alias('a')
             ->select([ 'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by', 
-                'a.request_image', 'a.request_image_location', 'a.created_on'])
+                'a.request_image', 'a.request_image_location', 'a.created_on', 
+                'CONCAT(b.first_name, " ", COALESCE(b.last_name, "")) as created_by_name', 'b.image_location', 'b.image'])
             ->joinWith(['createdBy b'])
-            ->andWhere(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->where(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->andWhere(['<>', 'a.reasons', 4])
             ->asArray()
             ->all();
 
@@ -326,7 +327,6 @@ class LoanAccountsController extends ApiBaseController
         foreach ($data as $datam) {
             $reason = $datam['reasons'];
             $pay_issues = !empty($issues[$reason]) ? $issues[$reason] : null;
-            $createdByName = $datam['createdBy']['first_name'] . ' ' . $datam['createdBy']['last_name'];
             $createdByImage = $datam['createdBy'];
             if ($createdByImage['image']) {
                 $createdByImage = Yii::$app->params->digitalOcean->baseUrl .
@@ -352,7 +352,7 @@ class LoanAccountsController extends ApiBaseController
             $res[] = [
                 'request_enc_id' => $datam['request_enc_id'],
                 'loan_account_enc_id' => $datam['loan_account_enc_id'],
-                'created_by' => $createdByName,
+                'created_by' => $datam['created_by_name'],
                 'created_on' => $datam['created_on'],
                 'remarks' => $datam['remarks'],
                 'user_image' => $createdByImage,
