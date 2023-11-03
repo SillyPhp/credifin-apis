@@ -66,7 +66,7 @@ class SignupForm extends Model
     {
         return [
             [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
-            [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
+            [['organization_name', 'organization_phone'], 'required', 'on' => 'Financer'],
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
@@ -141,6 +141,8 @@ class SignupForm extends Model
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if (!$user->save()) {
+                print_r($user);
+                exit();
                 $transaction->rollback();
                 throw new \Exception(json_encode($user->getErrors()));
             }
@@ -320,7 +322,7 @@ class SignupForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
         $organizationsModel->name = $this->organization_name;
-        $organizationsModel->email = !empty($this->organization_email) ? strtolower($this->organization_email) : strtolower($user->email);
+        $organizationsModel->email = !empty($this->organization_email) ? strtolower($this->organization_email) : null;
         $organizationsModel->phone = !empty($this->organization_phone) ? $this->organization_phone : $user->phone;
         $organizationsModel->website = $this->organization_website;
         $organizationsModel->initials_color = RandomColors::one();
