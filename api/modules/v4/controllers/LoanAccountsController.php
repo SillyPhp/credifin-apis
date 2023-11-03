@@ -20,6 +20,7 @@ use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use Yii;
+use yii\db\Expression;
 use yii\helpers\Url;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -306,13 +307,16 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
         }
-      
+
         $data = LoanActionRequests::find()
             ->alias('a')
-            ->select([ 'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by', 
-                'a.request_image', 'a.request_image_location', 'a.created_on', 
-                'CONCAT(b.first_name, " ", COALESCE(b.last_name, "")) as created_by_name', 'b.image_location', 'b.image'])
-            ->joinWith(['createdBy b'])
+            ->select(['a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
+                'a.request_image', 'a.request_image_location', 'a.created_on',
+                'CONCAT(b.first_name, " ", COALESCE(b.last_name, "")) as created_by_name', 'b.image_location', 'b.image',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END createdby_image',
+                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END request_image'
+            ])
+            ->joinWith(['createdBy b'], false)
             ->where(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->andWhere(['<>', 'a.reasons', 4])
             ->asArray()
@@ -327,36 +331,14 @@ class LoanAccountsController extends ApiBaseController
         foreach ($data as $datam) {
             $reason = $datam['reasons'];
             $pay_issues = !empty($issues[$reason]) ? $issues[$reason] : null;
-            $createdByImage = $datam['createdBy'];
-            if ($createdByImage['image']) {
-                $createdByImage = Yii::$app->params->digitalOcean->baseUrl .
-                    Yii::$app->params->digitalOcean->rootDirectory .
-                    Yii::$app->params->upload_directories->users->image .
-                    $createdByImage['image_location'] . '/' . $createdByImage['image'];
-            } else {
-                $createdByImage = 'https://ui-avatars.com/api/?name=' .
-                    urlencode($createdByImage['first_name'] . ' ' . $createdByImage['last_name']) .
-                    '&size=200&rounded=true&background=' .
-                    str_replace('#', '', $createdByImage['initials_color']) .
-                    '&color=ffffff';
-            }
-            if (!empty($datam['request_image'])) {
-                $user_image = Yii::$app->params->digitalOcean->baseUrl .
-                    Yii::$app->params->digitalOcean->rootDirectory .
-                    Yii::$app->params->upload_directories->payment_issues->image .
-                    $datam['request_image_location'] . '/' . $datam['request_image'];
-            } else {
-                $user_image = '';
-            }
-
             $res[] = [
                 'request_enc_id' => $datam['request_enc_id'],
                 'loan_account_enc_id' => $datam['loan_account_enc_id'],
                 'created_by' => $datam['created_by_name'],
                 'created_on' => $datam['created_on'],
                 'remarks' => $datam['remarks'],
-                'user_image' => $createdByImage,
-                'image' => $user_image,
+                'user_image' => $datam['createdby_image'],
+                'image' => $datam['request_image'],
                 'reasons' => $pay_issues,
             ];
         }
