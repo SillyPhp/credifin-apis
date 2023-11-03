@@ -1441,7 +1441,7 @@ class LoansController extends ApiBaseController
                 "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"
             ])
             ->joinWith(['user b'], false)
-            ->where(['a.loan_id' => $params['loan_id']])
+            ->where(['a.foreign_id' => $params['loan_id']])
             ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
             ->andWhere(['not like', 'a.field', '%_enc_id%', false])
             ->andWhere(['not like', 'a.field', '%updated_on%', false])

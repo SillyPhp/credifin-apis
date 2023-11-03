@@ -2391,13 +2391,20 @@ class OrganizationsController extends ApiBaseController
 
         $query = LoanAccounts::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock', 'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos', 'a.loan_account_number', 'a.collection_manager', 'a.last_emi_date', 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date', 'b.location_enc_id as branch_name'])
+            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock',
+                'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos',
+                'a.loan_account_number', 'a.last_emi_date', 'a.name', 'a.phone',
+                'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date',
+                'a.created_on', 'a.last_emi_received_amount', 'CONCAT(cm.first_name, " ", cm.last_name) as collection_manager',
+                'a.last_emi_received_date', 'b.location_name as branch_name', 'CONCAT(ac.first_name, " ", ac.last_name) as caller_name'])
             ->joinWith(['branchEnc b'])
+            ->joinWith(['assignedCaller ac'])
+            ->joinWith(['collectionManager cm'])
             ->andWhere(['a.is_deleted' => 0]);
 
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
-                if (!empty($value) || $value == '0') {
+                if (!empty($value) || empty($params['bucket']) || $value == '0') {
                     $query->andWhere(['like', $key, $value]);
                 }
             }
