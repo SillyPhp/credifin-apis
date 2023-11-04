@@ -46,58 +46,58 @@ class OrganizationsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-                'add-branch' => ['POST', 'OPTIONS'],
-                'get-branches' => ['POST', 'OPTIONS'],
-                'update-branch' => ['POST', 'OPTIONS'],
-                'remove-branch' => ['POST', 'OPTIONS'],
-                'get-loan-types' => ['POST', 'OPTIONS'],
-                'update-loan-type' => ['POST', 'OPTIONS'],
-                'assigned-loan-types' => ['POST', 'OPTIONS'],
-                'assigned-financer-loan-types' => ['POST', 'OPTIONS'],
-                'get-documents-list' => ['POST', 'OPTIONS'],
-                'assign-document' => ['POST', 'OPTIONS'],
-                'get-assigned-documents' => ['POST', 'OPTIONS'],
-                'remove-assigned-documents-list' => ['POST', 'OPTIONS'],
-                'update-assigned-documents' => ['POST', 'OPTIONS'],
-                'add-purpose' => ['POST', 'OPTIONS'],
-                'get-purpose-list' => ['POST', 'OPTIONS'],
-                'remove-purpose-list' => ['POST', 'OPTIONS'],
-                'update-purpose-list' => ['POST', 'OPTIONS'],
-                'remove-purpose' => ['POST', 'OPTIONS'],
-                'loan-status' => ['POST', 'OPTIONS'],
-                'assign-loan-status' => ['POST', 'OPTIONS'],
-                'loan-status-list' => ['POST', 'OPTIONS'],
-                'remove-status-list' => ['POST', 'OPTIONS'],
-                'remove-status' => ['POST', 'OPTIONS'],
-                'update-status-list' => ['POST', 'OPTIONS'],
-                'delete-emi' => ['POST', 'OPTIONS'],
-                'emi-list' => ['POST', 'OPTIONS'],
-                'add-notice' => ['POST', 'OPTIONS'],
-                'get-notice' => ['POST', 'OPTIONS'],
-                'update-notice' => ['POST', 'OPTIONS'],
-                'update-loan-product-process' => ['POST', 'OPTIONS'],
-                'update-loan-product-fees' => ['POST', 'OPTIONS'],
-                'financer-loan-status-list' => ['POST', 'OPTIONS'],
-                'emi-stats' => ['POST', 'OPTIONS'],
-                'update-loan-product-images' => ['POST', 'OPTIONS'],
-                'remove-loan-product-image' => ['POST', 'OPTIONS'],
-                'upload-application-image' => ['POST', 'OPTIONS'],
-                'get-assigned-images' => ['POST', 'OPTIONS'],
-                'search-emi' => ['POST', 'OPTIONS'],
-                'update-pendency' => ['POST', 'OPTIONS']
+        $behaviors["verbs"] = [
+            "class" => VerbFilter::className(),
+            "actions" => [
+                "add-branch" => ["POST", "OPTIONS"],
+                "get-branches" => ["POST", "OPTIONS"],
+                "update-branch" => ["POST", "OPTIONS"],
+                "remove-branch" => ["POST", "OPTIONS"],
+                "get-loan-types" => ["POST", "OPTIONS"],
+                "update-loan-type" => ["POST", "OPTIONS"],
+                "assigned-loan-types" => ["POST", "OPTIONS"],
+                "assigned-financer-loan-types" => ["POST", "OPTIONS"],
+                "get-documents-list" => ["POST", "OPTIONS"],
+                "assign-document" => ["POST", "OPTIONS"],
+                "get-assigned-documents" => ["POST", "OPTIONS"],
+                "remove-assigned-documents-list" => ["POST", "OPTIONS"],
+                "update-assigned-documents" => ["POST", "OPTIONS"],
+                "add-purpose" => ["POST", "OPTIONS"],
+                "get-purpose-list" => ["POST", "OPTIONS"],
+                "remove-purpose-list" => ["POST", "OPTIONS"],
+                "update-purpose-list" => ["POST", "OPTIONS"],
+                "remove-purpose" => ["POST", "OPTIONS"],
+                "loan-status" => ["POST", "OPTIONS"],
+                "assign-loan-status" => ["POST", "OPTIONS"],
+                "loan-status-list" => ["POST", "OPTIONS"],
+                "remove-status-list" => ["POST", "OPTIONS"],
+                "remove-status" => ["POST", "OPTIONS"],
+                "update-status-list" => ["POST", "OPTIONS"],
+                "delete-emi" => ["POST", "OPTIONS"],
+                "emi-list" => ["POST", "OPTIONS"],
+                "add-notice" => ["POST", "OPTIONS"],
+                "get-notice" => ["POST", "OPTIONS"],
+                "update-notice" => ["POST", "OPTIONS"],
+                "update-loan-product-process" => ["POST", "OPTIONS"],
+                "update-loan-product-fees" => ["POST", "OPTIONS"],
+                "financer-loan-status-list" => ["POST", "OPTIONS"],
+                "emi-stats" => ["POST", "OPTIONS"],
+                "update-loan-product-images" => ["POST", "OPTIONS"],
+                "remove-loan-product-image" => ["POST", "OPTIONS"],
+                "upload-application-image" => ["POST", "OPTIONS"],
+                "get-assigned-images" => ["POST", "OPTIONS"],
+                "search-emi" => ["POST", "OPTIONS"],
+                "update-pendency" => ["POST", "OPTIONS"]
             ]
         ];
 
-        $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
-            'cors' => [
-                'Origin' => ['https://www.empowerloans.in/'],
-                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-                'Access-Control-Max-Age' => 86400,
-                'Access-Control-Expose-Headers' => [],
+        $behaviors["corsFilter"] = [
+            "class" => Cors::className(),
+            "cors" => [
+                "Origin" => ["https://www.empowerloans.in/"],
+                "Access-Control-Request-Method" => ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+                "Access-Control-Max-Age" => 86400,
+                "Access-Control-Expose-Headers" => [],
             ],
         ];
 
@@ -113,30 +113,30 @@ class OrganizationsController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             // checking city_id
-            if (empty($params['city_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "city_id']);
+            if (empty($params["city_id"])) {
+                return $this->response(422, ["status" => 422, "message" => "missing information 'city_id'"]);
             }
 
             // adding branch
             $orgLocations = new OrganizationLocations();
             $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
-            $orgLocations->location_name = $params['location_name'];
-            $orgLocations->organization_code = $params['organization_code'];
-            $orgLocations->location_for = json_encode(['1']);
-            $orgLocations->address = $params['address'];
-            $orgLocations->city_enc_id = $params['city_id'];
+            $orgLocations->location_name = $params["location_name"];
+            $orgLocations->organization_code = $params["organization_code"];
+            $orgLocations->location_for = json_encode(["1"]);
+            $orgLocations->address = $params["address"];
+            $orgLocations->city_enc_id = $params["city_id"];
             $orgLocations->created_by = $user->user_enc_id;
-            $orgLocations->created_on = date('Y-m-d H:i:s');
+            $orgLocations->created_on = date("Y-m-d H:i:s");
             if (!$orgLocations->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $orgLocations->getErrors()]);
+                return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $orgLocations->getErrors()]);
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            return $this->response(200, ["status" => 200, "message" => "successfully saved"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -149,33 +149,33 @@ class OrganizationsController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             // checking location_id
-            if (empty($params['location_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_id"']);
+            if (empty($params["location_id"])) {
+                return $this->response(422, ["status" => 422, "message" => "missing information 'location_id'"]);
             }
 
             // getting locations object with location_id
-            $location = OrganizationLocations::findOne(['location_enc_id' => $params['location_id'], 'is_deleted' => 0]);
+            $location = OrganizationLocations::findOne(["location_enc_id" => $params["location_id"], "is_deleted" => 0]);
 
             // if not found
             if (!$location) {
-                return $this->response(404, ['status' => 404, 'message' => 'branch not found']);
+                return $this->response(404, ["status" => 404, "message" => "branch not found"]);
             }
 
             // updating data
-            (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
-            (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
-            $location->organization_code = $params['organization_code'] ?? '';
-            (!empty($params['address'])) ? $location->address = $params['address'] : "";
-            (!empty($params['status'])) ? $location->status = $params['status'] : "";
+            (!empty($params["location_name"])) ? $location->location_name = $params["location_name"] : "";
+            (!empty($params["city_id"])) ? $location->city_enc_id = $params["city_id"] : "";
+            $location->organization_code = $params["organization_code"] ?? "";
+            (!empty($params["address"])) ? $location->address = $params["address"] : "";
+            (!empty($params["status"])) ? $location->status = $params["status"] : "";
             $location->last_updated_by = $user->user_enc_id;
-            $location->last_updated_on = date('Y-m-d H:i:s');
+            $location->last_updated_on = date("Y-m-d H:i:s");
             if (!$location->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $location->getErrors()]);
+                return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $location->getErrors()]);
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            return $this->response(200, ["status" => 200, "message" => "successfully updated"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -186,36 +186,36 @@ class OrganizationsController extends ApiBaseController
             // default org of user
             $org = $user->organization_enc_id;
             if (!$org) {
-                $org = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])['organization_enc_id'];
+                $org = UserRoles::findOne(["user_enc_id" => $user->user_enc_id])["organization_enc_id"];
             }
-            $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id]);
-            if ($user_type['user_type'] && $user_type['user_type'] == 'Dealer') {
-                $user_role = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-                if (!empty($user_role['organization_enc_id'])) {
+            $user_type = UserTypes::findOne(["user_type_enc_id" => $user->user_type_enc_id]);
+            if ($user_type["user_type"] && $user_type["user_type"] == "Dealer") {
+                $user_role = UserRoles::findOne(["user_enc_id" => $user->user_enc_id]);
+                if (!empty($user_role["organization_enc_id"])) {
                     // if user_type = dealer, then org id is from UserRoles
-                    $org = $user_role['organization_enc_id'];
+                    $org = $user_role["organization_enc_id"];
                 }
             }
             if (empty($org)) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                return $this->response(404, ["status" => 404, "message" => "not found"]);
             }
 
             $locations = OrganizationLocations::find()
-                ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'b.city_enc_id', 'a.status'])
+                ->alias("a")
+                ->select(["a.location_enc_id", "a.location_enc_id as id", "b.city_code", "a.organization_code", "a.location_name", "a.location_for", "a.address", "b.name city", "b.city_enc_id", "a.status"])
                 ->addSelect(["CONCAT(a.location_name , ', ', b.name) as value"])
-                ->joinWith(['cityEnc b'], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
+                ->joinWith(["cityEnc b"], false)
+                ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org])
                 ->asArray()
                 ->all();
 
             if ($locations) {
-                return $this->response(200, ['status' => 200, 'branches' => $locations]);
+                return $this->response(200, ["status" => 200, "branches" => $locations]);
             }
 
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return $this->response(404, ["status" => 404, "message" => "not found"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -224,26 +224,26 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['location_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_id"']);
+            if (empty($params["location_id"])) {
+                return $this->response(422, ["status" => 422, "message" => "missing information 'location_id'"]);
             }
 
-            $location = OrganizationLocations::findOne(['location_enc_id' => $params['location_id']]);
+            $location = OrganizationLocations::findOne(["location_enc_id" => $params["location_id"]]);
 
             if ($location) {
                 $location->is_deleted = 1;
                 $location->last_updated_by = $user->user_enc_id;
-                $location->last_updated_on = date('Y-m-d H:i:s');
+                $location->last_updated_on = date("Y-m-d H:i:s");
                 if (!$location->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $location->getErrors()]);
+                    return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $location->getErrors()]);
                 }
 
-                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+                return $this->response(200, ["status" => 200, "message" => "successfully updated"]);
             }
 
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return $this->response(404, ["status" => 404, "message" => "not found"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -252,29 +252,29 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $assignedLoanTypes = AssignedFinancerLoanTypes::find()
-                ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
-                ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0])
+                ->alias("a")
+                ->select(["a.assigned_financer_enc_id", "a.organization_enc_id", "a.loan_type_enc_id", "a.status", "b.name"])
+                ->joinWith(["loanTypeEnc b"], false)
+                ->where(["a.organization_enc_id" => $user->organization_enc_id, "a.is_deleted" => 0])
                 ->asArray()
                 ->all();
 
             $allLoanTypes = LoanTypes::find()
-                ->select(['name', 'loan_type_enc_id', new Expression('0 as status'),])
+                ->select(["name", "loan_type_enc_id", new Expression("0 as status"),])
                 ->asArray()
                 ->all();
 
             foreach ($allLoanTypes as $key => $val) {
                 foreach ($assignedLoanTypes as $v) {
-                    if ($v['name'] == $val['name']) {
+                    if ($v["name"] == $val["name"]) {
                         $allLoanTypes[$key] = $v;
                     }
                 }
             }
 
-            return $this->response(200, ['status' => 200, 'allLoanTypes' => $allLoanTypes]);
+            return $this->response(200, ["status" => 200, "allLoanTypes" => $allLoanTypes]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -283,40 +283,40 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['loan_type_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type_enc_id"']);
+            if (empty($params["loan_type_enc_id"])) {
+                return $this->response(422, ["status" => 422, "message" => "missing information 'loan_type_enc_id'"]);
             }
 
-            if (empty($params['status'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+            if (empty($params["status"])) {
+                return $this->response(422, ["status" => 422, "message" => "missing information 'status'"]);
             }
 
 
             $assignedType = AssignedFinancerLoanTypes::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
             if ($assignedType) {
-                $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
+                $assignedType->status = $params["status"] == "Active" ? 1 : 0;
                 $assignedType->updated_by = $user->user_enc_id;
-                $assignedType->updated_on = date('Y-m-d H:i:s');
+                $assignedType->updated_on = date("Y-m-d H:i:s");
                 if (!$assignedType->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $assignedType->getErrors()]);
+                    return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $assignedType->getErrors()]);
                 }
             } else {
                 $assignedType = new AssignedFinancerLoanTypes();
                 $assignedType->assigned_financer_enc_id = Yii::$app->security->generateRandomString(32);
                 $assignedType->organization_enc_id = $user->organization_enc_id;
-                $assignedType->loan_type_enc_id = $params['loan_type_enc_id'];
-                $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
+                $assignedType->loan_type_enc_id = $params["loan_type_enc_id"];
+                $assignedType->status = $params["status"] == "Active" ? 1 : 0;
                 $assignedType->created_by = $user->user_enc_id;
-                $assignedType->created_on = date('Y-m-d H:i:s');
+                $assignedType->created_on = date("Y-m-d H:i:s");
                 if (!$assignedType->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $assignedType->getErrors()]);
+                    return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $assignedType->getErrors()]);
                 }
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            return $this->response(200, ["status" => 200, "message" => "successfully updated"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -326,20 +326,20 @@ class OrganizationsController extends ApiBaseController
             $provider_id = $this->getFinancerId($user);
 
             $assignedLoanTypes = AssignedFinancerLoanType::find()
-                ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
-                ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.organization_enc_id' => $provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->alias("a")
+                ->select(["a.assigned_financer_enc_id", "a.organization_enc_id", "a.loan_type_enc_id", "b.name"])
+                ->joinWith(["loanTypeEnc b"], false)
+                ->where(["a.organization_enc_id" => $provider_id, "a.is_deleted" => 0, "a.status" => 1])
                 ->asArray()
                 ->all();
 
             if ($assignedLoanTypes) {
-                return $this->response(200, ['status' => 200, 'assignedLoanTypes' => $assignedLoanTypes]);
+                return $this->response(200, ["status" => 200, "assignedLoanTypes" => $assignedLoanTypes]);
             }
 
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return $this->response(404, ["status" => 404, "message" => "not found"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -349,20 +349,20 @@ class OrganizationsController extends ApiBaseController
             $provider_id = $this->getFinancerId($user);
 
             $assignedLoanTypes = AssignedFinancerLoanTypes::find()
-                ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
-                ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.organization_enc_id' => $provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->alias("a")
+                ->select(["a.assigned_financer_enc_id", "a.organization_enc_id", "a.loan_type_enc_id", "b.name"])
+                ->joinWith(["loanTypeEnc b"], false)
+                ->where(["a.organization_enc_id" => $provider_id, "a.is_deleted" => 0, "a.status" => 1])
                 ->asArray()
                 ->all();
 
             if ($assignedLoanTypes) {
-                return $this->response(200, ['status' => 200, 'assignedLoanTypes' => $assignedLoanTypes]);
+                return $this->response(200, ["status" => 200, "assignedLoanTypes" => $assignedLoanTypes]);
             }
 
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return $this->response(404, ["status" => 404, "message" => "not found"]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
     }
 
@@ -2381,11 +2381,12 @@ class OrganizationsController extends ApiBaseController
 
     public function actionGetEmiAccounts()
     {
-        if (!$this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
 
         $params = Yii::$app->request->post();
+        $user_type = UserUtilities::getDesignation($user->user_enc_id);
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
 
@@ -2401,7 +2402,6 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["assignedCaller ac"])
             ->joinWith(["collectionManager cm"])
             ->andWhere(["a.is_deleted" => 0]);
-
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
@@ -2409,10 +2409,11 @@ class OrganizationsController extends ApiBaseController
                 }
             }
         }
-
+        if ($user_type == "Tele Caller Collection") {
+            $query->andWhere(["a.assigned_caller" => $user->user_enc_id]);
+        }
         if (!empty($params["bucket"])) {
-            $value = $params["bucket"];
-            $query->andWhere(["a.bucket" => $value]);
+            $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
         $count = $query->count();
         $query = $query->limit($limit)
@@ -2426,66 +2427,66 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count, "loan_accounts" => $loan_accounts]);
         }
 
-        return $this->response(404, ["status" => 404, "message" => "not found"]);
+        return $this->response(404, ["status" => 404, "message" => "data not found"]);
     }
 
 
     public function actionUpdatePendency()
     {
         if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorised"]);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['financer_loan_product_enc_id']) && !$params['delete']) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "financer_loan_product_enc_id"']);
+        if (empty($params["financer_loan_product_enc_id"]) && !$params["delete"]) {
+            return $this->response(422, ["status" => 422, "message" => "missing parameter 'financer_loan_product_enc_id'"]);
         }
-        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
-            return $this->response(500, ['status' => 500, 'message' => 'permission denied']);
+        if (UserUtilities::getUserType($user->user_enc_id) != "Financer") {
+            return $this->response(500, ["status" => 500, "message" => "permission denied"]);
         }
         $user = $user->user_enc_id;
         $time = date("Y-m-d H:i:s");
-        if (!empty($params['pendencies_enc_id'])) {
-            $pendency = FinancerLoanProductPendencies::findOne(['pendencies_enc_id' => $params['pendencies_enc_id']]);
+        if (!empty($params["pendencies_enc_id"])) {
+            $pendency = FinancerLoanProductPendencies::findOne(["pendencies_enc_id" => $params["pendencies_enc_id"]]);
             if (!$pendency) {
-                return $this->response(404, ['status' => 404, 'message' => 'Pendency not Found']);
+                return $this->response(404, ["status" => 404, "message" => "Pendency not Found"]);
             }
-            if (!empty($params['delete'])) {
+            if (!empty($params["delete"])) {
                 $pendency->is_deleted = 1;
             }
         } else {
             $pendency = new FinancerLoanProductPendencies();
             $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $pendency->financer_loan_product_enc_id = $params['financer_loan_product_enc_id'];
+            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+            $pendency->financer_loan_product_enc_id = $params["financer_loan_product_enc_id"];
             $pendency->pendencies_enc_id = $utilitiesModel->encrypt();
             $pendency->created_by = $user;
             $pendency->created_on = $time;
         }
-        if (empty($params['delete'])) {
-            $pendency->name = $params['name'];
-            $pendency->type = $params['type'];
+        if (empty($params["delete"])) {
+            $pendency->name = $params["name"];
+            $pendency->type = $params["type"];
         }
         $pendency->updated_by = $user;
         $pendency->updated_on = $time;
         if (!$pendency->save()) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $pendency->getErrors()]);
+            return $this->response(500, ["status" => 500, "message" => "an error occurred", "error" => $pendency->getErrors()]);
         }
-        return $this->response(200, ['status' => 200, 'message' => 'success']);
+        return $this->response(200, ["status" => 200, "message" => "success"]);
     }
 
     public function actionEmiRefCheck()
     {
         if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+            return $this->response(401, ["status" => 401, "message" => "unauthorised"]);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['ref'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "ref"']);
+        if (empty($params["ref"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing parameter 'ref'"]);
         }
-        $emi = EmiCollection::findOne(['reference_number' => $params['ref']]);
+        $emi = EmiCollection::findOne(["reference_number" => $params["ref"]]);
         if ($emi) {
-            return $this->response(201, ['status' => 201, 'message' => 'Already exists']);
+            return $this->response(201, ["status" => 201, "message" => "Already exists"]);
         }
-        return $this->response(200, ['status' => 200, 'message' => 'Doesn\'t exist']);
+        return $this->response(200, ["status" => 200, "message" => "Doesn't exist"]);
     }
 }

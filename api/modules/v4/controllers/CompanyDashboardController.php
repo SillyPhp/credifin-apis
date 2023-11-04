@@ -1404,7 +1404,7 @@ class CompanyDashboardController extends ApiBaseController
                 "CASE 
                     WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) 
                     ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') 
-                END AS image", "b.username", "b.email", "b.phone", "b.first_name", "b.last_name", "b.status", new Expression('"DSA" as user_type')
+                END AS image", "b.username", "b.email", "b.phone", "b.first_name", "b.last_name", "b.status", new Expression("'DSA' as user_type")
             ])
             ->joinWith(["assignedUserEnc b"], false)
             ->where(["a.supervisor_enc_id" => $user_id, "a.supervisor_role" => "Lead Source", "a.is_supervising" => 1, "b.is_deleted" => 0]);
@@ -1434,7 +1434,7 @@ class CompanyDashboardController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.created_by user_enc_id",
-                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", "b.username", "b.email", "b.phone", "b.first_name", "b.last_name", "b.status", new Expression('"Connector" as user_type')
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", "b.username", "b.email", "b.phone", "b.first_name", "b.last_name", "b.status", new Expression("'Connector' as user_type")
             ])
             ->joinWith(["createdBy b"], false)
             ->joinWith(["serviceEnc c"], false)
