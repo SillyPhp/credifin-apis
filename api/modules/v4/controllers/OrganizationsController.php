@@ -1092,6 +1092,9 @@ class OrganizationsController extends ApiBaseController
                     $d->select(['d.financer_loan_product_login_fee_structure_enc_id', 'd.financer_loan_product_enc_id', 'd.name', 'd.amount']);
                     $d->onCondition(['d.is_deleted' => 0]);
                 }])
+                ->joinWith(["financerLoanProductDisbursementCharges e" => function($e){
+                    $e->select(["e.financer_loan_product_enc_id","e.disbursement_charges_enc_id", "e.name"]);
+                }])
                 ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->where(['a.is_deleted' => 0])
