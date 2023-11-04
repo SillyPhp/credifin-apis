@@ -221,7 +221,7 @@ class PaymentsController extends ApiBaseController
             $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
             $res['qr'] = $this->existRazorCheck($options, 1);
             if (!$res['qr']) {
-                $options['close_by'] = time() + 24 * 60 * 60;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $qr = \common\models\payments\Payments::createQr($api, $options);
                 if (!$qr) {
                     $transaction->rollback();
@@ -231,7 +231,7 @@ class PaymentsController extends ApiBaseController
             }
             $res['link'] = $this->existRazorCheck($options);
             if (!$res['link']) {
-                $options['close_by'] = time() + 24 * 60 * 60 * 7;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $link = \common\models\payments\Payments::createLink($api, $options);
                 if (!$link) {
                     $transaction->rollback();
