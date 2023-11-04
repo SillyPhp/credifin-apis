@@ -86,6 +86,7 @@ namespace common\models;
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
+ * @property AssignedDisbursementCharges[] $assignedDisbursementCharges
  * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property BillDetails[] $billDetails
@@ -183,6 +184,14 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
             [['assigned_dealer'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_dealer' => 'organization_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDisbursementCharges()
+    {
+        return $this->hasMany(AssignedDisbursementCharges::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

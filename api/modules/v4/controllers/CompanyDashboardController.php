@@ -8,6 +8,7 @@ use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
 use common\models\AssignedFinancerLoanTypes;
+use common\models\AssignedLoanPayments;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\Cities;
@@ -24,6 +25,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
+use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanApplicationsReferencesExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
@@ -33,6 +35,7 @@ use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
+use common\models\LoanPayments;
 use common\models\LoanSanctionReports;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
@@ -375,6 +378,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
                 $lpp->joinWith(['financerLoanPurposeEnc lpp1'], false);
+                $lpp->andWhere(['lpp1.is_deleted' => 0]);
             }])
             ->joinWith(['collegeEnc g'], false)
             ->joinWith(['leadBy lb'], false)
@@ -853,6 +857,13 @@ class CompanyDashboardController extends ApiBaseController
                 ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
                 ->orderBy(['created_on' => SORT_DESC])
                 ->andWhere(['d4.is_deleted' => 0]);
+            $alp = (new \yii\db\Query())
+                ->select([
+                    'p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount'
+                ])
+                ->from(['p' => AssignedLoanPayments::tableName()])
+                ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
+                ->orderBy(['p1.created_on' => SORT_DESC]);
 
             // getting loan detail
             $loan = LoanApplications::find()
@@ -932,10 +943,8 @@ class CompanyDashboardController extends ApiBaseController
                     ])->joinWith(['sharedTo k1'], false)
                         ->onCondition(['k.is_deleted' => 0]);
                 }])
-                ->joinWith(['assignedLoanPayments p' => function ($p) {
-                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount']);
-                    $p->orderBy(['p1.created_on' => SORT_DESC]);
-                    $p->joinWith(['loanPaymentsEnc p1'], false);
+                ->joinWith(['assignedLoanPayments p' => function ($p) use ($alp) {
+                    $p->from(["alp" => $alp]);
                 }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 ->joinWith(['loanApplicationTvrs l' => function ($m) {
@@ -953,6 +962,9 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanApplicationFis q' => function ($m) {
                     $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
+                }])
+                ->joinWith(["assignedDisbursementCharges adc" => function ($adc) {
+                    $adc->select(["adc.disbursement_charges_enc_id", "adc.amount", "adc.loan_app_enc_id"]);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->limit(1)
@@ -1148,7 +1160,6 @@ class CompanyDashboardController extends ApiBaseController
             if (empty($params['status'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
-
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
             // if provider not found to update status
@@ -1156,7 +1167,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
             }
 
-            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
+            $loanApp = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
             $prevStatus = $provider->status;
             // updating data
