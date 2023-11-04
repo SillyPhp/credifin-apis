@@ -847,7 +847,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
             }
             $subquery = (new \yii\db\Query())
-                ->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence','c1.status_color'])
+                ->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence', 'c1.status_color'])
                 ->from(['c' => FinancerLoanProductStatus::tableName()])
                 ->join('LEFT JOIN', ['c1' => LoanStatus::tableName()], 'c1.loan_status_enc_id = c.loan_status_enc_id')
                 ->andWhere(['c.is_deleted' => 0])
@@ -855,7 +855,7 @@ class OrganizationsController extends ApiBaseController
 
             $loan_status = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['b.assigned_financer_enc_id','b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b'])
                 ->innerJoinWith([
                     'financerLoanProductStatuses c' => function ($k) use ($subquery) {
@@ -2149,10 +2149,10 @@ class OrganizationsController extends ApiBaseController
                 'a.notice', 'a.type',
                 'a.created_on'
             ])
-        ->addSelect([
-            "(CASE WHEN a.status = 'Active' THEN TRUE ELSE FALSE END) as status",
-            "(CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, "https") . "', a.image_location, '/', a.image) ELSE NULL END) as image"
-        ]);
+            ->addSelect([
+                "(CASE WHEN a.status = 'Active' THEN TRUE ELSE FALSE END) as status",
+                "(CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, "https") . "', a.image_location, '/', a.image) ELSE NULL END) as image"
+            ]);
         if (isset($params['status']) && $params['status']) {
             $notice->andWhere(['a.status' => $params['status']]);
         }
@@ -2333,7 +2333,7 @@ class OrganizationsController extends ApiBaseController
         $images = FinancerLoanProducts::find()
             ->alias('a')
             ->select(['a.financer_loan_product_enc_id', 'a.name'])
-            ->joinWith(['assignedFinancerLoanTypeEnc b'], false,'INNER JOIN')
+            ->joinWith(['assignedFinancerLoanTypeEnc b'], false, 'INNER JOIN')
             ->innerJoinWith([
                 'financerLoanProductImages c' => function ($k) use ($subquery) {
                     $k->from(['subquery' => $subquery]);
@@ -2396,7 +2396,7 @@ class OrganizationsController extends ApiBaseController
                 "a.loan_account_number", "a.last_emi_date", "a.name", "a.phone",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as caller_name"])
+                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"])
             ->joinWith(["branchEnc b"])
             ->joinWith(["assignedCaller ac"])
             ->joinWith(["collectionManager cm"])
@@ -2404,8 +2404,8 @@ class OrganizationsController extends ApiBaseController
 
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
-                if (!empty($value) || empty($params["bucket"]) || $value == "0") {
-                    $query->andWhere(["like", $key, $value]);
+                if (!empty($value) || $value == "0") {
+                    $query->andWhere(["like", $key, "$value%", false]);
                 }
             }
         }
@@ -2413,12 +2413,7 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params["bucket"])) {
             $value = $params["bucket"];
             $query->andWhere(["a.bucket" => $value]);
-        } else {
-            $query->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray();
         }
-
         $count = $query->count();
         $query = $query->limit($limit)
             ->offset(($page - 1) * $limit)

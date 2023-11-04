@@ -863,7 +863,7 @@ class LoanAccountsController extends ApiBaseController
 
         $data = Users::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'CONCAT(a.first_name," ",a.last_name) as name'])
+            ->select(['a.user_enc_id', "CONCAT(a.first_name , ' ', COALESCE(a.last_name, '')) as name"])
             ->joinWith(['userRoles0 b' => function ($b) {
                 $b->joinWith('designation d');
             }], false)
