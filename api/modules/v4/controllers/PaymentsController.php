@@ -8,6 +8,7 @@ use common\models\AssignedLoanPayments;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\LoanApplications;
 use common\models\LoanPayments;
 use common\models\UserRoles;
 use common\models\WebhookTest;
@@ -220,8 +221,14 @@ class PaymentsController extends ApiBaseController
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
             $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
             $res['qr'] = $this->existRazorCheck($options, 1);
+            if ($options['loan_app_enc_id']){
+                $app_number = LoanApplications::findOne(['loan_app_enc_id'=>$options['loan_app_enc_id']])->application_number;
+                if (!empty($app_number)||$app_number==''){
+                    $options['description'] = $options['description'].' Case Number '.$app_number;
+                }
+            }
             if (!$res['qr']) {
-                $options['close_by'] = time() + 24 * 60 * 60;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $qr = \common\models\payments\Payments::createQr($api, $options);
                 if (!$qr) {
                     $transaction->rollback();
@@ -231,7 +238,7 @@ class PaymentsController extends ApiBaseController
             }
             $res['link'] = $this->existRazorCheck($options);
             if (!$res['link']) {
-                $options['close_by'] = time() + 24 * 60 * 60 * 7;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $link = \common\models\payments\Payments::createLink($api, $options);
                 if (!$link) {
                     $transaction->rollback();
