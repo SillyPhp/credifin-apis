@@ -3385,7 +3385,7 @@ class CompanyDashboardController extends ApiBaseController
             ->select([
                 'a.financer_vehicle_brand_enc_id',
                 'a.brand_name',
-                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
+                "CASE WHEN a.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . "', a.logo_location, '/', a.logo) ELSE NULL END logo"
             ])
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->asArray()

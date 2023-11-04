@@ -1809,7 +1809,7 @@ class OrganizationsController extends ApiBaseController
         }
         $display_data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(CASE WHEN a.is_deleted = 0 THEN a.amount END) total_amount', 'COUNT(CASE WHEN a.is_deleted = 0 THEN a.loan_account_number END) as total_emis', 'CONCAT(b.location_name , ", ", b1.name) as branch_name'])
+            ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(CASE WHEN a.is_deleted = 0 THEN a.amount END) total_amount', 'COUNT(CASE WHEN a.is_deleted = 0 THEN a.loan_account_number END) as total_emis', "CONCAT(b.location_name , ', ', COALESCE(b1.name, '')) as branch_name"])
             ->joinWith(['branchEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b1']);
             }], false)
@@ -1837,15 +1837,15 @@ class OrganizationsController extends ApiBaseController
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
-                'a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
+                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
-                'a.ptp_amount', 'a.ptp_date', 'b1a.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
-                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
-                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
-                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CONCAT(a.address,", ", COALESCE(a.pincode, "")) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
-                'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
+                'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
+                "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
+                "CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) ELSE NULL END as borrower_image",
+                "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
+                "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
+                "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
+                "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
             ])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1879,7 +1879,7 @@ class OrganizationsController extends ApiBaseController
                         if ($key == 'amount') {
                             $model->andWhere(['like', 'a.amount', $value . '%', false]);
                         } elseif ($key == 'address') {
-                            $model->andWhere(['like', 'CONCAT(a.address,", ", a.pincode)', $value]);
+                            $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
                         } elseif ($key == 'ptp_amount') {
                             $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
                         } elseif ($key == 'emi_payment_method') {
@@ -1898,7 +1898,7 @@ class OrganizationsController extends ApiBaseController
                     }
                     if (in_array($key, $others)) {
                         if ($key == 'collected_by') {
-                            $model->andWhere(['like', 'CONCAT(b.first_name , " ", b.last_name)', $value]);
+                            $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
                         } elseif ($key == 'branch') {
                             $model->andWhere(['c.location_enc_id' => $value]);
                         } elseif ($key == 'designation') {
@@ -2390,29 +2390,29 @@ class OrganizationsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
 
         $query = LoanAccounts::find()
-            ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.total_installments', 'a.financed_amount', 'a.stock',
-                'a.advance_interest', 'a.bucket', 'a.branch_enc_id', 'a.bucket_status_date', 'a.pos',
-                'a.loan_account_number', 'a.last_emi_date', 'a.name', 'a.phone',
-                'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date',
-                'a.created_on', 'a.last_emi_received_amount', 'CONCAT(cm.first_name, " ", cm.last_name) as collection_manager',
-                'a.last_emi_received_date', 'b.location_name as branch_name', 'CONCAT(ac.first_name, " ", ac.last_name) as caller_name'])
-            ->joinWith(['branchEnc b'])
-            ->joinWith(['assignedCaller ac'])
-            ->joinWith(['collectionManager cm'])
-            ->andWhere(['a.is_deleted' => 0]);
+            ->alias("a")
+            ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
+                "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
+                "a.loan_account_number", "a.last_emi_date", "a.name", "a.phone",
+                "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
+                "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
+                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as caller_name"])
+            ->joinWith(["branchEnc b"])
+            ->joinWith(["assignedCaller ac"])
+            ->joinWith(["collectionManager cm"])
+            ->andWhere(["a.is_deleted" => 0]);
 
-        if (!empty($params['fields_search'])) {
-            foreach ($params['fields_search'] as $key => $value) {
-                if (!empty($value) || empty($params['bucket']) || $value == '0') {
-                    $query->andWhere(['like', $key, $value]);
+        if (!empty($params["fields_search"])) {
+            foreach ($params["fields_search"] as $key => $value) {
+                if (!empty($value) || empty($params["bucket"]) || $value == "0") {
+                    $query->andWhere(["like", $key, $value]);
                 }
             }
         }
 
-        if (!empty($params['bucket'])) {
-            $value = $params['bucket'];
-            $query->andWhere(['a.bucket' => $value]);
+        if (!empty($params["bucket"])) {
+            $value = $params["bucket"];
+            $query->andWhere(["a.bucket" => $value]);
         } else {
             $query->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -2425,13 +2425,13 @@ class OrganizationsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $loan_accounts = LoanAccounts::find()->distinct()->select(['loan_type'])->asArray()->all();
+        $loan_accounts = LoanAccounts::find()->distinct()->select(["loan_type"])->asArray()->all();
 
         if ($query) {
-            return $this->response(200, ['status' => 200, 'data' => $query, 'count' => $count, 'loan_accounts' => $loan_accounts]);
+            return $this->response(200, ["status" => 200, "data" => $query, "count" => $count, "loan_accounts" => $loan_accounts]);
         }
 
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        return $this->response(404, ["status" => 404, "message" => "not found"]);
     }
 
 
