@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%assigned_disbursement_charges}}".
  *
@@ -22,6 +20,7 @@ use Yii;
  * @property Users $updatedBy
  * @property Users $createdBy
  * @property FinancerLoanProductDisbursementCharges $disbursementChargesEnc
+ * @property LoanApplications $loanAppEnc
  */
 class AssignedDisbursementCharges extends \yii\db\ActiveRecord
 {
@@ -48,6 +47,7 @@ class AssignedDisbursementCharges extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['disbursement_charges_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProductDisbursementCharges::className(), 'targetAttribute' => ['disbursement_charges_enc_id' => 'disbursement_charges_enc_id']],
+            [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
         ];
     }
 
@@ -73,5 +73,13 @@ class AssignedDisbursementCharges extends \yii\db\ActiveRecord
     public function getDisbursementChargesEnc()
     {
         return $this->hasOne(FinancerLoanProductDisbursementCharges::className(), ['disbursement_charges_enc_id' => 'disbursement_charges_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAppEnc()
+    {
+        return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }

@@ -207,14 +207,14 @@ class EmiCollectionForm extends Model
         $api = new Api($api_key, $api_secret);
         $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
         if ($type == 1) {
-            $options['close_by'] = time() + 24 * 60 * 60;
+            $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['qr'] = \common\models\payments\Payments::createQr($api, $options);
             if (!$link) {
                 throw new \Exception('an error occurred while creating qr');
             }
         }
         if ($type == 2) {
-            $options['close_by'] = time() + 24 * 60 * 60 * 7;
+            $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['link'] = \common\models\payments\Payments::createLink($api, $options);
             if (!$link) {
                 throw new \Exception('an error occurred while creating link');
