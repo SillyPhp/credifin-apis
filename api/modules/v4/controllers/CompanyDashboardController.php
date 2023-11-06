@@ -1376,7 +1376,7 @@ class CompanyDashboardController extends ApiBaseController
                 'and',
                 [
                     'or',
-                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['employee_search']],
                     ['like', 'b.username', $params['employee_search']],
                     ['like', 'b.email', $params['employee_search']],
                     ['like', 'b.phone', $params['employee_search']],
@@ -1389,10 +1389,9 @@ class CompanyDashboardController extends ApiBaseController
         // filter employee search on employee reporting person
         if ($params != null && !empty($params['reporting_person'])) {
             $employee->andWhere([
-                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
+                'like', "CONCAT(e.first_name, ' ', COALESCE(e.last_name, ''))", $params['reporting_person'],
             ]);
         }
-
 
         // checking if this employee already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
@@ -3544,7 +3543,7 @@ class CompanyDashboardController extends ApiBaseController
                         'b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
                         "(CASE WHEN b1.payment_link_type = '0' Then 'Link' WHEN b1.payment_link_type = '1' Then 'QR' ELSE 'Manual' END) as mode", 'b1.reference_number',
                         "(CASE WHEN b1.image IS NOT NULL THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . "', b1.image_location, '/',b1.image) ELSE NULL END) as receipt",
-                        'b1.remarks', 'b1.created_on', "CONCAT(b3.first_name, ' ', b3.last_name) as created_by", "CONCAT(b4.first_name, ' ', b4.last_name) as updated_by", 'b1.updated_on'
+                        'b1.remarks', 'b1.payment_mode_status', 'b1.created_on', 'b1.reference_id', "CONCAT(b3.first_name, ' ', b3.last_name) as created_by", "CONCAT(b4.first_name, ' ', b4.last_name) as updated_by", 'b1.updated_on'
                     ]);
                     $b1->joinWith(['loanPaymentsDetails b2' => function ($b2) {
                         $b2->select(['b2.loan_payments_enc_id', 'b2.no_dues_name', 'b2.no_dues_amount']);
@@ -3579,12 +3578,23 @@ class CompanyDashboardController extends ApiBaseController
                 $res[] = $asp['loanPaymentsEnc'];
             }
         }
-        //       'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_payments->image, 'https') . '", p1.image_location, "/", p1.image) ELSE NULL END imgg',
-        if ($res) {
-            return ['status' => 200, 'data' => $res];
+        $filter = [];
+        foreach ($res as $payment_details) {
+            $payment_mode_status = $payment_details['payment_mode_status'];
+            $payment_status = $payment_details['payment_status'];
+
+            if ($payment_status == 'captured' && $payment_mode_status == 'closed') {
+                $filter[] = $payment_details;
+            } elseif ($payment_status == 'pending' && $payment_mode_status != 'closed') {
+                $filter[] = $payment_details;
+            }
+        }
+        if ($filter) {
+            return ['status' => 200, 'data' => $filter];
         }
         return ['status' => 404, 'message' => 'not found'];
     }
+
 
     // adding city codes in cities table
     public function actionAddCity()
