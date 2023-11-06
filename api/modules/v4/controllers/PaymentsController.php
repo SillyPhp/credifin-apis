@@ -6,6 +6,7 @@ use api\modules\v4\models\PaymentModel;
 use common\models\EmiCollection;
 use common\models\AssignedLoanPayments;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanApplications;
@@ -95,7 +96,7 @@ class PaymentsController extends ApiBaseController
 
     private function updateEmi($id)
     {
-        $model = EmiCollection::find()
+        $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select(['a.emi_collection_enc_id'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
@@ -107,7 +108,7 @@ class PaymentsController extends ApiBaseController
         if ($model) {
             Yii::$app->db->createCommand()
                 ->update(
-                    EmiCollection::tableName(),
+                    EmiCollectionExtended::tableName(),
                     ['emi_payment_status' => 'paid'],
                     ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
                 )
