@@ -334,7 +334,7 @@ class CompanyDashboardController extends ApiBaseController
             ->distinct()
             ->alias('a')
             ->select([
-                'a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+                'a.id', 'a.loan_app_enc_id',
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
                 'a.amount',
@@ -344,7 +344,6 @@ class CompanyDashboardController extends ApiBaseController
                 'a.scholarship',
                 'a.loan_type',
                 'a.loan_products_enc_id',
-                'a.semesters',
                 'a.years',
                 'a.phone',
                 'a.email',
@@ -367,20 +366,18 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.lead_by IS NOT NULL THEN '0' 
                     ELSE '1' 
                 END) as is_self",
-                "REPLACE(g.name, '&amp;', '&') as org_name",
                 "(CASE
                     WHEN a.gender = '1' THEN 'Male'
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
                 END) as gender"
             ])
-            ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
-                $lpp->joinWith(['financerLoanPurposeEnc lpp1'], false);
-                $lpp->andWhere(['lpp1.is_deleted' => 0]);
+                $lpp->joinWith(['financerLoanPurposeEnc lpp1'=>function($lpp1){
+                    $lpp1->andOnCondition(['lpp1.is_deleted' => 0]);
+                }], false);
             }])
-            ->joinWith(['collegeEnc g'], false)
             ->joinWith(['leadBy lb'], false)
             ->joinWith(['createdBy cb' => function ($cr) {
                 $cr->joinWith(['userTypeEnc ute'], false);
