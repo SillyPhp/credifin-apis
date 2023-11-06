@@ -9,7 +9,8 @@ use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
-use common\models\EmiCollection;
+use common\models\extended\EmiCollectionExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationImagesExtended;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
@@ -23,7 +24,6 @@ use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
-use common\models\LoanAccounts;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
@@ -33,7 +33,6 @@ use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -1092,8 +1091,8 @@ class OrganizationsController extends ApiBaseController
                     $d->select(['d.financer_loan_product_login_fee_structure_enc_id', 'd.financer_loan_product_enc_id', 'd.name', 'd.amount']);
                     $d->onCondition(['d.is_deleted' => 0]);
                 }])
-                ->joinWith(["financerLoanProductDisbursementCharges e" => function($e){
-                    $e->select(["e.financer_loan_product_enc_id","e.disbursement_charges_enc_id", "e.name"]);
+                ->joinWith(["financerLoanProductDisbursementCharges e" => function ($e) {
+                    $e->select(["e.financer_loan_product_enc_id", "e.disbursement_charges_enc_id", "e.name"]);
                 }])
                 ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
@@ -1664,7 +1663,7 @@ class OrganizationsController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
-            $model = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
             if ($model) {
                 $model->emi_payment_status = $params['status'];
                 $model->updated_by = $user->user_enc_id;
@@ -1705,7 +1704,7 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['method'])) {
             $method = [$params['method']];
         }
-        $data = EmiCollection::find()
+        $data = EmiCollectionExtended::find()
             ->select([
                 'emi_payment_method AS method',
                 'emi_payment_status AS status',
@@ -1805,21 +1804,30 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['emi_collection_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
-        $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
+        $lac = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
         $model = $this->_emiData($lac, 1, '', $user)['data'];
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
-        $display_data = EmiCollection::find()
+
+        $display_data = EmiCollectionExtended::find()
             ->alias('a')
-            ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(CASE WHEN a.is_deleted = 0 THEN a.amount END) total_amount', 'COUNT(CASE WHEN a.is_deleted = 0 THEN a.loan_account_number END) as total_emis', "CONCAT(b.location_name , ', ', COALESCE(b1.name, '')) as branch_name"])
+            ->select([
+                'ANY_VALUE(a.customer_name) customer_name', 'ANY_VALUE(a.loan_account_number) loan_account_number',
+                'ANY_VALUE(a.loan_type) loan_type', 'ANY_VALUE(a.phone) phone', 'SUM(a.amount) total_amount',
+                'COUNT(a.loan_account_number) as total_emis',
+                "CONCAT(ANY_VALUE(b.location_name) , ', ', COALESCE(ANY_VALUE(b1.name), '')) as branch_name",
+                "SUM(CASE WHEN a.emi_payment_status != 'paid' THEN a.amount END) as pending_amount",
+                "SUM(CASE WHEN a.emi_payment_status = 'paid' THEN a.amount END) as paid_amount",
+            ])
             ->joinWith(['branchEnc b' => function ($b) {
-                $b->joinWith(['cityEnc b1']);
+                $b->joinWith(['cityEnc b1'], false);
             }], false)
-            ->where(['a.loan_account_number' => $lac])
+            ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
+        ->groupBy(['a.loan_account_number'])
             ->asArray()
-            ->all();
-        return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
+            ->one();
+        return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
     }
 
     public static function _emiData($data, $id_type, $search = '', $user = null)
@@ -1837,7 +1845,7 @@ class OrganizationsController extends ApiBaseController
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
         $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
-        $model = EmiCollection::find()
+        $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
                 'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date',
@@ -2054,7 +2062,7 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['emi_collection_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
             }
-            $removeEmi = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            $removeEmi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
             if (!$removeEmi) {
                 return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
             }
@@ -2080,7 +2088,7 @@ class OrganizationsController extends ApiBaseController
             $org_id = $findOrg->organization_enc_id;
         }
         if ($org_id) {
-            $emiList = EmiCollection::find()
+            $emiList = EmiCollectionExtended::find()
                 ->alias('a')
                 ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id'])
                 ->joinWith(['branchEnc b'], false)
@@ -2363,7 +2371,7 @@ class OrganizationsController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         if (!empty($params['loan_number'])) {
-            $query = LoanAccounts::find()
+            $query = LoanAccountsExtended::find()
                 ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
                 ->where(['is_deleted' => 0])
                 ->andWhere([
@@ -2393,7 +2401,7 @@ class OrganizationsController extends ApiBaseController
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
 
-        $query = LoanAccounts::find()
+        $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
@@ -2424,7 +2432,7 @@ class OrganizationsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $loan_accounts = LoanAccounts::find()->distinct()->select(["loan_type"])->asArray()->all();
+        $loan_accounts = LoanAccountsExtended::find()->distinct()->select(['loan_type'])->asArray()->all();
 
         if ($query) {
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count, "loan_accounts" => $loan_accounts]);
@@ -2486,7 +2494,7 @@ class OrganizationsController extends ApiBaseController
         if (empty($params["ref"])) {
             return $this->response(422, ["status" => 422, "message" => "missing parameter 'ref'"]);
         }
-        $emi = EmiCollection::findOne(["reference_number" => $params["ref"]]);
+        $emi = EmiCollectionExtended::findOne(["reference_number" => $params["ref"]]);
         if ($emi) {
             return $this->response(201, ["status" => 201, "message" => "Already exists"]);
         }

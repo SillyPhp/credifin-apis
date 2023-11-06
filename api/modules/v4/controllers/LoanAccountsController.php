@@ -8,6 +8,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -137,7 +138,7 @@ class LoanAccountsController extends ApiBaseController
                     return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
                 }, array_keys($data), $data);
 
-                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                $loan = LoanAccountsExtended::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
@@ -207,7 +208,7 @@ class LoanAccountsController extends ApiBaseController
                     continue;
                 }
                 $save = 'update';
-                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
+                $loan = LoanAccountsExtended::findOne(['loan_account_number' => trim($data[1])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
@@ -312,9 +313,9 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
                 'a.request_image', 'a.request_image_location', 'a.created_on',
-                'CONCAT(b.first_name, " ", COALESCE(b.last_name, "")) as created_by_name', 'b.image_location', 'b.image',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END createdby_image',
-                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END request_image'
+                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as created_by_name", 'b.image_location', 'b.image',
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END createdby_image",
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . "', a.request_image_location, '/', a.request_image) END request_image"
             ])
             ->joinWith(['createdBy b'], false)
             ->where(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
@@ -363,7 +364,8 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 'loan_account_enc_id', 'loan_account_number',
                 'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis',
-                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'
+                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type',
+                'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'
             ])
             ->andWhere(['is_deleted' => 0, 'loan_account_enc_id' => $params['loan_account_enc_id']])
             ->asArray()
@@ -390,17 +392,38 @@ class LoanAccountsController extends ApiBaseController
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
-                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
-                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
-                'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
-                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CASE WHEN a.other_doc_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
+                "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
+                "CASE 
+                    WHEN a.other_delay_reason IS NOT NULL 
+                        THEN CONCAT(a.delay_reason , ',', a.other_delay_reason) 
+                    ELSE a.delay_reason 
+                END AS delay_reason",
+                "CASE 
+                    WHEN b.image IS NOT NULL 
+                        THEN 
+                        CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) 
+                    ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff')
+                END image",
+                "CASE 
+                    WHEN a.pr_receipt_image IS NOT NULL 
+                        THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) 
+                    ELSE NULL 
+                END as pr_receipt_image",
+                "CASE 
+                    WHEN a.other_doc_image IS NOT NULL 
+                        THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "', a.other_doc_image_location, '/', a.other_doc_image) 
+                    ELSE NULL 
+                END as other_doc_image",
+                "CASE 
+                    WHEN a.borrower_image IS NOT NULL 
+                        THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
+                    ELSE NULL 
+                END as borrower_image",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
             ])
             ->joinWith(['createdBy b'], false)
-            ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
-
+            ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
         $count = $model->count();
         $model = $model
             ->limit($limit)
@@ -894,7 +917,7 @@ class LoanAccountsController extends ApiBaseController
             ->select(['loan_account_enc_id', 'bucket'])
             ->where(['bucket' => $params['bucket'], 'is_deleted' => 0]);
         foreach ($loanAccounts->batch(100) as $rows) {
-            $assignment = $this->assignCasesToTelecallers($params['caller_ids'],  $rows);
+            $assignment = $this->assignCasesToTelecallers($params['caller_ids'], $rows);
             foreach ($assignment as $caseName => $telecaller) {
                 $update = Yii::$app->db->createCommand()
                     ->update(LoanAccounts::tableName(), ['assigned_caller' => $telecaller['user_enc_id'], 'updated_by' => $user->user_enc_id, 'updated_on' => date('Y-m-d H:i:s')], ['loan_account_enc_id' => $caseName])

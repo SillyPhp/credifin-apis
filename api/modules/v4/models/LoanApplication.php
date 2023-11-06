@@ -952,6 +952,7 @@ class LoanApplication extends Model
         } else {
             return "$loanAccountNumber-001";
         }
+
     }
 
     public function updateLoanAccountPurpose($options)

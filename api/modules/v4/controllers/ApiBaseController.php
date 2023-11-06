@@ -19,6 +19,9 @@ use common\models\UserAccessTokens;
 class ApiBaseController extends Controller
 {
 
+    public $user;
+    public $post;
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -35,6 +38,8 @@ class ApiBaseController extends Controller
     // this method is used to return data from api's
     public function response($code, $data = '')
     {
+        !empty($data) && empty($data['status']) ? ($data['status'] = $code) : '';
+
         // if data not empty then returning data in response else setting only status code in response
         $response = !empty($data) ? ['response' => $data] : ['response' => ['status' => $code]];
 
@@ -124,7 +129,6 @@ class ApiBaseController extends Controller
 
                 // identity login
                 Yii::$app->user->login($user);
-
                 // returning user object
                 return $user;
             }
@@ -137,13 +141,32 @@ class ApiBaseController extends Controller
 
     public function isSpecialUser($type = false)
     {
-        if(!$user = $this->isAuthorized()){
-            return false;
+        $this->isAuth();
+        if (!$this->isSpecial($type)) {
+            $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
-        if ($type) {
-            return self::specialCheck($user->user_enc_id) ? $user : false;
+    }
+
+    public function isAuth($type = false): void
+    {
+        if ((!$user = $this->isAuthorized()) && (!$type || $this->isSpecial($type))) {
+            $this->response(401, ["message" => "unauthorized"]);
         }
-        return UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id) ? $user : false;
+        $this->post = Yii::$app->request->post();
+        $this->user = $user;
+    }
+
+    public function isSpecial($type): bool
+    {
+        $res = false;
+        if ($type == 1) {
+            $res = (UserUtilities::getUserType($this->user->user_enc_id) == 'Financer' || self::specialCheck($this->user->user_enc_id));
+        } elseif ($type == 2) {
+            $res = UserUtilities::getUserType($this->user->user_enc_id) == 'Financer';
+        } elseif ($type == 3) {
+            $res = self::specialCheck($this->user->user_enc_id);
+        }
+        return $res;
     }
 
     public static function specialCheck($user_id)
