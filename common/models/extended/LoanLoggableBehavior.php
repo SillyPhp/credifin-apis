@@ -20,17 +20,17 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
     {
         if ($this->active) {
             $log = new LoanAuditTrail();
-            if (isset($this->owner->loan_app_enc_id)){
+            if (isset($this->owner->loan_app_enc_id)) {
                 $this->enc_id = $this->owner->loan_app_enc_id;
-            }elseif(isset($this->owner->loan_id)){
+            } elseif (isset($this->owner->loan_id)) {
                 $this->enc_id = $this->owner->loan_id;
-            }elseif(isset($this->owner->loan_application_enc_id)){
+            } elseif (isset($this->owner->loan_application_enc_id)) {
                 $this->enc_id = $this->owner->loan_application_enc_id;
-            }elseif(isset($this->owner->emi_collection_enc_id)){
+            } elseif (isset($this->owner->emi_collection_enc_id)) {
                 $this->enc_id = $this->owner->emi_collection_enc_id;
-            }elseif(isset($this->owner->loan_account_enc_id)){
+            } elseif (isset($this->owner->loan_account_enc_id)) {
                 $this->enc_id = $this->owner->loan_account_enc_id;
-            }elseif(isset($this->owner->cash_report_enc_id)){
+            } elseif (isset($this->owner->cash_report_enc_id)) {
                 $this->enc_id = $this->owner->cash_report_enc_id;
             }
             $log->model = $this->className;
@@ -170,6 +170,21 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                         $newValue = $status_val->loan_status;
                     } else {
                         $newValue = $value;
+                    }
+                } else if ($type === "EmployeesCashReport") {
+                    switch ($value) {
+                        case 0:
+                            $newValue = 'Pending';
+                            break;
+                        case 1:
+                            $newValue = 'Approved';
+                            break;
+                        case 2:
+                            $newValue = 'Waiting for approval';
+                            break;
+                        case 3:
+                            $newValue = 'Rejected';
+                            break;
                     }
                 } else {
                     switch ($value) {
