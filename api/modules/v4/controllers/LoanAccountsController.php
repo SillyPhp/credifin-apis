@@ -360,17 +360,17 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
 
-        $data = LoanAccounts::find()
+        $data = (new \yii\db\Query())
             ->select([
-                'loan_account_enc_id', 'loan_account_number',
-                'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis',
-                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type',
-                'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'
+                 'a.loan_account_number',
+                'COUNT(a1.loan_account_number) as total_emis',
+                'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
+                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
             ])
-            ->andWhere(['is_deleted' => 0, 'loan_account_enc_id' => $params['loan_account_enc_id']])
-            ->asArray()
+            ->from(['a' => LoanAccounts::tableName()])
+            ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
+            ->andWhere(['loan_account_enc_id' => $params['loan_account_enc_id']])
             ->one();
-
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         $model = $this->_emiAccData($lac)['data'];
 
