@@ -317,12 +317,22 @@ class EmiCollectionsController extends ApiBaseController
     public function actionCollectCash()
     {
         $this->isAuth();
-        // checking if the user type is financer or special roles
         $params = $this->post;
-        $user_id = $params["user_id"] = $this->user->user_enc_id;
-        if (UserUtilities::getUserType($user_id) == "Financer" || $this->specialCheck($user_id)) {
-            $params["specialroles"] = true;
-        }
+        $params["user_id"] = $this->user->user_enc_id;
+        return $this->collectcash($params);
+    }
+
+    public function actionAdminCollectCash()
+    {
+        $this->isAuth(1);
+        $params = $this->post;
+        $params["user_id"] = $this->user->user_enc_id;
+        $params["specialroles"] = true;
+        return $this->collectcash($params);
+    }
+
+    public function collectcash($params): ?array
+    {
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $save = EmiCollectionForm::collect_cash($params);
@@ -481,12 +491,4 @@ class EmiCollectionsController extends ApiBaseController
 //            ]
 //        )->execute();
     }
-
-    public function actionIndex()
-    {
-        $update = EmiCollectionExtended::findOne($query);
-        print_r($update);
-        exit();
-    }
-
 }
