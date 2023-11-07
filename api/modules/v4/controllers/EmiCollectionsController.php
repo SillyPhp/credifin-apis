@@ -165,7 +165,13 @@ class EmiCollectionsController extends ApiBaseController
         $user_id = $params["user_id"];
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
-            ->select(["b.loan_account_number", "b.collection_date", "b.customer_name", "a.amount", "b.loan_type", "b.phone", "b.delay_reason", "b.ptp_amount", "b.ptp_date", "a.cash_report_enc_id"])
+            ->select([
+                "b.loan_account_number", "b.collection_date", "b.customer_name", "a.amount",
+                "b.loan_type", "b.phone", "b.delay_reason", "b.ptp_amount", "b.ptp_date", "a.cash_report_enc_id",
+                "CASE WHEN b.borrower_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',b.borrower_image_location, '/', b.borrower_image) ELSE NULL END as borrower_image",
+                "CASE WHEN b.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',b.pr_receipt_image_location, '/', b.pr_receipt_image) ELSE NULL END as pr_receipt_image",
+                "CASE WHEN b.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',b.other_doc_image_location, '/', b.other_doc_image) ELSE NULL END as other_doc_image",
+            ])
             ->joinWith(["emiCollectionEnc b"], false)
             ->andWhere([
                 "AND",
@@ -212,6 +218,19 @@ class EmiCollectionsController extends ApiBaseController
             ])
             ->asArray()
             ->one();
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($query as &$value) {
+            if ($value['other_doc_image']) {
+                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image'], "15 minutes");
+            }
+            if ($value['borrower_image']) {
+                $value['borrower_image'] = $my_space->signedURL($value['borrower_image'], "15 minutes");
+            }
+            if ($value['pr_receipt_image']) {
+                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+            }
+        }
         foreach ($received_cash as &$cash) {
             if (empty($cash["emiCollectionEnc"])) {
                 $cash["emiCollectionEnc"] = $this->finder($cash["cash_report_enc_id"]);
