@@ -645,25 +645,25 @@ class AuthController extends ApiBaseController
     public function actionReferralLogo()
     {
         $params = Yii::$app->request->post();
-        if (empty($params['code'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "code"']);
+        if (empty($params["code"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'code'"]);
         }
         $ref = \common\models\Referral::find()
-            ->alias('a')
+            ->alias("a")
             ->select([
-                'a.referral_enc_id', 'b.name', 'b.slug',
-                'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
+                "a.referral_enc_id", "b.name", "b.slug",
+                "CASE WHEN b.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',b.logo_location, '/', b.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b.name, '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END logo"
             ])
-            ->joinWith(['organizationEnc b'])
-            ->where(['a.code' => $params['code']])
-            ->andWhere(['<>', 'a.organization_enc_id', 'null'])
+            ->joinWith(["organizationEnc b"])
+            ->where(["a.code" => $params["code"]])
+            ->andWhere(["<>", "a.organization_enc_id", "null"])
             ->asArray()
             ->one();
 
         if ($ref) {
-            return $this->response(200, ['status' => 200, 'data' => $ref]);
+            return $this->response(200, ["status" => 200, "data" => $ref]);
         }
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        return $this->response(404, ["status" => 404, "message" => "not found"]);
     }
 
     public function actionChangePassword()
