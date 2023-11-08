@@ -82,6 +82,7 @@ class EmiCollectionsController extends ApiBaseController
     public function actionEmiEmployeeStats()
     {
         $this->isAuth();
+        $params = $this->post;
         $limit = !empty($params["limit"]) ? $params["limit"] : 10;
         $page = !empty($params["page"]) ? $params["page"] : 1;
         $select = [
@@ -112,11 +113,18 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params["branch_id"])) {
             $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
+        if (!empty($params['keyword'])) {
+            $query->andWhere([
+                'OR',
+                ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
+            ]);
+        }
         $query = $query->groupBy(["a.given_to"])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
         $query = ArrayHelper::index($query, "given_to");
         $query2 = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -138,6 +146,12 @@ class EmiCollectionsController extends ApiBaseController
             ]);
         if (!empty($params["branch_id"])) {
             $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
+        }
+        if (!empty($params['keyword'])) {
+            $query2->andWhere([
+                'OR',
+                ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
+            ]);
         }
         $query2 = $query2->groupBy(["a.cash_report_enc_id"])
             ->limit($limit)
