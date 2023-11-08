@@ -281,6 +281,18 @@ class UserUtilities
 
         return $ids;
     }
+    public static function getDesignation($user_id)
+    {
+        $role = UserRoles::find()
+            ->alias('a')
+            ->select(["ANY_VALUE(b.designation) AS designation"])
+            ->andWhere(['a.is_deleted' => 0])
+            ->joinWith(['designation b'], false)
+            ->where(['user_enc_id' => $user_id])
+            ->asArray()
+            ->one();
+        return $role['designation'];
+    }
 
     public function saveNotification($allNotifications)
     {
