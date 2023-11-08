@@ -109,7 +109,8 @@ class EmiCollectionsController extends ApiBaseController
                     ["a.remaining_amount" => 0]
                 ],
                 ["a.parent_cash_report_enc_id" => null]
-            ]);
+            ])
+            ->groupBy(["a.given_to"]);
         if (!empty($params["branch_id"])) {
             $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
@@ -119,7 +120,8 @@ class EmiCollectionsController extends ApiBaseController
                 ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
             ]);
         }
-        $query = $query->groupBy(["a.given_to"])
+        $count = $query->count();
+        $query = $query
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -143,7 +145,8 @@ class EmiCollectionsController extends ApiBaseController
                 ],
                 ["a.parent_cash_report_enc_id" => null],
                 ["a.status" => 2]
-            ]);
+            ])
+            ->groupBy(["a.cash_report_enc_id"]);
         if (!empty($params["branch_id"])) {
             $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
@@ -153,7 +156,7 @@ class EmiCollectionsController extends ApiBaseController
                 ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
             ]);
         }
-        $query2 = $query2->groupBy(["a.cash_report_enc_id"])
+        $query2 = $query2
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -167,7 +170,7 @@ class EmiCollectionsController extends ApiBaseController
             }
         }
         if ($query) {
-            return $this->response(200, ["status" => 200, "data" => array_values($query)]);
+            return $this->response(200, ["status" => 200, "data" => array_values($query), "count" => $count]);
         }
         return $this->response(404, ["status" => 404, "message" => "no data found"]);
     }
