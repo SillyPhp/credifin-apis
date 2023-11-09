@@ -283,9 +283,6 @@ class LoanApplicationsController extends ApiBaseController
                         if ($key == 'apply_date') {
                             $list->andWhere(['like', 'a.created_on', $val]);
                         }
-//                        elseif ($key == 'loan_products_enc_id') {
-//                            $list->andWhere(['like', 'a.loan_products_enc_id', $val]);
-//                        }
                         else {
                             if ($key == 'applicant_name'):
                                 $list->andWhere(['like', 'h.name', $val]);
