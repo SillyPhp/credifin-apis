@@ -3,7 +3,9 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\LoanApplication;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanProvider;
+use common\models\AssignedSupervisor;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanPurposeExtended;
@@ -11,6 +13,7 @@ use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
 use common\models\LoanPurpose;
+use common\models\SelectedServices;
 use common\models\UserRoles;
 use common\models\Utilities;
 use common\models\WebhookTest;
@@ -137,7 +140,7 @@ class LoanApplicationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-
+        $params = Yii::$app->request->post();
         $org_id = $user->organization_enc_id;
 
         if (!$org_id) {
@@ -145,15 +148,69 @@ class LoanApplicationsController extends ApiBaseController
             $org_id = $user_roles->organization_enc_id;
         }
 
-        $removed_list = $this->getList($org_id, ['a.is_removed' => 1]);
-        $disbursed_list = $this->getList($org_id, ['i.status' => 31]);
+        $data = [];
+        if ($params['type'] == 'disbursed') {
+            $data = $this->getList($org_id, ['i.status' => 31]);
+        } else {
+            $data = $this->getList($org_id, ['a.is_removed' => 1]);
+        }
 
-        return $this->response(200, ['status' => 200, 'removed_list' => $removed_list, 'disbursed_list' => $disbursed_list]);
+
+        $totalCount = $data['count'];
+        return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
 
     private function getList($org_id, $conditions)
     {
+        $user = $this->isAuthorized();
+        $user_id = $user->user_enc_id;
         $params = Yii::$app->request->post();
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.organization_enc_id' => $org_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+            ->exists();
+
+        //get user roles
+//        $specialroles = false;
+//        $leadsAccessOnly = false;
+//        $roleUnderId = null;
+//        if (in_array($user_id->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
+//            $leadsAccessOnly = $user_id->username === "Sumit1992" ? "lap" : "vehicle";
+//        }
+//
+//        // if user is organization/financer then getting its DSA's
+//        $dsa = [];
+//        if ($org_id) {
+//
+//            // getting DSA
+//            $leads = $this->getDsa($user_id->user_enc_id);
+//
+//            // if leads not empty then adding assigned_user_enc_id in dsa array
+//            if ($leads) {
+//                foreach ($leads as $val) {
+//                    $dsa[] = $val['assigned_user_enc_id'];
+//                }
+//            }
+//
+//            $dsa[] = $user_id->user_enc_id;
+//        } else {
+//            $accessroles = UserUtilities::$rolesArray;
+//            $role = UserRoles::find()
+//                ->alias('a')
+//                ->where(['user_enc_id' => $user_id->user_enc_id])
+//                ->andWhere(['a.is_deleted' => 0])
+//                ->joinWith(['designation b' => function ($b) use ($accessroles) {
+//                    $b->andWhere(['in', 'b.designation', $accessroles]);
+//                }], true, 'INNER JOIN');
+//            $specialroles = $role->exists();
+//
+//            if ($specialroles) {
+//                $roleUnder = $role->asArray()->one();
+//                $roleUnderId = $roleUnder['organization_enc_id'];
+//            }
+//        }
+
 
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
@@ -168,8 +225,12 @@ class LoanApplicationsController extends ApiBaseController
                 'a.applicant_dob as dob', 'a.created_by', 'a.lead_by', 'a.managed_by', 'a.created_on',
                 'i.status status_number', 'i.updated_on',
                 'j.organization_enc_id',
-                'h.name applicant_name',
+                'h.name as applicant_name',
                 'lp.name as loan_product',
+                'i.bdo_approved_amount',
+                'i.tl_approved_amount',
+                'i.soft_approval', 'i.soft_sanction',
+                'be.location_name as branch', 'be.location_enc_id as branch_id'
             ])
             ->addSelect([
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -200,13 +261,22 @@ class LoanApplicationsController extends ApiBaseController
             }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
                 $h->andOnCondition(['h.borrower_type' => 'Borrower']);
-            }], false)
-            ->joinWith(['assignedLoanProviders i' => function ($i) use ($org_id) {
+            }])
+            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $org_id) {
                 $i->joinWith(['providerEnc j']);
+                // if loans service exists then using andWhere with provider_enc_id
+                if ($service) {
+                    $i->andWhere(['i.status' => 31, 'i.provider_enc_id' => $org_id]);
+                }
+//                if (!empty($roleUnderId) || $roleUnderId != null) {
+//                    $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+//                }
                 $i->joinWith(['branchEnc be']);
-            }], false)
+            }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['loanProductsEnc lp' => function ($lp) {
+                $lp->onCondition(['lp.is_deleted' => 0]);
+            }], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone',
@@ -218,13 +288,117 @@ class LoanApplicationsController extends ApiBaseController
             ->where(['a.is_deleted' => 0, 'j.organization_enc_id' => $org_id])
             ->andWhere($conditions);
 
+        if (!empty($params['fields_search'])) {
+            // fields array for "a" alias table
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+
+            // fields array for "cb" alias table
+            $name_search = ['created_by', 'sharedTo'];
+
+            // fields array for "lpp" alias table
+            $purpose_search = ['purpose'];
+
+            // fields array for "i" alias table
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
+
+            // loop fields
+            foreach ($params['fields_search'] as $key => $val) {
+
+                if (!empty($val) || $val == '0') {
+                    // key match to "a" table array
+                    if (in_array($key, $a)) {
+
+                        // if key is apply_date then checking created_on time
+                        if ($key == 'apply_date') {
+                            $list->andWhere(['like', 'a.created_on', $val]);
+                        }
+//                        elseif ($key == 'loan_products_enc_id') {
+//                            $list->andWhere(['like', 'a.loan_products_enc_id', $val]);
+//                        }
+                        else {
+                            if ($key == 'applicant_name'):
+                                $list->andWhere(['like', 'h.name', $val]);
+                            else:
+                                // else checking other fields with their names
+                                $list->andWhere(['like', 'a.' . $key, $val]);
+                            endif;
+                        }
+                    }
+
+                    // key match to "lpp" table array
+                    if (in_array($key, $purpose_search)) {
+                        if ($key == 'purpose') {
+                            $list->andWhere(['like', 'lpp1.purpose', $val]);
+                        }
+                    }
+
+                    // key match to "i" table array
+                    if (in_array($key, $i)) {
+                        switch ($key) {
+                            case 'branch':
+                                $list->andWhere(['like', 'i.branch_enc_id', $val]);
+                                break;
+                            case 'status':
+                                $list->andWhere(['i.status' => $val]);
+                                break;
+                            default:
+                                $list->andWhere(['like', 'i.' . $key, $val]);
+                                break;
+                        }
+                    }
+
+                    // key match to "$name_search" table array
+                    if (in_array($key, $name_search)) {
+                        switch ($key) {
+                            case 'created_by':
+                                $list->andWhere([
+                                    'or',
+                                    [
+                                        'and',
+                                        [
+                                            'not',
+                                            ['a.lead_by' => null]
+                                        ],
+                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]
+                                    ],
+                                    [
+                                        'and',
+                                        ['a.lead_by' => null],
+                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]
+                                    ]
+                                ]);
+                                break;
+                            case 'sharedTo':
+                                $list->andWhere(['like', 'CONCAT(n1.first_name, " ", COALESCE(n1.last_name,""))', $val]);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        $count = $list->count();
+
         $list = $list
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
-        return $list;
+
+        return ['data' => $list, 'count' => $count];
     }
+
+    private function getDsa($user_id)
+    {
+        // getting dsa of this user
+        return AssignedSupervisor::find()
+            ->select(['assigned_user_enc_id'])
+            ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
+            ->groupBy(['assigned_user_enc_id'])
+            ->asArray()
+            ->all();
+    }
+
 }
 
