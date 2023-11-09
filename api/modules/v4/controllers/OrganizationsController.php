@@ -2395,12 +2395,11 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-
         $params = Yii::$app->request->post();
         $user_type = UserUtilities::getDesignation($user->user_enc_id);
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-
+        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
@@ -2412,7 +2411,11 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"])
             ->joinWith(["assignedCaller ac"])
             ->joinWith(["collectionManager cm"])
-            ->andWhere(["a.is_deleted" => 0]);
+            ->andWhere(["a.is_deleted" => 0])
+            ->orWhere(["OR", [
+                "a.assigned_caller" => $juniors,
+                "a.created_by" => $juniors
+            ]]);
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
@@ -2425,7 +2428,11 @@ class OrganizationsController extends ApiBaseController
             }
         }
         if ($user_type == "Tele Caller Collection") {
-            $query->andWhere(["a.assigned_caller" => $user->user_enc_id]);
+            $query->andWhere([
+                "OR",
+                ["a.assigned_caller" => $user->user_enc_id],
+                ["a.assigned_caller" => $juniors]
+            ]);
         }
         if (!empty($params["bucket"])) {
             $query->andWhere(["a.bucket" => $params["bucket"]]);
