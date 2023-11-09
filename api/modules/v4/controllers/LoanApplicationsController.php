@@ -172,45 +172,11 @@ class LoanApplicationsController extends ApiBaseController
             ->exists();
 
         //get user roles
-//        $specialroles = false;
-//        $leadsAccessOnly = false;
-//        $roleUnderId = null;
-//        if (in_array($user_id->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
-//            $leadsAccessOnly = $user_id->username === "Sumit1992" ? "lap" : "vehicle";
-//        }
-//
-//        // if user is organization/financer then getting its DSA's
-//        $dsa = [];
-//        if ($org_id) {
-//
-//            // getting DSA
-//            $leads = $this->getDsa($user_id->user_enc_id);
-//
-//            // if leads not empty then adding assigned_user_enc_id in dsa array
-//            if ($leads) {
-//                foreach ($leads as $val) {
-//                    $dsa[] = $val['assigned_user_enc_id'];
-//                }
-//            }
-//
-//            $dsa[] = $user_id->user_enc_id;
-//        } else {
-//            $accessroles = UserUtilities::$rolesArray;
-//            $role = UserRoles::find()
-//                ->alias('a')
-//                ->where(['user_enc_id' => $user_id->user_enc_id])
-//                ->andWhere(['a.is_deleted' => 0])
-//                ->joinWith(['designation b' => function ($b) use ($accessroles) {
-//                    $b->andWhere(['in', 'b.designation', $accessroles]);
-//                }], true, 'INNER JOIN');
-//            $specialroles = $role->exists();
-//
-//            if ($specialroles) {
-//                $roleUnder = $role->asArray()->one();
-//                $roleUnderId = $roleUnder['organization_enc_id'];
-//            }
-//        }
-
+        $leadsAccessOnly = false;
+        $roleUnderId = null;
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
+            $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
+        }
 
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
@@ -262,15 +228,15 @@ class LoanApplicationsController extends ApiBaseController
             ->joinWith(['loanCoApplicants h' => function ($h) {
                 $h->andOnCondition(['h.borrower_type' => 'Borrower']);
             }])
-            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $org_id) {
+            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $org_id, $roleUnderId) {
                 $i->joinWith(['providerEnc j']);
                 // if loans service exists then using andWhere with provider_enc_id
                 if ($service) {
                     $i->andWhere(['i.status' => 31, 'i.provider_enc_id' => $org_id]);
                 }
-//                if (!empty($roleUnderId) || $roleUnderId != null) {
-//                    $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
-//                }
+                if (!empty($roleUnderId) || $roleUnderId != null) {
+                    $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                }
                 $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
@@ -287,6 +253,11 @@ class LoanApplicationsController extends ApiBaseController
             }])
             ->where(['a.is_deleted' => 0, 'j.organization_enc_id' => $org_id])
             ->andWhere($conditions);
+
+        if (!$org_id && !$leadsAccessOnly) {
+            // else checking lead_by and managed_by by logged-in user
+            $list->andWhere(['or', ['a.lead_by' => $user_id], ['a.managed_by' => $user_id]]);
+        }
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
