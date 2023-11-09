@@ -1824,7 +1824,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['cityEnc b1'], false);
             }], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
-        ->groupBy(['a.loan_account_number'])
+            ->groupBy(['a.loan_account_number'])
             ->asArray()
             ->one();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
@@ -2416,7 +2416,11 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    $query->andWhere(["like", $key, "$value%", false]);
+                    if ($key == 'assigned_caller') {
+                        $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } else {
+                        $query->andWhere(["like", $key, "$value%", false]);
+                    }
                 }
             }
         }
