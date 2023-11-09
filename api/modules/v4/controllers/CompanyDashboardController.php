@@ -846,7 +846,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->select([
                     'ANY_VALUE(report_enc_id) report_enc_id', 'ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id', 'd4.loan_co_app_enc_id',
                     'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
-                    'ANY_VALUE(d4.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d4.created_on)) as days_till_now",
+                    'ANY_VALUE(d5.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d5.created_on)) as days_till_now",
                     'ANY_VALUE(d6.request_source) request_source'
                 ])
                 ->from(['d4' => CreditLoanApplicationReports::tableName()])
