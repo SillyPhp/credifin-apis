@@ -6,6 +6,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\ClaimedDeals;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanPurposeExtended;
@@ -14,6 +15,7 @@ use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
 use common\models\LoanPurpose;
 use common\models\SelectedServices;
+use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use common\models\Utilities;
 use common\models\WebhookTest;
@@ -154,8 +156,6 @@ class LoanApplicationsController extends ApiBaseController
         } else {
             $data = $this->getList($org_id, ['a.is_removed' => 1]);
         }
-
-
         $totalCount = $data['count'];
         return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
@@ -177,6 +177,8 @@ class LoanApplicationsController extends ApiBaseController
         if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
             $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
         }
+        $shared_apps = $this->sharedApps($user->user_enc_id);
+
 
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
@@ -259,6 +261,10 @@ class LoanApplicationsController extends ApiBaseController
             $list->andWhere(['or', ['a.lead_by' => $user_id], ['a.managed_by' => $user_id]]);
         }
 
+        if ($shared_apps['app_ids']) {
+            $list->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+        }
+
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
             $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
@@ -282,8 +288,7 @@ class LoanApplicationsController extends ApiBaseController
                         // if key is apply_date then checking created_on time
                         if ($key == 'apply_date') {
                             $list->andWhere(['like', 'a.created_on', $val]);
-                        }
-                        else {
+                        } else {
                             if ($key == 'applicant_name'):
                                 $list->andWhere(['like', 'h.name', $val]);
                             else:
@@ -354,19 +359,84 @@ class LoanApplicationsController extends ApiBaseController
             ->all();
 
 
+        if ($list) {
+            foreach ($list as $key => $val) {
+                $list[$key]['sharedTo'] = $val['sharedLoanApplications'];
+                unset($list[$key]['sharedLoanApplications']);
+
+                $list[$key]['access'] = null;
+                $list[$key]['shared_by'] = null;
+                $list[$key]['is_shared'] = false;
+                if ($shared_apps['app_ids']) {
+                    foreach ($shared_apps['shared'] as $s) {
+                        if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
+                            $list[$key]['access'] = $s['access'];
+                            $list[$key]['shared_by'] = $s['shared_by'];
+                            $list[$key]['is_shared'] = true;
+                        }
+                    }
+                }
+
+                $d = ClaimedDeals::find()
+                    ->alias('a')
+                    ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
+                    ->joinWith(['dealEnc b'], false)
+                    ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
+                    ->asArray()
+                    ->all();
+                $list[$key]['claimedDeals'] = $d;
+
+                $provider_id = $this->getFinancerId($user);
+
+                $provider = AssignedLoanProvider::find()
+                    ->alias('a')
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                    ->joinWith(['branchEnc b' => function ($b) {
+                        $b->joinWith(['cityEnc b1']);
+                    }], false)
+                    ->andWhere(['a.loan_application_enc_id' => $val['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                    ->asArray()
+                    ->one();
+
+                if (!empty($provider)) {
+                    $list[$key]['bdo_approved_amount'] = $provider['bdo_approved_amount'];
+                    $list[$key]['tl_approved_amount'] = $provider['tl_approved_amount'];
+                    $list[$key]['soft_approval'] = $provider['soft_approval'];
+                    $list[$key]['soft_sanction'] = $provider['soft_sanction'];
+                    $list[$key]['valuation'] = $provider['valuation'];
+                    $list[$key]['disbursement_approved'] = $provider['disbursement_approved'];
+                    $list[$key]['insurance_charges'] = $provider['insurance_charges'];
+                    $list[$key]['branch_id'] = $provider['branch_enc_id'];
+                    $list[$key]['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
+                }
+            }
+        }
         return ['data' => $list, 'count' => $count];
     }
 
-    private function getDsa($user_id)
+    private function sharedApps($user_id)
     {
-        // getting dsa of this user
-        return AssignedSupervisor::find()
-            ->select(['assigned_user_enc_id'])
-            ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
-            ->groupBy(['assigned_user_enc_id'])
+        // getting loan applications shared to this user
+        $shared = SharedLoanApplications::find()
+            ->alias('a')
+            ->select(["a.loan_app_enc_id", "a.access"])
+            ->addSelect(["CONCAT(b.first_name, ' ' ,b.last_name) shared_by"])
+            ->joinWith(['sharedBy b'], false)
+            ->joinWith(['loanAppEnc c'], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
             ->asArray()
             ->all();
+        $loan_app_ids = [];
+        if ($shared) {
+            foreach ($shared as $s) {
+                $loan_app_ids[] = $s["loan_app_enc_id"];
+            }
+        }
+
+        // returning application id's and shared detail
+        return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
+
 
 }
 
