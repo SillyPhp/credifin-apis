@@ -964,8 +964,13 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(["assignedDisbursementCharges adc" => function ($adc) {
                     $adc->select(["adc.disbursement_charges_enc_id", "adc.amount", "adc.loan_app_enc_id"]);
                 }])
-                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
-                ->limit(1)
+                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
+
+            if (!$params['user_type'] || $params['user_type'] != 'Financer') {
+                $loan = $loan->andWhere(['a.is_removed' => 0]);
+            }
+
+            $loan = $loan->limit(1)
                 ->asArray()
                 ->one();
 
