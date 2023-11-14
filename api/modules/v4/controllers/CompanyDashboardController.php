@@ -966,7 +966,7 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
 
-            if (!$params['user_type'] || $params['user_type'] != 'Financer') {
+            if (!isset($params['user_type']) || $params['user_type'] != 'Financer') {
                 $loan = $loan->andWhere(['a.is_removed' => 0]);
             }
 
@@ -1160,7 +1160,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            if (empty($params['status'])) {
+            if (!isset($params['status']) || $params['status'] == "") {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
             // getting object to update
