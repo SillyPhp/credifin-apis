@@ -12,13 +12,12 @@ use Yii;
  * @property string $loan_account_number Loan Account Number
  * @property string $lms_loan_account_number
  * @property string $collection_manager Collection Manager
- * @property string $group_name Group Name
  * @property string $last_emi_date Last Emi Date
  * @property int $total_installments Total Installments
  * @property double $financed_amount Amount Financed
- * @property string $stock Stock
- * @property string $pos POS
- * @property string $advance_interest Advance Hp
+ * @property double $stock Stock
+ * @property double $pos POS
+ * @property double $advance_interest Advance Hp
  * @property string $bucket Bucket
  * @property string $branch_enc_id Branch Enc Id
  * @property string $bucket_status_date Bucket Status Date
@@ -32,18 +31,26 @@ use Yii;
  * @property double $last_emi_received_amount Last emi received amount
  * @property string $last_emi_received_date Last emi received date
  * @property string $assigned_caller
+ * @property string $vehicle_type
+ * @property string $vehicle_make
+ * @property string $vehicle_model
+ * @property string $vehicle_engine_no
+ * @property string $vehicle_chassis_no
+ * @property string $rc_number
  * @property string $created_on Created On
  * @property string $created_by Created By
  * @property string $updated_on Updated On
  * @property string $updated_by Updated By
  * @property int $is_deleted Is Deleted
  *
+ * @property EmiCollection[] $emiCollections
  * @property EmiPaymentIssues[] $emiPaymentIssues
+ * @property Users $assignedCaller
  * @property Users $updatedBy
  * @property Users $createdBy
  * @property OrganizationLocations $branchEnc
  * @property Users $collectionManager
- * @property VehicleRepoComments[] $vehicleRepoComments
+ * @property LoanActionRequests[] $loanActionRequests
  * @property VehicleRepossession[] $vehicleRepossessions
  */
 class LoanAccounts extends \yii\db\ActiveRecord
@@ -62,14 +69,15 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_account_enc_id', 'loan_account_number', 'lms_loan_account_number', 'name', 'emi_amount', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
-            [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'created_on', 'updated_on'], 'safe'],
+            [['loan_account_enc_id', 'loan_account_number', 'lms_loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
+            [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
             [['total_installments', 'is_deleted'], 'integer'],
-            [['financed_amount', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
-            [['loan_account_enc_id', 'loan_account_number', 'group_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
+            [['loan_account_enc_id', 'loan_account_number', 'collection_manager', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['lms_loan_account_number'], 'string', 'max' => 20],
-            [['collection_manager', 'stock', 'pos', 'advance_interest', 'bucket'], 'string', 'max' => 50],
+            [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
+            [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
             [['loan_account_enc_id'], 'unique'],
             [['loan_account_number'], 'unique'],
             [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
@@ -83,12 +91,20 @@ class LoanAccounts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getEmiCollections()
+    {
+        return $this->hasMany(EmiCollection::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEmiPaymentIssues()
     {
         return $this->hasMany(EmiPaymentIssues::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 
-      /**
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedCaller()
@@ -131,9 +147,9 @@ class LoanAccounts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getVehicleRepoComments()
+    public function getLoanActionRequests()
     {
-        return $this->hasMany(VehicleRepoComments::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+        return $this->hasMany(LoanActionRequests::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 
     /**
