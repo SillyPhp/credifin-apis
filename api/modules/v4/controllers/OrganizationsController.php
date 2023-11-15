@@ -1662,22 +1662,36 @@ class OrganizationsController extends ApiBaseController
             }
         }
         $params = Yii::$app->request->post();
-        if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
-            $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
-            if ($model) {
-                $model->emi_payment_status = $params['status'];
-                $model->updated_by = $user->user_enc_id;
-                $model->updated_on = date('Y-m-d h:i:s');
-                if (!$model->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $update_overdue = false;
+            if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
+                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+                if ($model) {
+                    if ($model->emi_payment_status !== $params['status']) {
+                        $update_overdue = true;
+                    }
+                    $model->emi_payment_status = $params['status'];
+                    $model->updated_by = $user->user_enc_id;
+                    $model->updated_on = date('Y-m-d h:i:s');
+                    if (!$model->save()) {
+                        throw new \Exception('an error occurred while updating');
+                    }
+                    if ($update_overdue) {
+                        EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
+                    }
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
                 }
-                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-            }
-        } else {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
+            } else {
                 $model = new EmiCollectionForm();
                 $model->org_id = $org;
+                if (!empty($params['loan_account_number'])) {
+                    $query = LoanAccountsExtended::findOne(["loan_account_number" => $params['loan_account_number']]);
+                    if ($query) {
+                        $model->loan_account_enc_id = $query['loan_account_enc_id'];
+                    }
+                }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                     return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
                 }
@@ -1687,9 +1701,10 @@ class OrganizationsController extends ApiBaseController
                 $save = $model->save($user->user_enc_id);
                 $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
                 return $this->response($save['status'], $save);
-            } catch (\Exception $exception) {
-                return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
             }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
         }
     }
 
@@ -2421,6 +2436,8 @@ class OrganizationsController extends ApiBaseController
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'collection_manager') {
+                        $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }

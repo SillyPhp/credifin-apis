@@ -2,16 +2,16 @@
 
 namespace api\modules\v4\models;
 
-use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
 use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
-use yii\db\Exception;
 
 class EmiCollectionForm extends Model
 {
@@ -43,6 +43,7 @@ class EmiCollectionForm extends Model
     public $payment_mode;
     public $dealer_name;
     public $reference_number;
+    public $loan_account_enc_id;
     public static $payment_methods = [
         'total' => 'Total',
         '1' => 'QR',
@@ -86,7 +87,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -95,10 +96,17 @@ class EmiCollectionForm extends Model
 
     public function save($user_id)
     {
+        $loan_find = LoanAccounts::findOne(["loan_account_number" => $this->loan_account_number]);
+        if ($loan_find) {
+            $loan_account = $loan_find['loan_account_enc_id'];
+        }
         $model = new EmiCollectionExtended();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
+        if (!empty($loan_account)) {
+            $model->loan_account_enc_id = $loan_account;
+        }
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
         $model->collection_date = date('Y-m-d');
@@ -174,7 +182,6 @@ class EmiCollectionForm extends Model
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
-
         if (in_array($model->emi_payment_method, [4, 81]) && !empty($this->amount)) {
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
@@ -356,6 +363,9 @@ class EmiCollectionForm extends Model
                 }
             }
             $update = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
+            if ($update->emi_payment_status == 'paid'){
+                self::updateOverdue($update['loan_account_enc_id'], $update['amount'], $user_id);
+            }
             $update->updated_by = $user_id;
             $update->updated_on = date('Y-m-d H:i:s');
             $update->emi_payment_status = 'paid';
@@ -363,20 +373,20 @@ class EmiCollectionForm extends Model
                 throw new \Exception("error occurred while updating emi status to approve");
             }
         }
-//        EmiCollectionExtended::updateAll(
-//            [
-//                'updated_on' => date('Y-m-d H:i:s'),
-//                'updated_by' => $user_id,
-//                'emi_payment_status' => 'paid'
-//            ],
-//            ["AND",
-//                ["NOT",
-//                    [
-//                        'emi_payment_status' => 'paid'
-//                    ]
-//                ],
-//                ['emi_collection_enc_id' => $emi_ids]
-//            ]
-//        );
+    }
+
+    public static function updateOverdue($loan_id, $amount, $user_id = "")
+    {
+        $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $loan_id]);
+        if ($query) {
+            $query->overdue_amount -= $amount;
+            if (!empty($user_id)) {
+                $query->updated_by = $user_id;
+                $query->updated_on = date('Y-m-d H:i:s');
+            }
+            if (!$query->save()) {
+                throw new \Exception("error occurred while updating overdue amount");
+            }
+        }
     }
 }

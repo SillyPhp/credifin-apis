@@ -4,8 +4,11 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccounts;
 use Exception;
 use Yii;
 use yii\db\Expression;
@@ -527,4 +530,126 @@ class EmiCollectionsController extends ApiBaseController
 //            ]
 //        )->execute();
     }
+
+    public function actionAssignLoanIds()
+    {
+        $this->isAuth(2);
+        $emiQuery = EmiCollection::find()
+            ->select(['emi_collection_enc_id', 'loan_account_number'])
+            ->andWhere(['loan_account_enc_id' => NULL])
+            ->indexBy('loan_account_number')
+            ->asArray();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($emiQuery->batch(5) as $batches) {
+                $loanAccountNumbers = array_keys($batches);
+                $find = LoanAccounts::find()
+                    ->select(['loan_account_enc_id', 'loan_account_number'])
+                    ->andWhere(['loan_account_number' => $loanAccountNumbers])
+                    ->indexBy('loan_account_number')
+                    ->asArray()
+                    ->all();
+                foreach ($batches as $batch) {
+                    if (!empty($find[$batch['loan_account_number']])) {
+                        EmiCollection::updateAll([
+                            "updated_on" => date('Y-m-d H:i:s'),
+                            "updated_by" => $this->user->user_enc_id,
+                            "loan_account_enc_id" => $find[$batch['loan_account_number']]['loan_account_enc_id']
+                        ], [
+                            'loan_account_number' => $batch['loan_account_number']
+                        ]);
+                    }
+                }
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            print_r($e->getMessage());
+            exit();
+        }
+    }
+
+//    public function actionUpdatingOverdue()
+//    {
+//        $this->isAuth(2);
+//        $emiQuery = EmiCollection::find()
+//            ->select(["emi_collection_enc_id", "amount", "loan_account_enc_id"])
+//            ->andWhere(["AND",
+//                [">", "created_on", "2023-11-01 00:00:00"],
+//                ["emi_payment_status" => "paid"]
+//            ])
+//            ->indexBy('loan_account_enc_id')
+//            ->asArray();
+//        foreach ($emiQuery->batch() as $batches) {
+//            $loan_ids = array_keys($batches);
+//            $find = LoanAccounts::find()
+//                ->select(['loan_account_enc_id', 'loan_account_number'])
+//                ->andWhere(['loan_account_enc_id' => $loan_ids])
+//                ->indexBy('loan_account_enc_id')
+//                ->asArray()
+//                ->all();
+//            foreach ($batches as $key => $batch) {
+//                if (!empty($find[$key])) {
+//                    $update = LoanAccountsExtended::findOne(["loan_account_enc_id" => $key]);
+//                    $update->updated_on = date('Y-m-d H:i:s');
+//                    $update->updated_by = $this->user->user_enc_id;
+//                    $update->overdue_amount -= $batch['amount'];
+//                    if (!$update->save()) {
+//                        throw new \Exception("error occurred while updating");
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+
+    public function actionUpdatingOverdue2()
+    {
+        $this->isAuth(2);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $emiQuery = EmiCollection::find()
+                ->select(["emi_collection_enc_id", "amount", "loan_account_enc_id"])
+                ->where([">=", "collection_date", "2023-11-01"])
+                ->andWhere([
+                    "AND",
+                    [
+                        "emi_payment_status" => "paid"
+                    ],
+                    [
+                        "NOT",
+                        [
+                            "loan_account_enc_id" => NULL
+                        ]
+                    ]
+                ])
+                ->asArray();
+            foreach ($emiQuery->batch() as $batches) {
+                $loan_ids = array_unique(array_column($batches, 'loan_account_enc_id'));
+                $loanAccountInfo = LoanAccounts::find()
+                    ->select(['loan_account_enc_id', 'loan_account_number'])
+                    ->andWhere(['loan_account_enc_id' => $loan_ids])
+                    ->indexBy('loan_account_enc_id')
+                    ->asArray()
+                    ->all();
+                foreach ($batches as $batch) {
+                    if (!empty($loanAccountInfo[$batch['loan_account_enc_id']])) {
+                        $update = LoanAccounts::findOne(["loan_account_enc_id" => $batch['loan_account_enc_id']]);
+                        $update->updated_on = date('Y-m-d H:i:s');
+                        $update->updated_by = $this->user->user_enc_id;
+                        $update->overdue_amount -= $batch['amount'];
+                        if (!$update->save()) {
+                            throw new \Exception("Error occurred while updating");
+                        }
+                    }
+                }
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            print_r($e->getMessage());
+            exit();
+        }
+    }
+
 }
