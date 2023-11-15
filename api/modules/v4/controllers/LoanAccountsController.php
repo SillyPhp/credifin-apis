@@ -169,17 +169,14 @@ class LoanAccountsController extends ApiBaseController
                     if (array_search('RcNumber', $header)) {
                         $loan->rc_number = $data[array_search('RcNumber', $header)];
                     }
-                    $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
-                    if ($branch && !empty($branch['location_name'])) {
-                        $loan->branch_enc_id = $branch;
-                    }
+                    $loan->branch_enc_id = $tmp;
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
                 $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
                 $loan->bucket = $data[array_search('SMASTATUS', $header)];
                 $last_emi_amount = $data[array_search('LastRecAmount', $header)];
-                if (empty($last_emi_amount)){
+                if (empty($last_emi_amount)) {
                     $last_emi_amount = 0;
                 }
                 $loan->last_emi_received_amount = $last_emi_amount;
