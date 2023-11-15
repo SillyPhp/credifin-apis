@@ -136,7 +136,7 @@ class LoanAccountsController extends ApiBaseController
                     return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
                 }, array_keys($data), $data);
 
-                $loan = LoanAccountsExtended::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
@@ -373,7 +373,7 @@ class LoanAccountsController extends ApiBaseController
                     continue;
                 }
                 $save = 'update';
-                $loan = LoanAccountsExtended::findOne(['loan_account_number' => trim($data[1])]);
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
                 if (!$loan) {
                     $loan = new LoanAccounts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
