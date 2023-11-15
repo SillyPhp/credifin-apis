@@ -70,10 +70,8 @@ class LoanAccountsController extends ApiBaseController
     public function actionLoanAccountsUpload()
     {
 
-        $user = $this->isAuthorized();
-        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
-            return $this->response(500, 'Not Authorized');
-        }
+        $this->isAuth(2);
+        $user = $this->user;
         $branches = [
             "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
             "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
@@ -152,8 +150,25 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    $loan->group_name = $data[array_search('GroupName', $header)];
                     $tmp = $branches[$data[array_search('Branch', $header)]];
+                    if (array_search('VehicleType', $header)) {
+                        $loan->vehicle_type = $data[array_search('VehicleType', $header)];
+                    }
+                    if (array_search('VehicleModel', $header)) {
+                        $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
+                    }
+                    if (array_search('VehicleMake', $header)) {
+                        $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
+                    }
+                    if (array_search('VehicleEngineNo', $header)) {
+                        $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
+                    }
+                    if (array_search('VehicleChassisNo', $header)) {
+                        $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
+                    }
+                    if (array_search('RcNumber', $header)) {
+                        $loan->rc_number = $data[array_search('RcNumber', $header)];
+                    }
                     $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
                     if ($branch && !empty($branch['location_name'])) {
                         $loan->branch_enc_id = $branch;
@@ -163,15 +178,25 @@ class LoanAccountsController extends ApiBaseController
                 }
                 $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
                 $loan->bucket = $data[array_search('SMASTATUS', $header)];
-                $loan->last_emi_received_amount = $data[array_search('LastRecAmount', $header)];
-                $loan->last_emi_received_date = date('Y-m-d', strtotime($data[array_search('LastRecDate', $header)]));
+                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
+                if (empty($last_emi_amount)){
+                    $last_emi_amount = 0;
+                }
+                $loan->last_emi_received_amount = $last_emi_amount;
+                $last_emi_date = $data[array_search('LastRecDate', $header)];
+                if (!empty($last_emi_date)) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
+                }
                 $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
                 $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
                 $loan->pos = $data[array_search('Pos', $header)];
                 $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
                 $loan->stock = $data[array_search('Stock', $header)];
-                $collection_manager = UserRoles::findOne(['employee_code' => $data[array_search('CollectionManager', $header)]]);
-                if ($collection_manager && !empty($collection_manager['user_enc_id'])) {
+                $cm = array_search('CollectionManager', $header);
+                if (!empty($data[$cm])) {
+                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
+                }
+                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
                     $loan->collection_manager = $collection_manager['user_enc_id'];
                 }
                 !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
@@ -362,7 +387,7 @@ class LoanAccountsController extends ApiBaseController
 
         $data = (new \yii\db\Query())
             ->select([
-                 'a.loan_account_number',
+                'a.loan_account_number',
                 'COUNT(a1.loan_account_number) as total_emis',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
                 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
