@@ -534,7 +534,7 @@ class LoanAccountsController extends ApiBaseController
             ])
             ->from(['a' => LoanAccounts::tableName()])
             ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
-            ->andWhere(['loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->one();
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         $model = $this->_emiAccData($lac)['data'];
