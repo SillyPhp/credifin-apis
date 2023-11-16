@@ -139,10 +139,9 @@ class LoanApplicationsController extends ApiBaseController
 
     public function actionStatusApplicationList()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
         $org_id = $user->organization_enc_id;
 
         if (!$org_id) {
@@ -150,21 +149,20 @@ class LoanApplicationsController extends ApiBaseController
             $org_id = $user_roles->organization_enc_id;
         }
 
-        $data = [];
         if ($params['type'] == 'disbursed') {
-            $data = $this->getList($org_id, ['i.status' => 31]);
+            $where = ['i.status' => 31];
         } else {
-            $data = $this->getList($org_id, ['a.is_removed' => 1]);
+            $where = ['a.is_removed' => 1];
         }
+        $data = $this->getList($org_id, $user, $where);
         $totalCount = $data['count'];
         return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
 
-    private function getList($org_id, $conditions)
+    private function getList($org_id, $user, $conditions)
     {
-        $user = $this->isAuthorized();
+        $params = $this->post;
         $user_id = $user->user_enc_id;
-        $params = Yii::$app->request->post();
         $service = SelectedServices::find()
             ->alias('a')
             ->joinWith(['serviceEnc b'], false)
@@ -185,6 +183,7 @@ class LoanApplicationsController extends ApiBaseController
 
         $list = LoanApplications::find()
             ->alias('a')
+            ->distinct('a.id')
             ->select([
                 'a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number', 'a.amount', 'a.is_removed',
@@ -198,7 +197,8 @@ class LoanApplicationsController extends ApiBaseController
                 'i.bdo_approved_amount',
                 'i.tl_approved_amount',
                 'i.soft_approval', 'i.soft_sanction',
-                'be.location_name as branch', 'be.location_enc_id as branch_id'
+                'be.location_name as branch', 'be.location_enc_id as branch_id',
+                'a.loan_status_updated_on as disbursement_date'
             ])
             ->addSelect([
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -254,6 +254,7 @@ class LoanApplicationsController extends ApiBaseController
                     ->onCondition(['n.is_deleted' => 0]);
             }])
             ->where(['a.is_deleted' => 0, 'j.organization_enc_id' => $org_id])
+            ->orderBy(['a.loan_status_updated_on' => SORT_DESC])
             ->andWhere($conditions);
 
         if (!$org_id && !$leadsAccessOnly) {
@@ -267,7 +268,7 @@ class LoanApplicationsController extends ApiBaseController
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'disbursement_date', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -288,6 +289,8 @@ class LoanApplicationsController extends ApiBaseController
                         // if key is apply_date then checking created_on time
                         if ($key == 'apply_date') {
                             $list->andWhere(['like', 'a.created_on', $val]);
+                        } elseif ($key == 'disbursement_date') {
+                            $list->andWhere(['like', 'a.loan_status_updated_on', $val]);
                         } else {
                             if ($key == 'applicant_name'):
                                 $list->andWhere(['like', 'h.name', $val]);
