@@ -150,10 +150,11 @@ class LoanApplicationsController extends ApiBaseController
         }
 
         if ($params['type'] == 'disbursed') {
-            $data = $this->getList($org_id, $user, ['i.status' => 31]);
+            $where = ['i.status' => 31];
         } else {
-            $data = $this->getList($org_id, $user, ['a.is_removed' => 1]);
+            $where = ['a.is_removed' => 1];
         }
+        $data = $this->getList($org_id, $user, $where);
         $totalCount = $data['count'];
         return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
