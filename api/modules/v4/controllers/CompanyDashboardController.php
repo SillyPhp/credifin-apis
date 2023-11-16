@@ -847,7 +847,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->select([
                     'ANY_VALUE(report_enc_id) report_enc_id', 'ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id', 'd4.loan_co_app_enc_id',
                     'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
-                    'ANY_VALUE(d4.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d4.created_on)) as days_till_now",
+                    'ANY_VALUE(d5.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d5.created_on)) as days_till_now",
                     'ANY_VALUE(d6.request_source) request_source'
                 ])
                 ->from(['d4' => CreditLoanApplicationReports::tableName()])
@@ -966,7 +966,7 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
 
-            if (!$params['user_type'] || $params['user_type'] != 'Financer') {
+            if (!isset($params['user_type']) || $params['user_type'] != 'Financer') {
                 $loan = $loan->andWhere(['a.is_removed' => 0]);
             }
 
@@ -1160,7 +1160,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            if (empty($params['status'])) {
+            if (!isset($params['status']) || $params['status'] == "") {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
             // getting object to update
@@ -2752,7 +2752,7 @@ class CompanyDashboardController extends ApiBaseController
                 if ($model->update()) {
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                    $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['contentType' => $image->type]]);
+                    $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['ContentType' => $image->type]]);
                     if ($result) {
                         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
                     } else {
@@ -3289,7 +3289,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['contentType' => $document->type]]);
+            $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['ContentType' => $document->type]]);
 
             $loan_fi->documents = $documents;
             $loan_fi->documents_location = $documents_location;
@@ -3374,7 +3374,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['contentType' => $logo_image->type]]);
+                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['ContentType' => $logo_image->type]]);
 
                 $logoModel->logo = $logo;
                 $logoModel->logo_location = $logo_location;
