@@ -197,7 +197,8 @@ class LoanApplicationsController extends ApiBaseController
                 'i.bdo_approved_amount',
                 'i.tl_approved_amount',
                 'i.soft_approval', 'i.soft_sanction',
-                'be.location_name as branch', 'be.location_enc_id as branch_id'
+                'be.location_name as branch', 'be.location_enc_id as branch_id',
+                'a.loan_status_updated_on as disbursement_date'
             ])
             ->addSelect([
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -253,6 +254,7 @@ class LoanApplicationsController extends ApiBaseController
                     ->onCondition(['n.is_deleted' => 0]);
             }])
             ->where(['a.is_deleted' => 0, 'j.organization_enc_id' => $org_id])
+            ->orderBy(['a.loan_status_updated_on' => SORT_DESC])
             ->andWhere($conditions);
 
         if (!$org_id && !$leadsAccessOnly) {
@@ -266,7 +268,7 @@ class LoanApplicationsController extends ApiBaseController
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'disbursement_date', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -287,6 +289,8 @@ class LoanApplicationsController extends ApiBaseController
                         // if key is apply_date then checking created_on time
                         if ($key == 'apply_date') {
                             $list->andWhere(['like', 'a.created_on', $val]);
+                        } elseif ($key == 'disbursement_date') {
+                            $list->andWhere(['like', 'a.loan_status_updated_on', $val]);
                         } else {
                             if ($key == 'applicant_name'):
                                 $list->andWhere(['like', 'h.name', $val]);
