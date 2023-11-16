@@ -96,6 +96,25 @@ class EmiCollectionsController extends ApiBaseController
             "SUM(a.remaining_amount) total_sum",
             "a.given_to", "ANY_VALUE(a.received_from) received_from"
         ];
+        $fields_search = [];
+        if (!empty($params['field'])) {
+            foreach ($params['field'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    if ($key === 'employee_code') {
+                        $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
+                    } elseif ($key === 'name') {
+                        $fields_search[] = "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) LIKE '%$value%'";
+                    } elseif ($key === 'reporting_person') {
+                        $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                    } elseif ($key === 'designation') {
+                        $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
+                    } elseif ($key === 'phone') {
+                        $fields_search[] = "ANY_VALUE(b.phone) LIKE '%$value%'";
+                    }
+                }
+            }
+            $fields_search = implode(" AND ", $fields_search);
+        }
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select($select)
@@ -117,11 +136,8 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params["branch_id"])) {
             $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
-        if (!empty($params['keyword'])) {
-            $query->andWhere([
-                'OR',
-                ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
-            ]);
+        if (!empty($fields_search)) {
+            $query->andWhere($fields_search);
         }
         $count = $query->count();
         $query = $query
@@ -153,11 +169,8 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params["branch_id"])) {
             $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
-        if (!empty($params['keyword'])) {
-            $query2->andWhere([
-                'OR',
-                ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
-            ]);
+        if (!empty($fields_search)) {
+            $query2->andWhere($fields_search);
         }
         $query2 = $query2
             ->limit($limit)
