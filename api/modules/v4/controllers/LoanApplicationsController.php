@@ -139,10 +139,9 @@ class LoanApplicationsController extends ApiBaseController
 
     public function actionStatusApplicationList()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
         $org_id = $user->organization_enc_id;
 
         if (!$org_id) {
@@ -150,21 +149,19 @@ class LoanApplicationsController extends ApiBaseController
             $org_id = $user_roles->organization_enc_id;
         }
 
-        $data = [];
         if ($params['type'] == 'disbursed') {
-            $data = $this->getList($org_id, ['i.status' => 31]);
+            $data = $this->getList($org_id, $user, ['i.status' => 31]);
         } else {
-            $data = $this->getList($org_id, ['a.is_removed' => 1]);
+            $data = $this->getList($org_id, $user, ['a.is_removed' => 1]);
         }
         $totalCount = $data['count'];
         return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
 
-    private function getList($org_id, $conditions)
+    private function getList($org_id, $user, $conditions)
     {
-        $user = $this->isAuthorized();
+        $params = $this->post;
         $user_id = $user->user_enc_id;
-        $params = Yii::$app->request->post();
         $service = SelectedServices::find()
             ->alias('a')
             ->joinWith(['serviceEnc b'], false)
@@ -185,6 +182,7 @@ class LoanApplicationsController extends ApiBaseController
 
         $list = LoanApplications::find()
             ->alias('a')
+            ->distinct('a.id')
             ->select([
                 'a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date', 'a.application_number', 'a.amount', 'a.is_removed',
