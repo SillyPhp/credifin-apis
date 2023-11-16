@@ -113,7 +113,7 @@ class EmiCollectionsController extends ApiBaseController
                     }
                 }
             }
-            $fields_search = implode(" OR ", $fields_search);
+            $fields_search = implode(" AND ", $fields_search);
         }
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -135,12 +135,6 @@ class EmiCollectionsController extends ApiBaseController
             ->groupBy(["a.given_to"]);
         if (!empty($params["branch_id"])) {
             $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
-        }
-        if (!empty($params['keyword'])) {
-            $query->andWhere([
-                'OR',
-                ['LIKE', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, ''))", $params['keyword']]
-            ]);
         }
         if (!empty($fields_search)) {
             $query->andWhere($fields_search);
