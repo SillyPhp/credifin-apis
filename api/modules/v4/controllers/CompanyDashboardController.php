@@ -977,7 +977,7 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
 
-            if (!$params['user_type'] || $params['user_type'] != 'Financer') {
+            if (!isset($params['user_type']) || $params['user_type'] != 'Financer') {
                 $loan = $loan->andWhere(['a.is_removed' => 0]);
             }
 
