@@ -4,8 +4,11 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccounts;
 use Exception;
 use Yii;
 use yii\db\Expression;
@@ -82,6 +85,7 @@ class EmiCollectionsController extends ApiBaseController
     public function actionEmiEmployeeStats()
     {
         $this->isAuth();
+        $params = $this->post;
         $limit = !empty($params["limit"]) ? $params["limit"] : 10;
         $page = !empty($params["page"]) ? $params["page"] : 1;
         $select = [
@@ -92,6 +96,25 @@ class EmiCollectionsController extends ApiBaseController
             "SUM(a.remaining_amount) total_sum",
             "a.given_to", "ANY_VALUE(a.received_from) received_from"
         ];
+        $fields_search = [];
+        if (!empty($params['field'])) {
+            foreach ($params['field'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    if ($key === 'employee_code') {
+                        $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
+                    } elseif ($key === 'name') {
+                        $fields_search[] = "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) LIKE '%$value%'";
+                    } elseif ($key === 'reporting_person') {
+                        $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                    } elseif ($key === 'designation') {
+                        $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
+                    } elseif ($key === 'phone') {
+                        $fields_search[] = "ANY_VALUE(b.phone) LIKE '%$value%'";
+                    }
+                }
+            }
+            $fields_search = implode(" AND ", $fields_search);
+        }
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select($select)
@@ -108,15 +131,21 @@ class EmiCollectionsController extends ApiBaseController
                     ["a.remaining_amount" => 0]
                 ],
                 ["a.parent_cash_report_enc_id" => null]
-            ]);
+            ])
+            ->groupBy(["a.given_to"]);
         if (!empty($params["branch_id"])) {
             $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
-        $query = $query->groupBy(["a.given_to"])
+        if (!empty($fields_search)) {
+            $query->andWhere($fields_search);
+        }
+        $count = $query->count();
+        $query = $query
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
         $query = ArrayHelper::index($query, "given_to");
         $query2 = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -135,11 +164,15 @@ class EmiCollectionsController extends ApiBaseController
                 ],
                 ["a.parent_cash_report_enc_id" => null],
                 ["a.status" => 2]
-            ]);
+            ])
+            ->groupBy(["a.cash_report_enc_id"]);
         if (!empty($params["branch_id"])) {
             $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
         }
-        $query2 = $query2->groupBy(["a.cash_report_enc_id"])
+        if (!empty($fields_search)) {
+            $query2->andWhere($fields_search);
+        }
+        $query2 = $query2
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -153,7 +186,7 @@ class EmiCollectionsController extends ApiBaseController
             }
         }
         if ($query) {
-            return $this->response(200, ["status" => 200, "data" => array_values($query)]);
+            return $this->response(200, ["status" => 200, "data" => array_values($query), "count" => $count]);
         }
         return $this->response(404, ["status" => 404, "message" => "no data found"]);
     }
@@ -510,4 +543,126 @@ class EmiCollectionsController extends ApiBaseController
 //            ]
 //        )->execute();
     }
+
+    public function actionAssignLoanIds()
+    {
+        $this->isAuth(2);
+        $emiQuery = EmiCollection::find()
+            ->select(['emi_collection_enc_id', 'loan_account_number'])
+            ->andWhere(['loan_account_enc_id' => NULL])
+            ->indexBy('loan_account_number')
+            ->asArray();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($emiQuery->batch(5) as $batches) {
+                $loanAccountNumbers = array_keys($batches);
+                $find = LoanAccounts::find()
+                    ->select(['loan_account_enc_id', 'loan_account_number'])
+                    ->andWhere(['loan_account_number' => $loanAccountNumbers])
+                    ->indexBy('loan_account_number')
+                    ->asArray()
+                    ->all();
+                foreach ($batches as $batch) {
+                    if (!empty($find[$batch['loan_account_number']])) {
+                        EmiCollection::updateAll([
+                            "updated_on" => date('Y-m-d H:i:s'),
+                            "updated_by" => $this->user->user_enc_id,
+                            "loan_account_enc_id" => $find[$batch['loan_account_number']]['loan_account_enc_id']
+                        ], [
+                            'loan_account_number' => $batch['loan_account_number']
+                        ]);
+                    }
+                }
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            print_r($e->getMessage());
+            exit();
+        }
+    }
+
+//    public function actionUpdatingOverdue()
+//    {
+//        $this->isAuth(2);
+//        $emiQuery = EmiCollection::find()
+//            ->select(["emi_collection_enc_id", "amount", "loan_account_enc_id"])
+//            ->andWhere(["AND",
+//                [">", "created_on", "2023-11-01 00:00:00"],
+//                ["emi_payment_status" => "paid"]
+//            ])
+//            ->indexBy('loan_account_enc_id')
+//            ->asArray();
+//        foreach ($emiQuery->batch() as $batches) {
+//            $loan_ids = array_keys($batches);
+//            $find = LoanAccounts::find()
+//                ->select(['loan_account_enc_id', 'loan_account_number'])
+//                ->andWhere(['loan_account_enc_id' => $loan_ids])
+//                ->indexBy('loan_account_enc_id')
+//                ->asArray()
+//                ->all();
+//            foreach ($batches as $key => $batch) {
+//                if (!empty($find[$key])) {
+//                    $update = LoanAccountsExtended::findOne(["loan_account_enc_id" => $key]);
+//                    $update->updated_on = date('Y-m-d H:i:s');
+//                    $update->updated_by = $this->user->user_enc_id;
+//                    $update->overdue_amount -= $batch['amount'];
+//                    if (!$update->save()) {
+//                        throw new \Exception("error occurred while updating");
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+
+    public function actionUpdatingOverdue2()
+    {
+        $this->isAuth(2);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $emiQuery = EmiCollection::find()
+                ->select(["emi_collection_enc_id", "amount", "loan_account_enc_id"])
+                ->where([">=", "collection_date", "2023-11-01"])
+                ->andWhere([
+                    "AND",
+                    [
+                        "emi_payment_status" => "paid"
+                    ],
+                    [
+                        "NOT",
+                        [
+                            "loan_account_enc_id" => NULL
+                        ]
+                    ]
+                ])
+                ->asArray();
+            foreach ($emiQuery->batch() as $batches) {
+                $loan_ids = array_unique(array_column($batches, 'loan_account_enc_id'));
+                $loanAccountInfo = LoanAccounts::find()
+                    ->select(['loan_account_enc_id', 'loan_account_number'])
+                    ->andWhere(['loan_account_enc_id' => $loan_ids])
+                    ->indexBy('loan_account_enc_id')
+                    ->asArray()
+                    ->all();
+                foreach ($batches as $batch) {
+                    if (!empty($loanAccountInfo[$batch['loan_account_enc_id']])) {
+                        $update = LoanAccounts::findOne(["loan_account_enc_id" => $batch['loan_account_enc_id']]);
+                        $update->updated_on = date('Y-m-d H:i:s');
+                        $update->updated_by = $this->user->user_enc_id;
+                        $update->overdue_amount -= $batch['amount'];
+                        if (!$update->save()) {
+                            throw new \Exception("Error occurred while updating");
+                        }
+                    }
+                }
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            print_r($e->getMessage());
+            exit();
+        }
+    }
+
 }

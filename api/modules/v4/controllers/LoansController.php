@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
 use api\modules\v4\models\CoApplicantForm;
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\LoanPaymentsForm;
 use api\modules\v4\utilities\UserUtilities;
@@ -294,7 +295,7 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id'])
+            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id', 'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id', 'ANY_VALUE(f.amount) amount'])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -308,6 +309,9 @@ class LoansController extends ApiBaseController
             }], false)
             ->asArray()->one();
         if ($model) {
+            if (!empty($model['emi_collection_enc_id']) && $model['amount']) {
+                EmiCollectionForm::updateOverdue($model['emi_collection_enc_id'], $model['amount']);
+            }
             if (!empty($model['user_org_id'])) {
                 $options['org_id'] = $model['user_org_id'];
             } elseif (!empty($model['org_id'])) {
@@ -918,6 +922,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     //action to add borrower as main borrower
     public function actionSetBorrower()
     {
@@ -926,19 +931,20 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['loan_co_app_enc_id'])||empty($params['loan_co_app_enc_id'])){
+        if (empty($params['loan_co_app_enc_id']) || empty($params['loan_co_app_enc_id'])) {
             return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
-        }else{
+        } else {
             $model = new CoApplicantForm();
-            $response = $model->setBorrower($params,$user->user_enc_id);
-            if ($response['status']==200){
-                return $this->response(200, ['status' => 200, 'message' =>$response['message']]);
-            }else{
-                return $this->response(500, ['status' => 500, 'message' =>$response['message']]);
+            $response = $model->setBorrower($params, $user->user_enc_id);
+            if ($response['status'] == 200) {
+                return $this->response(200, ['status' => 200, 'message' => $response['message']]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => $response['message']]);
             }
         }
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
+
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
@@ -1258,7 +1264,7 @@ class LoansController extends ApiBaseController
                         $xpath = new \DOMXPath($doc);
                         $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT';
                         try {
-                        $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                            $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
                             $res[$value['loan_co_app_enc_id']]['crif_score'] = $score;
                         } catch (\Exception $e) {
                         }
