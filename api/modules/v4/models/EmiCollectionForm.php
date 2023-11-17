@@ -363,14 +363,14 @@ class EmiCollectionForm extends Model
                 }
             }
             $update = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
-            if ($update->emi_payment_status != 'paid'){
+            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])){
                 self::updateOverdue($update['loan_account_enc_id'], $update['amount'], $user_id);
             }
             $update->updated_by = $user_id;
             $update->updated_on = date('Y-m-d H:i:s');
             $update->emi_payment_status = 'paid';
             if (!$update->save()) {
-                throw new \Exception("error occurred while updating emi status to approve");
+                throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($update->errors, 0, false)));
             }
         }
     }
