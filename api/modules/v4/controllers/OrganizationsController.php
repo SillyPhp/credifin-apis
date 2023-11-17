@@ -1889,7 +1889,7 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
             $model->andWhere(['a.created_by' => $user->user_enc_id]);
         }
         if (isset($lac)) {
