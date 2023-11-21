@@ -2946,31 +2946,66 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
-            $employeeAmount = LoanApplications::find()
+            $with_condtn = LoanApplications::find()
                 ->alias('b')
                 ->select([
-                    "SUM(b.amount) total_amount",
-                    "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
                     "SUM(CASE WHEN i.status = '4' THEN IF(i.tl_approved_amount, i.tl_approved_amount, IF(i.bdo_approved_amount, i.bdo_approved_amount, b.amount)) ELSE 0 END) as login_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
-                    "SUM(CASE WHEN i.status = '26' THEN i.disbursement_approved ELSE 0 END) as disbursed_approval_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount",
+                    "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
+                    "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
+                    "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
+                    "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
+                    "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
+                    "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
+                ])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                    if (!empty($roleUnderId) || $roleUnderId != null) {
+                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                    }
+                }], false)
+                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+            if ($user->organization_enc_id) {
+                if (!$service) {
+                    $with_condtn->andWhere(['b.lead_by' => $dsa]);
+                }
+            }
+            if (!$user->organization_enc_id && $specialroles == false) {
+                $with_condtn->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+            }
+
+            if ($shared_apps['app_ids']) {
+                $with_condtn->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
+            }
+            if (!empty($params['loan_product'])) {
+                $with_condtn->andWhere(['b.loan_products_enc_id' => $params['loan_product']]);
+            }
+            if (!empty($params['branch_name'])) {
+                $with_condtn->andWhere(['i.branch_enc_id' => $params['branch_name']]);
+            }
+
+            if (isset($params['start_date']) && isset($params['end_date'])) {
+                $with_condtn->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+            }
+            $with_condtn = $with_condtn
+                ->asArray()
+                ->one();
+
+            $without_condth = LoanApplications::find()
+                ->alias('b')
+                ->select([
+                    "SUM(CASE WHEN i.status = '26' THEN i.disbursement_approved ELSE 0 END) as disbursed_approval_amount",
                     "SUM(CASE WHEN i.status = '24' THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount",
                     "SUM(CASE WHEN i.status = '15' THEN i.soft_approval ELSE 0 END) as soft_approval_amount",
                     "SUM(CASE WHEN i.status > '4' AND i.status < '26' THEN b.amount ELSE 0 END) as under_process_amount",
-                    "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
-                    "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
                     "SUM(CASE WHEN i.status = '30' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount",
-                    "COUNT(*) as all_applications_count",
-                    "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
-                    "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
-                    "COUNT(CASE WHEN i.status = '4' THEN b.loan_app_enc_id END) as login_count",
                     "COUNT(CASE WHEN i.status = '15' THEN b.loan_app_enc_id END) as soft_approval_count",
-                    "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
                     "COUNT(CASE WHEN i.status = '30' THEN b.loan_app_enc_id END) as sanctioned_count",
                     "COUNT(CASE WHEN i.status > '4' AND i.status < '26' THEN b.loan_app_enc_id END) as under_process_count",
-                    "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
-                    "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
                     "COUNT(CASE WHEN i.status = '26' THEN b.loan_app_enc_id END) as disbursement_approval_count",
                     "COUNT(CASE WHEN i.status = '24' THEN b.loan_app_enc_id END) as soft_sanction_count"
                 ])
@@ -2986,31 +3021,31 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
             if ($user->organization_enc_id) {
                 if (!$service) {
-                    $employeeAmount->andWhere(['b.lead_by' => $dsa]);
+                    $without_condth->andWhere(['b.lead_by' => $dsa]);
                 }
             }
             if (!$user->organization_enc_id && $specialroles == false) {
-                // else checking lead_by and managed_by by logged-in user
-                $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+                $without_condth->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
             }
 
             if ($shared_apps['app_ids']) {
-                $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
+                $without_condth->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
             if (!empty($params['loan_product'])) {
-                $employeeAmount->andWhere(['b.loan_products_enc_id' => $params['loan_product']]);
+                $without_condth->andWhere(['b.loan_products_enc_id' => $params['loan_product']]);
             }
             if (!empty($params['branch_name'])) {
-                $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
+                $without_condth->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
-            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
-            $employeeAmount = $employeeAmount
-                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+            $without_condth = $without_condth
+                ->andWhere(['<', 'b.loan_status_updated_on', $params['end_date']])
                 ->asArray()
                 ->one();
 
-            return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
+            $combined_data = array_merge($with_condtn, $without_condth);
+
+            return $this->response(200, ['status' => 200, 'data' => $combined_data]);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
