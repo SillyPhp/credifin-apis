@@ -1662,22 +1662,36 @@ class OrganizationsController extends ApiBaseController
             }
         }
         $params = Yii::$app->request->post();
-        if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
-            $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
-            if ($model) {
-                $model->emi_payment_status = $params['status'];
-                $model->updated_by = $user->user_enc_id;
-                $model->updated_on = date('Y-m-d h:i:s');
-                if (!$model->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $update_overdue = false;
+            if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
+                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+                if ($model) {
+                    if ($model->emi_payment_status !== $params['status']) {
+                        $update_overdue = true;
+                    }
+                    $model->emi_payment_status = $params['status'];
+                    $model->updated_by = $user->user_enc_id;
+                    $model->updated_on = date('Y-m-d h:i:s');
+                    if (!$model->save()) {
+                        throw new \Exception('an error occurred while updating');
+                    }
+                    if ($update_overdue) {
+                        EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
+                    }
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
                 }
-                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-            }
-        } else {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
+            } else {
                 $model = new EmiCollectionForm();
                 $model->org_id = $org;
+                if (!empty($params['loan_account_number'])) {
+                    $query = LoanAccountsExtended::findOne(["loan_account_number" => $params['loan_account_number']]);
+                    if ($query) {
+                        $model->loan_account_enc_id = $query['loan_account_enc_id'];
+                    }
+                }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                     return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
                 }
@@ -1687,9 +1701,10 @@ class OrganizationsController extends ApiBaseController
                 $save = $model->save($user->user_enc_id);
                 $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
                 return $this->response($save['status'], $save);
-            } catch (\Exception $exception) {
-                return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
             }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
         }
     }
 
@@ -1824,7 +1839,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['cityEnc b1'], false);
             }], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
-        ->groupBy(['a.loan_account_number'])
+            ->groupBy(['a.loan_account_number'])
             ->asArray()
             ->one();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
@@ -1874,7 +1889,7 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
             $model->andWhere(['a.created_by' => $user->user_enc_id]);
         }
         if (isset($lac)) {
@@ -2395,12 +2410,11 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-
         $params = Yii::$app->request->post();
         $user_type = UserUtilities::getDesignation($user->user_enc_id);
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-
+        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
@@ -2412,16 +2426,30 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"])
             ->joinWith(["assignedCaller ac"])
             ->joinWith(["collectionManager cm"])
-            ->andWhere(["a.is_deleted" => 0]);
+            ->andWhere(["a.is_deleted" => 0])
+            ->orWhere(["OR", [
+                "a.assigned_caller" => $juniors,
+                "a.created_by" => $juniors
+            ]]);
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    $query->andWhere(["like", $key, "$value%", false]);
+                    if ($key == 'assigned_caller') {
+                        $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'collection_manager') {
+                        $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } else {
+                        $query->andWhere(["like", $key, "$value%", false]);
+                    }
                 }
             }
         }
         if ($user_type == "Tele Caller Collection") {
-            $query->andWhere(["a.assigned_caller" => $user->user_enc_id]);
+            $query->andWhere([
+                "OR",
+                ["a.assigned_caller" => $user->user_enc_id],
+                ["a.assigned_caller" => $juniors]
+            ]);
         }
         if (!empty($params["bucket"])) {
             $query->andWhere(["a.bucket" => $params["bucket"]]);

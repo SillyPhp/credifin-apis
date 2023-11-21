@@ -54,6 +54,7 @@ use Yii;
 use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
@@ -374,7 +375,7 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
-                $lpp->joinWith(['financerLoanPurposeEnc lpp1'=>function($lpp1){
+                $lpp->joinWith(['financerLoanPurposeEnc lpp1' => function ($lpp1) {
                     $lpp1->andOnCondition(['lpp1.is_deleted' => 0]);
                 }], false);
             }])
@@ -963,8 +964,13 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(["assignedDisbursementCharges adc" => function ($adc) {
                     $adc->select(["adc.disbursement_charges_enc_id", "adc.amount", "adc.loan_app_enc_id"]);
                 }])
-                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
-                ->limit(1)
+                ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
+
+            if (!isset($params['user_type']) || $params['user_type'] != 'Financer') {
+                $loan = $loan->andWhere(['a.is_removed' => 0]);
+            }
+
+            $loan = $loan->limit(1)
                 ->asArray()
                 ->one();
 
@@ -1154,7 +1160,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            if (empty($params['status'])) {
+            if (!isset($params['status']) || $params['status'] == "") {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
             // getting object to update
@@ -1175,16 +1181,17 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
             if ($loanApp->update() && $provider->update()) {
-
                 $notificationUsers = new UserUtilities();
                 $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
                 $searchable = [$prevStatus, $params['status']];
                 $loanStatus = LoanStatus::find()
+                    ->select(['loan_status', 'value'])
                     ->andWhere(['in', 'value', $searchable])
                     ->asArray()
                     ->all();
+                $loanStatus = ArrayHelper::index($loanStatus, "value");
                 $updated_by = $user->first_name . " " . $user->last_name;
-                $notificationBody = "Status: " . $loanStatus[0]['loan_status'] . " -> " . $loanStatus[1]['loan_status'];
+                $notificationBody = "Status: " . $loanStatus[$prevStatus]['loan_status'] . " -> " . $loanStatus[$params['status']]['loan_status'];
                 if (!empty($userIds)) {
                     $allNotifications = [];
                     foreach ($userIds as $uid) {
@@ -2745,7 +2752,7 @@ class CompanyDashboardController extends ApiBaseController
                 if ($model->update()) {
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                    $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['contentType' => $image->type]]);
+                    $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['ContentType' => $image->type]]);
                     if ($result) {
                         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
                     } else {
@@ -3282,7 +3289,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['contentType' => $document->type]]);
+            $result = $my_space->uploadFileSources($document->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $documents, "public", ['params' => ['ContentType' => $document->type]]);
 
             $loan_fi->documents = $documents;
             $loan_fi->documents_location = $documents_location;
@@ -3367,7 +3374,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['contentType' => $logo_image->type]]);
+                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['ContentType' => $logo_image->type]]);
 
                 $logoModel->logo = $logo;
                 $logoModel->logo_location = $logo_location;

@@ -7,6 +7,7 @@ namespace common\models;
  *
  * @property int $id Primary Key
  * @property string $emi_collection_enc_id Emi Collection Enc Id
+ * @property string $loan_account_enc_id Loan Account Enc Id
  * @property string $branch_enc_id Branch Enc Id
  * @property string $customer_name Customer Name
  * @property string $collection_date Collection Date
@@ -47,6 +48,8 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property OrganizationLocations $branchEnc
+ * @property LoanAccounts $loanAccountEnc
+ * @property EmployeesCashReport[] $employeesCashReports
  */
 class EmiCollection extends \yii\db\ActiveRecord
 {
@@ -69,7 +72,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
             [['emi_payment_status', 'address', 'comments'], 'string'],
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['payment_method'], 'string', 'max' => 30],
             [['other_payment_method', 'dealer_name'], 'string', 'max' => 50],
@@ -78,6 +81,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
+            [['loan_account_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanAccounts::className(), 'targetAttribute' => ['loan_account_enc_id' => 'loan_account_enc_id']],
         ];
     }
 
@@ -111,5 +115,21 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function getBranchEnc()
     {
         return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAccountEnc()
+    {
+        return $this->hasOne(LoanAccounts::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployeesCashReports()
+    {
+        return $this->hasMany(EmployeesCashReport::className(), ['emi_collection_enc_id' => 'emi_collection_enc_id']);
     }
 }
