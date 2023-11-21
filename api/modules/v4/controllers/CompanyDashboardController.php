@@ -2991,6 +2991,7 @@ class CompanyDashboardController extends ApiBaseController
             if (isset($params['start_date']) && isset($params['end_date'])) {
                 $with_condtn->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']]);
             }
+
             $with_condtn = $with_condtn
                 ->asArray()
                 ->one();
@@ -3002,7 +3003,9 @@ class CompanyDashboardController extends ApiBaseController
                     "SUM(CASE WHEN i.status = '24' THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount",
                     "SUM(CASE WHEN i.status = '15' THEN i.soft_approval ELSE 0 END) as soft_approval_amount",
                     "SUM(CASE WHEN i.status > '4' AND i.status < '26' THEN b.amount ELSE 0 END) as under_process_amount",
-                    "SUM(CASE WHEN i.status = '30' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount",
+                    "SUM(CASE WHEN i.status = '30' THEN 
+                    IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) 
+                    as sanctioned_amount",
                     "COUNT(CASE WHEN i.status = '15' THEN b.loan_app_enc_id END) as soft_approval_count",
                     "COUNT(CASE WHEN i.status = '30' THEN b.loan_app_enc_id END) as sanctioned_count",
                     "COUNT(CASE WHEN i.status > '4' AND i.status < '26' THEN b.loan_app_enc_id END) as under_process_count",
@@ -3038,11 +3041,14 @@ class CompanyDashboardController extends ApiBaseController
                 $without_condth->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
             $without_condth = $without_condth
-                ->andWhere(['<', 'b.loan_status_updated_on', $params['end_date']])
+                ->andWhere(['>', 'b.loan_status_updated_on', $params['end_date']])
                 ->asArray()
                 ->one();
 
             $combined_data = array_merge($with_condtn, $without_condth);
+
+            print_r($without_condth);
+            die();
 
             return $this->response(200, ['status' => 200, 'data' => $combined_data]);
 
