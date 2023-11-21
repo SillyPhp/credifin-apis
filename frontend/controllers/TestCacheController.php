@@ -28,8 +28,13 @@ use yii\web\Response;
 class TestCacheController extends Controller
 {
     public function actionSql(){
-        $sql = "CALL GetUserHierarchy('3wVg50vYNo82LkxexgW6QBGKXJmWpO')";
-        $data = Yii::$app->db->createCommand($sql)->queryAll();
-        print_r($data);exit();
+        try {
+            $sql = "CALL GetUserHierarchyDev('EV8KoxNaQZzVDOKPqn9QZp539GLgXD')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+            print_r($data);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+
     }
 }
