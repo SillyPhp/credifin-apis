@@ -1,107 +1,227 @@
 <?php
 
 namespace frontend\controllers;
+use common\models\Categories;
 use common\models\CreditLoanApplicationReports;
-use common\models\EmiCollection;
 use common\models\LoanApplicantResidentialInfo;
-use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
+use common\models\OpenTitles;
+use common\models\User;
+use common\models\Usernames;
+use common\models\UserTypes;
+use frontend\models\applications\Careerjet_API;
+use common\models\AppliedApplications;
+use common\models\Auth;
+use common\models\EducationLoanPayments;
+use common\models\LoanApplications;
+use common\models\Posts;
+use common\models\SkillsUpPostAssignedBlogs;
+use common\models\Users;
+use common\models\EmiCollection;
 use common\models\RandomColors;
-use common\models\spaces\Spaces;
-use phpDocumentor\Reflection\Types\Null_;
-use Razorpay\Api\Api;
+use common\models\Utilities;
+use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
+use yii\web\Response;
 
 class TestCacheController extends Controller
 {
-//    public function actionTokenTest(){
-//        $options['org_id'] = 'R09YXEkaql0a9WWvJ8Y27531Wdo82J';
-//        $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
-//        print_r($keys);
-//    }
-
-    public function actionTokenTest(){
-        $x = $this->generateAllCloudAuthHeader('GET','https://staging.allcloud.in/apiv2phfleasing/api/Customer/GetCustomerByCIFIdAsync/1','');
-        print_r($x);
-    }
-
-    private  function generateAllCloudAuthHeader($requestHttpMethod, $Request_URL, $payload){
+    public function actionTest()
+    {
         try {
-            $returnArr = [];
-
-            $AppId = '4d53bce03ec34c0a911182d4c228ee6c:';
-            $USER_TOKEN = '786df557-a7ed-4368-a491-e931ba349aba';
-            $USER_SECRET = 'b621f322-e85e-47ff-b965-e731a26e5872';
-
-            if(isset($requestHttpMethod) && isset($Request_URL)){
-
-                // Get Request URI
-                $Request_URI = strtolower(urlencode($Request_URL));
-
-                // Get Request Time Stamp
-                $epochStart = date("Y")."-01-01 00:00:00";
-                $currentDateTime = date('Y-m-d H:i:s');
-                $epochStartDate = new \DateTime($epochStart);
-                $currentDate = new \DateTime($currentDateTime);
-                $requestTimeStamp = $currentDate->getTimestamp() - $epochStartDate->getTimestamp();
-
-                // Get Nonce - It should be a new Global unique identifier which is converted to Numeric format
-                $nonce = self::GenerateUniqueId(32);
-
-                if($requestHttpMethod!='GET'){
-                    $requestContentHash = md5($payload,true);
-                    $requestContentBase64String = base64_encode($requestContentHash);
-                }else{
-                    $requestContentBase64String='';
-                }
-
-                // Generate below data for encryption and Generating the Authorization
-                $signatureRawData = $AppId.$requestHttpMethod.$Request_URI.$requestTimeStamp.$nonce.$requestContentBase64String;
-
-                $secretKeyByteArray = $USER_SECRET;
-
-                $signatureBytes = hash_hmac("sha256", $signatureRawData, $secretKeyByteArray, true);
-
-                $requestSignatureBase64String = base64_encode($signatureBytes);
-
-                // Setting the values in the Authorization header using custom scheme (amx)
-                $AllCloudAuthorizationHeader = "amx ".$AppId.":".$requestSignatureBase64String.":".$nonce.":".$requestTimeStamp.":".$USER_TOKEN;
-
-                // Response Array
-                $returnArr = [
-                    'status' => true,'message' => 'Sucess','data' => ['Authorization' => $AllCloudAuthorizationHeader]
-                ];
-
-
-            } else {
-                $returnArr = ['status'=>false, "message" => "Invalid Parameters. Please provide all required parameters to this API."];
+            $model = new Auth();
+            $model->user_id = 12;
+            if (!$model->save()) //model errors
+            {
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
-            return $returnArr;
-        } catch (\Exception $ex) {
-            echo $ex->getMessage();
+            //some kind of err
+        } catch (\Exception $exception) {
+            return $exception->getMessage(); //final messege for user
         }
     }
 
-    private static function GenerateUniqueId($n){
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-
-        for ($i = 0; $i < $n; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomString .= $characters[$index];
+    public function actionBulkEmail($start=0,$end=0){
+        $user_type = UserTypes::findOne([
+            'user_type' => 'Individual',
+        ]);
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id','a.applicant_name','a.email','a.phone'])
+            ->joinWith(['educationLoanPayments b'],false)
+            ->where(['a.created_by'=>null])
+//                ->andWhere(['b.payment_status'=>'captured'])
+            ->asArray()
+            ->all();
+        for ($i=$start;$i<$end;$i++){
+            $username = $this->generate_username($query[$i]['applicant_name'], 10000);
+            $array_name = explode(' ',$query[$i]['applicant_name']);
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['password'] = $query[$i]['phone'];
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $user = new Users([
+                    'username' => $username,
+                    'user_enc_id' => Yii::$app->security->generateRandomString(32),
+                    'first_name' =>$array_name[0],
+                    'last_name' => $array_name[1].(($array_name[2])?$array_name[2]:null),
+                    'email' => $query['email'],
+                    'phone' => $query['phone'],
+                    'password' => $utilitiesModel->encrypt_pass(),
+                    'auth_key' => Yii::$app->security->generateRandomString(8),
+                    'user_type_enc_id' => $user_type->user_type_enc_id,
+                    'status' => 'Active',
+                    'initials_color' => RandomColors::one(),
+                    'is_credential_change' => 1,
+                ]);
+                if ($user->save()) {
+                    $usernamesModel = new Usernames();
+                    $usernamesModel->username = $username;
+                    $usernamesModel->assigned_to = 1;
+                    if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                        $transaction->rollBack();
+                        //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usernamesModel->errors, 0, false)));
+                    }
+                    $loan = LoanApplications::findOne(['loan_app_enc_id'=>$query['loan_app_enc_id']]);
+                    $loan->created_by = $user->user_enc_id;
+                    if (!$loan->save){
+                        $transaction->rollBack();
+                        //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan->errors, 0, false)));
+                    }else{
+                        $params = [];
+                        $params['username'] = $username;
+                        $params['password'] = $query['phone'];
+                        $params['email'] = $query['email'];
+                        $params['name'] = $query['applicant_name'];
+                        echo $this->educationLoanRegister($params);
+                    }
+                }else{
+                    $transaction->rollBack();
+                    //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($user->errors, 0, false)));
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                //return $e;
+            }
         }
-
-        return $randomString;
     }
 
-    public function actionMoveToBorrower($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+    private function generate_username($string_name=null, $rand_no = 200){
+        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
+        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+
+        $part1 = (!empty($username_parts[0]))?substr($username_parts[0], 0,8):""; //cut first name to 8 letters
+        $part2 = (!empty($username_parts[1]))?substr($username_parts[1], 0,5):""; //cut second name to 5 letters
+        $part3 = ($rand_no)?rand(0, $rand_no):"";
+
+        $username = $part1. str_shuffle($part2). $part3; //str_shuffle to randomly shuffle all characters
+        return $username;
+    }
+
+    public function actionApplicationStatusEmail(){
+        $params = AppliedApplications::find()
+            ->alias('a')
+            ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
+            ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
+            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
+            ->asArray()
+            ->all();
+        $k = 0;
+        foreach ($params as $param){
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose(
+                ['html' => 'job-process-status'],['data'=>$param]
+            )
+                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                ->setTo([$param['email'] => $param['name']])
+                ->setSubject('Your Job Application Has Been Accepted');
+            if ($mail->send()) {
+                $k++;
+            }
+        }
+        echo $k;
+    }
+    public function actionMoveTitles($limit=50, $offset=0){
+        $_flag = false;
+        $model = OpenTitles::find()
+            ->select(['title_enc_id','name'])
+            ->where(['is_deleted' => 0])
+            ->limit($limit)
+            ->offset($offset)
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if($model) {
+            foreach ($model as $m) {
+                $category = Categories::find()
+                    ->where(['name' => $m->name])
+                    ->asArray()
+                    ->one();
+                if (empty($category)) {
+                    $category = new Categories();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $category->category_enc_id = $m->title_enc_id;
+                    $category->name = $m->name;
+                    $utilitiesModel->variables['name'] = $category->name;
+                    $utilitiesModel->variables['table_name'] = Categories::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $category->slug = $utilitiesModel->create_slug();
+                    $category->source = 1;
+                    $category->created_on = date('Y-m-d H:i:s');
+                    $category->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($category->save()) {
+                        $_flag = true;
+                    } else {
+                        $_flag = false;
+                    }
+                }
+                $titleModel = OpenTitles::findOne(['title_enc_id' => $m->title_enc_id]);
+                $titleModel->is_deleted = 1;
+                $titleModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                $titleModel->last_updated_on = date('Y-m-d H:i:s');
+                if($titleModel->save()){
+                    $_flag = true;
+                } else {
+                    $_flag = false;
+                }
+            }
+            if($_flag){
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Data Move Successfully'
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'title' => 'Oops!!',
+                    'message' => 'Something went wrong...'
+                ];
+            }
+        } else {
+            return [
+                'status' => 201,
+                'title' => 'Oops!!',
+                'message' => 'Data Not Found'
+            ];
+        }
+    }
+
+    public function actionMoveToBorrower($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01', $app_number = null){
         try {
             $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
+            $model = LoanApplications::find();
+            if ($app_number) {
+                $model = $model->where(['application_number'=> $app_number]);
+            } else {
+                $model = $model->where(['between','created_on',$start,$end]);
+            }
+            $model = $model->limit($limit)
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
 
@@ -147,14 +267,22 @@ class TestCacheController extends Controller
             return $exception->getMessage();
         }
     }
-    public function actionMoveResidence($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+    public function actionMoveResidence($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01', $app_number = null){
         try {
             $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
+            $model = LoanApplications::find();
+            if ($app_number) {
+                $model = $model->where(['application_number'=> $app_number]);
+            } else {
+                $model = $model->where(['between','created_on',$start,$end]);
+            }
+            $model = $model->limit($limit)
+              //  ->select(['count(id)'])
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
+//            print_r($model);
+//            die();
             $transaction = Yii::$app->db->beginTransaction();
             $count = 0;
             foreach ($model as $mod) {
@@ -182,14 +310,20 @@ class TestCacheController extends Controller
         }
     }
 
-    public function actionMoveCredits($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
+    public function actionMoveCredits($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01', $app_number = null){
         try {
             $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
+            $model = LoanApplications::find();
+            if ($app_number) {
+                $model = $model->where(['application_number'=> $app_number]);
+            } else {
+                $model = $model->where(['between','created_on',$start,$end]);
+            }
+            $model = $model->limit($limit)
+                ->andWhere(['not', ['is_deleted' => 2]])
                 ->offset($offset)
                 ->asArray()->all();
+
             $transaction = Yii::$app->db->beginTransaction();
             $count = 0;
             foreach ($model as $mod) {
@@ -216,5 +350,4 @@ class TestCacheController extends Controller
             return $exception->getMessage();
         }
     }
-
 }

@@ -267,7 +267,7 @@ class UserUtilities
             ->alias('a')
             ->select(['c.user_enc_id'])
             ->joinWith(['providerEnc b' => function ($b) {
-                $b->joinWith(['userEncs0 c'], false);
+                $b->joinWith(['userEncs c'], false);
             }], false)
             ->where(['a.loan_application_enc_id' => $loan_id])
             ->asArray()
@@ -280,6 +280,18 @@ class UserUtilities
         $ids[] = $financerId['user_enc_id'];
 
         return $ids;
+    }
+    public static function getDesignation($user_id)
+    {
+        $role = UserRoles::find()
+            ->alias('a')
+            ->select(["ANY_VALUE(b.designation) AS designation"])
+            ->andWhere(['a.is_deleted' => 0])
+            ->joinWith(['designation b'], false)
+            ->where(['user_enc_id' => $user_id])
+            ->asArray()
+            ->one();
+        return $role['designation'];
     }
 
     public function saveNotification($allNotifications)

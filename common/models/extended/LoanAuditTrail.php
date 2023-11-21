@@ -16,7 +16,7 @@ use yii\db\ActiveRecord;
  * @var string $stamp
  * @var integer $user_id
  * @var string $model_id
- * @var string $loan_id
+ * @var string $foreign_id
  */
 class LoanAuditTrail extends ActiveRecord
 {
@@ -71,7 +71,7 @@ class LoanAuditTrail extends ActiveRecord
             'stamp' => Yii::t('loanaudittrail','Stamp'),
             'user_id' => Yii::t('loanaudittrail','User'),
             'model_id' => Yii::t('loanaudittrail','ID'),
-            'loan_id' => Yii::t('loanaudittrail', 'Loan ID'),
+            'foreign_id' => Yii::t('loanaudittrail', 'Foreign ID'),
         ];
     }
 
@@ -87,7 +87,7 @@ class LoanAuditTrail extends ActiveRecord
             ['field', 'string', 'max' => 255],
             ['model_id', 'string', 'max' => 255],
             ['user_id', 'string', 'max' => 255],
-            ['loan_id', 'string', 'max' => 255],
+            ['foreign_id', 'string', 'max' => 255],
             [['old_value', 'new_value'], 'safe']
         ];
     }
@@ -99,7 +99,7 @@ class LoanAuditTrail extends ActiveRecord
 
     public function getUser()
     {
-        if(isset(Yii::$app->params['loanaudittrail.model']) && isset(Yii::$app->params['loanaudittrail.model'])){
+        if (isset(Yii::$app->params['loanaudittrail.model'])) {
             return $this->hasOne(Yii::$app->params['loanaudittrail.model'], ['id' => 'user_id']);
         } else {
             return $this->hasOne('common\models\Users', ['id' => 'user_id']);
@@ -109,13 +109,14 @@ class LoanAuditTrail extends ActiveRecord
     public function getLoan()
     {
         if(isset(Yii::$app->params['audittrail.model']) && isset(Yii::$app->params['audittrail.model'])){
-            return $this->hasOne(Yii::$app->params['audittrail.model'], ['loan_app_enc_id' => 'loan_id']);
+            return $this->hasOne(Yii::$app->params['audittrail.model'], ['loan_app_enc_id' => 'foreign_id']);
         }else{
-            return $this->hasOne('common\models\LoanApplications', ['loan_app_enc_id' => 'loan_id']);
+            return $this->hasOne('common\models\LoanApplications', ['loan_app_enc_id' => 'foreign_id']);
         }
     }
 
-    public function getParent(){
+    public function getParent()
+    {
         $model_name =
             (
             isset(Yii::$app->params['audittrail.FQNPrefix']) &&
@@ -125,6 +126,5 @@ class LoanAuditTrail extends ActiveRecord
             ) . $this->model;
         return new $model_name;
     }
-}
 
-?>
+}

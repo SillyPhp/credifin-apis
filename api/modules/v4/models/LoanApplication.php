@@ -898,6 +898,7 @@ class LoanApplication extends Model
             ->select(['a.city_enc_id', 'a.organization_code', 'b.city_code'])
             ->where(['a.location_enc_id' => $branch_id])
             ->joinWith(['cityEnc b'], false)
+            ->limit(1)
             ->asArray()
             ->one();
         $branchCode = $branch_code['organization_code'];
@@ -933,12 +934,12 @@ class LoanApplication extends Model
         $incremental = LoanApplications::find()
             ->alias('a')
             ->select(['a.application_number'])
-            // ->where(['like', 'a.application_number', $loanAccountNumber . '%', false])
             ->where(['AND',
                 ['LIKE', 'application_number', $loan_num['product_code'] . '-'],
                 ['LIKE', 'application_number', $cityCode . $branchCode],
                 ['LIKE', 'application_number', '-' . $currentMonth . $currentYear]])
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->limit(1)
             ->one();
 
         if ($incremental) {
@@ -951,6 +952,7 @@ class LoanApplication extends Model
         } else {
             return "$loanAccountNumber-001";
         }
+
     }
 
     public function updateLoanAccountPurpose($options)

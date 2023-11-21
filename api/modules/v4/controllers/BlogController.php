@@ -53,7 +53,10 @@ class BlogController extends ApiBaseController
         $posts = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.featured_image_alt', 'featured_image_title', 'a.title', 'a.slug', 'a.excerpt',
-                'CASE WHEN a.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) END featured_image'])
+                "CASE 
+                    WHEN a.featured_image IS NOT NULL 
+                        THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image, 'https') . "', a.featured_image_location, '/', a.featured_image) 
+                    END featured_image"])
             ->joinWith(['postTags b' => function ($b) {
                 $b->joinWith(['tagEnc c']);
                 $b->onCondition(['b.is_deleted' => 0]);

@@ -2,8 +2,12 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\CreditLoanApplicationReports;
+use common\models\EmiCollection;
+use common\models\EmployeesCashReport;
+use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\LoanApplications;
 use Yii;
@@ -67,6 +71,7 @@ class TestController extends ApiBaseController
                 "a.amount",
                 "a.number_of_emis",
                 "a.roi",
+                "a.applicant_dob",
                 "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
                 "b.disbursement_approved",
                 "b.insurance_charges",
@@ -134,6 +139,33 @@ class TestController extends ApiBaseController
             }
         }
         return $this->response(200, ["status" => 200, "data" => $query]);
+    }
+
+    public function actionShift()
+    {
+        Yii::$app->db->createCommand("UPDATE lJCWPnNNVy3d95ppLp7M_emi_collection set emi_payment_status = 'pending' where emi_payment_method in (4,81)")->execute();
+        Yii::$app->db->createCommand("TRUNCATE `lJCWPnNNVy3d95ppLp7M_employees_cash_report`")->execute();
+        $emis = EmiCollectionExtended::find()
+            ->alias("a")
+            ->select(["a.emi_collection_enc_id", "a.amount", "a.created_by"])
+            ->andWhere([
+                "AND",
+                ["a.emi_payment_method" => [4, 81]],
+                ["a.emi_payment_status" => "pending"],
+                ["a.is_deleted" => 0],
+            ])
+            ->asArray()
+            ->all();
+        foreach ($emis as $emi) {
+            $check = EmployeesCashReport::findOne(["emi_collection_enc_id" => $emi["emi_collection_enc_id"]]);
+            if (!$check) {
+                $trackCash["user_id"] = $trackCash["given_to"] = $emi["created_by"];
+                $trackCash["amount"] = $emi["amount"];
+                $trackCash["emi_id"] = $emi["emi_collection_enc_id"];
+                EmiCollectionForm::collect_cash($trackCash);
+            }
+        }
+
     }
 
     private function CreditReports($loan_id)
