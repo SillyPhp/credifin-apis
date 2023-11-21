@@ -528,7 +528,7 @@ class LoanAccountsController extends ApiBaseController
         $data = (new \yii\db\Query())
             ->select([
                 'a.loan_account_number',
-                'COUNT(a1.loan_account_number) as total_emis',
+                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
                 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
             ])
