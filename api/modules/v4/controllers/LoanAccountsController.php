@@ -476,7 +476,8 @@ class LoanAccountsController extends ApiBaseController
 
         $data = LoanActionRequests::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
+            ->select([
+                'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
                 'a.request_image', 'a.request_image_location', 'a.created_on',
                 "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as created_by_name", 'b.image_location', 'b.image',
                 "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END createdby_image",
@@ -593,6 +594,7 @@ class LoanAccountsController extends ApiBaseController
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
