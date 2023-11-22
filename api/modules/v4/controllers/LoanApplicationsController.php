@@ -234,7 +234,7 @@ class LoanApplicationsController extends ApiBaseController
                 $i->joinWith(['providerEnc j']);
                 // if loans service exists then using andWhere with provider_enc_id
                 if ($service) {
-                    $i->andWhere(['i.status' => 31, 'i.provider_enc_id' => $org_id]);
+                    $i->andWhere(['i.is_deleted' => 0, 'i.provider_enc_id' => $org_id]);
                 }
                 if (!empty($roleUnderId) || $roleUnderId != null) {
                     $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
@@ -254,8 +254,8 @@ class LoanApplicationsController extends ApiBaseController
                     ->onCondition(['n.is_deleted' => 0]);
             }])
             ->where(['a.is_deleted' => 0, 'j.organization_enc_id' => $org_id])
-            ->orderBy(['a.loan_status_updated_on' => SORT_DESC])
-            ->andWhere($conditions);
+            ->andWhere($conditions)
+            ->orderBy(['a.loan_status_updated_on' => SORT_DESC]);
 
         if (!$org_id && !$leadsAccessOnly) {
             // else checking lead_by and managed_by by logged-in user
