@@ -300,7 +300,8 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.remaining_amount", "a.reference_number", "a.emi_collection_enc_id", "a.cash_report_enc_id",
-                "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->cash_report->image . "', a.image_location, '/', a.image) AS receipt"
+                "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->cash_report->image . "', a.image_location, '/', a.image) AS receipt",
+                "a.created_on"
             ])
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([

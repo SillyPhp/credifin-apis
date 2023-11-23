@@ -2417,12 +2417,14 @@ class OrganizationsController extends ApiBaseController
         $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
-            ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
+            ->select([
+                "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"])
+                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+            ])
             ->joinWith(["branchEnc b"])
             ->joinWith(["assignedCaller ac"])
             ->joinWith(["collectionManager cm"])
@@ -2438,6 +2440,8 @@ class OrganizationsController extends ApiBaseController
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'branch_name') {
+                        $query->andWhere(["like", "b.location_name", "$value%", false]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }
