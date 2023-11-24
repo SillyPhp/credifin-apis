@@ -657,10 +657,9 @@ class CompanyDashboardController extends ApiBaseController
 
         $loans = $loans
             ->limit($limit)
-            ->offset(($page - 1) * $limit)->createCommand()->getRawSql();
-           // ->asArray()
-            //->all();
-        return $loans;
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
         if ($loans) {
             foreach ($loans as $key => $val) {
                 $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
