@@ -343,7 +343,6 @@ class CompanyDashboardController extends ApiBaseController
                 'a.amount_received',
                 'a.amount_due',
                 'a.scholarship',
-                'a.loan_type',
                 'a.loan_products_enc_id',
                 'a.years',
                 'a.phone',
@@ -410,25 +409,7 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
-            }])
-            ->andWhere([
-                'or',
-                [
-                    'and',
-                    ['a.loan_type' => 'Loan Against Property'],
-                    ['>=', 'a.loan_status_updated_on', '2023-06-01 00:00:00']
-                ],
-                [
-                    'and',
-                    ['not', ['a.loan_type' => 'Loan Against Property']],
-                    ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
-                ],
-                [
-                    'or',
-                    ['a.loan_type' => null],
-                    ['a.loan_type' => '']
-                ]
-            ]);
+            }]);
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -676,10 +657,10 @@ class CompanyDashboardController extends ApiBaseController
 
         $loans = $loans
             ->limit($limit)
-            ->offset(($page - 1) * $limit)
-            ->asArray()
-            ->all();
-
+            ->offset(($page - 1) * $limit)->createCommand()->getRawSql();
+           // ->asArray()
+            //->all();
+        return $loans;
         if ($loans) {
             foreach ($loans as $key => $val) {
                 $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
