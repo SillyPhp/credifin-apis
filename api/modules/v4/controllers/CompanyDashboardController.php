@@ -417,13 +417,9 @@ class CompanyDashboardController extends ApiBaseController
         if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-        }
-
-        // if shared app_ids exists then also getting data for those applications
-        if ($shared_apps['app_ids']) {
+            // if shared app_ids exists then also getting data for those applications
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
-
         // if all, rejected or disbursed data needed
         if (isset($params['type'])) {
             switch ($params['type']) {
