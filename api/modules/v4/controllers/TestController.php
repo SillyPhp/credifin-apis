@@ -141,33 +141,6 @@ class TestController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
-    public function actionShift()
-    {
-        Yii::$app->db->createCommand("UPDATE lJCWPnNNVy3d95ppLp7M_emi_collection set emi_payment_status = 'pending' where emi_payment_method in (4,81)")->execute();
-        Yii::$app->db->createCommand("TRUNCATE `lJCWPnNNVy3d95ppLp7M_employees_cash_report`")->execute();
-        $emis = EmiCollectionExtended::find()
-            ->alias("a")
-            ->select(["a.emi_collection_enc_id", "a.amount", "a.created_by"])
-            ->andWhere([
-                "AND",
-                ["a.emi_payment_method" => [4, 81]],
-                ["a.emi_payment_status" => "pending"],
-                ["a.is_deleted" => 0],
-            ])
-            ->asArray()
-            ->all();
-        foreach ($emis as $emi) {
-            $check = EmployeesCashReport::findOne(["emi_collection_enc_id" => $emi["emi_collection_enc_id"]]);
-            if (!$check) {
-                $trackCash["user_id"] = $trackCash["given_to"] = $emi["created_by"];
-                $trackCash["amount"] = $emi["amount"];
-                $trackCash["emi_id"] = $emi["emi_collection_enc_id"];
-                EmiCollectionForm::collect_cash($trackCash);
-            }
-        }
-
-    }
-
     private function CreditReports($loan_id)
     {
         $credit_report = CreditLoanApplicationReports::find()
