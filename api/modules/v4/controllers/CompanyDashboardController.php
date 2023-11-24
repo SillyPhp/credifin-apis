@@ -344,6 +344,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.amount_due',
                 'a.scholarship',
                 'a.loan_products_enc_id',
+                'a.loan_type',
                 'a.years',
                 'a.phone',
                 'a.email',
