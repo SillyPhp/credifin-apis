@@ -214,7 +214,7 @@ class CompanyDashboardController extends ApiBaseController
             $loans = $this->__getApplications($user, $params);
             $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200,'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -344,6 +344,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.amount_due',
                 'a.scholarship',
                 'a.loan_products_enc_id',
+                'a.loan_type',
                 'a.years',
                 'a.phone',
                 'a.email',
@@ -420,13 +421,9 @@ class CompanyDashboardController extends ApiBaseController
         if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-        }
-
-        // if shared app_ids exists then also getting data for those applications
-        if ($shared_apps['app_ids']) {
+            // if shared app_ids exists then also getting data for those applications
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
-
         // if all, rejected or disbursed data needed
         if (isset($params['type'])) {
             switch ($params['type']) {
@@ -654,12 +651,15 @@ class CompanyDashboardController extends ApiBaseController
         }
         $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
         $count = $loans->count();
-
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
+
+
+
         if ($loans) {
             foreach ($loans as $key => $val) {
                 $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
