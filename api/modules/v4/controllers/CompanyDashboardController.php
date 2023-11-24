@@ -214,7 +214,7 @@ class CompanyDashboardController extends ApiBaseController
             $loans = $this->__getApplications($user, $params);
             $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200,'sql'=>$loans['sqlRaw'], 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -651,12 +651,20 @@ class CompanyDashboardController extends ApiBaseController
         }
         $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
         $count = $loans->count();
-
+        $sqlRaw = $loans
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)->createCommand()->getRawSql();
+//            ->asArray()
+//            ->all();
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
+
+
+
         if ($loans) {
             foreach ($loans as $key => $val) {
                 $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
@@ -711,7 +719,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        return ['loans' => $loans, 'count' => $count];
+        return ['loans' => $loans,'sqlRaw'=>$sqlRaw, 'count' => $count];
     }
 
 
