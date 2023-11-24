@@ -242,9 +242,6 @@ class CompanyDashboardController extends ApiBaseController
 
             // assigning status
             $status = $params['status'];
-            if (!empty($params['fields_search']['status'])) {
-                $status = [$params['fields_search']['status']];
-            }
 
             // getting loan application by loan_status
             $loan_status = [];
@@ -511,7 +508,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -522,23 +519,31 @@ class CompanyDashboardController extends ApiBaseController
             // fields array for "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
 
+
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
-
                 if (!empty($val) || $val == '0') {
                     // key match to "a" table array
                     if (in_array($key, $a)) {
 
-                        // if key is apply_date then checking created_on time
-                        if ($key == 'apply_date') {
-                            $loans->andWhere(['like', 'a.created_on', $val]);
-                        } else {
-                            if ($key == 'applicant_name') :
+                        switch ($key) {
+                            case 'loan_products_enc_id':
+                                $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'apply_date':
+                                $loans->andWhere(['like', 'a.created_on', $val]);
+                                break;
+                            case 'applicant_name':
                                 $loans->andWhere(['like', 'h.name', $val]);
-                            else :
-                                // else checking other fields with their names
+                                break;
+                            case 'start_date':
+                                $loans->andWhere(['>=', 'a.created_on', $val]);
+                                break;
+                            case 'end_date':
+                                $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
-                            endif;
                         }
                     }
 
@@ -553,7 +558,7 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $i)) {
                         switch ($key) {
                             case 'branch':
-                                $loans->andWhere(['like', 'i.branch_enc_id', $val]);
+                                $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
                                 break;
                             case 'status':
                                 $loans->andWhere(['i.status' => $val]);
