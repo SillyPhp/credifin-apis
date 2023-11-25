@@ -242,9 +242,6 @@ class CompanyDashboardController extends ApiBaseController
 
             // assigning status
             $status = $params['status'];
-            if (!empty($params['fields_search']['status'])) {
-                $status = [$params['fields_search']['status']];
-            }
 
             // getting loan application by loan_status
             $loan_status = [];
@@ -404,7 +401,7 @@ class CompanyDashboardController extends ApiBaseController
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
                     "CASE WHEN n1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', n1.image_location, '/', n1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(n1.first_name,' ',n1.last_name), '&size=200&rounded=false&background=', REPLACE(n1.initials_color, '#', ''), '&color=ffffff') END image"
                 ])
-                    ->joinWith(['sharedTo n1'  => function ($n1) {
+                    ->joinWith(['sharedTo n1' => function ($n1) {
                         $n1->joinWith(["userRoles0 n1a" => function ($n1a) {
                             $n1a->joinWith(["designation n1b"]);
                         }], false);
@@ -489,7 +486,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -500,23 +497,31 @@ class CompanyDashboardController extends ApiBaseController
             // fields array for "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
 
+
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
-
                 if (!empty($val) || $val == '0') {
                     // key match to "a" table array
                     if (in_array($key, $a)) {
 
-                        // if key is apply_date then checking created_on time
-                        if ($key == 'apply_date') {
-                            $loans->andWhere(['like', 'a.created_on', $val]);
-                        } else {
-                            if ($key == 'applicant_name') :
+                        switch ($key) {
+                            case 'loan_products_enc_id':
+                                $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'apply_date':
+                                $loans->andWhere(['like', 'a.created_on', $val]);
+                                break;
+                            case 'applicant_name':
                                 $loans->andWhere(['like', 'h.name', $val]);
-                            else :
-                                // else checking other fields with their names
+                                break;
+                            case 'start_date':
+                                $loans->andWhere(['>=', 'a.created_on', $val]);
+                                break;
+                            case 'end_date':
+                                $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
-                            endif;
                         }
                     }
 
@@ -531,7 +536,7 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $i)) {
                         switch ($key) {
                             case 'branch':
-                                $loans->andWhere(['like', 'i.branch_enc_id', $val]);
+                                $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
                                 break;
                             case 'status':
                                 $loans->andWhere(['i.status' => $val]);
@@ -859,8 +864,16 @@ class CompanyDashboardController extends ApiBaseController
                     'ANY_VALUE(i2.abbreviation) state_abbreviation', 'ANY_VALUE(i2.state_code) state_code', 'ANY_VALUE(i.postal_code) postal_code',
                     'ANY_VALUE(i.address) address', 'ANY_VALUE(k.access) access', 'lp.name as loan_product', "(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee", 'a.loan_products_enc_id',
                     'de.name as dealer_name', "(CASE WHEN de.logo IS NULL OR de.logo = '' THEN CONCAT('https://ui-avatars.com/api/?name=', de.name, '&size=200&rounded=false&background=', REPLACE(de.initials_color, '#', ''), '&color=ffffff') ELSE CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "', de.logo_location, '/', de.logo) END) dealer_logo",
+                    'ANY_VALUE(lpo.engine_number) as engine_number', 'ANY_VALUE(lpo.model_year) as model_year',
+                    'ANY_VALUE(lpo.ex_showroom_price) as ex_showroom_price', 'ANY_VALUE(lpo.on_road_price) as on_road_price',
+                    'ANY_VALUE(lpo.margin_money) as margin_money', 'ANY_VALUE(lpo.ltv) as ltv',
+                    'ANY_VALUE(lpo.name_of_company) as name_of_company',
+                    'ANY_VALUE(lpo.policy_number) as policy_number', 'ANY_VALUE(lpo.valid_till) as valid_till',
+                    'ANY_VALUE(lpo.payable_value) as payable_value', 'ANY_VALUE(lpo.field_officer) as field_officer',
+                    'ANY_VALUE(lpo.emi_amount) as emi_amount',
                 ])
                 ->joinWith(['leadBy cr'], false)
+                ->joinWith(['loanApplicationOptions lpo'], false)
                 ->joinWith(['assignedDealer de'], false)
                 ->joinWith(['loanProductsEnc lpe'], false)
                 ->joinWith(['capitalRoiUpdatedBy ub'], false)
@@ -925,7 +938,7 @@ class CompanyDashboardController extends ApiBaseController
                         'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
 
                         "CASE WHEN k1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', k1.image_location, '/', k1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(k1.first_name,' ',k1.last_name), '&size=200&rounded=false&background=', REPLACE(k1.initials_color, '#', ''), '&color=ffffff') END image"
-                    ])->joinWith(['sharedTo k1'  => function ($k1) {
+                    ])->joinWith(['sharedTo k1' => function ($k1) {
                         $k1->joinWith(["userRoles0 k1a" => function ($k1a) {
                             $k1a->joinWith(["designation k1b"], false);
                         }]);
