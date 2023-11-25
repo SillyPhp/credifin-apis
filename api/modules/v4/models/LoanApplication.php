@@ -32,6 +32,7 @@ use phpDocumentor\Reflection\Types\Null_;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
+use yii\db\Exception;
 
 class LoanApplication extends Model
 {
@@ -235,8 +236,8 @@ class LoanApplication extends Model
             $loanCoApplicants->aadhaar_number = $this->aadhaar_number;
             $loanCoApplicants->pan_number = $this->pan_number;
             if (!$loanCoApplicants->save()) {
-            $transaction->rollback();
-            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
+                $transaction->rollback();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
             }
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
@@ -810,39 +811,15 @@ class LoanApplication extends Model
 
     public static function getting_reporting_ids($user_id, $type = 0)
     {
-        // type 1 for child reporting persons and 0(default) for parent reporting persons
-        $rep = $type ? 'user_enc_id' : 'reporting_person';
-        $user = $type ? 'reporting_person' : 'user_enc_id';
-
-        $marked = [];
-        $data = [];
-        while (true) {
-            if (in_array($user_id, $marked)) {
-                break;
-            }
-
-            $marked[] = $user_id;
-
-            $query = UserRoles::find()
-                ->alias('a')
-                ->select(['a.' . $rep])
-                ->where(['a.' . $user => $user_id, 'a.is_deleted' => 0])
-                ->asArray()
-                ->one();
-
-            if (!empty($query[$rep])) {
-                $user_id = $query[$rep];
-                if (!in_array($user_id, $data)) {
-                    $data[] = $user_id;
-                } else {
-                    // Reporting person already exists in the data array, break the loop
-                    break;
-                }
-            } else {
-                return $data;
-            }
+        if (!$type) {
+            $sql = "CALL GetHierarchyUpward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+        } else {
+            $sql = "CALL GetHierarchyDownward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+            $data[]['user_enc_id'] = $user_id;
         }
-        return $data;
+        return array_column($data, 'user_enc_id');
     }
 
     private function share_leads($user_id, $loan_id)
