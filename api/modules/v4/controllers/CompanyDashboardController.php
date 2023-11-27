@@ -214,7 +214,7 @@ class CompanyDashboardController extends ApiBaseController
             $loans = $this->__getApplications($user, $params);
             $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200,'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -655,8 +655,6 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
 
 
-
-
         if ($loans) {
             foreach ($loans as $key => $val) {
                 $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
@@ -798,51 +796,52 @@ class CompanyDashboardController extends ApiBaseController
     public function actionLoanDetail()
     {
         // checking user authorization
-        if ($user = $this->isAuthorized()) {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
 
-            // getting date before 1 month
-            $date = new \DateTime('now');
-            //            $date->modify('-30 day'); // or you can use '-90 day' for deduct
-            $date = $date->format('Y-m-d H:i:s');
+        // getting date before 1 month
+        $date = new \DateTime('now');
+        //            $date->modify('-30 day'); // or you can use '-90 day' for deduct
+        $date = $date->format('Y-m-d H:i:s');
 
-            $params = Yii::$app->request->post();
 
-            // getting provider/financer id
-            if (isset($params['provider_id']) && !empty($params['provider_id'])) :
-                $provider_id = $params['provider_id'];
-            else :
-                $provider_id = $this->getFinancerId($user);
-            endif;
+        // getting provider/financer id
+        if (isset($params['provider_id']) && !empty($params['provider_id'])) :
+            $provider_id = $params['provider_id'];
+        else :
+            $provider_id = $this->getFinancerId($user);
+        endif;
 
-            // if not found provider id
-            if ($provider_id == null) {
-                return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
-            }
+        // if not found provider id
+        if ($provider_id == null) {
+            return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
+        }
 
-            // if loan_id empty
-            if (empty($params["loan_id"])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-            }
+        // if loan_id empty
+        if (empty($params["loan_id"])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
 
-            $subquery = (new \yii\db\Query())
-                ->select([
-                    'ANY_VALUE(report_enc_id) report_enc_id', 'ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id', 'd4.loan_co_app_enc_id',
-                    'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
-                    'ANY_VALUE(d5.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d5.created_on)) as days_till_now",
-                    'ANY_VALUE(d6.request_source) request_source'
-                ])
-                ->from(['d4' => CreditLoanApplicationReports::tableName()])
-                ->join('INNER JOIN', ['d5' => CreditResponseData::tableName()], 'd5.response_enc_id = d4.response_enc_id')
-                ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
-                ->orderBy(['created_on' => SORT_DESC])
-                ->andWhere(['d4.is_deleted' => 0]);
-            $alp = (new \yii\db\Query())
-                ->select([
-                    'p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount'
-                ])
-                ->from(['p' => AssignedLoanPayments::tableName()])
-                ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
-                ->orderBy(['p1.created_on' => SORT_DESC]);
+        $subquery = (new \yii\db\Query())
+            ->select([
+                'ANY_VALUE(report_enc_id) report_enc_id', 'ANY_VALUE(d4.loan_app_enc_id) loan_app_enc_id', 'd4.loan_co_app_enc_id',
+                'ANY_VALUE(d5.file_url) file_url', 'ANY_VALUE(d5.filename) filename',
+                'ANY_VALUE(d5.created_on) created_on', "DATEDIFF('" . $date . "', ANY_VALUE(d5.created_on)) as days_till_now",
+                'ANY_VALUE(d6.request_source) request_source'
+            ])
+            ->from(['d4' => CreditLoanApplicationReports::tableName()])
+            ->join('INNER JOIN', ['d5' => CreditResponseData::tableName()], 'd5.response_enc_id = d4.response_enc_id')
+            ->join('INNER JOIN', ['d6' => CreditRequestedData::tableName()], 'd6.request_enc_id = d5.request_enc_id')
+            ->orderBy(['created_on' => SORT_DESC])
+            ->andWhere(['d4.is_deleted' => 0]);
+        $alp = (new \yii\db\Query())
+            ->select([
+                'p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount'
+            ])
+            ->from(['p' => AssignedLoanPayments::tableName()])
+            ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
+            ->orderBy(['p1.created_on' => SORT_DESC]);
 
             // getting loan detail
             $loan = LoanApplications::find()
@@ -919,15 +918,15 @@ class CompanyDashboardController extends ApiBaseController
                     ]);
                     $h->joinWith(['createdBy h1'], false);
 
-                    $h->onCondition(['h.is_deleted' => 0]);
-                }])
-                ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
-                    $i->joinWith(['cityEnc i1'], false);
-                    $i->joinWith(['stateEnc i2'], false);
-                }], false)
-                ->joinWith(['sharedLoanApplications k' => function ($k) {
-                    $k->select([
-                        'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
+                $h->onCondition(['h.is_deleted' => 0]);
+            }])
+            ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
+                $i->joinWith(['cityEnc i1'], false);
+                $i->joinWith(['stateEnc i2'], false);
+            }], false)
+            ->joinWith(['sharedLoanApplications k' => function ($k) {
+                $k->select([
+                    'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
 
                         "CASE WHEN k1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', k1.image_location, '/', k1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(k1.first_name,' ',k1.last_name), '&size=200&rounded=false&background=', REPLACE(k1.initials_color, '#', ''), '&color=ffffff') END image"
                     ])->joinWith(['sharedTo k1' => function ($k1) {
@@ -962,119 +961,117 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
 
-            if (!isset($params['user_type']) || $params['user_type'] != 'Financer') {
-                $loan = $loan->andWhere(['a.is_removed' => 0]);
-            }
+        if (!$this->isSpecial(1)) {
+            $loan->andWhere(['a.is_removed' => 0]);
+        }
 
-            $loan = $loan->limit(1)
+        $loan = $loan->limit(1)
+            ->asArray()
+            ->one();
+
+
+        // if loan application exists
+        if ($loan) {
+            //renaming key in loan application
+            $loan['sharedTo'] = $loan['sharedLoanApplications'];
+            unset($loan['sharedLoanApplications']);
+
+            // getting loan sanction reports
+            $loan['loanSanctionReports'] = LoanSanctionReports::find()
+                ->alias('d')
+                ->select(['d.report_enc_id', 'd.loan_app_enc_id', 'd.loan_amount', 'd.processing_fee', 'd.rate_of_interest', 'd.fldg'])
+                ->joinWith(['loanEmiStructures d1' => function ($d1) {
+                    $d1->select(['d1.loan_structure_enc_id', 'd1.sanction_report_enc_id', 'd1.due_date', 'd1.amount', 'd1.is_advance']);
+                }])
+                ->where(['d.loan_app_enc_id' => $loan['loan_app_enc_id'], 'd.loan_provider_id' => $provider_id])
+                ->groupBy(['d.report_enc_id'])
+                ->limit(1)
                 ->asArray()
                 ->one();
 
-
-            // if loan application exists
-            if ($loan) {
-                //renaming key in loan application
-                $loan['sharedTo'] = $loan['sharedLoanApplications'];
-                unset($loan['sharedLoanApplications']);
-
-                // getting loan sanction reports
-                $loan['loanSanctionReports'] = LoanSanctionReports::find()
-                    ->alias('d')
-                    ->select(['d.report_enc_id', 'd.loan_app_enc_id', 'd.loan_amount', 'd.processing_fee', 'd.rate_of_interest', 'd.fldg'])
-                    ->joinWith(['loanEmiStructures d1' => function ($d1) {
-                        $d1->select(['d1.loan_structure_enc_id', 'd1.sanction_report_enc_id', 'd1.due_date', 'd1.amount', 'd1.is_advance']);
-                    }])
-                    ->where(['d.loan_app_enc_id' => $loan['loan_app_enc_id'], 'd.loan_provider_id' => $provider_id])
-                    ->groupBy(['d.report_enc_id'])
-                    ->limit(1)
-                    ->asArray()
-                    ->one();
-
-                // if loan certificates exists then getting their images private links
-                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                if (!empty($loan['creditLoanApplicationReports'])) {
-                    foreach ($loan['creditLoanApplicationReports'] as $key => $value) {
-                        if (!empty($value['file_url'])) {
-                            $parsedUrl = parse_url($value['file_url']);
-                            $path = $parsedUrl['path'];
-                            $path = ltrim($path, '/');
-                            $file_url = $my_space->signedURL($path, "15 minutes");
-                            $loan['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
-                        }
+            // if loan certificates exists then getting their images private links
+            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            if (!empty($loan['creditLoanApplicationReports'])) {
+                foreach ($loan['creditLoanApplicationReports'] as $key => $value) {
+                    if (!empty($value['file_url'])) {
+                        $parsedUrl = parse_url($value['file_url']);
+                        $path = $parsedUrl['path'];
+                        $path = ltrim($path, '/');
+                        $file_url = $my_space->signedURL($path, "15 minutes");
+                        $loan['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
                     }
                 }
+            }
 
 
-                if (!empty($loan['loanCoApplicants'])) {
-                    foreach ($loan['loanCoApplicants'] as $keys => $values) {
-                        if (!empty($values['creditLoanApplicationReports'])) {
-                            foreach ($values['creditLoanApplicationReports'] as $key => $value) {
-                                if (!empty($value['file_url'])) {
-                                    $parsedUrl = parse_url($value['file_url']);
-                                    $path = $parsedUrl['path'];
-                                    $path = ltrim($path, '/');
-                                    $file_url = $my_space->signedURL($path, "15 minutes");
-                                    $loan['loanCoApplicants'][$keys]['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
-                                }
+            if (!empty($loan['loanCoApplicants'])) {
+                foreach ($loan['loanCoApplicants'] as $keys => $values) {
+                    if (!empty($values['creditLoanApplicationReports'])) {
+                        foreach ($values['creditLoanApplicationReports'] as $key => $value) {
+                            if (!empty($value['file_url'])) {
+                                $parsedUrl = parse_url($value['file_url']);
+                                $path = $parsedUrl['path'];
+                                $path = ltrim($path, '/');
+                                $file_url = $my_space->signedURL($path, "15 minutes");
+                                $loan['loanCoApplicants'][$keys]['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
                             }
                         }
                     }
                 }
+            }
 
-                // getting other details of this loan application from provider
-                $branch = AssignedLoanProvider::find()
+            // getting other details of this loan application from provider
+            $branch = AssignedLoanProvider::find()
+                ->alias('a')
+                ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                ->joinWith(['branchEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc b1']);
+                }], false)
+                ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                ->limit(1)
+                ->asArray()
+                ->one();
+
+            if (!empty($branch)) {
+                $loan['branch_id'] = $branch['branch_enc_id'];
+                $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
+                $loan['bdo_approved_amount'] = $branch['bdo_approved_amount'];
+                $loan['tl_approved_amount'] = $branch['tl_approved_amount'];
+                $loan['soft_approval'] = $branch['soft_approval'];
+                $loan['soft_sanction'] = $branch['soft_sanction'];
+                $loan['valuation'] = $branch['valuation'];
+                $loan['disbursement_approved'] = $branch['disbursement_approved'];
+                $loan['insurance_charges'] = $branch['insurance_charges'];
+            }
+
+            // getting loan application partners
+            $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+
+            if (!empty($loan['loan_products_enc_id'])) {
+                $product = FinancerLoanProducts::find()
                     ->alias('a')
-                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
-                    ->joinWith(['branchEnc b' => function ($b) {
-                        $b->joinWith(['cityEnc b1']);
+                    ->select(['b1.value'])
+                    ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
+                        $b->joinWith(['loanTypeEnc b1']);
                     }], false)
-                    ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                    ->where(['a.financer_loan_product_enc_id' => $loan['loan_products_enc_id']])
                     ->limit(1)
                     ->asArray()
                     ->one();
-
-                if (!empty($branch)) {
-                    $loan['branch_id'] = $branch['branch_enc_id'];
-                    $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
-                    $loan['bdo_approved_amount'] = $branch['bdo_approved_amount'];
-                    $loan['tl_approved_amount'] = $branch['tl_approved_amount'];
-                    $loan['soft_approval'] = $branch['soft_approval'];
-                    $loan['soft_sanction'] = $branch['soft_sanction'];
-                    $loan['valuation'] = $branch['valuation'];
-                    $loan['disbursement_approved'] = $branch['disbursement_approved'];
-                    $loan['insurance_charges'] = $branch['insurance_charges'];
-                }
-
-                // getting loan application partners
-                $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
-
-                if (!empty($loan['loan_products_enc_id'])) {
-                    $product = FinancerLoanProducts::find()
-                        ->alias('a')
-                        ->select(['b1.value'])
-                        ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
-                            $b->joinWith(['loanTypeEnc b1']);
-                        }], false)
-                        ->where(['a.financer_loan_product_enc_id' => $loan['loan_products_enc_id']])
-                        ->limit(1)
-                        ->asArray()
-                        ->one();
-                    $loan['loan_type_code'] = $product['value'];
-                } else {
-                    $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
-                }
-
-                // getting loan type code
-
-                return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
+                $loan['loan_type_code'] = $product['value'];
+            } else {
+                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
             }
 
-            // if application detail not found
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            // getting loan type code
+
+            return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
         }
 
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        // if application detail not found
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
     }
 
     //    public function actionUniqueLink()
@@ -3027,7 +3024,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['<=', 'b.loan_status_updated_on', $params['end_date']])
                 ->limit(1)->asArray()->one();
 
-            $result = array_merge($employeeAmount1,$employeeAmount2);
+            $result = array_merge($employeeAmount1, $employeeAmount2);
             return $this->response(200, ['status' => 200, 'data' => $result]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
