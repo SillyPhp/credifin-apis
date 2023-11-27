@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
 use api\modules\v4\models\CoApplicantForm;
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\LoanPaymentsForm;
 use api\modules\v4\utilities\UserUtilities;
@@ -15,6 +16,7 @@ use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPaymentsExtends;
@@ -37,6 +39,7 @@ use common\models\Users;
 use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
+use yii\db\Exception;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -294,7 +297,7 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id'])
+            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id', 'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id', 'ANY_VALUE(f.amount) amount'])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -308,6 +311,9 @@ class LoansController extends ApiBaseController
             }], false)
             ->asArray()->one();
         if ($model) {
+            if (!empty($model['emi_collection_enc_id']) && $model['amount']) {
+                EmiCollectionForm::updateOverdue($model['emi_collection_enc_id'], $model['amount']);
+            }
             if (!empty($model['user_org_id'])) {
                 $options['org_id'] = $model['user_org_id'];
             } elseif (!empty($model['org_id'])) {
@@ -918,6 +924,7 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     //action to add borrower as main borrower
     public function actionSetBorrower()
     {
@@ -926,19 +933,20 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if (empty($params['loan_co_app_enc_id'])||empty($params['loan_co_app_enc_id'])){
+        if (empty($params['loan_co_app_enc_id']) || empty($params['loan_co_app_enc_id'])) {
             return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
-        }else{
+        } else {
             $model = new CoApplicantForm();
-            $response = $model->setBorrower($params,$user->user_enc_id);
-            if ($response['status']==200){
-                return $this->response(200, ['status' => 200, 'message' =>$response['message']]);
-            }else{
-                return $this->response(500, ['status' => 500, 'message' =>$response['message']]);
+            $response = $model->setBorrower($params, $user->user_enc_id);
+            if ($response['status'] == 200) {
+                return $this->response(200, ['status' => 200, 'message' => $response['message']]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => $response['message']]);
             }
         }
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
+
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
@@ -1258,7 +1266,7 @@ class LoansController extends ApiBaseController
                         $xpath = new \DOMXPath($doc);
                         $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT';
                         try {
-                        $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                            $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
                             $res[$value['loan_co_app_enc_id']]['crif_score'] = $score;
                         } catch (\Exception $e) {
                         }
@@ -1507,41 +1515,74 @@ class LoansController extends ApiBaseController
 
     public function actionLoanUpdate()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
-        }
-        if (in_array($params['type'], ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
-            $type = $params['type'];
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
 
-            // if type is 'purposes' then calling a private function to update purposes
-            if ($params['type'] == 'purposes') {
-                if (!is_array($params['value'])) {
-                    return $this->response(500, ['status' => 500, 'message' => 'values must be in array']);
-                }
+        if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information "type or id or value"']);
+        }
+
+        $type = $params['type'];
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if ($type == 'purposes' && is_array($params['value'])) {
                 $purposes = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
                 if (!$purposes) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating purposes']);
+                    throw new Exception('an error occurred while updating purposes');
                 }
-            } else {
+//                $c = true;
+            } elseif (in_array($type, ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
+                'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {
-                    return $this->response(404, ['status' => 404, 'message' => 'loan not found']);
+                    throw new Exception('Loan application not found');
                 }
                 $model->$type = $params['value'];
                 $model->updated_by = $user->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
                 if (!$model->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
                 }
+
+            } elseif (in_array($type, ['model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
+                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'field_officer'])) {
+                $model = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+                if (!$model) {
+                    $model = new LoanApplicationOptionsExtended();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->option_enc_id = $utilitiesModel->encrypt();
+                    $model->loan_app_enc_id = $params['id'];
+                    $model->$type = $params['value'];
+                    $model->created_by = $user->user_enc_id;
+                    $model->created_on = date('Y-m-d H:i:s');
+                } else {
+                    $model->$type = $params['value'];
+                    $model->last_updated_by = $user->user_enc_id;
+                    $model->last_updated_on = date('Y-m-d H:i:s');
+                }
+            } else {
+                throw new Exception('Error occurred or invalid field');
             }
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            if ($model) {
+                if (!$model->save()) {
+                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                }
+            } else {
+                throw new Exception('error');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
-        return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
+
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
     }
+
 
     private function updatePurposes($loan_id, $user_id, $purposes)
     {

@@ -22,7 +22,7 @@ use yii\db\Command;
 // this class is used to get user related data
 class UserUtilities
 {
-    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager'];
+    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head'];
 
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
@@ -40,7 +40,7 @@ class UserUtilities
                     ELSE NULL
                     END) as referral_code',
                     'd1.designation',
-                    'd.employee_code', 'd.grade','f.location_name branch_name'
+                    'd.employee_code', 'd.grade', 'f.location_name branch_name'
                 ])
                 ->addSelect([
                     "CONCAT(g1.first_name, ' ', g1.last_name) AS reporting_person",
@@ -282,6 +282,19 @@ class UserUtilities
         return $ids;
     }
 
+    public static function getDesignation($user_id)
+    {
+        $role = UserRoles::find()
+            ->alias('a')
+            ->select(["ANY_VALUE(b.designation) AS designation"])
+            ->andWhere(['a.is_deleted' => 0])
+            ->joinWith(['designation b'], false)
+            ->where(['user_enc_id' => $user_id])
+            ->asArray()
+            ->one();
+        return $role['designation'];
+    }
+
     public function saveNotification($allNotifications)
     {
         if (!empty($allNotifications)) {
@@ -338,7 +351,7 @@ class UserUtilities
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         //Send the request
         $response = curl_exec($ch);
         //Close request
@@ -349,5 +362,18 @@ class UserUtilities
         curl_close($ch);
         return true;
 
+    }
+
+    public static function getting_reporting_ids($user_id, $type = 0)
+    {
+        if (!$type) {
+            $sql = "CALL GetHierarchyUpward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+        } else {
+            $sql = "CALL GetHierarchyDownward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+            $data[]['user_enc_id'] = $user_id;
+        }
+        return array_column($data, 'user_enc_id');
     }
 }

@@ -8,6 +8,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -69,10 +70,8 @@ class LoanAccountsController extends ApiBaseController
     public function actionLoanAccountsUpload()
     {
 
-        $user = $this->isAuthorized();
-        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
-            return $this->response(500, 'Not Authorized');
-        }
+        $this->isAuth(2);
+        $user = $this->user;
         $branches = [
             "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
             "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
@@ -151,26 +150,193 @@ class LoanAccountsController extends ApiBaseController
                     $loan->emi_amount = $data[array_search('EmiAmount', $header)];
                     $loan->total_installments = $data[array_search('TotalInstallments', $header)];
                     $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    $loan->group_name = $data[array_search('GroupName', $header)];
                     $tmp = $branches[$data[array_search('Branch', $header)]];
-                    $branch = OrganizationLocations::findOne(['location_enc_id' => $tmp]);
-                    if ($branch && !empty($branch['location_name'])) {
-                        $loan->branch_enc_id = $branch;
+                    if (array_search('VehicleType', $header)) {
+                        $loan->vehicle_type = $data[array_search('VehicleType', $header)];
                     }
+                    if (array_search('VehicleModel', $header)) {
+                        $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
+                    }
+                    if (array_search('VehicleMake', $header)) {
+                        $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
+                    }
+                    if (array_search('VehicleEngineNo', $header)) {
+                        $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
+                    }
+                    if (array_search('VehicleChassisNo', $header)) {
+                        $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
+                    }
+                    if (array_search('RcNumber', $header)) {
+                        $loan->rc_number = $data[array_search('RcNumber', $header)];
+                    }
+                    $loan->branch_enc_id = $tmp;
                     $loan->created_on = date('Y-m-d h:i:s');
                     $loan->created_by = $user->user_enc_id;
                 }
                 $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
                 $loan->bucket = $data[array_search('SMASTATUS', $header)];
-                $loan->last_emi_received_amount = $data[array_search('LastRecAmount', $header)];
-                $loan->last_emi_received_date = date('Y-m-d', strtotime($data[array_search('LastRecDate', $header)]));
+                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
+                if (empty($last_emi_amount)) {
+                    $last_emi_amount = 0;
+                }
+                $loan->last_emi_received_amount = $last_emi_amount;
+                $last_emi_date = $data[array_search('LastRecDate', $header)];
+                if (!empty($last_emi_date)) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
+                }
                 $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
                 $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
                 $loan->pos = $data[array_search('Pos', $header)];
                 $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
                 $loan->stock = $data[array_search('Stock', $header)];
-                $collection_manager = UserRoles::findOne(['employee_code' => $data[array_search('CollectionManager', $header)]]);
-                if ($collection_manager && !empty($collection_manager['user_enc_id'])) {
+                $cm = array_search('CollectionManager', $header);
+                if (!empty($data[$cm])) {
+                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
+                }
+                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
+                    $loan->collection_manager = $collection_manager['user_enc_id'];
+                }
+                !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
+                $loan->updated_on = date('Y-m-d h:i:s');
+                $loan->updated_by = $user->user_enc_id;
+                if (!$loan->save()) {
+                    $transaction->rollBack();
+                    print_r($loan->getErrors());
+                    print_r($data);
+                    exit();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        }
+    }
+
+    public function actionLoanAccountsUpload3()
+    {
+
+        $this->isAuth(2);
+        $user = $this->user;
+        $branches = [
+            "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
+            "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
+            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
+            "JGN" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
+            "HSX" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
+            "NAWA" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
+            "MEX" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
+            "BAT" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
+            "TTO" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
+            "KXH" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
+            "NRO" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
+            "MKS" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
+            "SGNR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
+            "ABS" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
+            "MOT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
+            "NDLS" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
+            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
+            "KNN" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
+            "MET" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
+            "ASR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
+            "KARR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
+            "ZKP" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
+            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
+            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
+            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
+            "FZP" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
+            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
+            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
+            "ROK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
+            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
+            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
+            "RK" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
+            "HW" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
+            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
+            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
+            "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
+            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
+            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
+            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
+            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
+            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
+            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
+            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+        ];
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            $utilitiesModel = new Utilities();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = new LoanAccounts();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
+                $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                $loan->lms_loan_account_number = $data[array_search('LmsNumber', $header)];
+                $loan->loan_account_number = trim($data[array_search('LoanNo', $header)]);
+                $loan->name = trim($data[array_search('CustomerName', $header)]);
+                $loan->loan_type = $data[array_search('LoanType', $header)];
+                $loan->emi_date = date('Y-m-d', strtotime($data[array_search('FirstInstallmentDate', $header)]));
+                $loan->last_emi_date = date('Y-m-d', strtotime($data[array_search('LastInstallmentDate', $header)]));
+                $loan->emi_amount = $data[array_search('EmiAmount', $header)];
+                $loan->total_installments = $data[array_search('TotalInstallments', $header)];
+                $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
+                $tmp = $branches[$data[array_search('Branch', $header)]];
+                if (array_search('VehicleType', $header)) {
+                    $loan->vehicle_type = $data[array_search('VehicleType', $header)];
+                }
+                if (array_search('VehicleModel', $header)) {
+                    $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
+                }
+                if (array_search('VehicleMake', $header)) {
+                    $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
+                }
+                if (array_search('VehicleEngineNo', $header)) {
+                    $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
+                }
+                if (array_search('VehicleChassisNo', $header)) {
+                    $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
+                }
+                if (array_search('RcNumber', $header)) {
+                    $loan->rc_number = $data[array_search('RcNumber', $header)];
+                }
+                $loan->branch_enc_id = $tmp;
+                $loan->created_on = date('Y-m-d h:i:s');
+                $loan->created_by = $user->user_enc_id;
+                $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
+                $loan->bucket = $data[array_search('SMASTATUS', $header)];
+                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
+                if (empty($last_emi_amount)) {
+                    $last_emi_amount = 0;
+                }
+                $loan->last_emi_received_amount = $last_emi_amount;
+                $last_emi_date = $data[array_search('LastRecDate', $header)];
+                if (!empty($last_emi_date)) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
+                }
+                $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
+                $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
+                $loan->pos = $data[array_search('Pos', $header)];
+                $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
+                $loan->stock = $data[array_search('Stock', $header)];
+                $cm = array_search('CollectionManager', $header);
+                if (!empty($data[$cm])) {
+                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
+                }
+                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
                     $loan->collection_manager = $collection_manager['user_enc_id'];
                 }
                 !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
@@ -310,11 +476,12 @@ class LoanAccountsController extends ApiBaseController
 
         $data = LoanActionRequests::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
+            ->select([
+                'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
                 'a.request_image', 'a.request_image_location', 'a.created_on',
-                'CONCAT(b.first_name, " ", COALESCE(b.last_name, "")) as created_by_name', 'b.image_location', 'b.image',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END createdby_image',
-                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END request_image'
+                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as created_by_name", 'b.image_location', 'b.image',
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END createdby_image",
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . "', a.request_image_location, '/', a.request_image) END request_image"
             ])
             ->joinWith(['createdBy b'], false)
             ->where(['a.is_deleted' => 0, 'a.loan_account_enc_id' => $params['loan_account_enc_id']])
@@ -359,16 +526,17 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
 
-        $data = LoanAccounts::find()
+        $data = (new \yii\db\Query())
             ->select([
-                'loan_account_enc_id', 'loan_account_number',
-                'COUNT(CASE WHEN is_deleted = 0 THEN loan_account_number END) as total_emis',
-                'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date', 'created_on', 'last_emi_received_amount', 'last_emi_received_date'
+                'a.loan_account_number',
+                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
+                'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
+                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
             ])
-            ->andWhere(['is_deleted' => 0, 'loan_account_enc_id' => $params['loan_account_enc_id']])
-            ->asArray()
+            ->from(['a' => LoanAccounts::tableName()])
+            ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
+            ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->one();
-
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         $model = $this->_emiAccData($lac)['data'];
 
@@ -390,21 +558,43 @@ class LoanAccountsController extends ApiBaseController
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
-                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode', 'CONCAT(b.first_name , " ", b.last_name) as collected_by',
-                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
-                'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
-                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CASE WHEN a.other_doc_image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
+                "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
+                "CASE 
+                    WHEN a.other_delay_reason IS NOT NULL 
+                        THEN CONCAT(a.delay_reason , ',', a.other_delay_reason) 
+                    ELSE a.delay_reason 
+                END AS delay_reason",
+                "CASE 
+                    WHEN b.image IS NOT NULL 
+                        THEN 
+                        CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) 
+                    ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff')
+                END image",
+                "CASE 
+                    WHEN a.pr_receipt_image IS NOT NULL 
+                        THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) 
+                    ELSE NULL 
+                END as pr_receipt_image",
+                "CASE 
+                    WHEN a.other_doc_image IS NOT NULL 
+                        THEN CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "', a.other_doc_image_location, '/', a.other_doc_image) 
+                    ELSE NULL 
+                END as other_doc_image",
+                "CASE 
+                    WHEN a.borrower_image IS NOT NULL 
+                        THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
+                    ELSE NULL 
+                END as borrower_image",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
             ])
             ->joinWith(['createdBy b'], false)
-            ->andWhere(['a.is_deleted' => 0, 'created_by' => $lac['created_by'], 'loan_account_number' => $lac['loan_account_number']]);
-
+            ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
         $count = $model->count();
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -863,7 +1053,7 @@ class LoanAccountsController extends ApiBaseController
 
         $data = Users::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'CONCAT(a.first_name," ",a.last_name) as name'])
+            ->select(['a.user_enc_id', "CONCAT(a.first_name , ' ', COALESCE(a.last_name, '')) as name"])
             ->joinWith(['userRoles0 b' => function ($b) {
                 $b->joinWith('designation d');
             }], false)
@@ -894,7 +1084,7 @@ class LoanAccountsController extends ApiBaseController
             ->select(['loan_account_enc_id', 'bucket'])
             ->where(['bucket' => $params['bucket'], 'is_deleted' => 0]);
         foreach ($loanAccounts->batch(100) as $rows) {
-            $assignment = $this->assignCasesToTelecallers($params['caller_ids'],  $rows);
+            $assignment = $this->assignCasesToTelecallers($params['caller_ids'], $rows);
             foreach ($assignment as $caseName => $telecaller) {
                 $update = Yii::$app->db->createCommand()
                     ->update(LoanAccounts::tableName(), ['assigned_caller' => $telecaller['user_enc_id'], 'updated_by' => $user->user_enc_id, 'updated_on' => date('Y-m-d H:i:s')], ['loan_account_enc_id' => $caseName])

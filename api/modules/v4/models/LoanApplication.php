@@ -32,6 +32,7 @@ use phpDocumentor\Reflection\Types\Null_;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
+use yii\db\Exception;
 
 class LoanApplication extends Model
 {
@@ -235,8 +236,8 @@ class LoanApplication extends Model
             $loanCoApplicants->aadhaar_number = $this->aadhaar_number;
             $loanCoApplicants->pan_number = $this->pan_number;
             if (!$loanCoApplicants->save()) {
-            $transaction->rollback();
-            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
+                $transaction->rollback();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
             }
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
@@ -952,6 +953,7 @@ class LoanApplication extends Model
         } else {
             return "$loanAccountNumber-001";
         }
+
     }
 
     public function updateLoanAccountPurpose($options)
