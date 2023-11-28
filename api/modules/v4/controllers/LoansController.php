@@ -1461,7 +1461,7 @@ class LoansController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $groupedAudit = [];
+        $processedAudit = [];
 
         if ($audit) {
             foreach ($audit as $item) {
@@ -1471,7 +1471,7 @@ class LoansController extends ApiBaseController
                 }
                 if ($item['model'] !== 'EducationLoanPayments' && $item['field'] !== 'source' && $item['field'] !== 'related_to' && $item['field'] !== 'candidate_status' && $item['field'] !== 'candidate_status_date') {
                     $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-                    $item['stamp'] = strtotime($item['stamp']);
+//                    $item['stamp'] = strtotime($item['stamp']);
 
                     if ($item['field'] === 'gender') {
                         if ($item['new_value'] == 1) {
@@ -1495,19 +1495,19 @@ class LoansController extends ApiBaseController
                         $item['new_value'] = $formatted_amount;
                     }
 
-                    $groupedAudit[$item['model']][] = $item;
+                    $processedAudit[] = $item;
                 }
             }
 
-            foreach ($groupedAudit as $g => $item) {
-                array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
-                foreach ($item as $key => $i) {
-                    $i['stamp'] = date('Y-m-d H:i:s', $i['stamp']);
-                    $groupedAudit[$g][$key] = $i;
-                }
+            usort($processedAudit, function ($a, $b) {
+                return strtotime($b['stamp']) - strtotime($a['stamp']);
+            });
+
+            foreach ($processedAudit as &$item) {
+                $item['stamp'] = date('Y-m-d H:i:s', strtotime($item['stamp']));
             }
 
-            return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
+            return $this->response(200, ['status' => 200, 'audit_list' => $processedAudit]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }

@@ -30,6 +30,7 @@ namespace common\models;
  * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
  * @property string $candidate_status_date Status Date
  * @property int $cibil_score cibil score
+ * @property string $login_date
  * @property int $equifax_score Equifax Score
  * @property int $crif_score CRIF Score
  * @property int $gender 1 for Male, 2 for Female,3 other
@@ -159,7 +160,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'number_of_emis', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
+            [['applicant_dob', 'candidate_status_date', 'login_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi', 'roi'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'assigned_dealer', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
