@@ -432,8 +432,11 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->andWhere(['i.status' => 31]);
                     $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
+                case 'new_lead': 
+                    $loans->andWhere(['i.status' => 0]);
+                    break;
                 case 'all':
-                    $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    $loans->andWhere(['not in', 'i.status', [0, 28, 31, 32]]);
                     break;
                 case 'tvr':
                     $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {
@@ -727,17 +730,12 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanApplicationEnc b'], false)
             ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
             ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
-            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth]);
-
-        $count = $query->count();
-        $queryResults = $query
+            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
             ->asArray()
             ->one();
 
-        $queryResults['new_case'] = $count;
-
-        if ($queryResults) {
-            return ['status' => 200, 'data' => $queryResults];
+        if ($query) {
+            return ['status' => 200, 'data' => $query];
         } else {
             return ['status' => 404, 'message' => 'Not found'];
         }
