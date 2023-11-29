@@ -811,15 +811,39 @@ class LoanApplication extends Model
 
     public static function getting_reporting_ids($user_id, $type = 0)
     {
-        if (!$type) {
-            $sql = "CALL GetHierarchyUpward('$user_id')";
-            $data = Yii::$app->db->createCommand($sql)->queryAll();
-        } else {
-            $sql = "CALL GetHierarchyDownward('$user_id')";
-            $data = Yii::$app->db->createCommand($sql)->queryAll();
-            $data[]['user_enc_id'] = $user_id;
+        // type 1 for child reporting persons and 0(default) for parent reporting persons
+        $rep = $type ? 'user_enc_id' : 'reporting_person';
+        $user = $type ? 'reporting_person' : 'user_enc_id';
+
+        $marked = [];
+        $data = [];
+        while (true) {
+            if (in_array($user_id, $marked)) {
+                break;
+            }
+
+            $marked[] = $user_id;
+
+            $query = UserRoles::find()
+                ->alias('a')
+                ->select(['a.' . $rep])
+                ->where(['a.' . $user => $user_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if (!empty($query[$rep])) {
+                $user_id = $query[$rep];
+                if (!in_array($user_id, $data)) {
+                    $data[] = $user_id;
+                } else {
+                    // Reporting person already exists in the data array, break the loop
+                    break;
+                }
+            } else {
+                return $data;
+            }
         }
-        return array_column($data, 'user_enc_id');
+        return $data;
     }
 
     private function share_leads($user_id, $loan_id)

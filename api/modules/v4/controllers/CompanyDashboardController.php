@@ -242,6 +242,9 @@ class CompanyDashboardController extends ApiBaseController
 
             // assigning status
             $status = $params['status'];
+            if (!empty($params['fields_search']['status'])) {
+                $status = [$params['fields_search']['status']];
+            }
 
             // getting loan application by loan_status
             $loan_status = [];
@@ -492,13 +495,14 @@ class CompanyDashboardController extends ApiBaseController
             // fields array for "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
 
-
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
+
                 if (!empty($val) || $val == '0') {
                     // key match to "a" table array
                     if (in_array($key, $a)) {
 
+                        // if key is apply_date then checking created_on time
                         switch ($key) {
                             case 'loan_products_enc_id':
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
@@ -534,7 +538,7 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
                                 break;
                             case 'status':
-                                $loans->andWhere(['i.status' => $val]);
+                                $loans->andWhere(['IN', 'i.status', $val]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'i.' . $key, $val]);
@@ -1064,8 +1068,8 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting loan type code
 
-            return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
-        }
+                return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
+            }
 
         // if application detail not found
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
