@@ -438,6 +438,10 @@ class CompanyDashboardController extends ApiBaseController
                 case 'new_lead': 
                     $loans->andWhere(['i.status' => 0]);
                     break;
+                case 'completed':
+                    $loans->andWhere(['i.status' => 33]);
+                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+                    break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [0, 28, 31, 32]]);
                     break;
