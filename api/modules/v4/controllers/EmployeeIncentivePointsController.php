@@ -20,6 +20,7 @@ class EmployeeIncentivePointsController extends ApiBaseController
             'actions' => [
                 'add-incentive-points' => ['POST', 'OPTIONS'],
                 'get-incentive-points' => ['POST', 'OPTIONS'],
+                'get-incentive-sum' => ['POST', 'OPTIONS'],
                 'delete-incentive-points' => ['POST', 'OPTIONS'],
                 'update-incentive-points' => ['POST', 'OPTIONS'],
             ]
