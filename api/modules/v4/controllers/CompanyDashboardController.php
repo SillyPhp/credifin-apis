@@ -418,7 +418,9 @@ class CompanyDashboardController extends ApiBaseController
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             // if shared app_ids exists then also getting data for those applications
+            if (!empty($shared_apps['app_ids'])):
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+            endif;
         }
         // if all, rejected or disbursed data needed
         if (isset($params['type'])) {
@@ -652,9 +654,6 @@ class CompanyDashboardController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-
-
-
 
         if ($loans) {
             foreach ($loans as $key => $val) {
@@ -2418,7 +2417,7 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
+                ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others','a.is_removed' => 0]);
 
             if ($user->organization_enc_id) {
                 if (!$service) {
@@ -2426,13 +2425,13 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
             if (!$user->organization_enc_id && $specialroles == false) {
+                if (!empty($shared_apps['app_ids'])) {
+                    $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+                }
                 // else checking lead_by and managed_by by logged-in user
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
-            if ($shared_apps['app_ids']) {
-                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
-            }
 
             if (!empty($params['loan_product'])) {
                 $stats->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
