@@ -1158,10 +1158,11 @@ class CompanyDashboardController extends ApiBaseController
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
-
-            if (empty($params['status'])) {
+        
+            if ($params['status'] !== "0" && empty($params['status'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
+       
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
             // if provider not found to update status
