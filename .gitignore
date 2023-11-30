@@ -7,3 +7,4 @@ init
 Vagrantfile
 vendor
 .vscode
+.htaccess
