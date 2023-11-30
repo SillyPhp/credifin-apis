@@ -1859,7 +1859,6 @@ class OrganizationsController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
-        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
@@ -1883,14 +1882,15 @@ class OrganizationsController extends ApiBaseController
                 $c->joinWith(['cityEnc c1'], false);
             }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orWhere(['a.created_by' => $juniors]);
+            ->andWhere(['a.is_deleted' => 0]);
 
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
-            $model->andWhere(['a.created_by' => $user->user_enc_id]);
+            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
+            $juniors[] = $user->user_enc_id;
+            $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
@@ -2407,30 +2407,25 @@ class OrganizationsController extends ApiBaseController
 
     public function actionGetEmiAccounts()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        $user_type = UserUtilities::getDesignation($user->user_enc_id);
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
-            ->select(["a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
+            ->select([
+                "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"])
-            ->joinWith(["branchEnc b"])
-            ->joinWith(["assignedCaller ac"])
-            ->joinWith(["collectionManager cm"])
-            ->andWhere(["a.is_deleted" => 0])
-            ->orWhere(["OR", [
-                "a.assigned_caller" => $juniors,
-                "a.created_by" => $juniors
-            ]]);
+                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+            ])
+            ->joinWith(["branchEnc b"], false)
+            ->joinWith(["assignedCaller ac"], false)
+            ->joinWith(["collectionManager cm"], false)
+            ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
@@ -2438,17 +2433,22 @@ class OrganizationsController extends ApiBaseController
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'branch_name') {
+                        $query->andWhere(["like", "b.location_name", "$value%", false]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }
                 }
             }
         }
-        if ($user_type == "Tele Caller Collection") {
+        if (!$this->isSpecial(1)) {
+            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
+            $juniors[] = $user->user_enc_id;
             $query->andWhere([
                 "OR",
-                ["a.assigned_caller" => $user->user_enc_id],
-                ["a.assigned_caller" => $juniors]
+                ["IN", "a.assigned_caller", $juniors],
+                ["IN", "a.collection_manager", $juniors],
+                ["IN", "a.created_by", $juniors],
             ]);
         }
         if (!empty($params["bucket"])) {
