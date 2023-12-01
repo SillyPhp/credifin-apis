@@ -1532,7 +1532,8 @@ class LoansController extends ApiBaseController
                 if (!$purposes) {
                     throw new Exception('an error occurred while updating purposes');
                 }
-                $c = true;
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
             } elseif (in_array($type, ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
                 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
@@ -1564,10 +1565,8 @@ class LoansController extends ApiBaseController
                 throw new Exception('Error occurred or invalid field');
             }
 
-            if (empty($c)) {
-                if (!$model->save()) {
-                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-                }
+            if (!$model->save()) {
+                throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
