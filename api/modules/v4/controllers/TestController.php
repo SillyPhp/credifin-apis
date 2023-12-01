@@ -4,13 +4,18 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
+use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanApplications;
+use common\models\LoanAuditTrail;
+use common\models\LoanPayments;
+use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -242,40 +247,74 @@ class TestController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
-    public function actionAssignLoginDate()
+    public function actionAssignPaymentLoginDate()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        $params = Yii::$app->request->post();
+
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+
         $login_date = (new \yii\db\Query())
-            ->from(['b' => LoanApplicationsExtended::tableName()])
-            ->innerJoin(
-                ['b1' => \common\models\extended\LoanAuditTrail::tableName()],
-                'b1.foreign_id = b.loan_app_enc_id'
-            )
-            ->where([
-                'b.is_deleted' => 0,
-                'b1.model' => 'LoanPayments',
-                'b1.new_value' => 'captured'
-            ])
+            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.payment_status'])
+            ->from(['a' => LoanApplicationsExtended::tableName()])
+            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
+            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
+            ->where(['a.is_deleted' => 0, 'b2.payment_status' => 'captured'])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->all();
-        if (!empty($login_date)) {
-            foreach ($login_date as $date) {
-                $loan_application = LoanApplications::findOne(['loan_app_enc_id' => $date['foreign_id']]);
-                if ($loan_application) {
-                    $stamp = $date['stamp'];
-                    $loan_application->login_date = $stamp;
-                    if (!$loan_application->save()) {
-                        return $this->response(500, ['status' => 500, 'message' => 'Failed']);
-                    }
-                } else {
-                    return $this->response(404, ['status' => 404, 'message' => 'Loan application not found']);
+
+
+        foreach ($login_date as $loan_payment) {
+            $loan_app_enc_id = $loan_payment['loan_app_enc_id'];
+            $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
+            if ($loan_application) {
+                $loan_application->login_date = $loan_payment['updated_on'];
+                if (!$loan_application->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Failed']);
                 }
+                return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
             }
-            return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
-        } else {
-            return $this->response(500, ['status' => 500, 'message' => 'Stamp value not found']);
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+
     }
 
+    public function actionAssignAuditLoginDate()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $results = LoanApplicationsExtended::find()
+            ->alias('a')
+            ->select(['b.loan_app_enc_id', 'c.foreign_id', 'c.stamp'])
+            ->joinWith(['assignedLoanPayments b'], false)
+            ->joinWith(['loanAuditTrails c'], false)
+            ->where(['b.loan_app_enc_id' => null, 'c.new_value' => 'Login', 'c.model' => 'AssignedLoanProvider', 'a.is_deleted' => 0])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        foreach ($results as $audit) {
+            $loan_app_enc_id = $audit['foreign_id'];
+            $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
+            if ($loan_application) {
+                $loan_application->login_date = $audit['stamp'];
+                $loan_application->save();
+                if (!$loan_application) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Failed']);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 }
