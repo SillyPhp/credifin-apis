@@ -1532,7 +1532,7 @@ class LoansController extends ApiBaseController
                 if (!$purposes) {
                     throw new Exception('an error occurred while updating purposes');
                 }
-//                $c = true;
+                $c = true;
             } elseif (in_array($type, ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
                 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
@@ -1542,9 +1542,6 @@ class LoansController extends ApiBaseController
                 $model->$type = $params['value'];
                 $model->updated_by = $user->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
-                if (!$model->save()) {
-                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-                }
 
             } elseif (in_array($type, ['model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
                 'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'field_officer'])) {
@@ -1567,12 +1564,10 @@ class LoansController extends ApiBaseController
                 throw new Exception('Error occurred or invalid field');
             }
 
-            if ($model) {
+            if (empty($c)) {
                 if (!$model->save()) {
                     throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
                 }
-            } else {
-                throw new Exception('error');
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
