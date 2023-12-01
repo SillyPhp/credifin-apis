@@ -50,7 +50,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-acc-list' => ['POST', 'OPTIONS'],
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
-                'assign-telecaller' => ['POST', 'OPTIONS']
+                'assign-telecaller' => ['POST', 'OPTIONS'],
+                'stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1115,5 +1116,34 @@ class LoanAccountsController extends ApiBaseController
             $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
         }
         return $assignment;
+    }
+
+
+    public function actionStats()
+    {
+        $this->isAuth();
+        $params = $this->post;
+
+        if (empty($params['bucket'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "bucket"']);
+        }
+        $bucket = LoanAccountsExtended::find()
+            ->select([
+                'COUNT(loan_account_enc_id) as leads',
+                'SUM(overdue_amount) AS overdue_amount',
+                'SUM(ledger_amount) AS ledger_amount',
+                'bucket',
+                'SUM(last_emi_received_amount) AS last_emi_received_amount',
+                'SUM(CASE WHEN ledger_amount && overdue_amount THEN 1 END) AS total_ledger_overdue',
+            ])
+            ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($bucket) {
+            return $this->response(200, ["status" => 200, "data" => $bucket]);
+        }
+
+        return $this->response(404, ["status" => 404, "message" => "data not found"]);
     }
 }
