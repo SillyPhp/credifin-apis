@@ -1888,7 +1888,7 @@ class OrganizationsController extends ApiBaseController
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
-            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $juniors[] = $user->user_enc_id;
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
@@ -2442,7 +2442,7 @@ class OrganizationsController extends ApiBaseController
             }
         }
         if (!$this->isSpecial(1)) {
-            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $juniors[] = $user->user_enc_id;
             $query->andWhere([
                 "OR",
