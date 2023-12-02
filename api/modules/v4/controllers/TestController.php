@@ -292,15 +292,15 @@ class TestController extends ApiBaseController
 
         $page = !empty($params['page']) ? $params['page'] : 1;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
-        $results = LoanApplicationsExtended::find()
-            ->alias('a')
+
+        $results = (new \yii\db\Query())
             ->select(['b.loan_app_enc_id', 'c.foreign_id', 'c.stamp'])
-            ->joinWith(['assignedLoanPayments b'], false)
-            ->joinWith(['loanAuditTrails c'], false)
+            ->from(['a' => LoanApplicationsExtended::tableName()])
+            ->innerJoin(['b' => AssignedLoanPayments::tableName()])
+            ->innerJoin(['c' => \common\models\extended\LoanAuditTrail::tableName()])
             ->where(['b.loan_app_enc_id' => null, 'c.new_value' => 'Login', 'c.model' => 'AssignedLoanProvider', 'a.is_deleted' => 0])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-            ->asArray()
             ->all();
 
         foreach ($results as $audit) {
