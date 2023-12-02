@@ -2433,6 +2433,8 @@ class OrganizationsController extends ApiBaseController
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'total_pending_amount') {
+                        $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'branch_name') {
@@ -2457,7 +2459,8 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
         $count = $query->count();
-        $query = $query->limit($limit)
+        $query = $query
+            ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
