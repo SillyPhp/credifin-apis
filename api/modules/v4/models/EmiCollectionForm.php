@@ -182,7 +182,7 @@ class EmiCollectionForm extends Model
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
-        if (in_array($model->emi_payment_method, [4, 81]) && !empty($this->amount)) {
+        if ($model->emi_payment_method == 4 && !empty($this->amount)) {
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
             $trackCash['emi_id'] = $model->emi_collection_enc_id;
@@ -363,7 +363,7 @@ class EmiCollectionForm extends Model
                 }
             }
             $update = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
-            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])){
+            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])) {
                 self::updateOverdue($update['loan_account_enc_id'], $update['amount'], $user_id);
             }
             $update->updated_by = $user_id;
