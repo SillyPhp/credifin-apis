@@ -18,6 +18,7 @@ namespace common\models;
  * @property string $loan_purpose Loan Purpose
  * @property string $payment_method Payment Method
  * @property string $other_payment_method Other Payment Method
+ * @property int $ptp_payment_method
  * @property double $ptp_amount Ptp Amount
  * @property string $ptp_date Ptp Date
  * @property string $delay_reason Delay Reason
@@ -70,7 +71,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
             [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
-            [['emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
+            [['ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
             [['emi_payment_status', 'address', 'comments'], 'string'],
             [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
