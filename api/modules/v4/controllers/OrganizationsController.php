@@ -1812,10 +1812,9 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiDetail()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
         if (empty($params['emi_collection_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
@@ -1894,6 +1893,10 @@ class OrganizationsController extends ApiBaseController
         }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
+        if (!empty($params['ptpstatus'])) {
+            $model->andWhere(["NOT", "a.ptp_date", NULL]);
         }
 
         if (!empty($search)) {
