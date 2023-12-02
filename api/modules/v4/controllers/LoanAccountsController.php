@@ -1129,12 +1129,12 @@ class LoanAccountsController extends ApiBaseController
         }
         $bucket = LoanAccountsExtended::find()
             ->select([
-                'COUNT(loan_account_enc_id) as leads',
-                'SUM(overdue_amount) AS overdue_amount',
-                'SUM(ledger_amount) AS ledger_amount',
                 'bucket',
-                'SUM(last_emi_received_amount) AS last_emi_received_amount',
-                'SUM(CASE WHEN ledger_amount && overdue_amount THEN 1 END) AS total_ledger_overdue',
+                'COUNT(loan_account_enc_id) as total_loan_accounts',
+                'SUM(overdue_amount) AS total_overdue_sum',
+                'SUM(ledger_amount) AS total_ledger_sum',
+                'SUM(last_emi_received_amount) AS total_emi_received_sum',
+                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
             ])
             ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
             ->asArray()
