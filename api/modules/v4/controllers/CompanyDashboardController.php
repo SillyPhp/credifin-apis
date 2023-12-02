@@ -1158,11 +1158,11 @@ class CompanyDashboardController extends ApiBaseController
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
-        
+
             if ($params['status'] !== "0" && empty($params['status'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
-       
+
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
             // if provider not found to update status
@@ -1180,7 +1180,21 @@ class CompanyDashboardController extends ApiBaseController
             $provider->updated_on = date('Y-m-d H:i:s');
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
-            if ($loanApp->update() && $provider->update()) {
+
+            $loan_update = false;
+
+            if ($params['status'] == 4) {
+                $loan_update = Yii::$app->db->createCommand()
+                    ->update(
+                        LoanApplicationsExtended::tableName(),
+                        ['login_date' => $provider->loan_status_updated_on],
+                        ['loan_app_enc_id' => $params['loan_id']]
+                    )
+                    ->execute();
+            }
+
+
+            if ($loanApp->update() && $provider->update() && ($params['status'] != 4 || $loan_update)) {
                 $notificationUsers = new UserUtilities();
                 $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
                 $searchable = [$prevStatus, $params['status']];
@@ -1189,6 +1203,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->andWhere(['in', 'value', $searchable])
                     ->asArray()
                     ->all();
+
                 $loanStatus = ArrayHelper::index($loanStatus, "value");
                 $updated_by = $user->first_name . " " . $user->last_name;
                 $notificationBody = "Status: " . $loanStatus[$prevStatus]['loan_status'] . " -> " . $loanStatus[$params['status']]['loan_status'];
