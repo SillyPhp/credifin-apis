@@ -50,7 +50,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-acc-list' => ['POST', 'OPTIONS'],
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
-                'assign-telecaller' => ['POST', 'OPTIONS']
+                'assign-telecaller' => ['POST', 'OPTIONS'],
+                'stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -527,7 +528,8 @@ class LoanAccountsController extends ApiBaseController
                 'a.loan_account_number',
                 'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
-                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
+                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
             ])
             ->from(['a' => LoanAccounts::tableName()])
             ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
@@ -580,7 +582,9 @@ class LoanAccountsController extends ApiBaseController
                         THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
                     ELSE NULL 
                 END as borrower_image",
-                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
+                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
+                "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
+                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method"
             ])
             ->joinWith(['createdBy b'], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
@@ -1109,5 +1113,34 @@ class LoanAccountsController extends ApiBaseController
             $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
         }
         return $assignment;
+    }
+
+
+    public function actionStats()
+    {
+        $this->isAuth();
+        $params = $this->post;
+
+        if (empty($params['bucket'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "bucket"']);
+        }
+        $bucket = LoanAccountsExtended::find()
+            ->select([
+                'bucket',
+                'COUNT(loan_account_enc_id) as total_loan_accounts',
+                'SUM(overdue_amount) AS total_overdue_sum',
+                'SUM(ledger_amount) AS total_ledger_sum',
+                'SUM(last_emi_received_amount) AS total_emi_received_sum',
+                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
+            ])
+            ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($bucket) {
+            return $this->response(200, ["status" => 200, "data" => $bucket]);
+        }
+
+        return $this->response(404, ["status" => 404, "message" => "data not found"]);
     }
 }
