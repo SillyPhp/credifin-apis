@@ -432,10 +432,10 @@ class DealersController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.assigned_financer_enc_id', 'a.assigned_dealer_enc_id', 'a.dealer_enc_id', 'a.dealer_enc_id as id',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
-                'b.username', 'b.email', 'b.phone', 'd.name', 'CONCAT(b.first_name," ",COALESCE(b.last_name, "")) as contact_person', 'b.status', 'c.dealership_date'
-            ])
+                "CASE WHEN d.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, "https") . "', d.logo_location, '/', d.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', d.name, '&size=200&rounded=false&background=', REPLACE(d.initials_color, '#', ''), '&color=ffffff') END logo",
+                'c.category', "(CASE WHEN c.trade_certificate = 1 THEN 'yes' ELSE 'no' END) as trade_certificate", "(CASE WHEN c.dealer_type = 0 THEN 'vehicle' ELSE 'electronics' END) as dealer_type",
+                'b.username', 'b.email', 'b.phone', 'd.name', "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as contact_person", 'b.status', 'c.dealership_date'
+         ])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['assignedDealerOptions c'], false)
             ->joinWith(['dealerEnc d'], false)
@@ -458,7 +458,7 @@ class DealersController extends ApiBaseController
                     } elseif ($key == 'username') {
                         $dealer->andWhere(['like', 'b.' . $key, $value]);
                     } elseif ($key == 'contact_person') {
-                        $dealer->andWhere(['like', 'CONCAT(b.first_name," ",COALESCE(b.last_name, ""))', $value]);
+                        $dealer->andWhere(['like', "CONCAT(b.first_name,' ',COALESCE(b.last_name, ''))", $value]);
                     } elseif ($key == 'name') {
                         $dealer->andWhere(['like', 'd.' . $key, $value]);
                     } elseif ($key == 'dealer_type') {
@@ -477,7 +477,7 @@ class DealersController extends ApiBaseController
                 'and',
                 [
                     'or',
-                    ['like', 'CONCAT(b.first_name, " ", b.last_name)', $params['employee_search']],
+                    ['like', "CONCAT(b.first_name, ' ', b.last_name)", $params['employee_search']],
                     ['like', 'b.username', $params['employee_search']],
                     ['like', 'd.name', $params['employee_search']],
                     ['like', 'b.email', $params['employee_search']],

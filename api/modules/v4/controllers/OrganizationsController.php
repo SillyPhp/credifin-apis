@@ -1871,7 +1871,7 @@ class OrganizationsController extends ApiBaseController
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
-                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
+                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
             ])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1' => function ($b1) {
@@ -1881,6 +1881,9 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['branchEnc c' => function ($c) {
                 $c->joinWith(['cityEnc c1'], false);
             }], false)
+            ->joinWith(['assignedLoanPayments d' => function ($d) {
+                $d->joinWith(['loanPaymentsEnc d1'], false);
+            }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
             ->andWhere(['a.is_deleted' => 0]);
 
@@ -1888,8 +1891,7 @@ class OrganizationsController extends ApiBaseController
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
-            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
-            $juniors[] = $user->user_enc_id;
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
         if (isset($lac)) {
@@ -2442,8 +2444,7 @@ class OrganizationsController extends ApiBaseController
             }
         }
         if (!$this->isSpecial(1)) {
-            $juniors = LoanApplication::getting_reporting_ids($user->user_enc_id, 1);
-            $juniors[] = $user->user_enc_id;
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $query->andWhere([
                 "OR",
                 ["IN", "a.assigned_caller", $juniors],
