@@ -848,7 +848,7 @@ class LoanApplication extends Model
 
     private function share_leads($user_id, $loan_id)
     {
-        $reporting_persons_ids = $this->getting_reporting_ids($user_id);
+        $reporting_persons_ids = UserUtilities::getting_reporting_ids($user_id);
         $shared = Users::findOne(['user_enc_id' => $user_id]);
         $shared_by = $shared->first_name . " " . $shared->last_name;
         if (!empty($reporting_persons_ids)) {
