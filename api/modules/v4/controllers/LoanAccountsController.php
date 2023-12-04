@@ -9,6 +9,7 @@ use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccountComments;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -1109,5 +1110,71 @@ class LoanAccountsController extends ApiBaseController
             $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
         }
         return $assignment;
+    }
+
+    public function actionSaveLoanAccountComments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params["loan_account_enc_id"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'loan_account_enc_id'"]);
+        }
+
+        if (empty($params["comment"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'comment'"]);
+        }
+
+        $comment = new LoanAccountComments();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $comment->comment_enc_id = $utilitiesModel->encrypt();
+        $comment->loan_account_enc_id = $params['loan_account_enc_id'];
+        $comment->comment = $params['comment'];
+        if (!empty($params['is_important']) && (int)$params['is_important'] == 1) {
+            $comment->is_important = 1;
+        }
+        $comment->source = 'EL';
+        $comment->created_by = $user->user_enc_id;
+        $comment->created_on = date('Y-m-d H:i:s');
+        if (!$comment->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
+
+    public function actionGetComments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params["loan_account_enc_id"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'loan_account_enc_id'"]);
+        }
+
+        $comments = LoanAccountComments::find()
+            ->alias('a')
+            ->select(['a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
+                'a.status', 'a.source', 'a.created_on',
+                "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as created_by",
+                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN b1.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', b1.logo_location, '/', b1.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b1.name, '&size=200&rounded=false&background=', REPLACE(b1.initials_color, '#', ''), '&color=ffffff') END logo",
+            ])
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['organizations b1']);
+            }], false)
+            ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id'], 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($comments) {
+            return $this->response(200, ['status' => 200, 'data' => $comments]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
     }
 }
