@@ -508,7 +508,7 @@ class ProductsController extends ApiBaseController
             }])
             ->joinWith(['productImages c' => function ($c) {
                 $c->select(['c.product_enc_id', 'c.alt', 'c.type', 'c.image_enc_id',
-                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                    "CASE WHEN c.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, "https") . "', c.image_location, '/', c.image) END image_link"]);
             }])
             ->joinWith(['cityEnc c1' => function ($c1) {
                 $c1->joinWith(['stateEnc c2']);
