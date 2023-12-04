@@ -443,7 +443,7 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
                 case 'all':
-                    $loans->andWhere(['not in', 'i.status', [0, 28, 31, 32]]);
+                    $loans->andWhere(['not in', 'i.status', [0, 28, 31, 32, 33]]);
                     break;
                 case 'tvr':
                     $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {

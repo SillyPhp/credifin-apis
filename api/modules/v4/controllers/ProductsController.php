@@ -676,14 +676,14 @@ class ProductsController extends ApiBaseController
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
-                'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
+                'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', "CONCAT(d.first_name, ' ', d.last_name) dealer_name"])
             ->joinWith(['productOtherDetails b' => function ($b) {
                 $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail', 'b.rom', 'b.ram', 'b.making_year', 'b.km_driven']);
                 $b->onCondition(['b.is_deleted' => 0]);
             }])
             ->joinWith(['productImages c' => function ($c) {
                 $c->select(['c.product_enc_id', 'c.alt', 'c.type',
-                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                    "CASE WHEN c.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, "https") . "', c.image_location, '/', c.image) END image_link"]);
             }])
             ->joinWith(['cityEnc c1' => function ($c1) {
                 $c1->joinWith(['stateEnc c2']);
