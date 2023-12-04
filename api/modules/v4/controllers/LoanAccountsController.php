@@ -1168,6 +1168,7 @@ class LoanAccountsController extends ApiBaseController
                 $b->joinWith(['organizations b1']);
             }], false)
             ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id'], 'a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
