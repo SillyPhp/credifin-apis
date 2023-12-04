@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\models;
 
+use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -287,6 +288,15 @@ class EmiCollectionForm extends Model
             $status = 1;
         } else {
             $status = !empty($data['cash_ids']) ? 2 : 0;
+            if (!empty($query->received_from)) {
+                Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
+                    "emi_payment_status" => 'pipeline',
+                    "updated_on" => date("Y-m-d H:i:s"),
+                    "updated_by" => $data['user_id']
+                ], [
+                    "emi_collection_enc_id" => !empty($emi_id) ? $emi_id : null
+                ])->execute();
+            }
         }
         $remaining_amount = $data['amount'];
         $query->status = $status;
