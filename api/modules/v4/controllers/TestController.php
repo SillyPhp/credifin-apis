@@ -11,6 +11,7 @@ use common\models\EmployeesCashReport;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
+use yii\web\Response;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
@@ -104,18 +105,15 @@ class TestController extends ApiBaseController
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
-//                $c->groupBy(["c.loan_app_res_info_enc_id"]);
             }], false)
             ->joinWith(["loanCoApplicants abc" => function ($abc) {
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
-//                $abc->groupBy(["abc.loan_co_app_enc_id"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
                     "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
                     "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
-//                $d->groupBy(["d.loan_co_app_enc_id"]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
                 $d->joinWith(["loanApplicantResidentialInfos d1"], false);
@@ -158,6 +156,56 @@ class TestController extends ApiBaseController
             }
         }
         return $this->response(200, ["status" => 200, "data" => $query]);
+    }
+
+    private function getCashReportDetail($id){
+        $findCashDe = EmployeesCashReport::find()
+            ->select(['status', 'parent_cash_report_enc_id'])
+            ->where(['cash_report_enc_id' => $id])
+            ->one();
+        if ($findCashDe['status'] != 1 && !empty($findCashDe['parent_cash_report_enc_id'])) {
+            return $this->getCashReportDetail($findCashDe['parent_cash_report_enc_id']);
+        }
+
+        return $findCashDe['status'] == 1;
+    }
+    public function actionCashMove($limit = 50, $page = 1, $auth = ''){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn'){
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $emiCollc = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
+            ->joinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "status"]);
+            }])
+            ->where(['not', ['b.status' => 1]])
+            ->asArray()
+            ->orderBy(['a.id' => SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->all();
+        $updated = 0;
+        foreach ($emiCollc as $key => $ec) {
+            $status = 'pipeline';
+            if (!empty($ec['employeesCashReports'][0]['parent_cash_report_enc_id'])) {
+                if ($this->getCashReportDetail($ec['employeesCashReports'][0]['parent_cash_report_enc_id'])) {
+                    $status = 'paid';
+                }
+            }
+            if ($status == 'pipeline') {
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $ec['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            }
+        }
+        return ['status' => 200, 'found' => count($emiCollc), 'updated' => $updated];
+//        print_r($emiCollc);
+//        exit();
     }
 
     private function CreditReports($loan_id)
