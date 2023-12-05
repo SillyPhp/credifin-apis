@@ -289,7 +289,8 @@ class EmiCollectionsController extends ApiBaseController
 
     public function actionPendingApprovals()
     {
-        $this->isSpecialUser(1);
+//        $this->isSpecialUser(1);
+        $this->isAuth();
         $params = $this->post;
         if (empty($params["user_id"])) {
             return $this->response(422, ["status" => 422, "message" => "missing parameter 'user_id'"]);
