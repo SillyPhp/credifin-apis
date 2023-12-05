@@ -80,7 +80,7 @@ class TestController extends ApiBaseController
                 "a.amount",
                 "a.number_of_emis",
                 "a.roi",
-                "abc.applicant_dob",
+                "abc.co_applicant_dob applicant_dob",
                 "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
                 "b.disbursement_approved",
                 "b.insurance_charges",
