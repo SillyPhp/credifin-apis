@@ -63,6 +63,8 @@ class TestController extends ApiBaseController
                 "a.application_number",
                 "abc.name",
                 "a.invoice_date",
+                "a.loan_status_updated_on as disbursement_date",
+                "DATE_FORMAT(a.loan_status_updated_on, '%Y-%m-%d') disbursement_date",
                 "c.address",
                 "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
