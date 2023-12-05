@@ -61,12 +61,13 @@ class TestController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.application_number",
-                "a.applicant_name",
+                "abc.name",
+                "a.invoice_date",
                 "c.address",
-                "(CASE WHEN a.gender = 1 THEN 'Male' WHEN a.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
                 "c.postal_code",
-                "a.phone",
+                "abc.phone",
                 "a.cibil_score",
                 "a.aadhaar_number",
                 "a.voter_card_number",
@@ -93,18 +94,28 @@ class TestController extends ApiBaseController
                 "f.name loan_type",
                 "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
                 "a.applicant_dob",
-                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link"
+                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
+                "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
+                "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
+                "e.policy_number", "e.payable_value", "e.field_officer"
             ])
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
+//                $c->groupBy(["c.loan_app_res_info_enc_id"]);
+            }], false)
+            ->joinWith(["loanCoApplicants abc" => function ($abc) {
+                $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
+//                $abc->groupBy(["abc.loan_co_app_enc_id"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
                     "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
                     "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
+//                $d->groupBy(["d.loan_co_app_enc_id"]);
                 $d->onCondition(["d.is_deleted" => 0]);
+                $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
                 $d->joinWith(["loanApplicantResidentialInfos d1"], false);
             }], true)
             ->joinWith(["loanApplicationOptions e"], false)
