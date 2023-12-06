@@ -467,6 +467,7 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'only_disbursed';
                     $is_disbursed = 1;
+                    break;
             }
         }
 
