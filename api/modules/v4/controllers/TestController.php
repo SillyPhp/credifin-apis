@@ -364,7 +364,7 @@ class TestController extends ApiBaseController
         foreach ($results as $audit) {
             $loan_app_enc_id = $audit['foreign_id'];
             $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
-            if ($loan_application) {
+            if ($loan_application->login_date == null) {
                 $loan_application->login_date = $audit['stamp'];
                 $loan_application->save();
                 if (!$loan_application) {
