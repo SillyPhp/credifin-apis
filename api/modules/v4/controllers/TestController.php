@@ -178,7 +178,6 @@ class TestController extends ApiBaseController
             ->innerJoinWith(['employeesCashReports b' => function ($b) {
                 $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
                 $b->andOnCondition(["!=", "b.status", 1]);
-                $b->andOnCondition(['b.is_deleted' => 0]);
             }])
             ->orderBy(['a.id' => SORT_DESC])
 //            ->where(['not', ['b.status' => 1]])
