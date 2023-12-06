@@ -9,8 +9,11 @@ use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
+use common\models\UserRoles;
+use common\models\Utilities;
 use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
@@ -417,6 +420,54 @@ class TestController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
             }
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionVehicleChanges($auth = '', $type = '')
+    {
+        $this->isAuth();
+        if ($auth != Yii::$app->params->emiCollection->cashInHand->authKey) {
+            return 'unauthorised';
+        }
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+                if (empty($header)) {
+                    return 'error';
+                }
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return $key == array_search('LoanNo', $header) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                if ($loan) {
+                    $loan->company_id = $data[array_search('CompanyId', $header)] ?? "";
+                    $loan->company_name = $data[array_search('CompanyName', $header)] ?? "";
+                    if (!empty($type)) {
+                        if (!empty($data[array_search('Nach', $header)])) {
+                            $loan->nach_approved = $data[array_search('Nach', $header)] == 'Yes' ? 1 : 0;
+                        }
+                        $loan->dealer_name = $data[array_search('DealerName', $header)] ?? "";
+                    }
+                    $loan->coborrower_name = $data[array_search('CoBorrowerName', $header)] ?? "";
+                    $loan->coborrower_phone = $data[array_search('CoBorrowerPhone', $header)] ?? "";
+                    if (!$loan->save()) {
+                        $transaction->rollBack();
+                        return json_encode($loan->getErrors());
+                    }
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
     }
 }

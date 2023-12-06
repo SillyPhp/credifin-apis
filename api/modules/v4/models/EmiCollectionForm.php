@@ -21,6 +21,7 @@ class EmiCollectionForm extends Model
     public $phone;
     public $amount;
     public $loan_type;
+    public $ptp_payment_method;
     public $loan_purpose;
     public $payment_method;
     public $other_payment_method;
@@ -88,7 +89,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -115,6 +116,10 @@ class EmiCollectionForm extends Model
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
+        if ($this->ptp_payment_method) {
+            $model->ptp_payment_method = $this->ptp_payment_method;
+        }
+
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
@@ -288,7 +293,7 @@ class EmiCollectionForm extends Model
             $status = 1;
         } else {
             $status = !empty($data['cash_ids']) ? 2 : 0;
-            if (!empty($query->received_from)) {
+            if (!empty($emi_id)) {
                 Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
                     "emi_payment_status" => 'pipeline',
                     "updated_on" => date("Y-m-d H:i:s"),
