@@ -264,9 +264,6 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
-            // getting and returning loan_type_enc_id
-            //            $loan_id = FinancerLoanProducts::findOne(['name' => $params['loan_product'], 'is_deleted' => 0]);
-
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -322,6 +319,9 @@ class CompanyDashboardController extends ApiBaseController
                 $roleUnderId = $roleUnder['organization_enc_id'];
             }
         }
+
+        // using this var in where condition and defined here because it might be changed in some cases
+        $is_removed = 0;
 
         // getting shared applications to logged-in user
         $shared_apps = $this->sharedApps($user->user_enc_id);
@@ -417,13 +417,6 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['a.lead_by' => $dsa]);
             }
         }
-
-        if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
-            // else checking lead_by and managed_by by logged-in user
-            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            // if shared app_ids exists then also getting data for those applications
-            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
-        }
         // if all, rejected or disbursed data needed
         if (isset($params['type'])) {
             switch ($params['type']) {
@@ -435,7 +428,7 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->andWhere(['i.status' => 31]);
                     $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
-                case 'new_lead': 
+                case 'new_lead':
                     $loans->andWhere(['i.status' => 0]);
                     break;
                 case 'completed':
@@ -469,7 +462,22 @@ class CompanyDashboardController extends ApiBaseController
                         $m->onCondition(['m.status' => 0]);
                     }]);
                     break;
+                case 'only_removed':
+                    $is_removed = 1;
+                    break;
+                case 'only_disbursed';
+                    $is_disbursed = 1;
             }
+        }
+
+        if (!empty($is_disbursed)) {
+            // checking only disbursed cases and using if condition so other condition is not applied from elseif condition
+            $loans->andWhere(['i.status' => 31]);
+        } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
+            // else checking lead_by and managed_by by logged-in user
+            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            // if shared app_ids exists then also getting data for those applications
+            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
         // filter to check status
@@ -657,7 +665,7 @@ class CompanyDashboardController extends ApiBaseController
             }
             $loans->andWhere($where);
         }
-        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
+        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => $is_removed]);
         $count = $loans->count();
         $loans = $loans
             ->limit($limit)
