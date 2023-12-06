@@ -425,6 +425,7 @@ class TestController extends ApiBaseController
 
     public function actionVehicleChanges($auth = '', $type = '')
     {
+        Yii::$app->cache->flush();
         $this->isAuth();
         if ($auth != Yii::$app->params->emiCollection->cashInHand->authKey) {
             return 'unauthorised';
