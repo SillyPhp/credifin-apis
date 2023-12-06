@@ -928,10 +928,11 @@ class CompanyDashboardController extends ApiBaseController
                 $h->select([
                     'h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
                     'h.local_address', 'h.latitude', 'h.longitude', "CONCAT(h1.first_name,' ',h1.last_name) created_by", 'h.created_on',
-                    "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image"
+                    "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image",
+                    "ab.name", "ab.borrower_type"
                 ]);
+                $h->joinWith(['assignedBorrowerEnc ab'], false);
                 $h->joinWith(['createdBy h1'], false);
-
                 $h->onCondition(['h.is_deleted' => 0]);
             }])
             ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {

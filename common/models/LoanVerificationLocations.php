@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $loan_verification_enc_id loan verification encrypted id
  * @property string $loan_app_enc_id loan application enc id
+ * @property string $assigned_borrower_enc_id borrower id or co-borrower id
  * @property string $location_name location name
  * @property string $local_address location local address
  * @property double $latitude latitude of location
@@ -23,6 +24,7 @@ use Yii;
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property LoanCoApplicants $assignedBorrowerEnc
  */
 class LoanVerificationLocations extends \yii\db\ActiveRecord
 {
@@ -44,13 +46,14 @@ class LoanVerificationLocations extends \yii\db\ActiveRecord
             [['latitude', 'longitude'], 'number'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['loan_verification_enc_id', 'loan_app_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_verification_enc_id', 'loan_app_enc_id', 'assigned_borrower_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['location_name'], 'string', 'max' => 250],
             [['local_address'], 'string', 'max' => 500],
             [['loan_verification_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['assigned_borrower_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanCoApplicants::className(), 'targetAttribute' => ['assigned_borrower_enc_id' => 'loan_co_app_enc_id']],
         ];
     }
 
@@ -76,5 +79,13 @@ class LoanVerificationLocations extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedBorrowerEnc()
+    {
+        return $this->hasOne(LoanCoApplicants::className(), ['loan_co_app_enc_id' => 'assigned_borrower_enc_id']);
     }
 }
