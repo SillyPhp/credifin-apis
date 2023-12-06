@@ -403,7 +403,7 @@ class EmiCollectionsController extends ApiBaseController
     public
     function actionAuthorisedApprove()
     {
-        $this->isSpecialUser(1);
+        $this->isAuth();
         $params = $this->post;
         if (!isset($params["type"]) || empty($params["cash_id"])) {
             return $this->response(422, ["status" => 422, "message" => "missing parameter 'type or cash_id'"]);
