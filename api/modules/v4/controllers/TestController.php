@@ -2,24 +2,20 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
-use common\models\extended\AssignedLoanProviderExtended;
-use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
-use yii\web\Response;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanApplications;
-use common\models\LoanAuditTrail;
 use common\models\LoanPayments;
 use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 class TestController extends ApiBaseController
 {
@@ -157,7 +153,8 @@ class TestController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
-    private function getCashReportDetail($id){
+    private function getCashReportDetail($id)
+    {
         $findCashDe = EmployeesCashReport::find()
             ->select(['status', 'parent_cash_report_enc_id'])
             ->where(['cash_report_enc_id' => $id])
@@ -168,43 +165,44 @@ class TestController extends ApiBaseController
 
         return $findCashDe['status'] == 1;
     }
-    public function actionCashMove($limit = 50, $page = 1, $auth = ''){
+
+    public function actionCashMove($limit = 50, $page = 1, $auth = '')
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn'){
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
             return ['status' => 401, 'msg' => 'authentication failed'];
         }
-        $emiCollc = EmiCollection::find()
+        $emis = EmiCollection::find()
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
-            ->joinWith(['employeesCashReports b' => function ($b) {
-                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "status"]);
+            ->innerJoinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
+                $b->andOnCondition(["!=", "b.status", 1]);
+                $b->andOnCondition(['b.is_deleted' => 0]);
             }])
-            ->where(['not', ['b.status' => 1]])
-            ->asArray()
             ->orderBy(['a.id' => SORT_DESC])
-            ->limit($limit)
+//            ->where(['not', ['b.status' => 1]])
+//            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
             ->all();
         $updated = 0;
-        foreach ($emiCollc as $key => $ec) {
-            $status = 'pipeline';
-            if (!empty($ec['employeesCashReports'][0]['parent_cash_report_enc_id'])) {
-                if ($this->getCashReportDetail($ec['employeesCashReports'][0]['parent_cash_report_enc_id'])) {
-                    $status = 'paid';
-                }
-            }
-            if ($status == 'pipeline') {
+        foreach ($emis as $key => $emi) {
+            $cash_id = reset($emi['employeesCashReports']);
+            if (empty($cash_id['parent_cash_report_enc_id']) || !$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
+//                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $ec['emi_collection_enc_id']])
+                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
                 if ($update) {
                     $updated += 1;
                 }
             }
         }
-        return ['status' => 200, 'found' => count($emiCollc), 'updated' => $updated];
-//        print_r($emiCollc);
+//        print_r($emis);
 //        exit();
+        return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
 
     private function CreditReports($loan_id)
