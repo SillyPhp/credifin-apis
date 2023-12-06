@@ -189,10 +189,55 @@ class TestController extends ApiBaseController
         $updated = 0;
         foreach ($emis as $key => $emi) {
             $cash_id = reset($emi['employeesCashReports']);
-            if (empty($cash_id['parent_cash_report_enc_id']) || !$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
+            if (empty($cash_id['parent_cash_report_enc_id'])) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'collected'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            } else if (!$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
 //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
                     ->update(EmiCollection::tableName(), ['emi_payment_status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            }
+        }
+//        print_r($emis);
+//        exit();
+        return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
+    }
+
+    public function actionFixPipelined($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $emis = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
+            ->innerJoinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
+                $b->andOnCondition(["b.status" => 0]);
+            }])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->where(['not', ['a.emi_payment_status' => 'collected']])
+//            ->andWhere(['b.is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+        $updated = 0;
+        foreach ($emis as $key => $emi) {
+            $cash_id = reset($emi['employeesCashReports']);
+            if (empty($cash_id['parent_cash_report_enc_id'])) {
+//                $emis[$key]['cs'] = 'pipeline';
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'collected'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
                 if ($update) {
                     $updated += 1;
