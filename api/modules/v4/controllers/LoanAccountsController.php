@@ -517,15 +517,11 @@ class LoanAccountsController extends ApiBaseController
 
     public function actionEmiAccountDetails()
     {
-        if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-
+        $this->isAuth();
+        $params = $this->post;
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
-
         $data = (new \yii\db\Query())
             ->select([
                 'a.loan_account_number',
@@ -539,11 +535,9 @@ class LoanAccountsController extends ApiBaseController
             ->one();
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         $model = $this->_emiAccData($lac)['data'];
-
         if ($data || $model) {
             return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
         }
-
         return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
     }
 
