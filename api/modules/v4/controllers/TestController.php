@@ -9,8 +9,11 @@ use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
+use common\models\UserRoles;
+use common\models\Utilities;
 use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
@@ -180,7 +183,7 @@ class TestController extends ApiBaseController
                 $b->andOnCondition(["!=", "b.status", 1]);
             }])
             ->orderBy(['a.id' => SORT_DESC])
-//            ->where(['not', ['b.status' => 1]])
+            ->where(['not', ['a.emi_payment_status' => 'pipeline']])
 //            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
             ->limit($limit)
@@ -189,10 +192,55 @@ class TestController extends ApiBaseController
         $updated = 0;
         foreach ($emis as $key => $emi) {
             $cash_id = reset($emi['employeesCashReports']);
-            if (empty($cash_id['parent_cash_report_enc_id']) || !$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
+            if (empty($cash_id['parent_cash_report_enc_id'])) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'collected'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            } else if (!$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
 //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            }
+        }
+//        print_r($emis);
+//        exit();
+        return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
+    }
+
+    public function actionFixPipelined($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $emis = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
+            ->innerJoinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
+                $b->andOnCondition(["b.status" => 0]);
+            }])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->where(['not', ['a.emi_payment_status' => 'collected']])
+//            ->andWhere(['b.is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+        $updated = 0;
+        foreach ($emis as $key => $emi) {
+            $cash_id = reset($emi['employeesCashReports']);
+            if (empty($cash_id['parent_cash_report_enc_id'])) {
+//                $emis[$key]['cs'] = 'pipeline';
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'collected'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
                 if ($update) {
                     $updated += 1;
@@ -372,6 +420,54 @@ class TestController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
             }
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionVehicleChanges($auth = '', $type = '')
+    {
+        $this->isAuth();
+        if ($auth != Yii::$app->params->emiCollection->cashInHand->authKey) {
+            return 'unauthorised';
+        }
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+                if (empty($header)) {
+                    return 'error';
+                }
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return $key == array_search('LoanNo', $header) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                if ($loan) {
+                    $loan->company_id = $data[array_search('CompanyId', $header)] ?? "";
+                    $loan->company_name = $data[array_search('CompanyName', $header)] ?? "";
+                    if (!empty($type)) {
+                        if (!empty($data[array_search('Nach', $header)])) {
+                            $loan->nach_approved = $data[array_search('Nach', $header)] == 'Yes' ? 1 : 0;
+                        }
+                        $loan->dealer_name = $data[array_search('DealerName', $header)] ?? "";
+                    }
+                    $loan->coborrower_name = $data[array_search('CoBorrowerName', $header)] ?? "";
+                    $loan->coborrower_phone = $data[array_search('CoBorrowerPhone', $header)] ?? "";
+                    if (!$loan->save()) {
+                        $transaction->rollBack();
+                        return json_encode($loan->getErrors());
+                    }
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
     }
 }
