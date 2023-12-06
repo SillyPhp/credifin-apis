@@ -1817,10 +1817,9 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiDetail()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
         if (empty($params['emi_collection_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
@@ -1901,6 +1900,10 @@ class OrganizationsController extends ApiBaseController
         }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
+        if (!empty($params['ptpstatus'])) {
+            $model->andWhere(["NOT", "a.ptp_date", NULL]);
         }
 
         if (!empty($search)) {
@@ -2427,17 +2430,21 @@ class OrganizationsController extends ApiBaseController
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount"
             ])
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
+            ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'total_pending_amount') {
+                        $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'branch_name') {
@@ -2461,7 +2468,8 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
         $count = $query->count();
-        $query = $query->limit($limit)
+        $query = $query
+            ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
