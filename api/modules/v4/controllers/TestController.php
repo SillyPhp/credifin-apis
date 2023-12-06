@@ -2,23 +2,20 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
-use common\models\extended\AssignedLoanProviderExtended;
-use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanApplications;
-use common\models\LoanAuditTrail;
 use common\models\LoanPayments;
 use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 class TestController extends ApiBaseController
 {
@@ -61,30 +58,32 @@ class TestController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.application_number",
-                "a.applicant_name",
+                "abc.name applicant_name",
+                "a.invoice_date",
+                "a.loan_status_updated_on as disbursement_date",
+                "DATE_FORMAT(a.loan_status_updated_on, '%Y-%m-%d') disbursement_date",
                 "c.address",
-                "(CASE WHEN a.gender = 1 THEN 'Male' WHEN a.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
                 "c.postal_code",
-                "a.phone",
-                "a.cibil_score",
-                "a.aadhaar_number",
-                "a.voter_card_number",
-                "a.pan_number",
+                "abc.phone",
+                "abc.cibil_score",
+                "abc.aadhaar_number",
+                "abc.voter_card_number",
+                "abc.pan_number",
                 "a.loan_purpose",
                 "a.chassis_number",
                 "a.invoice_number",
                 "a.amount",
                 "a.number_of_emis",
                 "a.roi",
-                "a.applicant_dob",
+                "abc.co_applicant_dob applicant_dob",
                 "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
                 "b.disbursement_approved",
                 "b.insurance_charges",
                 "a.emi_collection_date",
                 "e.vehicle_model",
                 "e.vehicle_making_year",
-
                 "a.loan_app_enc_id",
                 "a.loan_products_enc_id",
                 "e.dealer_name",
@@ -93,11 +92,17 @@ class TestController extends ApiBaseController
                 "f.name loan_type",
                 "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
                 "a.applicant_dob",
-                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link"
+                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
+                "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
+                "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
+                "e.policy_number", "e.payable_value", "e.field_officer"
             ])
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
+            }], false)
+            ->joinWith(["loanCoApplicants abc" => function ($abc) {
+                $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
@@ -105,6 +110,7 @@ class TestController extends ApiBaseController
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
                     "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
                 $d->onCondition(["d.is_deleted" => 0]);
+                $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
                 $d->joinWith(["loanApplicantResidentialInfos d1"], false);
             }], true)
             ->joinWith(["loanApplicationOptions e"], false)
@@ -145,6 +151,58 @@ class TestController extends ApiBaseController
             }
         }
         return $this->response(200, ["status" => 200, "data" => $query]);
+    }
+
+    private function getCashReportDetail($id)
+    {
+        $findCashDe = EmployeesCashReport::find()
+            ->select(['status', 'parent_cash_report_enc_id'])
+            ->where(['cash_report_enc_id' => $id])
+            ->one();
+        if ($findCashDe['status'] != 1 && !empty($findCashDe['parent_cash_report_enc_id'])) {
+            return $this->getCashReportDetail($findCashDe['parent_cash_report_enc_id']);
+        }
+
+        return $findCashDe['status'] == 1;
+    }
+
+    public function actionCashMove($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $emis = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
+            ->innerJoinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
+                $b->andOnCondition(["!=", "b.status", 1]);
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }])
+            ->orderBy(['a.id' => SORT_DESC])
+//            ->where(['not', ['b.status' => 1]])
+//            ->andWhere(['b.is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+        $updated = 0;
+        foreach ($emis as $key => $emi) {
+            $cash_id = reset($emi['employeesCashReports']);
+            if (empty($cash_id['parent_cash_report_enc_id']) || !$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
+//                $emis[$key]['cs'] = 'pipeline';
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            }
+        }
+//        print_r($emis);
+//        exit();
+        return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
 
     private function CreditReports($loan_id)
@@ -306,7 +364,7 @@ class TestController extends ApiBaseController
         foreach ($results as $audit) {
             $loan_app_enc_id = $audit['foreign_id'];
             $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
-            if ($loan_application) {
+            if ($loan_application->login_date == null) {
                 $loan_application->login_date = $audit['stamp'];
                 $loan_application->save();
                 if (!$loan_application) {

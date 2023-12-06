@@ -1710,7 +1710,7 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiStats()
     {
-        if (!$this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         if (!$params = Yii::$app->request->post()) {
@@ -1752,6 +1752,11 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['branch_enc_id'])) {
             $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
         }
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $data = $data->andWhere(['IN', 'created_by', $juniors]);
+        }
+
         $data = $data->asArray()
             ->all();
 
