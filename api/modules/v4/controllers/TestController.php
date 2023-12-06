@@ -180,7 +180,7 @@ class TestController extends ApiBaseController
                 $b->andOnCondition(["!=", "b.status", 1]);
             }])
             ->orderBy(['a.id' => SORT_DESC])
-//            ->where(['not', ['b.status' => 1]])
+            ->where(['not', ['a.emi_payment_status' => 'pipeline']])
 //            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
             ->limit($limit)
