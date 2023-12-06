@@ -192,7 +192,7 @@ class TestController extends ApiBaseController
             if (empty($cash_id['parent_cash_report_enc_id']) || !$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
 //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmiCollection::tableName(), ['status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
                 if ($update) {
                     $updated += 1;
