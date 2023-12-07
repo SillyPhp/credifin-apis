@@ -2427,21 +2427,26 @@ class OrganizationsController extends ApiBaseController
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+                "a.last_emi_received_date", "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
             ])
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
             ->andWhere(["a.is_deleted" => 0]);
+
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'bucket') {
+                        $query->andWhere(['IN', 'a.bucket', $value]);
+                    } elseif ($key == 'loan_type') {
+                        $query->andWhere(['IN', 'a.loan_type', $value]);
+                    } elseif ($key == 'branch') {
+                        $query->andWhere(['IN', 'b.location_enc_id', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
-                    } elseif ($key == 'branch_name') {
-                        $query->andWhere(["like", "b.location_name", "$value%", false]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }
@@ -2466,10 +2471,8 @@ class OrganizationsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $loan_accounts = LoanAccountsExtended::find()->distinct()->select(['loan_type'])->asArray()->all();
-
         if ($query) {
-            return $this->response(200, ["status" => 200, "data" => $query, "count" => $count, "loan_accounts" => $loan_accounts]);
+            return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
         }
 
         return $this->response(404, ["status" => 404, "message" => "data not found"]);
