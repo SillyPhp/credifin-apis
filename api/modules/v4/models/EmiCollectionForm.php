@@ -21,6 +21,7 @@ class EmiCollectionForm extends Model
     public $phone;
     public $amount;
     public $loan_type;
+    public $ptp_payment_method;
     public $loan_purpose;
     public $payment_method;
     public $other_payment_method;
@@ -88,7 +89,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -115,6 +116,10 @@ class EmiCollectionForm extends Model
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
+        if ($this->ptp_payment_method) {
+            $model->ptp_payment_method = $this->ptp_payment_method;
+        }
+
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
@@ -154,7 +159,7 @@ class EmiCollectionForm extends Model
         }
         $model->emi_payment_mode = $this->payment_mode;
         $model->emi_payment_method = $this->payment_method;
-        $model->emi_payment_status = 'pending';
+        $model->emi_payment_status = in_array($this->payment_method, [9, 10, 81, 82, 83, 84]) ? 'pipeline' : (in_array($this->payment_method, [4, 5]) ? 'collected' : 'pending');
         $model->dealer_name = $this->dealer_name ?? '';
         $model->reference_number = $this->reference_number ?? '';
         if ($this->other_doc_image) {
@@ -288,15 +293,6 @@ class EmiCollectionForm extends Model
             $status = 1;
         } else {
             $status = !empty($data['cash_ids']) ? 2 : 0;
-            if (!empty($query->received_from)) {
-                Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
-                    "emi_payment_status" => 'pipeline',
-                    "updated_on" => date("Y-m-d H:i:s"),
-                    "updated_by" => $data['user_id']
-                ], [
-                    "emi_collection_enc_id" => !empty($emi_id) ? $emi_id : null
-                ])->execute();
-            }
         }
         $remaining_amount = $data['amount'];
         $query->status = $status;
