@@ -269,7 +269,7 @@ class AuthController extends ApiBaseController
             // if there is no data in request then error 400 bad request
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         } catch (\Exception $exception) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception, true)]);
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 

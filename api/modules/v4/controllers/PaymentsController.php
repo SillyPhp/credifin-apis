@@ -8,6 +8,7 @@ use common\models\AssignedLoanPayments;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanAccountsExtended;
+use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanApplications;
@@ -82,14 +83,22 @@ class PaymentsController extends ApiBaseController
     {
         $query = AssignedLoanPayments::find()
             ->alias('a')
-            ->select(['c.assigned_loan_provider_enc_id', 'a.updated_by'])
+            ->select(['c.assigned_loan_provider_enc_id', 'a.loan_app_enc_id', 'a.updated_by'])
             ->joinWith(['loanAppEnc b' => function ($b) {
                 $b->joinWith(['assignedLoanProviders c'], false, 'INNER JOIN');
             }], false, 'INNER JOIN')
             ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<', 'c.status', 4]])
             ->asArray()
             ->one();
+
         if ($query) {
+            Yii::$app->db->createCommand()
+                ->update(
+                    LoanApplicationsExtended::tableName(),
+                    ['login_date' => date('Y-m-d H:i:s')],
+                    ['loan_app_enc_id' => $query->loan_app_enc_id]
+                )
+                ->execute();
             Yii::$app->db->createCommand()
                 ->update(AssignedLoanProviderExtended::tableName(), ['status' => 4, 'loan_status_updated_on' => date('Y-m-d H:i:s'), 'updated_by' => $query['updated_by']], ['assigned_loan_provider_enc_id' => $query['assigned_loan_provider_enc_id']])
                 ->execute();

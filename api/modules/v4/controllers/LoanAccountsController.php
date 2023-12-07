@@ -9,6 +9,7 @@ use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccountComments;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -50,7 +51,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-acc-list' => ['POST', 'OPTIONS'],
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
-                'assign-telecaller' => ['POST', 'OPTIONS']
+                'assign-telecaller' => ['POST', 'OPTIONS'],
+                'stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -476,7 +478,8 @@ class LoanAccountsController extends ApiBaseController
 
         $data = LoanActionRequests::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
+            ->select([
+                'a.loan_account_enc_id', 'a.request_enc_id', 'a.reasons', 'a.remarks', 'a.created_by',
                 'a.request_image', 'a.request_image_location', 'a.created_on',
                 "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as created_by_name", 'b.image_location', 'b.image',
                 "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END createdby_image",
@@ -516,21 +519,18 @@ class LoanAccountsController extends ApiBaseController
 
     public function actionEmiAccountDetails()
     {
-        if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-
+        $this->isAuth();
+        $params = $this->post;
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
-
         $data = (new \yii\db\Query())
             ->select([
                 'a.loan_account_number',
-                'COUNT(a1.loan_account_number) as total_emis',
+                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
-                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date'
+                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
             ])
             ->from(['a' => LoanAccounts::tableName()])
             ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
@@ -538,11 +538,9 @@ class LoanAccountsController extends ApiBaseController
             ->one();
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         $model = $this->_emiAccData($lac)['data'];
-
         if ($data || $model) {
             return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
         }
-
         return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
     }
 
@@ -585,7 +583,9 @@ class LoanAccountsController extends ApiBaseController
                         THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
                     ELSE NULL 
                 END as borrower_image",
-                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date'
+                'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
+                "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
+                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method"
             ])
             ->joinWith(['createdBy b'], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
@@ -593,6 +593,7 @@ class LoanAccountsController extends ApiBaseController
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -1113,5 +1114,72 @@ class LoanAccountsController extends ApiBaseController
             $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
         }
         return $assignment;
+    }
+
+    public function actionSaveLoanAccountComments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params["loan_account_enc_id"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'loan_account_enc_id'"]);
+        }
+
+        if (empty($params["comment"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'comment'"]);
+        }
+
+        $comment = new LoanAccountComments();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $comment->comment_enc_id = $utilitiesModel->encrypt();
+        $comment->loan_account_enc_id = $params['loan_account_enc_id'];
+        $comment->comment = $params['comment'];
+        if (!empty($params['is_important']) && (int)$params['is_important'] == 1) {
+            $comment->is_important = 1;
+        }
+        $comment->source = 'EL';
+        $comment->created_by = $user->user_enc_id;
+        $comment->created_on = date('Y-m-d H:i:s');
+        if (!$comment->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
+
+    public function actionGetComments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params["loan_account_enc_id"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'loan_account_enc_id'"]);
+        }
+
+        $comments = LoanAccountComments::find()
+            ->alias('a')
+            ->select(['a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
+                'a.status', 'a.source', 'a.created_on',
+                "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as created_by",
+                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN b1.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', b1.logo_location, '/', b1.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b1.name, '&size=200&rounded=false&background=', REPLACE(b1.initials_color, '#', ''), '&color=ffffff') END logo",
+            ])
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['organizations b1']);
+            }], false)
+            ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id'], 'a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if ($comments) {
+            return $this->response(200, ['status' => 200, 'data' => $comments]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
     }
 }
