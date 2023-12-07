@@ -470,4 +470,10 @@ class TestController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
     }
+
+    public function actionClearCache() {
+        Yii::$app->cache->flush();
+        print_r('Cache Cleared');
+        exit();
+    }
 }
