@@ -293,15 +293,6 @@ class EmiCollectionForm extends Model
             $status = 1;
         } else {
             $status = !empty($data['cash_ids']) ? 2 : 0;
-            if (!empty($emi_id)) {
-                Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
-                    "emi_payment_status" => 'pipeline',
-                    "updated_on" => date("Y-m-d H:i:s"),
-                    "updated_by" => $data['user_id']
-                ], [
-                    "emi_collection_enc_id" => $emi_id
-                ])->execute();
-            }
         }
         $remaining_amount = $data['amount'];
         $query->status = $status;
