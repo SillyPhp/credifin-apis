@@ -425,6 +425,7 @@ class TestController extends ApiBaseController
 
     public function actionVehicleChanges($auth = '', $type = '')
     {
+        Yii::$app->cache->flush();
         $this->isAuth();
         if ($auth != Yii::$app->params->emiCollection->cashInHand->authKey) {
             return 'unauthorised';
@@ -469,5 +470,11 @@ class TestController extends ApiBaseController
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         }
+    }
+
+    public function actionClearCache() {
+        Yii::$app->cache->flush();
+        print_r('Cache Cleared');
+        exit();
     }
 }
