@@ -6,29 +6,24 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
-use common\models\EmiPaymentIssues;
-use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
-use common\models\OrganizationLocations;
-use common\models\UserRoles;
-use common\models\Utilities;
 use common\models\spaces\Spaces;
+use common\models\UserRoles;
 use common\models\Users;
+use common\models\Utilities;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use Yii;
-use yii\db\Expression;
-use yii\helpers\Url;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
-use yii\db\Query;
-use function GuzzleHttp\Promise\all;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -52,7 +47,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
                 'assign-telecaller' => ['POST', 'OPTIONS'],
-                'stats' => ['POST', 'OPTIONS']
+                'stats' => ['POST', 'OPTIONS'],
+                'loan-accounts-type' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1181,5 +1177,44 @@ class LoanAccountsController extends ApiBaseController
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+    }
+
+    public function actionStats()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $where = ['is_deleted' => 0];
+        if (!empty($params['bucket'])) {
+            $where['bucket'] = $params['bucket'];
+        }
+        $bucket = LoanAccountsExtended::find()
+            ->select([
+                'COUNT(loan_account_enc_id) as total_loan_accounts',
+                'SUM(overdue_amount) AS overdue_amount',
+                'SUM(ledger_amount) AS ledger_amount',
+                'SUM(last_emi_received_amount) AS EMI_received_amount',
+                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
+            ])
+            ->where($where)
+            ->asArray()
+            ->one();
+        if (!$bucket) {
+            return $this->response(404, ["status" => 404, "message" => "data not found"]);
+        }
+        $bucket = array_map(function ($key, $value) {
+            return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
+        }, array_keys($bucket), $bucket);
+
+        return $this->response(200, ["status" => 200, "data" => $bucket]);
+    }
+
+    public function actionLoanAccountsType()
+    {
+        $loan_accounts = LoanAccountsExtended::find()
+            ->distinct()
+            ->select(['loan_type'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ["status" => 200, "data" => $loan_accounts]);
     }
 }

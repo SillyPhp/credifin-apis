@@ -355,9 +355,8 @@ class CompanyDashboardController extends ApiBaseController
                 'a.managed_by',
                 'lp.name as loan_product',
                 'i.updated_on',
-                'a.created_on'
-            ])
-            ->addSelect([
+                'a.created_on',
+                'a.loan_status_updated_on as disbursement_date',
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
                 "(CASE
                     WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
@@ -497,7 +496,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -531,6 +530,12 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'end_date':
                                 $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            case 'disbursement_start_date':
+                                $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'disbursement_end_date':
+                                $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
