@@ -20,6 +20,7 @@ use common\models\spaces\Spaces;
 use common\models\Users;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
+use function foo\func;
 use common\models\VehicleRepossessionImages;
 use Yii;
 use yii\db\Expression;
@@ -52,7 +53,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
                 'assign-telecaller' => ['POST', 'OPTIONS'],
-                'stats' => ['POST', 'OPTIONS']
+                'stats' => ['POST', 'OPTIONS'],
+                'loan-accounts-type' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1181,5 +1183,46 @@ class LoanAccountsController extends ApiBaseController
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+    }
+
+    public function actionStats()
+    {
+        $this->isAuth();
+        $params = $this->post;
+
+        $query = LoanAccountsExtended::find()
+            ->select([
+                'COUNT(loan_account_enc_id) as total_loan_accounts',
+                'SUM(overdue_amount) AS overdue_amount',
+                'SUM(ledger_amount) AS ledger_amount',
+                'SUM(last_emi_received_amount) AS EMI_received_amount',
+                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
+            ])
+            ->asArray();
+        if (empty($params['bucket'])) {
+            $bucket = $query->one();
+        } else {
+            $bucket = $query
+                ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
+                ->one();
+        }
+        if ($bucket) {
+            $bucket = array_map(function ($key, $value) {
+                return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
+            }, array_keys($bucket), $bucket);
+
+            return $this->response(200, ["status" => 200, "data" => $bucket]);
+        }
+        return $this->response(404, ["status" => 404, "message" => "data not found"]);
+    }
+
+    public function actionLoanAccountsType()
+    {
+        $loan_accounts = LoanAccountsExtended::find()
+            ->distinct()
+            ->select(['loan_type'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ["status" => 200, "data" => $loan_accounts]);
     }
 }
