@@ -571,17 +571,17 @@ class CompanyDashboardController extends ApiBaseController
                                             'not',
                                             ['a.lead_by' => null]
                                         ],
-                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]
+                                        ['like', "CONCAT(lb.first_name, ' ', COALESCE(lb.last_name,''))", $val]
                                     ],
                                     [
                                         'and',
                                         ['a.lead_by' => null],
-                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]
+                                        ['like', "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name, ''))", $val]
                                     ]
                                 ]);
                                 break;
                             case 'sharedTo':
-                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", COALESCE(n1.last_name,""))', $val]);
+                                $loans->andWhere(['like', "CONCAT(n1.first_name, ' ', COALESCE(n1.last_name,''))", $val]);
                                 break;
                         }
                     }
