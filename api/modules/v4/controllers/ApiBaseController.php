@@ -139,14 +139,6 @@ class ApiBaseController extends Controller
         return false;
     }
 
-    public function isSpecialUser($type = false)
-    {
-        $this->isAuth();
-        if (!$this->isSpecial($type)) {
-            $this->response(401, ["status" => 401, "message" => "unauthorized"]);
-        }
-    }
-
     public function isAuth($type = false): void
     {
         if ((!$user = $this->isAuthorized()) && (!$type || $this->isSpecial($type))) {

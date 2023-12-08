@@ -10,8 +10,14 @@ use Yii;
  * @property int $id Primary Id
  * @property string $loan_account_enc_id Loan Account
  * @property string $loan_account_number Loan Account Number
- * @property string $lms_loan_account_number
+ * @property string $lms_loan_account_number Lms Account Number
  * @property string $collection_manager Collection Manager
+ * @property int $company_id Company Id
+ * @property string $company_name Company Name
+ * @property string $dealer_name Dealer Name
+ * @property int $nach_approved Nach Approved
+ * @property string $coborrower_name CoBorrower Name
+ * @property string $coborrower_phone CoBorrower Number
  * @property string $last_emi_date Last Emi Date
  * @property int $total_installments Total Installments
  * @property double $financed_amount Amount Financed
@@ -30,13 +36,13 @@ use Yii;
  * @property string $emi_date Emi Date
  * @property double $last_emi_received_amount Last emi received amount
  * @property string $last_emi_received_date Last emi received date
- * @property string $assigned_caller
- * @property string $vehicle_type
- * @property string $vehicle_make
- * @property string $vehicle_model
- * @property string $vehicle_engine_no
- * @property string $vehicle_chassis_no
- * @property string $rc_number
+ * @property string $assigned_caller Assigned Caller
+ * @property string $vehicle_type Vehicle Type
+ * @property string $vehicle_make Vehicle Make
+ * @property string $vehicle_model Vehicle Model
+ * @property string $vehicle_engine_no Vehicle Engine Number
+ * @property string $vehicle_chassis_no Vehicle Chassis Number
+ * @property string $rc_number Rc Number
  * @property string $created_on Created On
  * @property string $created_by Created By
  * @property string $updated_on Updated On
@@ -45,6 +51,7 @@ use Yii;
  *
  * @property EmiCollection[] $emiCollections
  * @property EmiPaymentIssues[] $emiPaymentIssues
+ * @property LoanAccountComments[] $loanAccountComments
  * @property Users $assignedCaller
  * @property Users $updatedBy
  * @property Users $createdBy
@@ -70,13 +77,13 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return [
             [['loan_account_enc_id', 'loan_account_number', 'lms_loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
+            [['company_id', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
             [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
-            [['total_installments', 'is_deleted'], 'integer'],
             [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
-            [['loan_account_enc_id', 'loan_account_number', 'collection_manager', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_account_enc_id', 'loan_account_number', 'collection_manager', 'company_name', 'dealer_name', 'coborrower_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['lms_loan_account_number'], 'string', 'max' => 20],
+            [['coborrower_phone', 'phone'], 'string', 'max' => 15],
             [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
-            [['phone'], 'string', 'max' => 15],
             [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
             [['loan_account_enc_id'], 'unique'],
             [['loan_account_number'], 'unique'],
@@ -102,6 +109,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getEmiPaymentIssues()
     {
         return $this->hasMany(EmiPaymentIssues::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAccountComments()
+    {
+        return $this->hasMany(LoanAccountComments::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 
     /**

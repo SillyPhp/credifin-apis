@@ -264,9 +264,6 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
-            // getting and returning loan_type_enc_id
-            //            $loan_id = FinancerLoanProducts::findOne(['name' => $params['loan_product'], 'is_deleted' => 0]);
-
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -323,6 +320,9 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
+        // using this var in where condition and defined here because it might be changed in some cases
+        $is_removed = 0;
+
         // getting shared applications to logged-in user
         $shared_apps = $this->sharedApps($user->user_enc_id);
 
@@ -355,9 +355,8 @@ class CompanyDashboardController extends ApiBaseController
                 'a.managed_by',
                 'lp.name as loan_product',
                 'i.updated_on',
-                'a.created_on'
-            ])
-            ->addSelect([
+                'a.created_on',
+                'a.loan_status_updated_on as disbursement_date',
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
                 "(CASE
                     WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
@@ -417,13 +416,6 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['a.lead_by' => $dsa]);
             }
         }
-
-        if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
-            // else checking lead_by and managed_by by logged-in user
-            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            // if shared app_ids exists then also getting data for those applications
-            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
-        }
         // if all, rejected or disbursed data needed
         if (isset($params['type'])) {
             switch ($params['type']) {
@@ -435,7 +427,7 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->andWhere(['i.status' => 31]);
                     $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
-                case 'new_lead': 
+                case 'new_lead':
                     $loans->andWhere(['i.status' => 0]);
                     break;
                 case 'completed':
@@ -469,7 +461,23 @@ class CompanyDashboardController extends ApiBaseController
                         $m->onCondition(['m.status' => 0]);
                     }]);
                     break;
+                case 'only_removed':
+                    $is_removed = 1;
+                    break;
+                case 'only_disbursed';
+                    $is_disbursed = 1;
+                    break;
             }
+        }
+
+        if (!empty($is_disbursed)) {
+            // checking only disbursed cases and using if condition so other condition is not applied from elseif condition
+            $loans->andWhere(['i.status' => 31]);
+        } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly && $is_removed === 0) {
+            // else checking lead_by and managed_by by logged-in user
+            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            // if shared app_ids exists then also getting data for those applications
+            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
         // filter to check status
@@ -488,7 +496,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -522,6 +530,12 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'end_date':
                                 $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            case 'disbursement_start_date':
+                                $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'disbursement_end_date':
+                                $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
@@ -657,7 +671,7 @@ class CompanyDashboardController extends ApiBaseController
             }
             $loans->andWhere($where);
         }
-        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0]);
+        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => $is_removed]);
         $count = $loans->count();
         $loans = $loans
             ->limit($limit)
@@ -920,10 +934,11 @@ class CompanyDashboardController extends ApiBaseController
                 $h->select([
                     'h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
                     'h.local_address', 'h.latitude', 'h.longitude', "CONCAT(h1.first_name,' ',h1.last_name) created_by", 'h.created_on',
-                    "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image"
+                    "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image",
+                    "ab.name", "ab.borrower_type"
                 ]);
+                $h->joinWith(['assignedBorrowerEnc ab'], false);
                 $h->joinWith(['createdBy h1'], false);
-
                 $h->onCondition(['h.is_deleted' => 0]);
             }])
             ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
