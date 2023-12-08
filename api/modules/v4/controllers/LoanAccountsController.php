@@ -20,7 +20,6 @@ use common\models\spaces\Spaces;
 use common\models\Users;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
-use function foo\func;
 use common\models\VehicleRepossessionImages;
 use Yii;
 use yii\db\Expression;
@@ -1189,8 +1188,11 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
-
-        $query = LoanAccountsExtended::find()
+        $where = ['is_deleted' => 0];
+        if (!empty($params['bucket'])) {
+            $where['bucket'] = $params['bucket'];
+        }
+        $bucket = LoanAccountsExtended::find()
             ->select([
                 'COUNT(loan_account_enc_id) as total_loan_accounts',
                 'SUM(overdue_amount) AS overdue_amount',
@@ -1198,22 +1200,17 @@ class LoanAccountsController extends ApiBaseController
                 'SUM(last_emi_received_amount) AS EMI_received_amount',
                 'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
             ])
-            ->asArray();
-        if (empty($params['bucket'])) {
-            $bucket = $query->one();
-        } else {
-            $bucket = $query
-                ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
-                ->one();
+            ->where($where)
+            ->asArray()
+            ->one();
+        if (!$bucket) {
+            return $this->response(404, ["status" => 404, "message" => "data not found"]);
         }
-        if ($bucket) {
-            $bucket = array_map(function ($key, $value) {
-                return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
-            }, array_keys($bucket), $bucket);
+        $bucket = array_map(function ($key, $value) {
+            return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
+        }, array_keys($bucket), $bucket);
 
-            return $this->response(200, ["status" => 200, "data" => $bucket]);
-        }
-        return $this->response(404, ["status" => 404, "message" => "data not found"]);
+        return $this->response(200, ["status" => 200, "data" => $bucket]);
     }
 
     public function actionLoanAccountsType()
