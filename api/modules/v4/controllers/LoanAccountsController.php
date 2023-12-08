@@ -1235,7 +1235,7 @@ class LoanAccountsController extends ApiBaseController
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id", "b.loan_account_number",
                 "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",  "c.last_emi_date", "c.name",
                 "c.emi_amount", "c.overdue_amount", "c.ledger_amount", "c.loan_type", "c.emi_date", "c.last_emi_received_amount",
-                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos", "d.location_name as branch_name",
+                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos","d.location_enc_id as branch", "d.location_name as branch_name",
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 ])
             ->joinWith(['emiCollectionEnc b' => function($b){
