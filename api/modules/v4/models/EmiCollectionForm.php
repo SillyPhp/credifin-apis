@@ -22,7 +22,6 @@ class EmiCollectionForm extends Model
     public $phone;
     public $amount;
     public $loan_type;
-    public $ptp_payment_method;
     public $loan_purpose;
     public $payment_method;
     public $other_payment_method;

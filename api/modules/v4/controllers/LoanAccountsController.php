@@ -8,6 +8,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -47,7 +48,7 @@ class LoanAccountsController extends ApiBaseController
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
                 'assign-telecaller' => ['POST', 'OPTIONS'],
-                'get-ptp-cases' => ['POST', 'OPTIONS'],,
+                'get-ptp-cases' => ['POST', 'OPTIONS'],
                 'stats' => ['POST', 'OPTIONS'],
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
             ]
