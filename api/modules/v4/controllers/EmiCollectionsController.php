@@ -35,6 +35,7 @@ class EmiCollectionsController extends ApiBaseController
                 "approve-by-employee-list" => ["POST", "OPTIONS"],
                 "approve-by-employee" => ["POST", "OPTIONS"],
                 "employee-emi-collection" => ["POST", "OPTIONS"],
+                "list" => ["GET", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -47,6 +48,67 @@ class EmiCollectionsController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionList()
+    {
+        $bearer_token = Yii::$app->request->headers->get('Authorization');
+        $token = explode(" ", $bearer_token);
+        if (isset($token[0]) && $token[0] != 'Bearer') {
+            $unAuthorised = 1;
+        }
+        if (!isset($token[1])) {
+            $unAuthorised = 1;
+        }
+        if (!empty($unAuthorised) || $token[1] !== Yii::$app->params->emiCollection->authKey) {
+            $this->response(401, ["message" => "unauthorized"]);
+        }
+        $params = Yii::$app->request->get();
+        if (empty($params["start_date"]) || empty($params["end_date"])) {
+            return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
+        }
+        if (strtotime($params["end_date"]) <= strtotime($params["start_date"])) {
+            return $this->response(500, ["error" => "end date must be greater than start date"]);
+        }
+        $query = EmiCollection::find()
+            ->alias("a")
+            ->select([
+                "a.loan_account_number",
+                "a.customer_name",
+                "a.phone",
+                "a.amount collected_amount",
+                "a.emi_payment_method",
+                "(CASE 
+                    WHEN a.emi_payment_method NOT IN (1, 2, 3) 
+                        THEN DATE_FORMAT(a.collection_date, '%d-%m-%Y') 
+                        ELSE DATE_FORMAT(c1.updated_on, '%d-%m-%Y')
+                END) as collection_date",
+                "(CASE 
+                    WHEN a.emi_payment_method IN (1, 2, 3)
+                        THEN c1.payment_id
+                        ELSE a.reference_number
+                END) AS reference_id",
+                "a.emi_payment_status",
+                "b.company_id",
+                "b.company_name",
+            ])
+            ->innerJoinWith(["loanAccountEnc b"], false)
+            ->joinWith(["assignedLoanPayments c" => function ($c) {
+                $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
+                $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
+                    $c1->andOnCondition(["c1.payment_status" => "captured"]);
+                }], false);
+            }], false)
+            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", strtotime($params["start_date"]), strtotime($params["end_date"])])
+            ->asArray()
+            ->all();
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $query = array_map(function ($e) use ($payment_methods) {
+            $e["emi_payment_method"] = $payment_methods[$e["emi_payment_method"]];
+            return $e;
+        }, $query);
+        return $this->response(200, ["data" => $query]);
     }
 
     public function actionGetEmiPhone()
