@@ -9,6 +9,7 @@ use common\models\EmiCollection;
 use common\models\EmiPaymentIssues;
 use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\extended\LoanAccountsExtended;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -50,7 +51,8 @@ class LoanAccountsController extends ApiBaseController
                 'get-acc-list' => ['POST', 'OPTIONS'],
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
-                'assign-telecaller' => ['POST', 'OPTIONS']
+                'assign-telecaller' => ['POST', 'OPTIONS'],
+                'get-ptp-cases' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1109,5 +1111,42 @@ class LoanAccountsController extends ApiBaseController
             $assignment[$cases[$i]['loan_account_enc_id']] = $telecaller;
         }
         return $assignment;
+    }
+
+    public function actionGetPtpCases(){
+        $user = $this->isAuthorized();
+        $params = $this->post;
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $ptpcases = LoanAccountPtps::find()
+            ->alias('a')
+            ->select(["a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date", 
+                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id", "b.loan_account_number",
+                "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",  "c.last_emi_date", "c.name",
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", "c.loan_type", "c.emi_date", "c.last_emi_received_amount",
+                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos", "d.location_name as branch_name",
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                ])
+            ->joinWith(['emiCollectionEnc b' => function($b){
+                $b->joinWith(['loanAccountEnc c' => function($cc){
+                    $cc->joinWith(['branchEnc d']);
+                    $cc->joinWith(["assignedCaller ac"]);
+                }]);
+            }], false)
+            ->joinWith(['collectionManager cm'], false)
+            ->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')])         
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all(); 
+
+        if($ptpcases){
+            return $this->response(200, ['status' => 200, 'ptpcases' => $ptpcases]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 }
