@@ -6,30 +6,24 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
-use common\models\EmiPaymentIssues;
-use common\models\extended\EmiPaymentIssuesExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
-use common\models\OrganizationLocations;
-use common\models\UserRoles;
-use common\models\Utilities;
 use common\models\spaces\Spaces;
+use common\models\UserRoles;
 use common\models\Users;
+use common\models\Utilities;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
-use function foo\func;
 use common\models\VehicleRepossessionImages;
 use Yii;
-use yii\db\Expression;
-use yii\helpers\Url;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
-use yii\db\Query;
-use function GuzzleHttp\Promise\all;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -1189,8 +1183,11 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
-
-        $query = LoanAccountsExtended::find()
+        $where = ['is_deleted' => 0];
+        if (!empty($params['bucket'])) {
+            $where['bucket'] = $params['bucket'];
+        }
+        $bucket = LoanAccountsExtended::find()
             ->select([
                 'COUNT(loan_account_enc_id) as total_loan_accounts',
                 'SUM(overdue_amount) AS overdue_amount',
@@ -1198,22 +1195,17 @@ class LoanAccountsController extends ApiBaseController
                 'SUM(last_emi_received_amount) AS EMI_received_amount',
                 'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
             ])
-            ->asArray();
-        if (empty($params['bucket'])) {
-            $bucket = $query->one();
-        } else {
-            $bucket = $query
-                ->where(['bucket' => $params['bucket'], 'is_deleted' => 0])
-                ->one();
+            ->where($where)
+            ->asArray()
+            ->one();
+        if (!$bucket) {
+            return $this->response(404, ["status" => 404, "message" => "data not found"]);
         }
-        if ($bucket) {
-            $bucket = array_map(function ($key, $value) {
-                return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
-            }, array_keys($bucket), $bucket);
+        $bucket = array_map(function ($key, $value) {
+            return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
+        }, array_keys($bucket), $bucket);
 
-            return $this->response(200, ["status" => 200, "data" => $bucket]);
-        }
-        return $this->response(404, ["status" => 404, "message" => "data not found"]);
+        return $this->response(200, ["status" => 200, "data" => $bucket]);
     }
 
     public function actionLoanAccountsType()
