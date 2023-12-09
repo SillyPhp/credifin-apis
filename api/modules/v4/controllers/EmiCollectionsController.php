@@ -64,6 +64,7 @@ class EmiCollectionsController extends ApiBaseController
             $this->response(401, ["message" => "unauthorized"]);
         }
         $params = Yii::$app->request->get();
+        $c = !empty($params['company']);
         if (empty($params["start_date"]) || empty($params["end_date"])) {
             return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
         }
@@ -92,11 +93,13 @@ class EmiCollectionsController extends ApiBaseController
                 "b.company_id",
                 "b.company_name",
             ])
-            ->innerJoinWith(["loanAccountEnc b" => function ($b) {
-                $b->andOnCondition(["NOT", [
-                    "b.company_id" => [null, ''],
-                    "b.company_name" => [null, '']
-                ]]);
+            ->innerJoinWith(["loanAccountEnc b" => function ($b) use ($c) {
+                if (!$c) {
+                    $b->andOnCondition(["NOT", [
+                        "b.company_id" => [null, ''],
+                        "b.company_name" => [null, '']
+                    ]]);
+                }
             }], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
