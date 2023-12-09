@@ -474,10 +474,8 @@ class CompanyDashboardController extends ApiBaseController
             // checking only disbursed cases and using if condition so other condition is not applied from elseif condition
             $loans->andWhere(['i.status' => 31]);
         } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly && $is_removed === 0) {
-            // else checking lead_by and managed_by by logged-in user
-            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            // if shared app_ids exists then also getting data for those applications
-            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+            // else checking lead_by and managed_by by logged-in user or shared app_ids exists then also getting data for those applications
+            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id], ['a.loan_app_enc_id' => $shared_apps['app_ids']]]);
         }
 
         // filter to check status
@@ -676,6 +674,9 @@ class CompanyDashboardController extends ApiBaseController
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+//            ->createCommand()->getRawSql();
+//        print_r($loans);
+//        exit();
             ->asArray()
             ->all();
 
