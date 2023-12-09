@@ -161,6 +161,7 @@ class TestController extends ApiBaseController
         $findCashDe = EmployeesCashReport::find()
             ->select(['status', 'parent_cash_report_enc_id'])
             ->where(['cash_report_enc_id' => $id])
+            ->limit(1)
             ->one();
         if ($findCashDe['status'] != 1 && !empty($findCashDe['parent_cash_report_enc_id'])) {
             return $this->getCashReportDetail($findCashDe['parent_cash_report_enc_id']);
@@ -203,6 +204,42 @@ class TestController extends ApiBaseController
 //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
                     ->update(EmiCollection::tableName(), ['emi_payment_status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
+                    ->execute();
+                if ($update) {
+                    $updated += 1;
+                }
+            }
+        }
+//        print_r($emis);
+//        exit();
+        return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
+    }
+    public function actionFixPaidCases($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $emis = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
+            ->innerJoinWith(['employeesCashReports b' => function ($b) {
+                $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
+//                $b->andOnCondition(["!=", "b.status", 1]);
+            }])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->where(['a.emi_payment_status' => 'pipeline'])
+//            ->andWhere(['b.is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+        $updated = 0;
+        foreach ($emis as $key => $emi) {
+            $cash_id = reset($emi['employeesCashReports']);
+            if ($cash_id['status'] == 1 || (!empty($cash_id['parent_cash_report_enc_id']) && $this->getCashReportDetail($cash_id['parent_cash_report_enc_id']))) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmiCollection::tableName(), ['emi_payment_status' => 'paid'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
                 if ($update) {
                     $updated += 1;
