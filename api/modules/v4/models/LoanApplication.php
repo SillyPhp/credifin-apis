@@ -931,12 +931,19 @@ class LoanApplication extends Model
         $currentMonth = date('m');
 
         $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
-        $pattern = "{$loan_num['product_code']}-%-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-%";
+        $pattern1 = "{$loan_num['product_code']}-%-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-%";
+        $pattern2 = "{$loan_num['product_code']}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-%";
         $incremental = LoanApplications::find()
             ->alias('a')
             ->select(['a.application_number'])
-            ->where(['LIKE', 'application_number', $pattern,false])
-            ->orderBy(['a.id' => SORT_DESC])
+            ->where([
+                'OR',
+                ['LIKE', 'application_number', $pattern1,false],
+                ['LIKE', 'application_number', $pattern2,false]
+            ])
+            ->orderBy([
+                "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
+            ])
             ->limit(1)
             ->one();
 

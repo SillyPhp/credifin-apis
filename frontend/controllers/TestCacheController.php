@@ -66,10 +66,8 @@ class TestCacheController extends Controller
                 ->orderBy([
                     "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
                 ])
-             //   ->limit(1)
-                ->asArray()
-                ->all();
-            print_r($incremental);exit();
+                ->limit(1)
+                ->one();
             if ($incremental) {
                 $my_string = $incremental['application_number'];
                 $my_array = explode('-', $my_string);
@@ -158,8 +156,13 @@ class TestCacheController extends Controller
             ->offset($offset)
             ->asArray()
             ->all();
+        if ($data):
         foreach ($data as $dat){
-            $model =  LoanApplications::find(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
+            $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
         }
+        echo count($updateAll);
+        else:
+            echo 'no results left';
+            endif;
     }
 }
