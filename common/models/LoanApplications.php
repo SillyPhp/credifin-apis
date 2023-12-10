@@ -2,12 +2,15 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
  * @property int $id
  * @property string $loan_app_enc_id
  * @property string $application_number loan application number
+ * @property string $old_application_number
  * @property string $parent_application_enc_id loan parent application enc id
  * @property int $had_taken_addmission 1 for yes 0 for no
  * @property string $current_scheme_id
@@ -163,7 +166,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['applicant_dob', 'candidate_status_date', 'login_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi', 'roi'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'assigned_dealer', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
-            [['application_number'], 'string', 'max' => 50],
+            [['application_number', 'old_application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['voter_card_number'], 'string', 'max' => 20],
@@ -186,6 +189,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
