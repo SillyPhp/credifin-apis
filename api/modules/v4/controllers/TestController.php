@@ -61,6 +61,7 @@ class TestController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.application_number",
+                "a.old_application_number",
                 "abc.name applicant_name",
                 "a.invoice_date",
                 "a.loan_status_updated_on as disbursement_date",
