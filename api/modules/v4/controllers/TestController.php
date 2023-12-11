@@ -552,9 +552,9 @@ class TestController extends ApiBaseController
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number','COUNT(*) count'])
-            ->joinWith(['assignedLoanProviders b'=>function($c){
-                $c->andWhere(['!=','b.status',31]);
-            }],false,'INNER JOIN')
+//            ->joinWith(['assignedLoanProviders b'=>function($c){
+//                $c->andWhere(['!=','b.status',31]);
+//            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
@@ -573,9 +573,9 @@ class TestController extends ApiBaseController
 
                 $ids = LoanApplications::find()
                     ->select(['loan_app_enc_id'])
-                    ->joinWith(['assignedLoanProviders b'=>function($c){
-                        $c->andWhere(['!=','b.status',31]);
-                    }],false,'INNER JOIN')
+//                    ->joinWith(['assignedLoanProviders b'=>function($c){
+//                        $c->andWhere(['!=','b.status',31]);
+//                    }],false,'INNER JOIN')
                     ->where(['application_number' => $applicationNumber])
                     ->asArray()
                     ->column(); // Fetching IDs directly as an array
@@ -618,9 +618,9 @@ class TestController extends ApiBaseController
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number','COUNT(*) count'])
-            ->joinWith(['assignedLoanProviders b'=>function($c){
-                $c->andWhere(['!=','b.status',31]);
-            }],false,'INNER JOIN')
+//            ->joinWith(['assignedLoanProviders b'=>function($c){
+//                $c->andWhere(['!=','b.status',31]);
+//            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
