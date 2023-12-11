@@ -85,6 +85,9 @@ class TestCacheController extends Controller
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number','COUNT(*) count'])
+            ->joinWith(['assignedLoanProviders b'=>function($c){
+                $c->andWhere(['!=','b.status',31]);
+            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
@@ -103,6 +106,9 @@ class TestCacheController extends Controller
 
             $ids = LoanApplications::find()
                 ->select(['loan_app_enc_id'])
+                ->joinWith(['assignedLoanProviders b'=>function($c){
+                    $c->andWhere(['!=','b.status',31]);
+                }],false,'INNER JOIN')
                 ->where(['application_number' => $applicationNumber])
                 ->asArray()
                 ->column(); // Fetching IDs directly as an array
@@ -113,7 +119,7 @@ class TestCacheController extends Controller
                 'IDs' => $ids,
             ];
         }
-        //print_r($result);exit();
+       // print_r($result);exit();
         foreach ($result as $dat){
             $loan_array = explode("-", $dat['application_number']);
             if (count($loan_array)==4){
@@ -145,6 +151,9 @@ class TestCacheController extends Controller
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number','COUNT(*) count'])
+            ->joinWith(['assignedLoanProviders b'=>function($c){
+                $c->andWhere(['!=','b.status',31]);
+            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
@@ -156,9 +165,13 @@ class TestCacheController extends Controller
             ->offset($offset)
             ->asArray()
             ->all();
+        $updateAll = [];
         if ($data):
         foreach ($data as $dat){
+            $loan_array = explode("-", $dat['application_number']);
+            if (count($loan_array)>=4):
             $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
+            endif;
         }
         echo count($updateAll);
         else:
