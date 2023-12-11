@@ -27,6 +27,7 @@ use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
+use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\UserTypes;
@@ -2422,6 +2423,7 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2437,6 +2439,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
+            ->leftJoin(SharedLoanApplications::tableName() . 'as d', 'd.foreign_id = a.loan_account_enc_id')
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {
@@ -2467,6 +2470,7 @@ class OrganizationsController extends ApiBaseController
                 ["IN", "a.assigned_caller", $juniors],
                 ["IN", "a.collection_manager", $juniors],
                 ["IN", "a.created_by", $juniors],
+                ["IN", "d.shared_to", $juniors],
             ]);
         }
         if (!empty($params["bucket"])) {

@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $shared_loan_app_enc_id shared loan app enc id
  * @property string $loan_app_enc_id loan app enc id
+ * @property string $foreign_id foreign id
  * @property string $shared_by loan app shared by
  * @property string $shared_to loan app shared to
  * @property string $access access to shared user
@@ -42,38 +43,17 @@ class SharedLoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'shared_by', 'shared_to', 'access', 'created_by'], 'required'],
+            [['shared_loan_app_enc_id', 'shared_by', 'shared_to', 'access', 'created_by'], 'required'],
             [['access', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'shared_by', 'shared_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'foreign_id', 'shared_by', 'shared_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['shared_loan_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['shared_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['shared_by' => 'user_enc_id']],
             [['shared_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['shared_to' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('app', 'ID'),
-            'shared_loan_app_enc_id' => Yii::t('app', 'Shared Loan App Enc ID'),
-            'loan_app_enc_id' => Yii::t('app', 'Loan App Enc ID'),
-            'shared_by' => Yii::t('app', 'Shared By'),
-            'shared_to' => Yii::t('app', 'Shared To'),
-            'access' => Yii::t('app', 'Access'),
-            'status' => Yii::t('app', 'Status'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'created_on' => Yii::t('app', 'Created On'),
-            'updated_by' => Yii::t('app', 'Updated By'),
-            'updated_on' => Yii::t('app', 'Updated On'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
         ];
     }
 
