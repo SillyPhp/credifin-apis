@@ -355,9 +355,8 @@ class CompanyDashboardController extends ApiBaseController
                 'a.managed_by',
                 'lp.name as loan_product',
                 'i.updated_on',
-                'a.created_on'
-            ])
-            ->addSelect([
+                'a.created_on',
+                'a.loan_status_updated_on as disbursement_date',
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
                 "(CASE
                     WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
@@ -475,10 +474,8 @@ class CompanyDashboardController extends ApiBaseController
             // checking only disbursed cases and using if condition so other condition is not applied from elseif condition
             $loans->andWhere(['i.status' => 31]);
         } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly && $is_removed === 0) {
-            // else checking lead_by and managed_by by logged-in user
-            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            // if shared app_ids exists then also getting data for those applications
-            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+            // else checking lead_by and managed_by by logged-in user or shared app_ids exists then also getting data for those applications
+            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id], ['a.loan_app_enc_id' => $shared_apps['app_ids']]]);
         }
 
         // filter to check status
@@ -497,7 +494,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date'];
+            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -531,6 +528,12 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'end_date':
                                 $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            case 'disbursement_start_date':
+                                $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'disbursement_end_date':
+                                $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
@@ -571,17 +574,17 @@ class CompanyDashboardController extends ApiBaseController
                                             'not',
                                             ['a.lead_by' => null]
                                         ],
-                                        ['like', 'CONCAT(lb.first_name, " ", COALESCE(lb.last_name,""))', $val]
+                                        ['like', "CONCAT(lb.first_name, ' ', COALESCE(lb.last_name,''))", $val]
                                     ],
                                     [
                                         'and',
                                         ['a.lead_by' => null],
-                                        ['like', 'CONCAT(cb.first_name, " ", COALESCE(cb.last_name, ""))', $val]
+                                        ['like', "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name, ''))", $val]
                                     ]
                                 ]);
                                 break;
                             case 'sharedTo':
-                                $loans->andWhere(['like', 'CONCAT(n1.first_name, " ", COALESCE(n1.last_name,""))', $val]);
+                                $loans->andWhere(['like', "CONCAT(n1.first_name, ' ', COALESCE(n1.last_name,''))", $val]);
                                 break;
                         }
                     }
@@ -671,6 +674,9 @@ class CompanyDashboardController extends ApiBaseController
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+//            ->createCommand()->getRawSql();
+//        print_r($loans);
+//        exit();
             ->asArray()
             ->all();
 

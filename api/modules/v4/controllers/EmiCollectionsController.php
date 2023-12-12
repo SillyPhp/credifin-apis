@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
+use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -34,6 +35,7 @@ class EmiCollectionsController extends ApiBaseController
                 "approve-by-employee-list" => ["POST", "OPTIONS"],
                 "approve-by-employee" => ["POST", "OPTIONS"],
                 "employee-emi-collection" => ["POST", "OPTIONS"],
+                "list" => ["GET", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -46,6 +48,72 @@ class EmiCollectionsController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionList()
+    {
+        $bearer_token = Yii::$app->request->headers->get('Authorization');
+        $token = explode(" ", $bearer_token);
+        if (isset($token[0]) && $token[0] != 'Bearer') {
+            $unAuthorised = 1;
+        }
+        if (!isset($token[1])) {
+            $unAuthorised = 1;
+        }
+        if (!empty($unAuthorised) || $token[1] !== Yii::$app->params->emiCollection->authKey) {
+            $this->response(401, ["message" => "unauthorized"]);
+        }
+        $params = Yii::$app->request->get();
+        if (empty($params["start_date"]) || empty($params["end_date"])) {
+            return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
+        }
+        if (strtotime($params["end_date"]) <= strtotime($params["start_date"])) {
+            return $this->response(500, ["error" => "end date must be greater than start date"]);
+        }
+        $query = EmiCollection::find()
+            ->alias("a")
+            ->select([
+                "a.loan_account_number",
+                "TRIM(a.customer_name) AS customer_name",
+                "a.phone",
+                "a.amount collected_amount",
+                "a.emi_payment_method",
+                "(CASE 
+                    WHEN a.emi_payment_method NOT IN (1, 2, 3) 
+                        THEN DATE_FORMAT(a.collection_date, '%d-%m-%Y') 
+                        ELSE DATE_FORMAT(c1.updated_on, '%d-%m-%Y')
+                END) as collection_date",
+                "(CASE 
+                    WHEN a.emi_payment_method IN (1, 2, 3)
+                        THEN c1.payment_id
+                        ELSE a.reference_number
+                END) AS reference_id",
+                "a.emi_payment_status",
+                "b.company_id",
+                "b.company_name",
+            ])
+            ->innerJoinWith(["loanAccountEnc b" => function ($b) {
+                $b->andOnCondition(["NOT", [
+                    "b.company_id" => [null, ''],
+                    "b.company_name" => [null, '']
+                ]]);
+            }], false)
+            ->joinWith(["assignedLoanPayments c" => function ($c) {
+                $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
+                $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
+                    $c1->andOnCondition(["c1.payment_status" => "captured"]);
+                }], false);
+            }], false)
+            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", strtotime($params["start_date"]), strtotime($params["end_date"])])
+            ->asArray()
+            ->all();
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $query = array_map(function ($e) use ($payment_methods) {
+            $e["emi_payment_method"] = $payment_methods[$e["emi_payment_method"]];
+            return $e;
+        }, $query);
+        return $this->response(200, ["data" => $query]);
     }
 
     public function actionGetEmiPhone()
@@ -267,8 +335,7 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $query, "display_data" => $display_data, "received_cash" => $received_cash]);
     }
 
-    private
-    function finder($parent): array
+    private function finder($parent): array
     {
         $res = [];
         $reports = $this->received_cash("", $parent);
@@ -282,10 +349,8 @@ class EmiCollectionsController extends ApiBaseController
         return $res;
     }
 
-    public
-    function actionPendingApprovals()
+    public function actionPendingApprovals()
     {
-//        $this->isSpecialUser(1);
         $this->isAuth();
         $params = $this->post;
         if (empty($params["user_id"])) {
@@ -333,8 +398,7 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $approval]);
     }
 
-    private
-    function received_cash($user_id, $parent = ""): array
+    private function received_cash($user_id, $parent = ""): array
     {
         $where = ["AND"];
         if ($parent) {
@@ -364,17 +428,15 @@ class EmiCollectionsController extends ApiBaseController
             ->all();
     }
 
-    public
-    function actionCollectCash()
+    public function actionCollectCash()
     {
         $this->isAuth();
         $params = $this->post;
         $params["user_id"] = $this->user->user_enc_id;
-        return $this->collectcash($params);
+        return $this->collectcash($params, true);
     }
 
-    public
-    function actionAdminCollectCash()
+    public function actionAdminCollectCash()
     {
         $this->isAuth(1);
         $params = $this->post;
@@ -383,14 +445,16 @@ class EmiCollectionsController extends ApiBaseController
         return $this->collectcash($params);
     }
 
-    public
-    function collectcash($params): ?array
+    public function collectcash($params, $not_special = false): ?array
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $save = EmiCollectionForm::collect_cash($params);
             if (!$save) {
                 throw new \Exception("error occurred while saving emi");
+            }
+            if (!empty($params['cash_ids']) && $not_special) {
+                self::updateEmiStatus($params['cash_ids'], $params['user_id'], 'pipeline');
             }
             $transaction->commit();
             return $this->response(200, ["status" => 200, "message" => "saved successfully"]);
@@ -405,6 +469,7 @@ class EmiCollectionsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
+        $user = $this->user;
         if (!isset($params["type"]) || empty($params["cash_id"])) {
             return $this->response(422, ["status" => 422, "message" => "missing parameter 'type or cash_id'"]);
         }
@@ -422,6 +487,7 @@ class EmiCollectionsController extends ApiBaseController
                     "cash_report_enc_id" => $cash_id
                 ]
             )->execute();
+            self::updateEmiStatus($params['cash_id'], $user->user_enc_id, 'paid');
         } else {
 
             $this->reject($this->user->user_enc_id, $cash_id);
@@ -429,16 +495,32 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200);
     }
 
-    public
-    function actionApproveByEmployeeList()
+    private function updateEmiStatus($cash_ids, $user_id, $status): void
+    {
+        foreach (explode(',', $cash_ids) as $cash_id) {
+            $find = EmployeesCashReport::findOne(["cash_report_enc_id" => $cash_id]);
+            if (!empty($find['emi_collection_enc_id'])) {
+                $emi_id = $find['emi_collection_enc_id'];
+            } else {
+                $emi_id = $this->finder($cash_id);
+            }
+            Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
+                "emi_payment_status" => $status,
+                "updated_on" => date("Y-m-d H:i:s"),
+                "updated_by" => $user_id
+            ], [
+                "emi_collection_enc_id" => $emi_id
+            ])->execute();
+        }
+    }
+
+    public function actionApproveByEmployeeList()
     {
         $this->isAuth();
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
-            ->select([
-                "a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
-                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"
-            ])
+            ->select(["a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
+                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"])
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
                     "b.emi_collection_enc_id", "b.loan_account_number", "b.customer_name",
@@ -446,23 +528,20 @@ class EmiCollectionsController extends ApiBaseController
                 ]);
             }])
             ->joinWith(['receivedFrom c'], false)
-            ->andWhere([
-                "AND",
+            ->andWhere(["AND",
                 ["a.given_to" => $this->user->user_enc_id],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
-                [
-                    "NOT",
-                    ["a.remaining_amount" => 0]
-                ],
+                ["NOT",
+                    ["a.remaining_amount" => 0]],
                 ['a.status' => 2],
-                ['a.type' => 2]
-            ])
+                ['a.type' => 2]])
             ->asArray()
             ->all();
         if (!$query) {
             return $this->response(404, ["status" => 404, "message" => "no data found"]);
         }
+
         foreach ($query as &$item) {
             if (empty($item['emiCollectionEnc'])) {
                 $item['emiCollectionEnc'] = $this->finder($item['cash_report_enc_id']);
@@ -476,6 +555,7 @@ class EmiCollectionsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
+        $user = $this->user;
         if (!isset($params["type"]) || empty($params["cash_id"])) {
             return $this->response(422, ["status" => 422, "message" => "missing parameter 'type or cash_id'"]);
         }
@@ -486,15 +566,15 @@ class EmiCollectionsController extends ApiBaseController
                 [
                     "status" => 1,
                     "approved_on" => date('Y-m-d H:i:s'),
-                    "approved_by" => $this->user->user_enc_id,
+                    "approved_by" => $user->user_enc_id,
                 ],
                 [
                     "cash_report_enc_id" => $cash_id,
-                    "given_to" => $this->user->user_enc_id
+                    "given_to" => $user->user_enc_id
                 ]
             )->execute();
         } else {
-            $this->reject($this->user->user_enc_id, $cash_id);
+            $this->reject($user->user_enc_id, $cash_id);
         }
 
         return $this->response(200);
