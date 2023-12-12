@@ -61,6 +61,7 @@ class TestController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.application_number",
+                "a.old_application_number",
                 "abc.name applicant_name",
                 "a.invoice_date",
                 "a.loan_status_updated_on as disbursement_date",
@@ -458,5 +459,191 @@ class TestController extends ApiBaseController
             }
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+    }
+
+    public function actionVehicleChanges($auth = '', $type = '')
+    {
+        $this->isAuth();
+        if ($auth != Yii::$app->params->emiCollection->cashInHand->authKey) {
+            return 'unauthorised';
+        }
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+                if (empty($header)) {
+                    return 'error';
+                }
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return $key == array_search('LoanNo', $header) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                if ($loan) {
+                    $loan->company_id = $data[array_search('CompanyId', $header)] ?? "";
+                    $loan->company_name = $data[array_search('CompanyName', $header)] ?? "";
+                    if (!empty($type)) {
+                        if (!empty($data[array_search('Nach', $header)])) {
+                            $loan->nach_approved = $data[array_search('Nach', $header)] == 'Yes' ? 1 : 0;
+                        }
+                        $loan->dealer_name = $data[array_search('DealerName', $header)] ?? "";
+                    }
+                    $loan->coborrower_name = $data[array_search('CoBorrowerName', $header)] ?? "";
+                    $loan->coborrower_phone = $data[array_search('CoBorrowerPhone', $header)] ?? "";
+                    if (!$loan->save()) {
+                        $transaction->rollBack();
+                        return json_encode($loan->getErrors());
+                    }
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        }
+    }
+
+    public static function generateApplicationNumber($cityCode,$purposeCode,$loap_p_code,$yearmonth)
+    {
+        for ($i=0;$i<=100;$i++){
+            $loan_num['product_code'] = $loap_p_code;
+            $branchCode = '';
+            $cityCode = $cityCode;
+            $purposeCode = $purposeCode;
+            $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
+
+            $yearmonth = $yearmonth;
+
+            $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}-{$yearmonth}";
+            $pattern1 = "{$loan_num['product_code']}-%-{$cityCode}-{$yearmonth}-%";
+            $pattern2 = "{$loan_num['product_code']}-{$cityCode}-{$yearmonth}-%";
+            $incremental = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.application_number'])
+                ->where([
+                    'OR',
+                    ['LIKE', 'application_number', $pattern1,false],
+                    ['LIKE', 'application_number', $pattern2,false]
+                ])
+                ->orderBy([
+                    "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
+                ])
+                ->limit(1)
+                ->one();
+            if ($incremental) {
+                $my_string = $incremental['application_number'];
+                $my_array = explode('-', $my_string);
+                $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
+                $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
+                $final_num = "$loanAccountNumber-{$new_num}";
+                return $final_num;
+            } else {
+                return "$loanAccountNumber-001";
+            }
+        }
+    }
+
+    public function actionDuplicate($page=1,$limit=500){
+        $offset = ($page - 1) * $limit;
+        $data = LoanApplications::find()
+            ->select(['application_number','COUNT(*) count'])
+//            ->joinWith(['assignedLoanProviders b'=>function($c){
+//                $c->andWhere(['!=','b.status',31]);
+//            }],false,'INNER JOIN')
+            ->groupBy('application_number')
+            ->where([
+                'or',
+                ['!=','application_number',Null],
+                ['!=','application_number','']
+            ])
+            ->having('COUNT(*) > 1')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+        if ($data):
+            foreach ($data as $app) {
+                $applicationNumber = $app['application_number'];
+                $count = $app['count'];
+
+                $ids = LoanApplications::find()
+                    ->select(['loan_app_enc_id'])
+//                    ->joinWith(['assignedLoanProviders b'=>function($c){
+//                        $c->andWhere(['!=','b.status',31]);
+//                    }],false,'INNER JOIN')
+                    ->where(['application_number' => $applicationNumber])
+                    ->asArray()
+                    ->column(); // Fetching IDs directly as an array
+
+                $result[] = [
+                    'application_number' => $applicationNumber,
+                    'count' => $count,
+                    'IDs' => $ids,
+                ];
+            }
+            // print_r($result);exit();
+            foreach ($result as $dat){
+                $loan_array = explode("-", $dat['application_number']);
+                if (count($loan_array)==4){
+                    for ($i=0;$i<($dat['count']-1);$i++) {
+                        echo  $newSeries = self::generateApplicationNumber($loan_array[1],null,$loan_array[0],$loan_array[2]);
+                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                    }
+                }else if (count($loan_array)==5){
+                    for ($i=0;$i<($dat['count']-1);$i++) {
+                        $newSeries = self::generateApplicationNumber($loan_array[2],$loan_array[1],$loan_array[0],$loan_array[3]);
+                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                    }
+                }
+            }
+        else:
+            echo 'no results left';
+        endif;
+    }
+    private function saveNewSeries($newSeries,$id){
+        $model = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
+        $model->application_number = $newSeries;
+        if (!$model->save()){
+            print_r($model->getErrors());
+        }else{
+            return false;
+        }
+    }
+    public function actionCopyDuplicates($page=1,$limit=500){
+        $offset = ($page - 1) * $limit;
+        $data = LoanApplications::find()
+            ->select(['application_number','COUNT(*) count'])
+//            ->joinWith(['assignedLoanProviders b'=>function($c){
+//                $c->andWhere(['!=','b.status',31]);
+//            }],false,'INNER JOIN')
+            ->groupBy('application_number')
+            ->where([
+                'or',
+                ['!=','application_number',Null],
+                ['!=','application_number','']
+            ])
+            ->having('COUNT(*) > 1')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+        $updateAll = [];
+        if ($data):
+            foreach ($data as $dat){
+                $loan_array = explode("-", $dat['application_number']);
+                if (count($loan_array)>=4):
+                    $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
+                endif;
+            }
+            echo count($updateAll);
+        else:
+            echo 'no results left';
+        endif;
     }
 }
