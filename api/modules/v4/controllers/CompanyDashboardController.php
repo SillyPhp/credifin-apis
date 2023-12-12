@@ -1095,24 +1095,7 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
     }
-
-    //    public function actionUniqueLink()
-    //    {
-    //        $loan_app_enc_id = Yii::$app->request->post('loan_app_enc_id');
-    //
-    //        if ($loan_app_enc_id !== null) {
-    //            $loan = LoanApplications::find()
-    //                ->alias('a')
-    //                ->select(['a.phone'])
-    //                ->joinWith([''])
-    //                ->where(['loan_app_enc_id' => $loan_app_enc_id])
-    //                ->asArray()
-    //                ->all();
-    //
-    //            } else {
-    //                return "Loan application not found.";
-    //            }
-    //    }
+    
 
     public function actionLoanCertificates()
     {
@@ -2576,110 +2559,91 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionEmployeeStats()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
 
-            $limit = !empty($params['limit']) ? $params['limit'] : 10;
-            $page = !empty($params['page']) ? $params['page'] : 1;
+       if ($user = $this->isAuthorized()){
+           $params = Yii::$app->request->post();
+           $limit = !empty($params['limit']) ? $params['limit'] : 10;
+           $page = !empty($params['page']) ? $params['page'] : 1;
 
-            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
-            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+           $subquery = (new \yii\db\Query())
+               ->select([
+                   'k.created_by',
+                   'cibil' => "SUM(CASE WHEN k2.request_source = 'CIBIL' THEN 1 ELSE 0 END)",
+                   'equifax' => "SUM(CASE WHEN k2.request_source = 'EQUIFAX' THEN 1 ELSE 0 END)",
+                   'crif' => "SUM(CASE WHEN k2.request_source = 'CRIF' THEN 1 ELSE 0 END)",
+               ])
+               ->from(['k' => CreditLoanApplicationReports::tableName()])
+               ->join('INNER JOIN', ['k1' => CreditResponseData::tableName()], 'k1.response_enc_id = k.response_enc_id')
+               ->join('INNER JOIN', ['k2' => CreditRequestedData::tableName()], 'k2.request_enc_id = k1.request_enc_id')
+               ->groupBy(['k.created_by'])
+               ->andWhere(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
 
-            $subquery = (new \yii\db\Query())
-                ->select([
-                    'k.created_by',
-                    'cibil' => "SUM(CASE WHEN k2.request_source = 'CIBIL' THEN 1 ELSE 0 END)",
-                    'equifax' => "SUM(CASE WHEN k2.request_source = 'EQUIFAX' THEN 1 ELSE 0 END)",
-                    'crif' => "SUM(CASE WHEN k2.request_source = 'CRIF' THEN 1 ELSE 0 END)",
-                ])
-                ->from(['k' => CreditLoanApplicationReports::tableName()])
-                ->join('INNER JOIN', ['k1' => CreditResponseData::tableName()], 'k1.response_enc_id = k.response_enc_id')
-                ->join('INNER JOIN', ['k2' => CreditRequestedData::tableName()], 'k2.request_enc_id = k1.request_enc_id')
-                ->groupBy(['k.created_by'])
-                ->andWhere(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
+           $employeeStats = Users::find()
+               ->alias('a')
+               ->select([
+                   'a.user_enc_id',
+                   "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
+                   'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation) designation', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
+                   "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
+                   "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) as new_lead",
+                   "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) as sanctioned",
+                   "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) as rejected",
+                   "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) as disbursed",
+               ])
+               ->joinWith(['userRoles b' => function ($b) {
+                   $b->joinWith(['designationEnc b1'])
+                       ->joinWith(['reportingPerson b2'])
+                       ->joinWith(['branchEnc b3'])
+                       ->joinWith(['userTypeEnc b4']);
+               }], false)
+               ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
+                   $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
+                       $c1->joinWith(['status0 c2']);
+                   }], false);
+                   if (isset($params['loan_id']) and !empty($params['loan_id'])) {
+                       $c->andWhere(['c.loan_type' => $params['loan_id']]);
+                   }
+               }], false)
+               ->joinWith([
+                   'creditLoanApplicationReports k' => function ($k) use ($subquery) {
+                       $k->from(['subquery' => $subquery]);
+                   }
+               ])
+               ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
+               ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
-            $employeeStats = Users::find()
-                ->alias('a')
-                ->select([
-                    'a.user_enc_id',
-                    "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
-                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation) designation', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) as new_lead",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) as sanctioned",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) as rejected",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) as disbursed",
-                ])
-                ->joinWith(['userRoles b' => function ($b) {
-                    $b->joinWith(['designationEnc b1'])
-                        ->joinWith(['reportingPerson b2'])
-                        ->joinWith(['branchEnc b3'])
-                        ->joinWith(['userTypeEnc b4']);
-                }], false)
-                ->joinWith(['loanApplications3 c' => function ($c) use ($params, $lap, $nlap) {
-                    $c->andWhere([
-                        'or',
-                        [
-                            'and',
-                            ['c.loan_type' => 'Loan Against Property'],
-                            ['between', 'c.created_on', $lap, $params['end_date']]
-                        ],
-                        [
-                            'and',
-                            ['not', ['c.loan_type' => 'Loan Against Property']],
-                            ['between', 'c.created_on', $nlap, $params['end_date']]
-                        ],
-                        [
-                            'or',
-                            ['c.loan_type' => null],
-                            ['c.loan_type' => '']
-                        ]
-                    ]);
-                    $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
-                        $c1->joinWith(['status0 c2']);
-                    }], false);
-                    if (isset($params['loan_id']) and !empty($params['loan_id'])) {
-                        $c->andWhere(['c.loan_type' => $params['loan_id']]);
-                    }
-                }], false)
-                ->joinWith([
-                    'creditLoanApplicationReports k' => function ($k) use ($subquery) {
-                        $k->from(['subquery' => $subquery]);
-                    }
-                ])
-                ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->groupBy(['a.user_enc_id', 'b.employee_code']);
+           if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+               $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+               $employeeStats->andWhere(['a.user_enc_id' => $juniors]);
+           }
 
-            if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
-                $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
-            }
+           if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
+               $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
+           }
 
-            if (isset($params['keyword']) && !empty($params['keyword'])) {
-                $employeeStats->andWhere([
-                    'or',
-                    ['like', "CONCAT(a.first_name,' ',a.last_name)", $params['keyword']],
-                    ['like', 'a.phone', $params['keyword']],
-                    ['like', 'a.username', $params['keyword']],
-                    ['like', 'a.email', $params['keyword']],
-                    ['like', 'b1.designation', $params['keyword']],
-                    ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
-                    ['like', 'b3.location_name', $params['keyword']],
-                ]);
-            }
+           if (isset($params['keyword']) && !empty($params['keyword'])) {
+               $employeeStats->andWhere([
+                   'or',
+                   ['like', "CONCAT(a.first_name,' ',a.last_name)", $params['keyword']],
+                   ['like', 'a.phone', $params['keyword']],
+                   ['like', 'a.username', $params['keyword']],
+                   ['like', 'a.email', $params['keyword']],
+                   ['like', 'b1.designation', $params['keyword']],
+                   ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
+                   ['like', 'b3.location_name', $params['keyword']],
+               ]);
+           }
 
-            $count = $employeeStats->count();
-            $employeeStats = $employeeStats
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
+           $count = $employeeStats->count();
+           $employeeStats = $employeeStats
+               ->limit($limit)
+               ->offset(($page - 1) * $limit)
+               ->asArray()
+               ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $employeeStats, 'count' => $count]);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
-        }
+           return $this->response(200, ['status' => 200, 'data' => $employeeStats, 'count' => $count]);
+       }
     }
-
 
     public function actionProductListStats()
     {
