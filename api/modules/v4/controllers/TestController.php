@@ -87,7 +87,6 @@ class TestController extends ApiBaseController
                 "e.vehicle_making_year",
                 "a.loan_app_enc_id",
                 "a.loan_products_enc_id",
-                "e.dealer_name",
                 "e.vehicle_type",
                 "e.vehicle_brand",
                 "f.name loan_type",
