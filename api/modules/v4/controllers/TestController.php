@@ -12,9 +12,6 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
-use common\models\UserRoles;
-use common\models\Utilities;
-use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -99,8 +96,15 @@ class TestController extends ApiBaseController
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
-                "e.policy_number", "e.payable_value", "e.field_officer"
+                "e.policy_number", "e.payable_value", "e.field_officer",
+                "ad.name as dealer_name"
             ])
+            ->joinWith(["assignedDealer ad"], false)
+            ->joinWith(['loanPurposes gee' => function ($g) {
+                $g->select(['gee.financer_loan_purpose_enc_id', 'gee.financer_loan_purpose_enc_id', 'gee.loan_app_enc_id', 'g1.purpose']);
+                $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                $g->onCondition(['gee.is_deleted' => 0]);
+            }])
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
@@ -137,6 +141,19 @@ class TestController extends ApiBaseController
             ->offset(($params["page"] - 1) * $params["limit"])
             ->asArray()
             ->all();
+
+        foreach ($query as &$item) {
+            $purposes = [];
+            if (!empty($item['loanPurposes'])) {
+                foreach ($item['loanPurposes'] as $loanPurpose) {
+                    if (!empty($loanPurpose['purpose'])) {
+                        $purposes[] = $loanPurpose['purpose'];
+                    }
+                }
+            }
+            $item['loan_purposes'] = implode(', ', $purposes);
+            unset($item['loanPurposes']);
+        }
 
         foreach ($query as &$item) {
             $cibils = $this->CreditReports($item["loan_app_enc_id"]);
