@@ -12,9 +12,6 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
-use common\models\UserRoles;
-use common\models\Utilities;
-use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -99,8 +96,15 @@ class TestController extends ApiBaseController
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
-                "e.policy_number", "e.payable_value", "e.field_officer"
+                "e.policy_number", "e.payable_value", "e.field_officer",
+                "ad.name as dealer_name"
             ])
+            ->joinWith(["assignedDealer ad"], false)
+            ->joinWith(['loanPurposes gee' => function ($g) {
+                $g->select(['gee.financer_loan_purpose_enc_id', 'gee.financer_loan_purpose_enc_id', 'gee.loan_app_enc_id', 'g1.purpose']);
+                $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                $g->onCondition(['gee.is_deleted' => 0]);
+            }])
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
@@ -137,6 +141,19 @@ class TestController extends ApiBaseController
             ->offset(($params["page"] - 1) * $params["limit"])
             ->asArray()
             ->all();
+
+        foreach ($query as &$item) {
+            $purposes = [];
+            if (!empty($item['loanPurposes'])) {
+                foreach ($item['loanPurposes'] as $loanPurpose) {
+                    if (!empty($loanPurpose['purpose'])) {
+                        $purposes[] = $loanPurpose['purpose'];
+                    }
+                }
+            }
+            $item['loan_purposes'] = implode(', ', $purposes);
+            unset($item['loanPurposes']);
+        }
 
         foreach ($query as &$item) {
             $cibils = $this->CreditReports($item["loan_app_enc_id"]);
@@ -215,6 +232,7 @@ class TestController extends ApiBaseController
 //        exit();
         return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
+
     public function actionFixPaidCases($limit = 50, $page = 1, $auth = '')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -509,9 +527,9 @@ class TestController extends ApiBaseController
         }
     }
 
-    public static function generateApplicationNumber($cityCode,$purposeCode,$loap_p_code,$yearmonth)
+    public static function generateApplicationNumber($cityCode, $purposeCode, $loap_p_code, $yearmonth)
     {
-        for ($i=0;$i<=100;$i++){
+        for ($i = 0; $i <= 100; $i++) {
             $loan_num['product_code'] = $loap_p_code;
             $branchCode = '';
             $cityCode = $cityCode;
@@ -528,8 +546,8 @@ class TestController extends ApiBaseController
                 ->select(['a.application_number'])
                 ->where([
                     'OR',
-                    ['LIKE', 'application_number', $pattern1,false],
-                    ['LIKE', 'application_number', $pattern2,false]
+                    ['LIKE', 'application_number', $pattern1, false],
+                    ['LIKE', 'application_number', $pattern2, false]
                 ])
                 ->orderBy([
                     "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
@@ -549,18 +567,19 @@ class TestController extends ApiBaseController
         }
     }
 
-    public function actionDuplicate($page=1,$limit=500){
+    public function actionDuplicate($page = 1, $limit = 500)
+    {
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
+            ->select(['application_number', 'COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
+                ['!=', 'application_number', Null],
+                ['!=', 'application_number', '']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -588,17 +607,17 @@ class TestController extends ApiBaseController
                 ];
             }
             // print_r($result);exit();
-            foreach ($result as $dat){
+            foreach ($result as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array)==4){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        echo  $newSeries = self::generateApplicationNumber($loan_array[1],null,$loan_array[0],$loan_array[2]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                if (count($loan_array) == 4) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        echo $newSeries = self::generateApplicationNumber($loan_array[1], null, $loan_array[0], $loan_array[2]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
-                }else if (count($loan_array)==5){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        $newSeries = self::generateApplicationNumber($loan_array[2],$loan_array[1],$loan_array[0],$loan_array[3]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                } else if (count($loan_array) == 5) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        $newSeries = self::generateApplicationNumber($loan_array[2], $loan_array[1], $loan_array[0], $loan_array[3]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
                 }
             }
@@ -606,27 +625,31 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
-    private function saveNewSeries($newSeries,$id){
-        $model = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
+
+    private function saveNewSeries($newSeries, $id)
+    {
+        $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
         $model->application_number = $newSeries;
-        if (!$model->save()){
+        if (!$model->save()) {
             print_r($model->getErrors());
-        }else{
+        } else {
             return false;
         }
     }
-    public function actionCopyDuplicates($page=1,$limit=500){
+
+    public function actionCopyDuplicates($page = 1, $limit = 500)
+    {
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
+            ->select(['application_number', 'COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
+                ['!=', 'application_number', Null],
+                ['!=', 'application_number', '']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -635,10 +658,10 @@ class TestController extends ApiBaseController
             ->all();
         $updateAll = [];
         if ($data):
-            foreach ($data as $dat){
+            foreach ($data as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array)>=4):
-                    $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
+                if (count($loan_array) >= 4):
+                    $updateAll[] = LoanApplications::updateAll(['old_application_number' => $dat['application_number']], ['application_number' => $dat['application_number']]);
                 endif;
             }
             echo count($updateAll);
