@@ -161,7 +161,7 @@ class TestCacheController extends Controller
   "LoanTypeId": 9,
   "LstLeadCustomers": [
     {
-      "BorrowerId": 98,
+      "BorrowerId": 93,
       "BorrowerTypeId": 0,
       "OrderTypeId": 0,
       "RelationToBorrower": 1,
@@ -170,12 +170,12 @@ class TestCacheController extends Controller
   ],
   "LstTaggingDto": null,
   "ObjVlVehicleDto": {
-    "MfgYear": 2022,
+    "MfgYear": 2021,
     "VehicleTypeId": 1,
     "VehicleClassId": 1,
-    "VehicleMakeId": 1,
+    "VehicleMakeId": 2,
     "VehicleClassVariantId": 1,
-    "RegistrationNo": "null",
+    "RegistrationNo": "CFDGKd",
     "InvoiceAmount": 20000,
     "ResidualValue": 20000,
     "UploadDocumentDTOCollection": null
@@ -225,50 +225,4 @@ class TestCacheController extends Controller
         echo 'url hit on: '.$url;
     }
 
-    public function actionFaker(){
-            $result = self::generateApplicationNumber();
-            $model = new TestData();
-            $model->loan_account_number = $result;
-            if (!$model->save()) {
-                print_r($model->getErrors());
-                exit();
-            }
-        //echo $result;
-        echo $result;
-    }
-
-    public static function generateApplicationNumber()
-    {
-        for ($i=0;$i<=100;$i++){
-            $loan_num['product_code'] = 'ER';
-            $branchCode = '';
-            $cityCode = 'NDLS';
-            $purposeCode = 'HP';
-            $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
-
-        $currentYear = 23;
-        $currentMonth = 11;
-
-        $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}";
-            $pattern = "{$loan_num['product_code']}-%-{$cityCode}{$branchCode}-{$currentMonth}{$currentYear}-%";
-            $incremental = TestData::find()
-            ->alias('a')
-            ->select(['a.loan_account_number'])
-            ->where(['LIKE', 'loan_account_number', $pattern,false])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->limit(1)
-            ->one();
-        if ($incremental) {
-            $my_string = $incremental['loan_account_number'];
-            $my_array = explode('-', $my_string);
-            $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
-            $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
-            $final_num = "$loanAccountNumber-{$new_num}";
-            return $final_num;
-        } else {
-            return "$loanAccountNumber-001";
-        }
-
-    }
-    }
 }
