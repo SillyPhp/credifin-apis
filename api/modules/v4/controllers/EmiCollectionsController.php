@@ -613,6 +613,8 @@ class EmiCollectionsController extends ApiBaseController
         }
     }
 
+
+    // this api was shifted from org controller to emi controller on 13 Dec
     public function actionGetCollectedEmiList()
     {
         if (!$user = $this->isAuthorized()) {
