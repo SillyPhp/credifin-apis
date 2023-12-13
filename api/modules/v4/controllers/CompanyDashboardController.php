@@ -106,7 +106,8 @@ class CompanyDashboardController extends ApiBaseController
                 'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'update-references' => ['POST', 'OPTIONS'],
-                'loan-payments' => ['POST', 'OPTIONS']
+                'loan-payments' => ['POST', 'OPTIONS'],
+                'share-loan-accounts' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1858,6 +1859,43 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShareLoanAccounts()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        if (empty($params['users']) || empty($params['loan_accounts'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts"']);
+        }
+        $loan_accounts = $params['loan_accounts'];
+        $users_accs = $params['users'];
+        $transaction = Yii::$app->db->beginTransaction();
+        $utilitiesModel = new \common\models\Utilities();
+        try {
+            foreach ($loan_accounts as $loan_account) {
+                foreach ($users_accs as $users_acc) {
+                    $shared = new SharedLoanApplicationsExtended();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $shared->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+                    $shared->foreign_id = $loan_account;
+                    $shared->shared_by = $user->user_enc_id;
+                    $shared->shared_to = $users_acc['id'];
+                    $shared->access = $users_acc['access'];
+                    $shared->created_by = $shared->updated_by = $user->user_enc_id;
+                    $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
+                    if (!$shared->save()) {
+                        throw new \Exception (implode(", ", \yii\helpers\ArrayHelper::getColumn($shared->errors, 0, false)));
+                    }
+                }
+            }
+            $transaction->commit();
+            return $this->response(200, ["message" => "saved successfully"]);
+        } catch (\Exception $exception) {
+            $transaction->rollback();
+            return $this->response(500, ["error" => $exception->getMessage()]);
         }
     }
 
