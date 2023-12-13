@@ -121,6 +121,7 @@ class PaymentsController extends ApiBaseController
                 ->update(
                     EmiCollectionExtended::tableName(),
                     ['emi_payment_status' => 'paid'],
+                    ['collection_date' => date('Y-m-d')],
                     ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
                 )
                 ->execute();
