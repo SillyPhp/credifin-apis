@@ -1852,6 +1852,20 @@ class OrganizationsController extends ApiBaseController
 
     public static function _emiData($data, $id_type, $search = '', $user = null)
     {
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
             $lac = $data;
@@ -1906,9 +1920,14 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['ptpstatus'])) {
             $model->andWhere(["NOT", "a.ptp_date", NULL]);
         }
-
+        if (!empty($params['custom_method'])) {
+            $model->andWhere(['a.emi_payment_method' => payment_method_add($params['custom_method'])]);
+        }
+        if (!empty($params['custom_status'])) {
+            $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
+        }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name',  'amount',  'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1924,11 +1943,19 @@ class OrganizationsController extends ApiBaseController
                             case 'loan_type':
                                 $model->andWhere(['a.loan_type' => $value]);
                                 break;
+                            case 'customer_name':
+                                $model->andWhere(['like', 'a.customer_name', $value . '%', false]);
+                                break;
                             case 'emi_payment_status':
                                 $model->andWhere(['IN', 'a.emi_payment_status', $value]);
                                 break;
                             case 'delay_reason':
-                                $model->andWhere(['IN', 'a.delay_reason', $value]);
+                                $where = ["OR"];
+                                foreach ($value as $item) {
+                                    $where[] = ["LIKE", "a.delay_reason", $item];
+                                    $where[] = ["LIKE", "a.other_delay_reason", $item];
+                                }
+                                $model->andWhere($where);
                                 break;
                             case 'amount':
                                 $model->andWhere(['like', 'a.amount', $value . '%', false]);
@@ -1946,16 +1973,7 @@ class OrganizationsController extends ApiBaseController
                                 $model->andWhere(['<=', 'a.ptp_date', $value]);
                                 break;
                             case 'emi_payment_method':
-                                if (in_array(4, $value)) {
-                                    $value[] = 81;
-                                }
-                                if (in_array(5, $value)) {
-                                    $value[] = 82;
-                                }
-                                if (in_array(1, $value)) {
-                                    $value[] = 9;
-                                }
-                                $model->andWhere(['IN', 'a.' . $key, $value]);
+                                $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
                         }
                     }
                     if (in_array($key, $others)) {
