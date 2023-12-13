@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
@@ -2397,12 +2396,16 @@ class OrganizationsController extends ApiBaseController
         $params = Yii::$app->request->post();
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
-                ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
-                ->where(['is_deleted' => 0])
+                ->alias('a')
+                ->select(['a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    , 'b.collection_date'])
+                ->joinWith(['emiCollections b'], false)
+                ->where(['a.is_deleted' => 0])
                 ->andWhere([
                     'or',
-                    ['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false],
-                    ['like', 'phone', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.loan_account_number', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.phone', '%' . $params['loan_number'] . '%', false],
 
                 ])
                 ->limit(20)
