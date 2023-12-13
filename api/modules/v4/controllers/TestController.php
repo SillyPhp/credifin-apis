@@ -7,6 +7,7 @@ use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
+use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
@@ -669,4 +670,28 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
+
+    public function actionMoveInitiatedDates($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $data = EmiCollectionExtended::find()
+            ->where(['is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->all();
+
+        $count = 0;
+
+        foreach ($data as $record) {
+            $record->transaction_initiated_date = $record->collection_date;
+            if ($record->save()) {
+                $count++;
+            }
+        }
+        return ['status' => 200, 'found' => count($data), 'updated' => $count];
+    }
+
 }
