@@ -675,12 +675,8 @@ class CompanyDashboardController extends ApiBaseController
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-//            ->createCommand()->getRawSql();
-//        print_r($loans);
-//        exit();
             ->asArray()
             ->all();
-
 
         if ($loans) {
             foreach ($loans as $key => $val) {
