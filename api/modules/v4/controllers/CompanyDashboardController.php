@@ -19,6 +19,7 @@ use common\models\CreditRequestedData;
 use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\AssigningLoanAccountsExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
@@ -675,9 +676,9 @@ class CompanyDashboardController extends ApiBaseController
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-//            ->createCommand()->getRawSql();
-//        print_r($loans);
-//        exit();
+            //            ->createCommand()->getRawSql();
+            //        print_r($loans);
+            //        exit();
             ->asArray()
             ->all();
 
@@ -1094,7 +1095,6 @@ class CompanyDashboardController extends ApiBaseController
 
         // if application detail not found
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
     }
 
     //    public function actionUniqueLink()
@@ -1867,8 +1867,8 @@ class CompanyDashboardController extends ApiBaseController
         $this->isAuth();
         $user = $this->user;
         $params = $this->post;
-        if (empty($params['users']) || empty($params['loan_accounts'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts"']);
+        if (empty($params['users']) || empty($params['loan_accounts']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts" or "type"']);
         }
         $loan_accounts = $params['loan_accounts'];
         $users_accs = $params['users'];
@@ -1877,17 +1877,24 @@ class CompanyDashboardController extends ApiBaseController
         try {
             foreach ($loan_accounts as $loan_account) {
                 foreach ($users_accs as $users_acc) {
-                    $shared = new SharedLoanApplicationsExtended();
+                    $shared = new AssigningLoanAccountsExtended();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $shared->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+                    $shared->assign_loan_enc_id = $utilitiesModel->encrypt();
                     $shared->foreign_id = $loan_account;
                     $shared->shared_by = $user->user_enc_id;
                     $shared->shared_to = $users_acc['id'];
-                    $shared->access = $users_acc['access'];
+                    if ($params['type'] == 'bdo') {
+                        $shared->user_type = 1;
+                        $shared->access = $users_acc['access'];
+                    }
+                    if ($params['type'] == 'collection_manager') {
+                        $shared->user_type = 2;
+                    }
+                    // $shared->user_type = $users_acc['user_type'];
                     $shared->created_by = $shared->updated_by = $user->user_enc_id;
                     $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
                     if (!$shared->save()) {
-                        throw new \Exception (implode(", ", \yii\helpers\ArrayHelper::getColumn($shared->errors, 0, false)));
+                        throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($shared->errors, 0, false)));
                     }
                 }
             }
