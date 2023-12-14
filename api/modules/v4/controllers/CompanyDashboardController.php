@@ -370,7 +370,8 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.gender = '1' THEN 'Male'
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
-                END) as gender"
+                END) as gender",
+                "a.login_date"
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
@@ -494,7 +495,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -516,6 +517,12 @@ class CompanyDashboardController extends ApiBaseController
                         switch ($key) {
                             case 'loan_products_enc_id':
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'login_start_date':
+                                $loans->andWhere(['>=', 'a.login_date', $val]);
+                                break;
+                            case 'login_end_date':
+                                $loans->andWhere(['<=', 'a.login_date', $val]);
                                 break;
                             case 'apply_date':
                                 $loans->andWhere(['like', 'a.created_on', $val]);

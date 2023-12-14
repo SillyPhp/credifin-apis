@@ -70,7 +70,7 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
             [['collection_date', 'transaction_initiated_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
