@@ -36,6 +36,8 @@ class EmiCollectionsController extends ApiBaseController
                 "approve-by-employee" => ["POST", "OPTIONS"],
                 "employee-emi-collection" => ["POST", "OPTIONS"],
                 "list" => ["GET", "OPTIONS"],
+                "get-collected-emi-list" => ["POST", "OPTIONS"],
+                "emi-detail" => ["POST", "OPTIONS"]
             ]
         ];
         $behaviors["corsFilter"] = [
