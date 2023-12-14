@@ -8,7 +8,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
-use common\models\AssigningLoanAccounts;
+use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -2440,7 +2440,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
-            ->leftJoin(AssigningLoanAccounts::tableName() . 'as d', 'd.foreign_id = a.loan_account_enc_id')
+            ->leftJoin(AssignedLoanAccounts::tableName() . 'as d', 'd.loan_account_enc_id = a.loan_account_enc_id')
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {

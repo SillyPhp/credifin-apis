@@ -19,7 +19,7 @@ use common\models\CreditRequestedData;
 use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
-use common\models\extended\AssigningLoanAccountsExtended;
+use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
@@ -676,9 +676,9 @@ class CompanyDashboardController extends ApiBaseController
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-            //            ->createCommand()->getRawSql();
-            //        print_r($loans);
-            //        exit();
+//            ->createCommand()->getRawSql();
+//        print_r($loans);
+//        exit();
             ->asArray()
             ->all();
 
@@ -1877,10 +1877,10 @@ class CompanyDashboardController extends ApiBaseController
         try {
             foreach ($loan_accounts as $loan_account) {
                 foreach ($users_accs as $users_acc) {
-                    $shared = new AssigningLoanAccountsExtended();
+                    $shared = new AssignedLoanAccountsExtended();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $shared->assign_loan_enc_id = $utilitiesModel->encrypt();
-                    $shared->foreign_id = $loan_account;
+                    $shared->assigned_enc_id = $utilitiesModel->encrypt();
+                    $shared->loan_account_enc_id = $loan_account;
                     $shared->shared_by = $user->user_enc_id;
                     $shared->shared_to = $users_acc['id'];
                     if ($params['type'] == 'bdo') {
@@ -1890,7 +1890,6 @@ class CompanyDashboardController extends ApiBaseController
                     if ($params['type'] == 'collection_manager') {
                         $shared->user_type = 2;
                     }
-                    // $shared->user_type = $users_acc['user_type'];
                     $shared->created_by = $shared->updated_by = $user->user_enc_id;
                     $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
                     if (!$shared->save()) {

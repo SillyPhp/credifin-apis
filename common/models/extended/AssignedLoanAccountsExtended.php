@@ -2,13 +2,13 @@
 
 namespace common\models\extended;
 
-use common\models\AssigningLoanAccounts;
+use common\models\AssignedLoanAccounts;
 
-class AssigningLoanAccountsExtended extends AssigningLoanAccounts
+class AssignedLoanAccountsExtended extends AssignedLoanAccounts
 {
     public function behaviors()
     {
-        $model = explode("\\", AssigningLoanAccounts::className());
+        $model = explode("\\", AssignedLoanAccounts::className());
         return [
             'LoggableBehavior' => [
                 'class' => 'common\models\extended\LoanLoggableBehavior',
