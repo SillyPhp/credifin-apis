@@ -16,9 +16,10 @@ namespace common\models;
  * @property double $amount Amount
  * @property string $loan_type Loan Type
  * @property string $loan_purpose Loan Purpose
+ * @property string $transaction_initiated_date
  * @property string $payment_method Payment Method
  * @property string $other_payment_method Other Payment Method
- * @property int $ptp_payment_method
+ * @property int $ptp_payment_method 1 = cash, 2 = online
  * @property double $ptp_amount Ptp Amount
  * @property string $ptp_date Ptp Date
  * @property string $delay_reason Delay Reason
@@ -51,6 +52,7 @@ namespace common\models;
  * @property OrganizationLocations $branchEnc
  * @property LoanAccounts $loanAccountEnc
  * @property EmployeesCashReport[] $employeesCashReports
+ * @property LoanAccountPtps[] $loanAccountPtps
  */
 class EmiCollection extends \yii\db\ActiveRecord
 {
@@ -69,7 +71,7 @@ class EmiCollection extends \yii\db\ActiveRecord
     {
         return [
             [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
-            [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
+            [['collection_date', 'transaction_initiated_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
             [['emi_payment_status', 'address', 'comments'], 'string'],
@@ -132,5 +134,13 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function getEmployeesCashReports()
     {
         return $this->hasMany(EmployeesCashReport::className(), ['emi_collection_enc_id' => 'emi_collection_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAccountPtps()
+    {
+        return $this->hasMany(LoanAccountPtps::className(), ['emi_collection_enc_id' => 'emi_collection_enc_id']);
     }
 }
