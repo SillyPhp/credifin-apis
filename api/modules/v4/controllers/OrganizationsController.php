@@ -1853,6 +1853,20 @@ class OrganizationsController extends ApiBaseController
 
     public static function _emiData($data, $id_type, $search = '', $user = null)
     {
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
             $lac = $data;
@@ -1907,31 +1921,60 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['ptpstatus'])) {
             $model->andWhere(["NOT", "a.ptp_date", NULL]);
         }
-
+        if (!empty($params['custom_method'])) {
+            $model->andWhere(['a.emi_payment_method' => payment_method_add($params['custom_method'])]);
+        }
+        if (!empty($params['custom_status'])) {
+            $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
+        }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status'];
+            $a = ['loan_account_number', 'customer_name', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
-                        if ($key == 'amount') {
-                            $model->andWhere(['like', 'a.amount', $value . '%', false]);
-                        } elseif ($key == 'address') {
-                            $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
-                        } elseif ($key == 'ptp_amount') {
-                            $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
-                        } elseif ($key == 'emi_payment_method') {
-                            if (in_array($value, $val = [4, 81])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } elseif (in_array($value, $val = [5, 82])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } elseif (in_array($value, $val = [1, 9])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } else {
-                                $model->andWhere(['a.' . $key => $value]);
-                            }
-                        } else {
-                            $model->andWhere(['like', 'a.' . $key, $value]);
+
+                        switch ($key) {
+                            case 'collection_start_date':
+                                $model->andWhere(['>=', 'a.collection_date', $value]);
+                                break;
+                            case 'collection_end_date':
+                                $model->andWhere(['<=', 'a.collection_date', $value]);
+                                break;
+                            case 'loan_type':
+                                $model->andWhere(['a.loan_type' => $value]);
+                                break;
+                            case 'customer_name':
+                                $model->andWhere(['like', 'a.customer_name', $value . '%', false]);
+                                break;
+                            case 'emi_payment_status':
+                                $model->andWhere(['IN', 'a.emi_payment_status', $value]);
+                                break;
+                            case 'delay_reason':
+                                $where = ["OR"];
+                                foreach ($value as $item) {
+                                    $where[] = ["LIKE", "a.delay_reason", $item];
+                                    $where[] = ["LIKE", "a.other_delay_reason", $item];
+                                }
+                                $model->andWhere($where);
+                                break;
+                            case 'amount':
+                                $model->andWhere(['like', 'a.amount', $value . '%', false]);
+                                break;
+                            case 'address':
+                                $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
+                                break;
+                            case 'ptp_amount':
+                                $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
+                                break;
+                            case 'start_date':
+                                $model->andWhere(['>=', 'a.ptp_date', $value]);
+                                break;
+                            case 'end_date':
+                                $model->andWhere(['<=', 'a.ptp_date', $value]);
+                                break;
+                            case 'emi_payment_method':
+                                $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
                         }
                     }
                     if (in_array($key, $others)) {
