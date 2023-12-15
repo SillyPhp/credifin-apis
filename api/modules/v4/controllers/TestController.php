@@ -11,6 +11,7 @@ use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
+use common\models\LoanCoApplicants;
 use common\models\LoanPayments;
 use Yii;
 use yii\filters\Cors;
@@ -21,7 +22,6 @@ class TestController extends ApiBaseController
 {
     public function behaviors()
     {
-        $model = explode("\\", Industries::className());
         $behaviors = parent::behaviors();
 
         $behaviors["verbs"] = [
@@ -29,6 +29,7 @@ class TestController extends ApiBaseController
             "actions" => [
                 "testxl" => ["POST", "OPTIONS"],
                 "pool" => ["POST", "OPTIONS"],
+                "update-data" => ["GET", "OPTIONS"],
             ]
         ];
 
@@ -42,6 +43,75 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionUpdateData($limit = 50, $page = 1, $auth = '')
+    {
+        if ($auth !== Yii::$app->params->emiCollection->cashInHand->authKey) {
+            return $this->response(401, ['message' => 'authentication failed']);
+        }
+
+        $credit_report = CreditLoanApplicationReports::find()
+            ->alias("a")
+            ->select([
+                "a.response_enc_id", "a.loan_co_app_enc_id", "c.cibil_score", "c.co_applicant_dob"
+            ])
+            ->innerJoinWith(["responseEnc b" => function ($b) {
+                $b->select(["b.response_enc_id", "b.response_body"]);
+                $b->innerJoinWith(["requestEnc b1" => function ($b1) {
+                    $b1->andOnCondition(["b1.request_source" => "CIBIL"]);
+                }], false);
+            }])
+            ->innerJoinWith(["loanCoAppEnc c" => function ($c) {
+                $c->andOnCondition([
+                    "OR",
+                    ["c.cibil_score" => null],
+                    ["c.co_applicant_dob" => null]
+                ]);
+            }])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+        $count = 0;
+        foreach ($credit_report as &$value) {
+            $value["responseEnc"]["response_body"] = json_decode($value["responseEnc"]["response_body"], true);
+            $response_body = UserUtilities::array_search_key("BureauResponseXml", $value);
+            $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+            if (!empty($array["ScoreSegment"])) {
+                if (array_key_exists(0, $array["ScoreSegment"])) {
+                    foreach ($array["ScoreSegment"] as $val) {
+                        if (is_array($val)) {
+                            if ($val["ScoreName"] == "CIBILTUSC3") {
+                                $score = ltrim($val["Score"], 0);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $score = ltrim($array["ScoreSegment"]["Score"], 0);
+                }
+            }
+            if (!empty($array["NameSegment"])) {
+                $dob = $array["NameSegment"]["DateOfBirth"];
+                $formattedDate = substr($dob, 4, 4) . '-' . substr($dob, 2, 2) . '-' . substr($dob, 0, 2);
+            }
+            $update = [];
+            if (empty($value["co_applicant_dob"])) {
+                $update["co_applicant_dob"] = $formattedDate;
+            }
+            if (empty($value["cibil_score"])) {
+                $update["cibil_score"] = $score;
+            }
+            $query = Yii::$app->db->createCommand()->update(
+                LoanCoApplicants::tableName(),
+                $update, [
+                    "loan_co_app_enc_id" => $value["loan_co_app_enc_id"]
+                ]
+            )->execute();
+            $count += $query;
+        }
+        return $this->response(200, ["message" => "updated $count applications"]);
     }
 
     public function actionPool()
@@ -232,6 +302,7 @@ class TestController extends ApiBaseController
 //        exit();
         return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
+
     public function actionFixPaidCases($limit = 50, $page = 1, $auth = '')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
