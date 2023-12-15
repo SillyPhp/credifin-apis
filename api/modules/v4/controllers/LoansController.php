@@ -709,7 +709,7 @@ class LoansController extends ApiBaseController
                     // if uploaded successfully
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
                 } else {
-                    return $this->response(500, ['status' => 500, 'error' => 'some error occurred while uploading image','message'=>$result['error']]);
+                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image','error'=>$result['error']]);
                 }
             } else {
                 // if not saved
