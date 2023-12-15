@@ -2467,7 +2467,6 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
