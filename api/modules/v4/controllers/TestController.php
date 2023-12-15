@@ -11,6 +11,8 @@ use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanApplications;
+use common\models\spaces\Spaces;
+use frontend\controllers\TestCacheController;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -277,5 +279,4 @@ class TestController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'Stamp value not found']);
         }
     }
-
 }

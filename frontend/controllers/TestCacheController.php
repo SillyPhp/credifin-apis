@@ -5,6 +5,7 @@ use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
 use common\models\OrganizationLocations;
+use common\models\spaces\Spaces;
 use common\models\TestData;
 use Razorpay\Api\Api;
 use yii\db\Expression;
@@ -223,6 +224,14 @@ class TestCacheController extends Controller
 
         echo '<br>';
         echo 'url hit on: '.$url;
+    }
+
+    public function actionEycdn(){
+       // $get = $_POST;
+        $get = Yii::$app->request->post();
+        print_r($get);exit();
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
     }
 
 }
