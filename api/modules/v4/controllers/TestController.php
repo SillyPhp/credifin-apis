@@ -163,7 +163,6 @@ class TestController extends ApiBaseController
                 "e.vehicle_brand",
                 "f.name loan_type",
                 "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
-                "a.applicant_dob",
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
