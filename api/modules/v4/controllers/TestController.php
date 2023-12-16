@@ -142,6 +142,7 @@ class TestController extends ApiBaseController
                 "abc.aadhaar_number",
                 "abc.voter_card_number",
                 "abc.pan_number",
+                "abc.marital_status",
                 "a.loan_purpose",
                 "a.chassis_number",
                 "a.invoice_number",
@@ -225,22 +226,6 @@ class TestController extends ApiBaseController
             unset($item['loanPurposes']);
         }
 
-        foreach ($query as &$item) {
-            $cibils = $this->CreditReports($item["loan_app_enc_id"]);
-            if (!empty($cibils)) {
-
-                if (in_array($item["loan_app_enc_id"], array_keys($cibils))) {
-                    $item["cibil_score"] = $cibils[$item["loan_app_enc_id"]];
-                }
-                if (!empty($item["loanCoApplicants"])) {
-                    foreach ($item["loanCoApplicants"] as &$loanCoApplicant) {
-                        if (in_array($loanCoApplicant["loan_co_app_enc_id"], array_keys($cibils))) {
-                            $loanCoApplicant["cibil_score"] = $cibils[$loanCoApplicant["loan_co_app_enc_id"]];
-                        }
-                    }
-                }
-            }
-        }
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
