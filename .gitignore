@@ -8,3 +8,6 @@ Vagrantfile
 vendor
 .vscode
 .htaccess
+*.pub
+*.pem
+*.ppk
