@@ -74,7 +74,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_number",
-                "a.customer_name",
+                "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
                 "a.emi_payment_method",
@@ -92,7 +92,12 @@ class EmiCollectionsController extends ApiBaseController
                 "b.company_id",
                 "b.company_name",
             ])
-            ->innerJoinWith(["loanAccountEnc b"], false)
+            ->innerJoinWith(["loanAccountEnc b" => function ($b) {
+                $b->andOnCondition(["NOT", [
+                    "b.company_id" => [null, ''],
+                    "b.company_name" => [null, '']
+                ]]);
+            }], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
                 $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
