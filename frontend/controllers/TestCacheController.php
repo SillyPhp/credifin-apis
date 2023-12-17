@@ -226,12 +226,4 @@ class TestCacheController extends Controller
         echo 'url hit on: '.$url;
     }
 
-    public function actionEycdn(){
-       // $get = $_POST;
-        $get = Yii::$app->request->post();
-        print_r($get);exit();
-        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-    }
-
 }
