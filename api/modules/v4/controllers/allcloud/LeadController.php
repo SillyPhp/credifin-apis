@@ -1,0 +1,113 @@
+<?php
+namespace api\modules\v4\controllers\allcloud;
+use api\modules\v4\controllers\ApiBaseController;
+use common\models\allcloud\Auth;
+use Yii;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\Cors;
+class LeadController extends ApiBaseController
+{
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'add-new-lead',
+                'add-customer'
+            ],
+            'class' => HttpBearerAuth::className()
+        ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'add-new-lead' => ['POST', 'OPTIONS'],
+                'add-customer' => ['POST', 'OPTIONS'],
+            ]
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                // restrict access to
+                'Origin' => ['*'],
+                // Allow only POST and PUT methods
+                'Access-Control-Request-Method' => ['POST', 'PUT', 'GET', 'OPTIONS'],
+                // Allow only headers 'X-Wsse'
+                'Access-Control-Request-Headers' => ['X-Wsse'],
+                // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
+                'Access-Control-Allow-Credentials' => False,
+                // Allow OPTIONS caching
+                'Access-Control-Max-Age' => 3600,
+                // Allow the X-Pagination-Current-Page header to be exposed to the browser.
+                'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
+            ],
+        ];
+        return $behaviors;
+    }
+
+    public function actionAddNewLead(){
+        try {
+            if ($user = $this->isAuthorized()){
+                $options = [];
+                $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
+                $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
+                $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
+                $options['requestHttpMethod'] = 'GET';
+                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Customer/GetCustomerByCIFIdAsync/92';
+                $payload = '';
+                $res = Auth::generateToken($options,$payload);
+                if ($res['status']){
+                    return $res['token'];
+                }
+
+            } else{
+                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            }
+        }catch (\Exception $exception){
+            return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
+        }
+    }
+
+    public function actionAddCustomer(){
+        try {
+            if ($user = $this->isAuthorized()){
+                $payload = Yii::$app->request->post();
+                $options = [];
+                $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
+                $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
+                $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
+                $options['requestHttpMethod'] = 'POST';
+                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Customer/SaveCustomerData';
+                $payload = json_encode($payload);
+                $res = Auth::generateToken($options,$payload);
+                if ($res['status']){
+                    $auth = $res['token']['data']['Authorization'];
+                    $ch = curl_init($options['Request_URL']);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+                    curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload); // Set the POST data
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Content-Type: application/json", // You can adjust the content type as needed
+                        "Authorization: $auth",
+                    ]);
+                      $response = curl_exec($ch);
+                    if (curl_errno($ch)) {
+                        return  $this->response(422, ['message'=>'Error','Error'=>'cURL Error: ' . curl_error($ch)]);
+                    }else{
+                        $decodeResponse = json_decode($response,true);
+                        if (isset($decodeResponse['CustomerId'])&&!empty($decodeResponse['CustomerId'])){
+                            $this->response(200, ['message'=>'Success','data'=>$decodeResponse]);
+                        }else{
+                            return  $this->response(422, ['message'=>'Error','Error'=>$response]);
+                        }
+                    }
+                }
+
+            } else{
+                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            }
+        }catch (\Exception $exception){
+            return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
+        }
+    }
+}
