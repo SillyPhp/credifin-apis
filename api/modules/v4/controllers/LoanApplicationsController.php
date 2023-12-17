@@ -154,12 +154,12 @@ class LoanApplicationsController extends ApiBaseController
         } else {
             $where = ['a.is_removed' => 1];
         }
-        $data = $this->getList($org_id, $user, $where);
+        $data = $this->getList($org_id, $user, $where, true);
         $totalCount = $data['count'];
         return $this->response(200, ['status' => 200, 'data' => $data['data'], 'count' => $totalCount]);
     }
 
-    private function getList($org_id, $user, $conditions)
+    private function getList($org_id, $user, $conditions, $disableShareApp = false)
     {
         $params = $this->post;
         $user_id = $user->user_enc_id;
@@ -175,8 +175,10 @@ class LoanApplicationsController extends ApiBaseController
         if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
             $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
         }
-        $shared_apps = $this->sharedApps($user->user_enc_id);
-
+        $shared_apps = null;
+        if (!$disableShareApp) {
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+        }
 
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
@@ -262,7 +264,7 @@ class LoanApplicationsController extends ApiBaseController
             $list->andWhere(['or', ['a.lead_by' => $user_id], ['a.managed_by' => $user_id]]);
         }
 
-        if ($shared_apps['app_ids']) {
+        if ($shared_apps && $shared_apps['app_ids']) {
             $list->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
@@ -361,7 +363,6 @@ class LoanApplicationsController extends ApiBaseController
             ->asArray()
             ->all();
 
-
         if ($list) {
             foreach ($list as $key => $val) {
                 $list[$key]['sharedTo'] = $val['sharedLoanApplications'];
@@ -370,7 +371,7 @@ class LoanApplicationsController extends ApiBaseController
                 $list[$key]['access'] = null;
                 $list[$key]['shared_by'] = null;
                 $list[$key]['is_shared'] = false;
-                if ($shared_apps['app_ids']) {
+                if ($shared_apps && $shared_apps['app_ids']) {
                     foreach ($shared_apps['shared'] as $s) {
                         if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
                             $list[$key]['access'] = $s['access'];
@@ -379,15 +380,6 @@ class LoanApplicationsController extends ApiBaseController
                         }
                     }
                 }
-
-                $d = ClaimedDeals::find()
-                    ->alias('a')
-                    ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
-                    ->joinWith(['dealEnc b'], false)
-                    ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
-                    ->asArray()
-                    ->all();
-                $list[$key]['claimedDeals'] = $d;
 
                 $provider_id = $this->getFinancerId($user);
 
@@ -414,6 +406,7 @@ class LoanApplicationsController extends ApiBaseController
                 }
             }
         }
+
         return ['data' => $list, 'count' => $count];
     }
 

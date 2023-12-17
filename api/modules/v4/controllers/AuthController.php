@@ -9,6 +9,7 @@ use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\auth\JwtAuth;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
@@ -45,7 +46,9 @@ class AuthController extends ApiBaseController
                 'verify-phone',
                 'referral-logo',
                 'reset-old-password',
-                'update-profile'
+                'update-profile',
+                'get-token',
+                'varify-token'
 
             ],
             'class' => HttpBearerAuth::className()
@@ -68,6 +71,8 @@ class AuthController extends ApiBaseController
                 'referral-logo' => ['POST', 'OPTIONS'],
                 'reset-old-password' => ['POST', 'OPTIONS'],
                 'update-profile' => ['POST', 'OPTIONS'],
+                'get-token' => ['POST', 'OPTIONS'],
+                'varify-token' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -82,6 +87,40 @@ class AuthController extends ApiBaseController
         return $behaviors;
     }
 
+    public function actionGetToken()
+    {
+        if ($user = $this->isAuthorized()){
+            $bearer_token = Yii::$app->request->headers->get('Authorization');
+            $token = explode(" ", $bearer_token)[1];
+            $payload = [
+                'authToken'=>$token
+            ];
+            if ($gettoken = JwtAuth::generateToken($payload)){
+                return  $this->response(200, ['message'=>'Success','tokenValue'=>$gettoken]);
+            }else{
+                return  $this->response(503, ['message'=>'Error']);
+            }
+        }else{
+            return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+        }
+    }
+    public function actionVarifyToken(){
+        try {
+            if ($user = $this->isAuthorized()){
+                $param = Yii::$app->request->post();
+                if ($response = JwtAuth::auth($param['tokenValue'])){
+                    return  $this->response(200, ['message'=>'Success','tokenValue'=>$response]);
+                }else{
+                    return  $this->response(401, ['message'=>'Token Expired or Invalid Token']);
+                }
+
+            } else{
+                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            }
+        }catch (\Exception $e){
+            return  $this->response(401, ['message'=>'Error','Error'=>$e]);
+        }
+    }
     // this action is used for signup
     public function actionSignup()
     {
@@ -230,7 +269,7 @@ class AuthController extends ApiBaseController
             // if there is no data in request then error 400 bad request
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         } catch (\Exception $exception) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception, true)]);
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 

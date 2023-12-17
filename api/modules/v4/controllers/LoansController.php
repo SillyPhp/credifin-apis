@@ -15,6 +15,7 @@ use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\DocUpload;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
@@ -646,7 +647,6 @@ class LoansController extends ApiBaseController
 
 
             $params = Yii::$app->request->post();
-
             // checking loan_id
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
@@ -663,7 +663,9 @@ class LoansController extends ApiBaseController
             }
 
             // getting file instance by name
-            $file = UploadedFile::getInstanceByName('file');
+            $fileModel = new DocUpload();
+            $fileModel->file = UploadedFile::getInstanceByName('file');
+            //$file = UploadedFile::getInstanceByName('file');
 
             // getting certificate type id if an error occurred then send 500
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
@@ -693,25 +695,21 @@ class LoansController extends ApiBaseController
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
             // if extension null or empty then it will be added as .pdf
-            if ($file->extension == null || $file->extension == '') {
+            if ($fileModel->file->extension == null || $fileModel->file->extension == '') {
                 $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
             } else {
                 // else file extension
-                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $file->extension;
+                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $fileModel->file->extension;
             }
-            $type = $file->type;
+            $type = $fileModel->file->type;
             // saving certificate data
             if ($certificate->save()) {
-
-                // creating spaces object
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
-                if ($result) {
+              $result = $fileModel->upload($base_path,$type,$certificate);
+              if ($result['status']) {
                     // if uploaded successfully
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image']);
+                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image','error'=>$result['error']]);
                 }
             } else {
                 // if not saved
@@ -903,20 +901,27 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            // adding loan verification locations
-            $verification_location = new LoanVerificationLocationsExtended();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
-            $verification_location->loan_app_enc_id = $params['loan_id'];
-            (!empty($params['location_name'])) ? $verification_location->location_name = $params['location_name'] : null;
-            (!empty($params['local_address'])) ? $verification_location->local_address = $params['local_address'] : null;
-            (!empty($params['latitude'])) ? $verification_location->latitude = $params['latitude'] : null;
-            (!empty($params['longitude'])) ? $verification_location->longitude = $params['longitude'] : null;
-            $verification_location->created_by = $user->user_enc_id;
-            $verification_location->created_on = date('Y-m-d H:i:s');
-            if (!$verification_location->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+            if (!empty($params['assigned_borrower_enc_id']) && is_array($params['assigned_borrower_enc_id'])) {
+                foreach ($params['assigned_borrower_enc_id'] as $borrower) {
+                    $verification_location = new LoanVerificationLocationsExtended();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
+                    $verification_location->loan_app_enc_id = $params['loan_id'];
+                    $verification_location->assigned_borrower_enc_id = $borrower;
+
+                    $verification_location->location_name = (!empty($params['location_name'])) ? $params['location_name'] : null;
+                    $verification_location->local_address = (!empty($params['local_address'])) ? $params['local_address'] : null;
+                    $verification_location->latitude = (!empty($params['latitude'])) ? $params['latitude'] : null;
+                    $verification_location->longitude = (!empty($params['longitude'])) ? $params['longitude'] : null;
+
+                    $verification_location->created_by = $user->user_enc_id;
+                    $verification_location->created_on = date('Y-m-d H:i:s');
+
+                    if (!$verification_location->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+                    }
+                }
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
@@ -1532,7 +1537,8 @@ class LoansController extends ApiBaseController
                 if (!$purposes) {
                     throw new Exception('an error occurred while updating purposes');
                 }
-//                $c = true;
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
             } elseif (in_array($type, ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
                 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
@@ -1542,9 +1548,6 @@ class LoansController extends ApiBaseController
                 $model->$type = $params['value'];
                 $model->updated_by = $user->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
-                if (!$model->save()) {
-                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-                }
 
             } elseif (in_array($type, ['model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
                 'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'field_officer'])) {
@@ -1567,12 +1570,8 @@ class LoansController extends ApiBaseController
                 throw new Exception('Error occurred or invalid field');
             }
 
-            if ($model) {
-                if (!$model->save()) {
-                    throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-                }
-            } else {
-                throw new Exception('error');
+            if (!$model->save()) {
+                throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();

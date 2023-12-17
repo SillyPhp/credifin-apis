@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\models;
 
+use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -20,6 +21,7 @@ class EmiCollectionForm extends Model
     public $phone;
     public $amount;
     public $loan_type;
+    public $ptp_payment_method;
     public $loan_purpose;
     public $payment_method;
     public $other_payment_method;
@@ -87,7 +89,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -114,6 +116,10 @@ class EmiCollectionForm extends Model
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
+        if ($this->ptp_payment_method) {
+            $model->ptp_payment_method = $this->ptp_payment_method;
+        }
+
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
@@ -153,7 +159,7 @@ class EmiCollectionForm extends Model
         }
         $model->emi_payment_mode = $this->payment_mode;
         $model->emi_payment_method = $this->payment_method;
-        $model->emi_payment_status = 'pending';
+        $model->emi_payment_status = in_array($this->payment_method, [9, 10, 81, 82, 83, 84]) ? 'pipeline' : (in_array($this->payment_method, [4, 5]) ? 'collected' : 'pending');
         $model->dealer_name = $this->dealer_name ?? '';
         $model->reference_number = $this->reference_number ?? '';
         if ($this->other_doc_image) {
@@ -182,12 +188,11 @@ class EmiCollectionForm extends Model
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
-        if (in_array($model->emi_payment_method, [4, 81]) && !empty($this->amount)) {
+        if ($model->emi_payment_method == 4 && !empty($this->amount)) {
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
             $trackCash['emi_id'] = $model->emi_collection_enc_id;
             $this->collect_cash($trackCash);
-
         }
 
         $return = ['status' => 200, 'message' => 'Saved Successfully'];
@@ -363,7 +368,7 @@ class EmiCollectionForm extends Model
                 }
             }
             $update = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
-            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])){
+            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])) {
                 self::updateOverdue($update['loan_account_enc_id'], $update['amount'], $user_id);
             }
             $update->updated_by = $user_id;

@@ -8,7 +8,8 @@ use Yii;
  * This is the model class for table "{{%test_data}}".
  *
  * @property int $id Primary Id
- * @property string $loan_account_number Loan Account Number
+ * @property string $application_number Loan Account Number
+ * @property string $old_application_number
  * @property string $created_on Created On
  */
 class TestData extends \yii\db\ActiveRecord
@@ -27,9 +28,9 @@ class TestData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_account_number'], 'required'],
+            [['application_number'], 'required'],
             [['created_on'], 'safe'],
-            [['loan_account_number'], 'string', 'max' => 100],
+            [['application_number', 'old_application_number'], 'string', 'max' => 100],
         ];
     }
 
@@ -40,9 +41,9 @@ class TestData extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'loan_account_number' => 'Loan Account Number',
+            'application_number' => 'Application Number',
+            'old_application_number' => 'Old Application Number',
             'created_on' => 'Created On',
         ];
     }
 }
-?>
