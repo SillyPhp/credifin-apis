@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
@@ -49,6 +50,7 @@ class LoanAccountsController extends ApiBaseController
                 'assign-telecaller' => ['POST', 'OPTIONS'],
                 'stats' => ['POST', 'OPTIONS'],
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
+                'update-loan-acc-access' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1216,5 +1218,35 @@ class LoanAccountsController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, ["status" => 200, "data" => $loan_accounts]);
+    }
+
+    public function actionUpdateLoanAccAccess()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+
+        if (empty($params['assigned_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_enc_id"']);
+        }
+
+        $update = AssignedLoanAccounts::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
+
+        if (!$update) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+        (!empty($params['access'])) ? $update->access = $params['access'] : "";
+        (!empty($params['status'])) ? $update->status = $params['status'] : "";
+        (!empty($params['delete'])) ? $update->is_deleted = 1 : "";
+        $update->updated_by = $user->user_enc_id;
+        $update->updated_on = date('Y-m-d H:i:s');
+
+        if (!$update->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $update->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
     }
 }

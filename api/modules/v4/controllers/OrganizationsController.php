@@ -2482,7 +2482,14 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
-            ->leftJoin(AssignedLoanAccounts::tableName() . 'as d', 'd.loan_account_enc_id = a.loan_account_enc_id')
+            ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                $d->select(["d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                ]);
+                $d->joinWith(['sharedTo d1'], false);
+            }])
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {
@@ -2525,7 +2532,7 @@ class OrganizationsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-        // return $query;
+
         if ($query) {
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
         }
