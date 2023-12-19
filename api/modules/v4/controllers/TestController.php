@@ -136,6 +136,7 @@ class TestController extends ApiBaseController
                 "c.address",
                 "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
+                "c2.name city",
                 "c.postal_code",
                 "abc.phone",
                 "abc.cibil_score",
@@ -147,6 +148,7 @@ class TestController extends ApiBaseController
                 "a.chassis_number",
                 "a.invoice_number",
                 "a.amount",
+                "e.emi_amount",
                 "a.number_of_emis",
                 "a.roi",
                 "abc.co_applicant_dob applicant_dob",
@@ -178,13 +180,14 @@ class TestController extends ApiBaseController
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
+                $c->joinWith(["cityEnc c2"], false);
             }], false)
             ->joinWith(["loanCoApplicants abc" => function ($abc) {
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
-                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
                     "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
                 $d->onCondition(["d.is_deleted" => 0]);
