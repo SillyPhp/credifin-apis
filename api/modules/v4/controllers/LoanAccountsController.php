@@ -1418,9 +1418,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach($data as $key => $val){
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach($data as $val){
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(AssignedLoanAccounts::tableName(), [
