@@ -665,7 +665,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($leadsAccessOnly == 'vehicle') {
                 $where = ['lp.name' => $this->vehicleList];
             } else {
-                $where = ['lp.name' => ['Loan Against Property', 'Capital LAP BC 10', 'Affordable Housing Loan BC 15']];
+                $where = ['lp.name' => ['Loan Against Property', 'Capital LAP BC 10', 'BC Affordable Housing Loan BC 25']];
             }
             $loans->andWhere($where);
         }
