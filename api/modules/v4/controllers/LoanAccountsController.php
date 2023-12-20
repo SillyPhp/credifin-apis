@@ -26,6 +26,7 @@ use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -1309,6 +1310,7 @@ class LoanAccountsController extends ApiBaseController
                 }
             }
         }
+        $count = $ptpcases->count();
         $ptpcases = $ptpcases
             ->limit($limit)
             ->offset(($page - 1) * $limit)
@@ -1316,7 +1318,7 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         if ($ptpcases) {
-            return $this->response(200, ['status' => 200, 'ptpcases' => $ptpcases]);
+            return $this->response(200, ['status' => 200, 'count'=> $count, 'ptpcases' => $ptpcases]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
@@ -1347,4 +1349,54 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
+
+    public function actionShiftPtpCases($limit = 50, $page = 1, $auth = ''){
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+
+        $data = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on', 
+                'a.created_by', 'a.updated_by', 'a.updated_on'])
+            ->where([ 'or',
+                ['not', ['a.ptp_amount' => NULL]],
+                ['not', ['a.ptp_date' => NULL]]])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        $inserted = 0;
+        foreach($data as $key => $d){
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+
+            $insert = Yii::$app->db->createCommand()
+                ->insert(LoanAccountPtps::tableName(), [
+                    'ptp_enc_id' => $utilitiesModel->encrypt(),
+                    'emi_collection_enc_id' => $d['emi_collection_enc_id'], 
+                    'proposed_payment_method' => $d['ptp_payment_method'], 
+                    'proposed_date' => $d['ptp_date'],
+                    'proposed_amount' => $d['ptp_amount'],
+                    'status' => 1,
+                    'created_by' => $d['created_by'],
+                    'created_on' => $d['created_on'],
+                    'updated_by' => $d['updated_by'] ? $d['updated_by'] : $d['created_by'],
+                    'updated_on' => $d['updated_on'] ? $d['updated_on'] :  $d['created_on'],    
+                ] )
+                ->execute();
+            if($insert){
+                $inserted += 1;
+            }
+        }
+
+        
+        return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
+    }
 }
+
