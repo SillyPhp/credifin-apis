@@ -370,7 +370,8 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.gender = '1' THEN 'Male'
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
-                END) as gender"
+                END) as gender",
+                "a.login_date"
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
@@ -494,7 +495,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -516,6 +517,12 @@ class CompanyDashboardController extends ApiBaseController
                         switch ($key) {
                             case 'loan_products_enc_id':
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'login_start_date':
+                                $loans->andWhere(['>=', 'a.login_date', $val]);
+                                break;
+                            case 'login_end_date':
+                                $loans->andWhere(['<=', 'a.login_date', $val]);
                                 break;
                             case 'apply_date':
                                 $loans->andWhere(['like', 'a.created_on', $val]);
@@ -665,7 +672,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($leadsAccessOnly == 'vehicle') {
                 $where = ['lp.name' => $this->vehicleList];
             } else {
-                $where = ['lp.name' => ['Loan Against Property', 'Capital LAP BC 10', 'Affordable Housing Loan BC 15']];
+                $where = ['lp.name' => ['Loan Against Property', 'Capital LAP BC 10', 'BC Affordable Housing Loan BC 25']];
             }
             $loans->andWhere($where);
         }
@@ -2941,18 +2948,20 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            $start_date = $params['start_date'];
+            $end_date = $params['end_date'];
             $employeeAmount1 = LoanApplications::find()
                 ->alias('b')
                 ->select([
                     "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
-                    "SUM(CASE WHEN i.status = '4' THEN IF(i.tl_approved_amount, i.tl_approved_amount, IF(i.bdo_approved_amount, i.bdo_approved_amount, b.amount)) ELSE 0 END) as login_amount",
+                    "SUM(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.amount ELSE 0 END) as login_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount",
                     "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
                     "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
                     "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
                     "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
-                    "COUNT(CASE WHEN i.status = '4' THEN b.loan_app_enc_id END) as login_count",
+                    "COUNT(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.loan_app_enc_id END) as login_count",
                     "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
                     "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
                     "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",

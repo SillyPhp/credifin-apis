@@ -3,20 +3,15 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
-use common\models\extended\LoanAccountsExtended;
-use common\models\LoanAccounts;
 use Exception;
 use Yii;
-use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
-use yii\web\BadRequestHttpException;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -252,12 +247,27 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(404, ["status" => 404, "message" => "no data found"]);
     }
 
-    public
-    function actionEmployeeEmiCollection()
+    public function actionEmployeeEmiCollection()
     {
         $this->isAuth();
         $params = $this->post;
         $user_id = $params["user_id"];
+
+        $query_data = $this->emiCashReport($user_id, $params);
+        $count = $query_data['count'];
+        $query = $query_data['query'];
+
+        $data = $this->displayData($user_id);
+        $received_cash = $data['received_cash'];
+        $display_data = $data['display_data'];
+
+        return $this->response(200, ["status" => 200, 'count' => $count, "data" => $query, "display_data" => $display_data, "received_cash" => $received_cash]);
+    }
+
+    private function emiCashReport($user_id, $params)
+    {
+        $limit = !empty($params["limit"]) ? $params["limit"] : 25;
+        $page = !empty($params["page"]) ? $params["page"] : 1;
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select([
@@ -279,9 +289,35 @@ class EmiCollectionsController extends ApiBaseController
                     ["a.remaining_amount" => 0]
                 ],
                 ["a.given_to" => $user_id]
-            ])
+            ]);
+
+        $count = $query->count();
+        $query = $query
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($query as &$value) {
+            if ($value['other_doc_image']) {
+                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image'], "15 minutes");
+            }
+            if ($value['borrower_image']) {
+                $value['borrower_image'] = $my_space->signedURL($value['borrower_image'], "15 minutes");
+            }
+            if ($value['pr_receipt_image']) {
+                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+            }
+        }
+
+        return ['count' => $count, 'query' => $query];
+
+    }
+
+    private function displayData($user_id)
+    {
         $received_cash = $this->received_cash($user_id);
         $display_data = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -313,26 +349,16 @@ class EmiCollectionsController extends ApiBaseController
             ])
             ->asArray()
             ->one();
-        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        foreach ($query as &$value) {
-            if ($value['other_doc_image']) {
-                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image'], "15 minutes");
-            }
-            if ($value['borrower_image']) {
-                $value['borrower_image'] = $my_space->signedURL($value['borrower_image'], "15 minutes");
-            }
-            if ($value['pr_receipt_image']) {
-                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
-            }
-        }
+
         foreach ($received_cash as &$cash) {
             if (empty($cash["emiCollectionEnc"])) {
                 $cash["emiCollectionEnc"] = $this->finder($cash["cash_report_enc_id"]);
             }
         }
+
         $display_data["total_sum"] = $display_data["emi"] + $display_data["cash"];
-        return $this->response(200, ["status" => 200, "data" => $query, "display_data" => $display_data, "received_cash" => $received_cash]);
+
+        return ['received_cash' => $received_cash, 'display_data' => $display_data];
     }
 
     private function finder($parent): array

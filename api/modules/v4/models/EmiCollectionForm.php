@@ -2,7 +2,6 @@
 
 namespace api\modules\v4\models;
 
-use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -48,6 +47,7 @@ class EmiCollectionForm extends Model
     public $dealer_name;
     public $reference_number;
     public $loan_account_enc_id;
+    public $collection_date;
     public static $payment_methods = [
         'total' => 'Total',
         '1' => 'QR',
@@ -91,7 +91,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'collection_date', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -113,7 +113,10 @@ class EmiCollectionForm extends Model
         }
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
-        $model->collection_date = date('Y-m-d');
+        if ($this->payment_mode != 1) {
+            $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
+        }
+        $model->transaction_initiated_date = date('Y-m-d');
         $model->loan_account_number = $this->loan_account_number;
         $model->phone = $this->phone;
         $model->amount = $this->amount;

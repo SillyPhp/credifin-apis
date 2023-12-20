@@ -136,16 +136,19 @@ class TestController extends ApiBaseController
                 "c.address",
                 "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
+                "c2.name city",
                 "c.postal_code",
                 "abc.phone",
                 "abc.cibil_score",
                 "abc.aadhaar_number",
                 "abc.voter_card_number",
                 "abc.pan_number",
+                "abc.marital_status",
                 "a.loan_purpose",
                 "a.chassis_number",
                 "a.invoice_number",
                 "a.amount",
+                "e.emi_amount",
                 "a.number_of_emis",
                 "a.roi",
                 "abc.co_applicant_dob applicant_dob",
@@ -162,7 +165,6 @@ class TestController extends ApiBaseController
                 "e.vehicle_brand",
                 "f.name loan_type",
                 "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
-                "a.applicant_dob",
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
@@ -178,19 +180,22 @@ class TestController extends ApiBaseController
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
+                $c->joinWith(["cityEnc c2"], false);
             }], false)
             ->joinWith(["loanCoApplicants abc" => function ($abc) {
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
-                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
-                    "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
-                $d->joinWith(["loanApplicantResidentialInfos d1"], false);
-            }], true)
+                $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
+                    $d1->joinWith(["cityEnc d2"], false);
+                }], false);
+            }])
             ->joinWith(["loanApplicationOptions e"], false)
             ->andWhere([
                 "AND",
@@ -225,22 +230,6 @@ class TestController extends ApiBaseController
             unset($item['loanPurposes']);
         }
 
-        foreach ($query as &$item) {
-            $cibils = $this->CreditReports($item["loan_app_enc_id"]);
-            if (!empty($cibils)) {
-
-                if (in_array($item["loan_app_enc_id"], array_keys($cibils))) {
-                    $item["cibil_score"] = $cibils[$item["loan_app_enc_id"]];
-                }
-                if (!empty($item["loanCoApplicants"])) {
-                    foreach ($item["loanCoApplicants"] as &$loanCoApplicant) {
-                        if (in_array($loanCoApplicant["loan_co_app_enc_id"], array_keys($cibils))) {
-                            $loanCoApplicant["cibil_score"] = $cibils[$loanCoApplicant["loan_co_app_enc_id"]];
-                        }
-                    }
-                }
-            }
-        }
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
@@ -733,5 +722,11 @@ class TestController extends ApiBaseController
         else:
             echo 'no results left';
         endif;
+    }
+    
+    public function actionClearCache() {
+        Yii::$app->cache->flush();
+        print_r('Cache Cleared');
+        exit();
     }
 }
