@@ -721,4 +721,10 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
+    
+    public function actionClearCache() {
+        Yii::$app->cache->flush();
+        print_r('Cache Cleared');
+        exit();
+    }
 }
