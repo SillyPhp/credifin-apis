@@ -3,11 +3,11 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
+use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -1928,7 +1928,7 @@ class OrganizationsController extends ApiBaseController
             $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status', 'ptp_status', 'collection_start_date', 'collection_end_date',  'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -2442,12 +2442,16 @@ class OrganizationsController extends ApiBaseController
         $params = Yii::$app->request->post();
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
-                ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
-                ->where(['is_deleted' => 0])
+                ->alias('a')
+                ->select(['a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    , 'b.collection_date'])
+                ->joinWith(['emiCollections b'], false)
+                ->where(['a.is_deleted' => 0])
                 ->andWhere([
                     'or',
-                    ['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false],
-                    ['like', 'phone', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.loan_account_number', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.phone', '%' . $params['loan_number'] . '%', false],
 
                 ])
                 ->limit(20)
@@ -2467,7 +2471,6 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2483,7 +2486,14 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
-            ->leftJoin(SharedLoanApplications::tableName() . 'as d', 'd.foreign_id = a.loan_account_enc_id')
+            ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                $d->select(["d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                ]);
+                $d->joinWith(['sharedTo d1'], false);
+            }])
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {

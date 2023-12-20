@@ -5,9 +5,11 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
@@ -47,8 +49,10 @@ class LoanAccountsController extends ApiBaseController
                 'get-health-list' => ['POST', 'OPTIONS'],
                 'get-telecaller-list' => ['POST', 'OPTIONS'],
                 'assign-telecaller' => ['POST', 'OPTIONS'],
+                'get-ptp-cases' => ['POST', 'OPTIONS'],
                 'stats' => ['POST', 'OPTIONS'],
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
+                'update-loan-acc-access' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -551,6 +555,7 @@ class LoanAccountsController extends ApiBaseController
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
+                'a.emi_collection_enc_id',
                 'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
                 "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
                 "CASE 
@@ -1158,7 +1163,8 @@ class LoanAccountsController extends ApiBaseController
 
         $comments = LoanAccountComments::find()
             ->alias('a')
-            ->select(['a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
+            ->select([
+                'a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
                 'a.status', 'a.source', 'a.created_on',
                 "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as created_by",
                 "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
@@ -1216,5 +1222,129 @@ class LoanAccountsController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, ["status" => 200, "data" => $loan_accounts]);
+    }
+
+    public function actionUpdateLoanAccAccess()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+
+        if (empty($params['assigned_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_enc_id"']);
+        }
+
+        $update = AssignedLoanAccounts::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
+
+        if (!$update) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+        (!empty($params['access'])) ? $update->access = $params['access'] : "";
+        (!empty($params['status'])) ? $update->status = $params['status'] : "";
+        (!empty($params['delete'])) ? $update->is_deleted = 1 : "";
+        $update->updated_by = $user->user_enc_id;
+        $update->updated_on = date('Y-m-d H:i:s');
+
+        if (!$update->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $update->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+    }
+
+    public function actionGetPtpCases()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $ptpcases = LoanAccountPtps::find()
+            ->alias('a')
+            ->select([
+                "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
+                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id", "b.loan_account_number",
+                "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", "c.last_emi_date", "c.name",
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", "c.loan_type", "c.emi_date", "c.last_emi_received_amount",
+                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos", "d.location_enc_id as branch", "d.location_name as branch_name",
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
+            ])
+            ->joinWith(['emiCollectionEnc b' => function ($b) {
+                $b->joinWith(['loanAccountEnc c' => function ($cc) {
+                    $cc->joinWith(['branchEnc d'], false);
+                    $cc->joinWith(["assignedCaller ac"], false);
+                }]);
+            }], false)
+            ->joinWith(['collectionManager cm'], false)
+            ->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')])
+            ->groupBy(['a.ptp_enc_id']);
+
+
+        if (!empty($params["fields_search"])) {
+            foreach ($params["fields_search"] as $key => $value) {
+                if (!empty($value) || $value == "0") {
+                    if ($key == 'assigned_caller') {
+                        $ptpcases->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "%$value%", false]);
+                    } elseif ($key == 'loan_account_number') {
+                        $ptpcases->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'bucket') {
+                        $ptpcases->andWhere(['IN', 'c.bucket', $value]);
+                    } elseif ($key == 'loan_type') {
+                        $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
+                    } elseif ($key == 'branch') {
+                        $ptpcases->andWhere(['IN', 'd.location_enc_id', $value]);
+                    } elseif ($key == 'total_pending_amount') {
+                        $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
+                    } elseif ($key == 'collection_manager') {
+                        $ptpcases->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'proposed_amount') {
+                        $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
+                    } elseif ($key == 'proposed_date') {
+                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
+                    } elseif ($key == 'proposed_payment_method') {
+                        $ptpcases->andWhere(['a.' . $key => $value]);
+                    }
+                }
+            }
+        }
+        $ptpcases = $ptpcases
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($ptpcases) {
+            return $this->response(200, ['status' => 200, 'ptpcases' => $ptpcases]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+    }
+
+    public function actionSearchLoanAccount()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (!empty($params['loan_number'])) {
+            $query = LoanAccountsExtended::find()
+                ->alias('a')
+                ->select([
+                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                ])
+                ->joinWith(['emiCollections b'], false)
+                ->where(['a.is_deleted' => 0])
+                ->andWhere(['like', 'a.loan_account_number', $params['loan_number'], false])
+                ->limit(20)
+                ->asArray()
+                ->all();
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
