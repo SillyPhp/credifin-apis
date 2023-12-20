@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\PaymentModel;
 use common\models\EmiCollection;
 use common\models\AssignedLoanPayments;
@@ -109,26 +110,22 @@ class PaymentsController extends ApiBaseController
     {
         $model = EmiCollectionExtended::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount'])
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanPaymentsEnc c'], false);
             }], false)
             ->andWhere(['c.reference_id' => $id])
             ->asArray()
             ->one();
+
         if ($model) {
-            Yii::$app->db->createCommand()
-                ->update(
-                    EmiCollectionExtended::tableName(),
-                    ['emi_payment_status' => 'paid'],
-                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
-                )
-                ->execute();
-            $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $model["loan_account_enc_id"]]);
-            if ($query) {
-                $query->overdue_amount -= $model['amount'];
-                $query->save();
+            $update['collection_date'] = date('Y-m-d');
+            if ($model['emi_payment_status'] != 'paid') {
+                $update['emi_payment_status'] = 'paid';
+                EmiCollectionForm::updateOverdue($model["loan_account_enc_id"], $model['amount']);
             }
+            $where['emi_collection_enc_id'] = $model['emi_collection_enc_id'];
+            Yii::$app->db->createCommand()->update(EmiCollectionExtended::tableName(), $update, $where)->execute();
         }
     }
 

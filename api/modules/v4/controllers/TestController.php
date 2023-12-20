@@ -586,9 +586,9 @@ class TestController extends ApiBaseController
         }
     }
 
-    public static function generateApplicationNumber($cityCode,$purposeCode,$loap_p_code,$yearmonth)
+    public static function generateApplicationNumber($cityCode, $purposeCode, $loap_p_code, $yearmonth)
     {
-        for ($i=0;$i<=100;$i++){
+        for ($i = 0; $i <= 100; $i++) {
             $loan_num['product_code'] = $loap_p_code;
             $branchCode = '';
             $cityCode = $cityCode;
@@ -665,17 +665,17 @@ class TestController extends ApiBaseController
                 ];
             }
             // print_r($result);exit();
-            foreach ($result as $dat){
+            foreach ($result as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array)==4){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        echo  $newSeries = self::generateApplicationNumber($loan_array[1],null,$loan_array[0],$loan_array[2]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                if (count($loan_array) == 4) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        echo $newSeries = self::generateApplicationNumber($loan_array[1], null, $loan_array[0], $loan_array[2]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
-                }else if (count($loan_array)==5){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        $newSeries = self::generateApplicationNumber($loan_array[2],$loan_array[1],$loan_array[0],$loan_array[3]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                } else if (count($loan_array) == 5) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        $newSeries = self::generateApplicationNumber($loan_array[2], $loan_array[1], $loan_array[0], $loan_array[3]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
                 }
             }
@@ -683,15 +683,17 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
+
     private function saveNewSeries($newSeries,$id){
-        $model = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
+        $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
         $model->application_number = $newSeries;
-        if (!$model->save()){
+        if (!$model->save()) {
             print_r($model->getErrors());
-        }else{
+        } else {
             return false;
         }
     }
+
     public function actionCopyDuplicates($page=1,$limit=500){
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
@@ -723,7 +725,30 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
-    
+
+    public function actionMoveInitiatedDates($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $data = EmiCollectionExtended::find()
+            ->where(['is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->all();
+
+        $count = 0;
+
+        foreach ($data as $record) {
+            $record->transaction_initiated_date = $record->collection_date;
+            if ($record->save()) {
+                $count++;
+            }
+        }
+        return ['status' => 200, 'found' => count($data), 'updated' => $count];
+    }
+
     public function actionClearCache() {
         Yii::$app->cache->flush();
         print_r('Cache Cleared');
