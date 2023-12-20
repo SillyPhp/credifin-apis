@@ -366,7 +366,8 @@ class EmiCollectionsController extends ApiBaseController
         return ['received_cash' => $received_cash, 'display_data' => $display_data];
     }
 
-    private function finder($parent): array
+    private
+    function finder($parent): array
     {
         $res = [];
         $reports = $this->received_cash("", $parent);
@@ -380,7 +381,8 @@ class EmiCollectionsController extends ApiBaseController
         return $res;
     }
 
-    public function actionPendingApprovals()
+    public
+    function actionPendingApprovals()
     {
         $this->isAuth();
         $params = $this->post;
@@ -429,7 +431,8 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $approval]);
     }
 
-    private function received_cash($user_id, $parent = ""): array
+    private
+    function received_cash($user_id, $parent = ""): array
     {
         $where = ["AND"];
         if ($parent) {
@@ -459,7 +462,8 @@ class EmiCollectionsController extends ApiBaseController
             ->all();
     }
 
-    public function actionCollectCash()
+    public
+    function actionCollectCash()
     {
         $this->isAuth();
         $params = $this->post;

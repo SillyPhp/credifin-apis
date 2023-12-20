@@ -93,7 +93,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'ptp_payment_method', 'collection_date', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -123,10 +123,6 @@ class EmiCollectionForm extends Model
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
-        if ($this->ptp_payment_method) {
-            $model->ptp_payment_method = $this->ptp_payment_method;
-        }
-
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
@@ -319,7 +315,17 @@ class EmiCollectionForm extends Model
             $status = 1;
         } else {
             $status = !empty($data['cash_ids']) ? 2 : 0;
+            if (!empty($query->received_from)) {
+                Yii::$app->db->createCommand()->update(EmiCollection::tableName(), [
+                    "emi_payment_status" => 'pipeline',
+                    "updated_on" => date("Y-m-d H:i:s"),
+                    "updated_by" => $data['user_id']
+                ], [
+                    "emi_collection_enc_id" => !empty($emi_id) ? $emi_id : null
+                ])->execute();
+            }
         }
+        
         $remaining_amount = $data['amount'];
         $query->status = $status;
         $query->remarks = !empty($data['remarks']) ? $data['remarks'] : '';
@@ -328,6 +334,7 @@ class EmiCollectionForm extends Model
         $query->created_by = $query->updated_by = $data['user_id'];
         $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
 
+      
         if (!empty($data['type']) && $data['type'] == 1) {
             $image_parts = explode(";base64,", $data['receipt']);
             $image_base64 = base64_decode($image_parts[1]);
@@ -339,6 +346,7 @@ class EmiCollectionForm extends Model
             $path = Yii::$app->params->upload_directories->cash_report->image;
             $base_path = $path . $query->image_location . DIRECTORY_SEPARATOR . $query->image;
             $file = dirname(__DIR__, 4) . '/files/temp/' . $query->image;
+          
             if (file_put_contents($file, $image_base64)) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);

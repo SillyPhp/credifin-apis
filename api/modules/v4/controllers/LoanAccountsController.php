@@ -1359,7 +1359,7 @@ class LoanAccountsController extends ApiBaseController
 
         $data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on', 
+            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
             ->where([ 'or',
                 ['not', ['a.ptp_amount' => NULL]],
@@ -1379,15 +1379,15 @@ class LoanAccountsController extends ApiBaseController
             $insert = Yii::$app->db->createCommand()
                 ->insert(LoanAccountPtps::tableName(), [
                     'ptp_enc_id' => $utilitiesModel->encrypt(),
-                    'emi_collection_enc_id' => $d['emi_collection_enc_id'], 
-                    'proposed_payment_method' => $d['ptp_payment_method'], 
+                    'emi_collection_enc_id' => $d['emi_collection_enc_id'],
+                    'proposed_payment_method' => $d['ptp_payment_method'],
                     'proposed_date' => $d['ptp_date'],
                     'proposed_amount' => $d['ptp_amount'],
                     'status' => 1,
                     'created_by' => $d['created_by'],
                     'created_on' => $d['created_on'],
                     'updated_by' => $d['updated_by'] ? $d['updated_by'] : $d['created_by'],
-                    'updated_on' => $d['updated_on'] ? $d['updated_on'] :  $d['created_on'],    
+                    'updated_on' => $d['updated_on'] ? $d['updated_on'] :  $d['created_on'],
                 ] )
                 ->execute();
             if($insert){
@@ -1395,8 +1395,51 @@ class LoanAccountsController extends ApiBaseController
             }
         }
 
-        
+
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
     }
-}
 
+    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = ''){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+
+        $data = LoanAccounts::find()
+            ->alias('a')
+            ->select(["a.loan_account_enc_id", "a.updated_by", "a.collection_manager", "a.updated_on", "a.created_by"])
+            ->where(['not', ["a.collection_manager" => NULL]])
+            ->andwhere(['a.is_deleted' => 0])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        $inserted = 0;
+        foreach($data as $key => $val){
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+
+            $insert = Yii::$app->db->createCommand()
+                ->insert(AssignedLoanAccounts::tableName(), [
+                    'assigned_enc_id' => $utilitiesModel->encrypt(),
+                    'loan_account_enc_id' => $val['loan_account_enc_id'],
+                    'shared_by' => $val['updated_by'],
+                    'shared_to' => $val['collection_manager'],
+                    'user_type' => 2,
+                    'status' => 'Active',
+                    'created_by' => $val['updated_by'],
+                    'created_on' => $val['updated_on'],
+                    'updated_by' => $val['updated_by'],
+                    'updated_on' => $val['updated_on'],
+                ])->execute();
+            if($insert){
+                $inserted += 1;
+            }
+        }
+
+        return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
+
+    }
+}
