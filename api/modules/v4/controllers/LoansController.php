@@ -15,6 +15,7 @@ use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\DocUpload;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
@@ -646,7 +647,6 @@ class LoansController extends ApiBaseController
 
 
             $params = Yii::$app->request->post();
-
             // checking loan_id
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
@@ -663,7 +663,9 @@ class LoansController extends ApiBaseController
             }
 
             // getting file instance by name
-            $file = UploadedFile::getInstanceByName('file');
+            $fileModel = new DocUpload();
+            $fileModel->file = UploadedFile::getInstanceByName('file');
+            //$file = UploadedFile::getInstanceByName('file');
 
             // getting certificate type id if an error occurred then send 500
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
@@ -693,25 +695,21 @@ class LoansController extends ApiBaseController
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
             // if extension null or empty then it will be added as .pdf
-            if ($file->extension == null || $file->extension == '') {
+            if ($fileModel->file->extension == null || $fileModel->file->extension == '') {
                 $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
             } else {
                 // else file extension
-                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $file->extension;
+                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $fileModel->file->extension;
             }
-            $type = $file->type;
+            $type = $fileModel->file->type;
             // saving certificate data
             if ($certificate->save()) {
-
-                // creating spaces object
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
-                if ($result) {
+                $result = $fileModel->upload($base_path, $type, $certificate);
+                if ($result['status']) {
                     // if uploaded successfully
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image']);
+                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image', 'error' => $result['error']]);
                 }
             } else {
                 // if not saved
@@ -798,19 +796,45 @@ class LoansController extends ApiBaseController
             if (empty($params['id']) || empty($params['value']) || empty($params['parent_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
             }
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
+                $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
 
-            // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
+                // updating data
+                $provider->branch_enc_id = $params['value'];
+                $provider->updated_by = $user->user_enc_id;
+                $provider->updated_on = date('Y-m-d H:i:d');
+                if (!$provider->update()) {
+                    throw new Exception(implode(", ", array_column($provider->getErrors(), '0', false)));
+                }
+                $purposes = LoanPurpose::find()
+                    ->select(["financer_loan_purpose_enc_id"])
+                    ->andWhere(["loan_app_enc_id" => $params['id'], "is_deleted" => 0])
+                    ->asArray()
+                    ->all();
+                $purposes = array_column($purposes, "financer_loan_purpose_enc_id");
+                $loan_update = LoanApplicationsExtended::findOne(["loan_app_enc_id" => $params['id']]);
+                if (!$loan_update) {
+                    throw new Exception("Loan Application not found.");
+                }
+                $new_application_number = LoanApplication::generateApplicationNumber($loan_update->loan_products_enc_id, $provider->branch_enc_id, $purposes);
+                if (!$new_application_number){
+                    throw new Exception("Error occurred while generating new application number.");
+                }
+                $loan_update->application_number = $new_application_number;
+                $loan_update->updated_by = $user->user_enc_id;
+                $loan_update->updated_on = date('Y-m-d H:i:d');
+                if (!$loan_update->save()) {
+                    throw new Exception(implode(", ", array_column($loan_update->getErrors(), '0', false)));
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
 
-            // updating data
-            $provider->branch_enc_id = $params['value'];
-            $provider->updated_by = $user->user_enc_id;
-            $provider->updated_on = date('Y-m-d H:i:d');
-            if (!$provider->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
             }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }

@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\models\LoanApplication;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
@@ -1853,6 +1852,20 @@ class OrganizationsController extends ApiBaseController
 
     public static function _emiData($data, $id_type, $search = '', $user = null)
     {
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
             $lac = $data;
@@ -1907,31 +1920,60 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['ptpstatus'])) {
             $model->andWhere(["NOT", "a.ptp_date", NULL]);
         }
-
+        if (!empty($params['custom_method'])) {
+            $model->andWhere(['a.emi_payment_method' => payment_method_add($params['custom_method'])]);
+        }
+        if (!empty($params['custom_status'])) {
+            $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
+        }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status'];
+            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status', 'ptp_status', 'collection_start_date', 'collection_end_date',  'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
-                        if ($key == 'amount') {
-                            $model->andWhere(['like', 'a.amount', $value . '%', false]);
-                        } elseif ($key == 'address') {
-                            $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
-                        } elseif ($key == 'ptp_amount') {
-                            $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
-                        } elseif ($key == 'emi_payment_method') {
-                            if (in_array($value, $val = [4, 81])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } elseif (in_array($value, $val = [5, 82])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } elseif (in_array($value, $val = [1, 9])) {
-                                $model->andWhere(['in', 'a.' . $key, $val]);
-                            } else {
-                                $model->andWhere(['a.' . $key => $value]);
-                            }
-                        } else {
-                            $model->andWhere(['like', 'a.' . $key, $value]);
+
+                        switch ($key) {
+                            case 'collection_start_date':
+                                $model->andWhere(['>=', 'a.collection_date', $value]);
+                                break;
+                            case 'collection_end_date':
+                                $model->andWhere(['<=', 'a.collection_date', $value]);
+                                break;
+                            case 'loan_type':
+                                $model->andWhere(['a.loan_type' => $value]);
+                                break;
+                            case 'customer_name':
+                                $model->andWhere(['like', 'a.customer_name', $value . '%', false]);
+                                break;
+                            case 'emi_payment_status':
+                                $model->andWhere(['IN', 'a.emi_payment_status', $value]);
+                                break;
+                            case 'delay_reason':
+                                $where = ["OR"];
+                                foreach ($value as $item) {
+                                    $where[] = ["LIKE", "a.delay_reason", $item];
+                                    $where[] = ["LIKE", "a.other_delay_reason", $item];
+                                }
+                                $model->andWhere($where);
+                                break;
+                            case 'amount':
+                                $model->andWhere(['like', 'a.amount', $value . '%', false]);
+                                break;
+                            case 'address':
+                                $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
+                                break;
+                            case 'ptp_amount':
+                                $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
+                                break;
+                            case 'start_date':
+                                $model->andWhere(['>=', 'a.ptp_date', $value]);
+                                break;
+                            case 'end_date':
+                                $model->andWhere(['<=', 'a.ptp_date', $value]);
+                                break;
+                            case 'emi_payment_method':
+                                $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
                         }
                     }
                     if (in_array($key, $others)) {
@@ -2399,12 +2441,16 @@ class OrganizationsController extends ApiBaseController
         $params = Yii::$app->request->post();
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
-                ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
-                ->where(['is_deleted' => 0])
+                ->alias('a')
+                ->select(['a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    , 'b.collection_date'])
+                ->joinWith(['emiCollections b'], false)
+                ->where(['a.is_deleted' => 0])
                 ->andWhere([
                     'or',
-                    ['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false],
-                    ['like', 'phone', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.loan_account_number', '%' . $params['loan_number'] . '%', false],
+                    ['like', 'a.phone', '%' . $params['loan_number'] . '%', false],
 
                 ])
                 ->limit(20)
@@ -2424,7 +2470,6 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2440,7 +2485,14 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
-            ->leftJoin(AssignedLoanAccounts::tableName() . 'as d', 'd.loan_account_enc_id = a.loan_account_enc_id')
+            ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                $d->select(["d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                ]);
+                $d->joinWith(['sharedTo d1'], false);
+            }])
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
         if (!empty($params["fields_search"])) {
@@ -2483,7 +2535,7 @@ class OrganizationsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-        // return $query;
+
         if ($query) {
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
         }
