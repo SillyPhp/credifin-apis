@@ -115,8 +115,8 @@ class EmiCollectionForm extends Model
         }
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
-        if (!empty($this->collection_date)) {
-            $model->collection_date = $this->collection_date;
+        if ($this->payment_mode != 1) {
+            $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
         }
         $model->transaction_initiated_date = date('Y-m-d');
         $model->loan_account_number = $this->loan_account_number;

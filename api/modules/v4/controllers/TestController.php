@@ -7,7 +7,6 @@ use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
-use common\models\extended\EmiCollectionExtended;
 use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
@@ -606,8 +605,8 @@ class TestController extends ApiBaseController
                 ->select(['a.application_number'])
                 ->where([
                     'OR',
-                    ['LIKE', 'application_number', $pattern1, false],
-                    ['LIKE', 'application_number', $pattern2, false]
+                    ['LIKE', 'application_number', $pattern1,false],
+                    ['LIKE', 'application_number', $pattern2,false]
                 ])
                 ->orderBy([
                     "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
@@ -627,19 +626,18 @@ class TestController extends ApiBaseController
         }
     }
 
-    public function actionDuplicate($page = 1, $limit = 500)
-    {
+    public function actionDuplicate($page=1,$limit=500){
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number', 'COUNT(*) count'])
+            ->select(['application_number','COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=', 'application_number', Null],
-                ['!=', 'application_number', '']
+                ['!=','application_number',Null],
+                ['!=','application_number','']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -686,8 +684,7 @@ class TestController extends ApiBaseController
         endif;
     }
 
-    private function saveNewSeries($newSeries, $id)
-    {
+    private function saveNewSeries($newSeries,$id){
         $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
         $model->application_number = $newSeries;
         if (!$model->save()) {
@@ -697,19 +694,18 @@ class TestController extends ApiBaseController
         }
     }
 
-    public function actionCopyDuplicates($page = 1, $limit = 500)
-    {
+    public function actionCopyDuplicates($page=1,$limit=500){
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number', 'COUNT(*) count'])
+            ->select(['application_number','COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=', 'application_number', Null],
-                ['!=', 'application_number', '']
+                ['!=','application_number',Null],
+                ['!=','application_number','']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -718,10 +714,10 @@ class TestController extends ApiBaseController
             ->all();
         $updateAll = [];
         if ($data):
-            foreach ($data as $dat) {
+            foreach ($data as $dat){
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array) >= 4):
-                    $updateAll[] = LoanApplications::updateAll(['old_application_number' => $dat['application_number']], ['application_number' => $dat['application_number']]);
+                if (count($loan_array)>=4):
+                    $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
                 endif;
             }
             echo count($updateAll);
