@@ -469,16 +469,16 @@ class TestController extends ApiBaseController
 
     public function actionAssignPaymentLoginDate()
     {
-        if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
+//        if (!$this->isAuthorized()) {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
         $params = Yii::$app->request->post();
 
         $page = !empty($params['page']) ? $params['page'] : 1;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
 
         $login_date = (new \yii\db\Query())
-            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.payment_status'])
+            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
             ->from(['a' => LoanApplicationsExtended::tableName()])
             ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
             ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
@@ -486,7 +486,6 @@ class TestController extends ApiBaseController
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->all();
-
         if (!$login_date) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
@@ -496,7 +495,7 @@ class TestController extends ApiBaseController
             $loan_app_enc_id = $loan_payment['loan_app_enc_id'];
             $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
             if ($loan_application) {
-                $loan_application->login_date = $loan_payment['updated_on'];
+                $loan_application->login_date = $loan_payment['updated_on'] ?? $loan_payment['created_on'];
                 if (!$loan_application->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'Failed']);
                 }
