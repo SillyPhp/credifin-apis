@@ -477,15 +477,28 @@ class TestController extends ApiBaseController
         $page = !empty($params['page']) ? $params['page'] : 1;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
 
-        $login_date = (new \yii\db\Query())
+//        $login_date = (new \yii\db\Query())
+//            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
+//            ->from(['a' => LoanApplicationsExtended::tableName()])
+//            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
+//            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
+//            ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
+//            ->limit($limit)
+//            ->offset(($page - 1) * $limit)
+//            ->all();
+
+        $login_date = LoanApplications::find()
+            ->alias('a')
             ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
-            ->from(['a' => LoanApplicationsExtended::tableName()])
-            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
-            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
+            ->innerJoinWith(['assignedLoanPayments b1' => function ($b1) {
+                $b1->innerJoinWith(['loanPaymentsEnc b2'], false);
+            }], false)
             ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->asArray()
             ->all();
+
         if (!$login_date) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
