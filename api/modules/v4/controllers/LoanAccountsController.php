@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
@@ -24,6 +25,7 @@ use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -1215,6 +1217,50 @@ class LoanAccountsController extends ApiBaseController
             ->select(['loan_type'])
             ->asArray()
             ->all();
-        return $this->response(200, ["status" => 200, "data" => $loan_accounts]);
+        return $this->response(200, ["status" => 200, "data" => $loan_accounts]); 
+    }
+
+    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = ''){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+
+        $data = LoanAccounts::find()
+            ->alias('a')
+            ->select(["a.loan_account_enc_id", "a.updated_by", "a.collection_manager", "a.updated_on", "a.created_by"])
+            ->where(['not', ["a.collection_manager" => NULL]])
+            ->andwhere(['a.is_deleted' => 0])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        $inserted = 0;
+        foreach($data as $key => $val){            
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+
+            $insert = Yii::$app->db->createCommand()
+                ->insert(AssignedLoanAccounts::tableName(), [
+                    'assigned_enc_id' => $utilitiesModel->encrypt(),
+                    'loan_account_enc_id' => $val['loan_account_enc_id'],
+                    'shared_by' => $val['updated_by'],
+                    'shared_to' => $val['collection_manager'],
+                    'user_type' => 2,
+                    'status' => 'Active',
+                    'created_by' => $val['updated_by'],
+                    'created_on' => $val['updated_on'],
+                    'updated_by' => $val['updated_by'],
+                    'updated_on' => $val['updated_on'],
+                ])->execute();
+            if($insert){
+                $inserted += 1;
+            }
+        }
+        
+        return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
+        
     }
 }
