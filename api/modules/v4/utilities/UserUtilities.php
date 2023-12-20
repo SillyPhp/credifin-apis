@@ -4,6 +4,9 @@ namespace api\modules\v4\utilities;
 
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\extended\EmiCollectionExtended;
+use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanApplicationsExtended;
 use common\models\Notifications;
 use common\models\NotificationTokens;
 use common\models\Organizations;
@@ -11,6 +14,7 @@ use common\models\PushNotifications;
 use common\models\Referral;
 use common\models\SharedLoanApplications;
 use common\models\UserRoles;
+use yii\db\Exception;
 use yii\helpers\Url;
 use Yii;
 use common\models\SelectedServices;
@@ -375,5 +379,43 @@ class UserUtilities
             $data[]['user_enc_id'] = $user_id;
         }
         return array_column($data, 'user_enc_id');
+    }
+
+    public static function updating($table_name, $primary_key, $where, $updates)
+    {
+        $query = self::tableGetter($table_name, "find")
+            ->select(["$primary_key"])
+            ->andWhere($where)
+            ->asArray()
+            ->all();
+        foreach ($query as $item) {
+            $where = ["$primary_key" => $item[$primary_key]];
+            $change = self::tableGetter($table_name, "findOne", $where);
+            foreach ($updates as $key => $value) {
+                $change->$key = $value;
+            }
+            if (!$change->save()) {
+                throw new Exception("error while updating");
+            }
+        }
+        return true;
+    }
+
+    public static function tableGetter($table_name, $find, $where = null)
+    {
+        // adding $where in every find because in case of findOne we need to pass where condition inside the brackets
+        switch ($table_name) {
+            case "emi":
+                $res = EmiCollectionExtended::$find($where);
+                break;
+            case "cash":
+                $res = EmployeesCashReportExtended::$find($where);
+                break;
+            case 'loan':
+                $res = LoanApplicationsExtended::$find($where);
+            default:
+                throw new Exception("unknown table name");
+        }
+        return $res;
     }
 }

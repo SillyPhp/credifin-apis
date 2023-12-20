@@ -89,38 +89,41 @@ class AuthController extends ApiBaseController
 
     public function actionGetToken()
     {
-        if ($user = $this->isAuthorized()){
+        if ($user = $this->isAuthorized()) {
             $bearer_token = Yii::$app->request->headers->get('Authorization');
             $token = explode(" ", $bearer_token)[1];
             $payload = [
-                'authToken'=>$token
+                'authToken' => $token
             ];
-            if ($gettoken = JwtAuth::generateToken($payload)){
-                return  $this->response(200, ['message'=>'Success','tokenValue'=>$gettoken]);
-            }else{
-                return  $this->response(503, ['message'=>'Error']);
+            if ($gettoken = JwtAuth::generateToken($payload)) {
+                return $this->response(200, ['message' => 'Success', 'tokenValue' => $gettoken]);
+            } else {
+                return $this->response(503, ['message' => 'Error']);
             }
-        }else{
-            return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+        } else {
+            return $this->response(401, ['message' => 'Error', 'Error' => 'Your Are Not Allowed To Perform This Action']);
         }
     }
-    public function actionVarifyToken(){
+
+    public function actionVarifyToken()
+    {
         try {
-            if ($user = $this->isAuthorized()){
+            if ($user = $this->isAuthorized()) {
                 $param = Yii::$app->request->post();
-                if ($response = JwtAuth::auth($param['tokenValue'])){
-                    return  $this->response(200, ['message'=>'Success','tokenValue'=>$response]);
-                }else{
-                    return  $this->response(401, ['message'=>'Token Expired or Invalid Token']);
+                if ($response = JwtAuth::auth($param['tokenValue'])) {
+                    return $this->response(200, ['message' => 'Success', 'tokenValue' => $response]);
+                } else {
+                    return $this->response(401, ['message' => 'Token Expired or Invalid Token']);
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            } else {
+                return $this->response(401, ['message' => 'Error', 'Error' => 'Your Are Not Allowed To Perform This Action']);
             }
-        }catch (\Exception $e){
-            return  $this->response(401, ['message'=>'Error','Error'=>$e]);
+        } catch (\Exception $e) {
+            return $this->response(401, ['message' => 'Error', 'Error' => $e]);
         }
     }
+
     // this action is used for signup
     public function actionSignup()
     {
@@ -737,31 +740,19 @@ class AuthController extends ApiBaseController
 
     public function actionResetOldPassword()
     {
-        if ($user = $this->isAuthorized()) {
-            $model = new ChangePassword();
-            if ($model->load(Yii::$app->request->post(), '')) {
-                if ($model->validate()) {
-                    if ($res = $model->changePassword($user->user_enc_id)) {
-                        if ($res === 402) {
-                            return $this->response(402, ['status' => 402, 'message' => 'New And Old Password Should not be Same']);
-                        }
-                        if ($res === 403) {
-                            return $this->response(403, ['status' => 403, 'message' => 'Old Password Is Wrong']);
-                        }
-
-                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
-
-                    } else {
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                    }
-                } else {
-                    return $this->response(409, ['status' => 409, $model->getErrors()]);
-                }
-            } else {
-                return $this->response(422, ['status' => 422, 'message' => 'data not found']);
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $model = new ChangePassword();
+        $model->user_id = $user->user_enc_id;
+        try {
+            if ($model->load($params) && !$model->validate()) {
+                return $this->response(422, ["message" => implode(" , ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false))]);
             }
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            $model->changePassword();
+            return $this->response(200, ["message" => "Successfully updated"]);
+        } catch (\Exception $exception) {
+            return $this->response(500, ["error" => $exception->getMessage()]);
         }
     }
 
