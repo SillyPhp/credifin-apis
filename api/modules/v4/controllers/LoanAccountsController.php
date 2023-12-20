@@ -1350,7 +1350,8 @@ class LoanAccountsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 
-    public function actionShiftPtpCases($limit = 50, $page = 1, $auth = ''){
+    public function actionShiftPtpCases($limit = 50, $page = 1, $auth = '')
+    {
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
@@ -1361,7 +1362,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where([ 'or',
+            ->where(['or',
                 ['not', ['a.ptp_amount' => NULL]],
                 ['not', ['a.ptp_date' => NULL]]])
             ->andWhere(['a.is_deleted' => 0])
@@ -1372,7 +1373,7 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach($data as $key => $d){
+        foreach ($data as $key => $d) {
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables["string"] = time() . rand(100, 100000);
 
@@ -1387,10 +1388,10 @@ class LoanAccountsController extends ApiBaseController
                     'created_by' => $d['created_by'],
                     'created_on' => $d['created_on'],
                     'updated_by' => $d['updated_by'] ? $d['updated_by'] : $d['created_by'],
-                    'updated_on' => $d['updated_on'] ? $d['updated_on'] :  $d['created_on'],
-                ] )
+                    'updated_on' => $d['updated_on'] ? $d['updated_on'] : $d['created_on'],
+                ])
                 ->execute();
-            if($insert){
+            if ($insert) {
                 $inserted += 1;
             }
         }
