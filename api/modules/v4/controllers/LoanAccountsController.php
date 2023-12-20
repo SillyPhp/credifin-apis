@@ -1289,4 +1289,30 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
+
+    public function actionSearchLoanAccount()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (!empty($params['loan_number'])) {
+            $query = LoanAccountsExtended::find()
+                ->alias('a')
+                ->select([
+                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                ])
+                ->joinWith(['emiCollections b'], false)
+                ->where(['a.is_deleted' => 0])
+                ->andWhere(['like', 'a.loan_account_number', $params['loan_number'], false])
+                ->limit(20)
+                ->asArray()
+                ->all();
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
 }
