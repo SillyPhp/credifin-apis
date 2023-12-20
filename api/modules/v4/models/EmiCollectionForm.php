@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\models;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
@@ -318,7 +319,7 @@ class EmiCollectionForm extends Model
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $result = $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "private", ['params' => ['ContentType' => $ext]]);
                 if (!$result) {
-                    throw new \Exception('error occured while saving image');
+                    throw new \Exception('error occurred while saving image');
                 }
                 if (file_exists($file)) {
                     unlink($file);
@@ -326,7 +327,7 @@ class EmiCollectionForm extends Model
             }
         }
         if (!$query->save()) {
-            throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
+            throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
         }
         if (!empty($data['cash_ids'])) {
             $cash_ids = explode(',', $data['cash_ids']);
@@ -336,51 +337,13 @@ class EmiCollectionForm extends Model
                 'updated_by' => $data['user_id'],
                 'remaining_amount' => 0
             ];
-            EmployeesCashReport::updateAll(
-                $update,
-                ['cash_report_enc_id' => $cash_ids]
-            );
-            self::approveEmis($cash_ids, $data['user_id']);
+            $where = ['cash_report_enc_id' => $cash_ids];
+            UserUtilities::updating("cash", "cash_report_enc_id", $where, $update);
         }
         return true;
     }
 
-    private function approveEmis($cash_ids, $user_id)
-    {
-        $query = EmployeesCashReportExtended::find()
-            ->alias("a")
-            ->select(["a.emi_collection_enc_id", "a.cash_report_enc_id"])
-            ->andWhere(["a.cash_report_enc_id" => $cash_ids])
-            ->asArray()
-            ->all();
-        if (!$query) {
-            throw new \Exception('an error occurred while approving emis');
-        }
-        foreach ($query as $item) {
-            $emi_id = $item['emi_collection_enc_id'];
-            $cash_id = $item["cash_report_enc_id"];
-            while (empty($emi_id)) {
-                $find = EmployeesCashReportExtended::findOne(["parent_cash_report_enc_id" => $cash_id]);
-                if (!empty($find['emi_collection_enc_id'])) {
-                    $emi_id = $find['emi_collection_enc_id'];
-                } else {
-                    $cash_id = $find['cash_report_enc_id'];
-                }
-            }
-            $update = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
-            if ($update->emi_payment_status != 'paid' && !empty($update['loan_account_enc_id'])) {
-                self::updateOverdue($update['loan_account_enc_id'], $update['amount'], $user_id);
-            }
-            $update->updated_by = $user_id;
-            $update->updated_on = date('Y-m-d H:i:s');
-            $update->emi_payment_status = 'paid';
-            if (!$update->save()) {
-                throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($update->errors, 0, false)));
-            }
-        }
-    }
-
-    public static function updateOverdue($loan_id, $amount, $user_id = "")
+    public static function updateOverdue($loan_id, $amount, $user_id = ""): void
     {
         $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $loan_id]);
         if ($query) {

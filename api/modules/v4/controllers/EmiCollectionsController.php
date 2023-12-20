@@ -397,7 +397,7 @@ class EmiCollectionsController extends ApiBaseController
             if (empty($item['emiCollectionEnc'])) {
                 $item['emiCollectionEnc'] = $this->finder($item['cash_report_enc_id']);
             }
-            $item['receipt'] = $my_space->signedURL($item['receipt'], "15 minutes");
+            $item['receipt'] = $my_space->signedURL($item['receipt']);
         }
         return $this->response(200, ["status" => 200, "data" => $approval]);
     }
@@ -480,43 +480,53 @@ class EmiCollectionsController extends ApiBaseController
         $transaction = Yii::$app->db->beginTransaction();
         try {
             if ($params["type"]) {
-                $updates = [
-                    "status" => 1,
-                    "approved_on" => date('Y-m-d H:i:s'),
-                    "approved_by" => $this->user->user_enc_id,
-                    "remaining_amount" => 0
-                ];
-                $where = ["cash_report_enc_id" => $cash_id];
-                UserUtilities::updating("cash", "cash_report_enc_id", $where, $updates);
-                self::updateEmiStatus($params['cash_id'], $user->user_enc_id, 'paid');
+                $update = EmployeesCashReportExtended::findOne(["cash_report_enc_id" => $cash_id]);
+                $update->status = 1;
+                $update->approved_on = date('Y-m-d H:i:s');
+                $update->approved_by = $this->user->user_enc_id;
+                $update->remaining_amount = 0;
+                if (!$update->save()) {
+                    return $this->response(500, ["message" => "an error occurred", "error" => implode(", ", array_column($update->errors, "0", false))]);
+                }
+                self::updateEmiStatus($params["cash_id"], $user->user_enc_id, "paid");
             } else {
                 $this->reject($this->user->user_enc_id, $cash_id);
             }
             $transaction->commit();
-            return $this->response(200);
+            return $this->response(200, ["message" => "updated successfully"]);
         } catch (Exception $exception) {
             $transaction->rollBack();
-            return $this->response(500, ["status" => 500, "error" => $exception->getMessage()]);
+            return $this->response(500, ["message" => "an error occurred", "error" => $exception->getMessage()]);
         }
     }
 
     private function updateEmiStatus($cash_ids, $user_id, $status): void
     {
+        $emi_ids = [];
+        $overdue_update = $status == 'paid';
         foreach (explode(',', $cash_ids) as $cash_id) {
-            $find = EmployeesCashReport::findOne(["cash_report_enc_id" => $cash_id]);
+            $find = EmployeesCashReportExtended::findOne(["cash_report_enc_id" => $cash_id]);
             if (!empty($find['emi_collection_enc_id'])) {
-                $emi_id = $find['emi_collection_enc_id'];
+                $emi_id = [$find['emi_collection_enc_id']];
             } else {
+                // emi ids can be more than 1 so using updating function to track everything
                 $emi_id = $this->finder($cash_id);
             }
-            $updates = [
-                "emi_payment_status" => $status,
-                "updated_on" => date("Y-m-d H:i:s"),
-                "updated_by" => $user_id
-            ];
-            $where = ["emi_collection_enc_id" => $emi_id];
-            UserUtilities::updating("emi", "emi_collection_enc_id", $where, $updates);
+            if ($overdue_update) {
+                $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);
+                if ($emi){
+                    EmiCollectionForm::updateOverdue($emi['loan_account_enc_id'], $emi['amount'], $user_id);
+                }
+            }
+            $emi_ids = array_merge($emi_ids, $emi_id);
         }
+        $updates = [
+            "emi_payment_status" => $status,
+            "updated_on" => date("Y-m-d H:i:s"),
+            "updated_by" => $user_id
+        ];
+        $where = ["emi_collection_enc_id" => array_unique($emi_ids)];
+        UserUtilities::updating("emi", "emi_collection_enc_id", $where, $updates);
     }
 
     public function actionApproveByEmployeeList()
@@ -561,30 +571,27 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $user = $this->user;
         if (!isset($params["type"]) || empty($params["cash_id"])) {
-            return $this->response(422, ["status" => 422, "message" => "missing parameter 'type or cash_id'"]);
+            return $this->response(422, ["status" => 422, "message" => "missing parameter 'type' or 'cash_id'"]);
         }
         $cash_id = $params["cash_id"];
         $transaction = Yii::$app->db->beginTransaction();
         try {
             if ($params["type"]) {
-                $updates = [
-                    "status" => 1,
-                    "approved_on" => date('Y-m-d H:i:s'),
-                    "approved_by" => $user->user_enc_id,
-                ];
-                $where = [
-                    "cash_report_enc_id" => $cash_id,
-                    "given_to" => $user->user_enc_id
-                ];
-                UserUtilities::updating("cash", "cash_report_enc_id", $where, $updates);
+                $update = EmployeesCashReportExtended::findOne(["cash_report_enc_id" => $cash_id, "given_to" => $user->user_enc_id]);
+                $update->status = 1;
+                $update->approved_on = date('Y-m-d H:i:s');
+                $update->approved_by = $user->user_enc_id;
+                if (!$update->save()) {
+                    throw new \yii\db\Exception(implode(", ", array_column($update->errors, "0", false)));
+                }
             } else {
                 $this->reject($user->user_enc_id, $cash_id);
             }
             $transaction->commit();
-            return $this->response(200);
+            return $this->response(200, ["message" => "approved successfully"]);
         } catch (Exception $exception) {
             $transaction->rollBack();
-            return $this->response(500, ["status" => 500, "error" => $exception->getMessage()]);
+            return $this->response(500, ["message" => "an error occurred", "error" => $exception->getMessage()]);
         }
     }
 
@@ -603,7 +610,7 @@ class EmiCollectionsController extends ApiBaseController
             $q->remaining_amount = $item['amount'];
             $q->parent_cash_report_enc_id = null;
             if (!$q->save()) {
-                throw new \Exception("error occurred while rejecting");
+                throw new \Exception(implode(", ", array_column($q->errors, "0", false)));
             }
         }
         $reject = EmployeesCashReportExtended::findOne(['cash_report_enc_id' => $cash_id]);
@@ -611,7 +618,7 @@ class EmiCollectionsController extends ApiBaseController
         $reject->updated_by = $user_id;
         $reject->updated_on = date("Y-m-d H:i:s");
         if (!$reject->save()) {
-            throw new \Exception("error occurred while rejecting");
+            throw new \Exception(implode(", ", array_column($reject->errors, "0", false)));
         }
     }
 
