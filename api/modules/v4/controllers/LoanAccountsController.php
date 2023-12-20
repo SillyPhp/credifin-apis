@@ -1362,7 +1362,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['or',
+            ->where(['and',
                 ['not', ['a.ptp_amount' => NULL]],
                 ['not', ['a.ptp_date' => NULL]]])
             ->andWhere(['a.is_deleted' => 0])
