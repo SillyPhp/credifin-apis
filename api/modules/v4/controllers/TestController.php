@@ -189,11 +189,13 @@ class TestController extends ApiBaseController
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
                     "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
-                    "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
-                $d->joinWith(["loanApplicantResidentialInfos d1"], false);
-            }], true)
+                $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
+                    $d1->joinWith(["cityEnc d2"], false);
+                }], false);
+            }])
             ->joinWith(["loanApplicationOptions e"], false)
             ->andWhere([
                 "AND",
