@@ -482,7 +482,7 @@ class TestController extends ApiBaseController
             ->from(['a' => LoanApplicationsExtended::tableName()])
             ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
             ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
-            ->where(['a.is_deleted' => 0, 'b2.payment_status' => 'captured'])
+            ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->all();
