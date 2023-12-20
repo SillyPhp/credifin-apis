@@ -487,6 +487,10 @@ class TestController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->all();
 
+        if (!$login_date) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
 
         foreach ($login_date as $loan_payment) {
             $loan_app_enc_id = $loan_payment['loan_app_enc_id'];
@@ -496,10 +500,9 @@ class TestController extends ApiBaseController
                 if (!$loan_application->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'Failed']);
                 }
-                return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
             }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
 
     }
 
