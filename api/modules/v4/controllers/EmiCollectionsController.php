@@ -545,7 +545,7 @@ class EmiCollectionsController extends ApiBaseController
             }
             if ($overdue_update) {
                 $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);
-                if ($emi){
+                if ($emi) {
                     EmiCollectionForm::updateOverdue($emi['loan_account_enc_id'], $emi['amount'], $user_id);
                 }
             }
@@ -728,6 +728,23 @@ class EmiCollectionsController extends ApiBaseController
             return $data;
         }
 
+        function payment_mode_add($data)
+        {
+            if (in_array(1, $data)) {
+                $data[] = 21;
+            }
+            if (in_array(2, $data)) {
+                $data[] = 22;
+            }
+            if (in_array(3, $data)) {
+                $data[] = 23;
+            }
+            if (in_array(4, $data)) {
+                $data[] = 24;
+            }
+            return $data;
+        }
+
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
             $lac = $data;
@@ -789,7 +806,7 @@ class EmiCollectionsController extends ApiBaseController
             $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'loan_account_number', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -798,6 +815,15 @@ class EmiCollectionsController extends ApiBaseController
                         switch ($key) {
                             case 'collection_start_date':
                                 $model->andWhere(['>=', 'a.collection_date', $value]);
+                                break;
+                            case 'loan_account_number':
+                                $model->andWhere(['like', 'a.loan_account_number', $value . '%', false]);
+                                break;
+                            case 'dealer_name':
+                                $model->andWhere(['like', 'a.dealer_name', $value . '%', false]);
+                                break;
+                            case 'reference_number':
+                                $model->andWhere(['like', 'a.reference_number', $value . '%', false]);
                                 break;
                             case 'collection_end_date':
                                 $model->andWhere(['<=', 'a.collection_date', $value]);
@@ -833,6 +859,9 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
                             case 'end_date':
                                 $model->andWhere(['<=', 'a.ptp_date', $value]);
+                                break;
+                            case 'emi_payment_mode':
+                                $model->andWhere(['IN', 'a.' . $key, payment_mode_add($value)]);
                                 break;
                             case 'emi_payment_method':
                                 $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
