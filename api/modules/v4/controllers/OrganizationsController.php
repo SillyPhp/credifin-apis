@@ -33,6 +33,7 @@ use common\models\UserRoles;
 use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -1669,14 +1670,14 @@ class OrganizationsController extends ApiBaseController
             if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
                 $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
                 if ($model) {
-                    if ($model->emi_payment_status !== $params['status']) {
+                    if ($params['status'] === 'paid') {
                         $update_overdue = true;
                     }
                     $model->emi_payment_status = $params['status'];
                     $model->updated_by = $user->user_enc_id;
                     $model->updated_on = date('Y-m-d h:i:s');
                     if (!$model->save()) {
-                        throw new \Exception('an error occurred while updating');
+                        throw new Exception(implode(array_column($model->errors, 0, false)));
                     }
                     if ($update_overdue) {
                         EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
@@ -1694,7 +1695,7 @@ class OrganizationsController extends ApiBaseController
                     }
                 }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
-                    return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+                    throw new Exception(implode(array_column($model->errors, 0, false)));
                 }
                 $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
                 $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');

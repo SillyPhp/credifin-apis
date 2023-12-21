@@ -298,7 +298,12 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id', 'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id', 'ANY_VALUE(f.amount) amount'])
+            ->select(['d.organization_enc_id org_id',
+                'e.organization_enc_id user_org_id',
+                'g.organization_enc_id branch_org_id',
+                'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id',
+                'ANY_VALUE(f.amount) amount',
+                'ANY_VALUE(f.emi_payment_status) status'])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -312,9 +317,6 @@ class LoansController extends ApiBaseController
             }], false)
             ->asArray()->one();
         if ($model) {
-            if (!empty($model['emi_collection_enc_id']) && $model['amount']) {
-                EmiCollectionForm::updateOverdue($model['emi_collection_enc_id'], $model['amount']);
-            }
             if (!empty($model['user_org_id'])) {
                 $options['org_id'] = $model['user_org_id'];
             } elseif (!empty($model['org_id'])) {
