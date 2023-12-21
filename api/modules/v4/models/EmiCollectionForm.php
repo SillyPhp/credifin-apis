@@ -4,7 +4,6 @@ namespace api\modules\v4\models;
 
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
-use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -73,6 +72,11 @@ class EmiCollectionForm extends Model
         '2' => 'Manual Collection',
         '3' => 'Pay By EOD',
         '4' => 'Online Off System Transaction',
+
+        '21' => 'Pay Now',
+        '22' => 'Manual Collection',
+        '23' => 'Pay By EOD',
+        '24' => 'Online Off System Transaction',
     ];
 
     public function formName()
@@ -346,7 +350,7 @@ class EmiCollectionForm extends Model
             $path = Yii::$app->params->upload_directories->cash_report->image;
             $base_path = $path . $query->image_location . DIRECTORY_SEPARATOR . $query->image;
             $file = dirname(__DIR__, 4) . '/files/temp/' . $query->image;
-          
+
             if (file_put_contents($file, $image_base64)) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
