@@ -1362,7 +1362,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['or',
+            ->where(['and',
                 ['not', ['a.ptp_amount' => NULL]],
                 ['not', ['a.ptp_date' => NULL]]])
             ->andWhere(['a.is_deleted' => 0])
@@ -1373,9 +1373,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach ($data as $key => $d) {
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach ($data as $d) {
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(LoanAccountPtps::tableName(), [
@@ -1418,9 +1418,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach($data as $key => $val){
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach($data as $val){
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(AssignedLoanAccounts::tableName(), [
