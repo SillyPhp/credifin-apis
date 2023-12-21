@@ -43,6 +43,7 @@ class Auth {
                 $requestSignatureBase64String = base64_encode($signatureBytes);
 
                 // Setting the values in the Authorization header using custom scheme (amx)
+                //$AllCloudAuthorizationHeader = "amx ".$AppId.":"."MY".":"."NAME".":"."IS SNEH KAUSHAL".":".$USER_TOKEN;
                 $AllCloudAuthorizationHeader = "amx ".$AppId.":".$requestSignatureBase64String.":".$nonce.":".$requestTimeStamp.":".$USER_TOKEN;
 
                 // Response Array
