@@ -1856,6 +1856,10 @@ class CompanyDashboardController extends ApiBaseController
         if (empty($params['users']) || empty($params['loan_accounts']) || empty($params['type'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts" or "type"']);
         }
+        $type = $params['type'] == 'bdo' ? 1 : ($params['type'] == 'collection_manager' ? 2 : '');
+        if (!$type) {
+            return $this->response(500, ['status' => 422, 'message' => 'unknown user type']);
+        }
         $loan_accounts = $params['loan_accounts'];
         $users_accs = $params['users'];
         $transaction = Yii::$app->db->beginTransaction();
@@ -1863,6 +1867,16 @@ class CompanyDashboardController extends ApiBaseController
         try {
             foreach ($loan_accounts as $loan_account) {
                 foreach ($users_accs as $users_acc) {
+                    $where = [
+                        "loan_account_enc_id" => $loan_account,
+                        "shared_to" => $users_acc['id'],
+                        "user_type" => $type,
+                        "is_deleted" => 0
+                    ];
+                    $check = AssignedLoanAccountsExtended::findOne($where);
+                    if ($check){
+                        continue;
+                    }
                     $shared = new AssignedLoanAccountsExtended();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $shared->assigned_enc_id = $utilitiesModel->encrypt();
@@ -1870,12 +1884,9 @@ class CompanyDashboardController extends ApiBaseController
                     $shared->shared_by = $user->user_enc_id;
                     $shared->shared_to = $users_acc['id'];
                     if ($params['type'] == 'bdo') {
-                        $shared->user_type = 1;
                         $shared->access = $users_acc['access'];
                     }
-                    if ($params['type'] == 'collection_manager') {
-                        $shared->user_type = 2;
-                    }
+                    $shared->user_type = $type;
                     $shared->created_by = $shared->updated_by = $user->user_enc_id;
                     $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
                     if (!$shared->save()) {

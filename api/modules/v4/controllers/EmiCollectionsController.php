@@ -542,6 +542,7 @@ class EmiCollectionsController extends ApiBaseController
             } else {
                 // emi ids can be more than 1 so using updating function to track everything
                 $emi_id = $this->finder($cash_id);
+                $emi_id = array_column($emi_id,"emi_collection_enc_id");
             }
             if ($overdue_update) {
                 $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);

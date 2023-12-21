@@ -7,6 +7,7 @@ use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
+use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountPtps;
@@ -1235,7 +1236,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_enc_id"']);
         }
 
-        $update = AssignedLoanAccounts::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
+        $update = AssignedLoanAccountsExtended::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
 
         if (!$update) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
