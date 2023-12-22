@@ -271,8 +271,6 @@ class EmiCollectionsController extends ApiBaseController
 
     private function emiCashReport($user_id, $params)
     {
-        $limit = !empty($params["limit"]) ? $params["limit"] : 25;
-        $page = !empty($params["page"]) ? $params["page"] : 1;
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select([
@@ -298,8 +296,6 @@ class EmiCollectionsController extends ApiBaseController
 
         $count = $query->count();
         $query = $query
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
