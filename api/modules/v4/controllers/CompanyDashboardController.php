@@ -19,6 +19,7 @@ use common\models\CreditRequestedData;
 use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
@@ -371,7 +372,8 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.gender = '1' THEN 'Male'
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
-                END) as gender"
+                END) as gender",
+                "a.login_date"
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
@@ -495,7 +497,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -517,6 +519,12 @@ class CompanyDashboardController extends ApiBaseController
                         switch ($key) {
                             case 'loan_products_enc_id':
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'login_start_date':
+                                $loans->andWhere(['>=', 'a.login_date', $val]);
+                                break;
+                            case 'login_end_date':
+                                $loans->andWhere(['<=', 'a.login_date', $val]);
                                 break;
                             case 'apply_date':
                                 $loans->andWhere(['like', 'a.created_on', $val]);
@@ -1845,8 +1853,8 @@ class CompanyDashboardController extends ApiBaseController
         $this->isAuth();
         $user = $this->user;
         $params = $this->post;
-        if (empty($params['users']) || empty($params['loan_accounts'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts"']);
+        if (empty($params['users']) || empty($params['loan_accounts']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts" or "type"']);
         }
         $loan_accounts = $params['loan_accounts'];
         $users_accs = $params['users'];
@@ -1855,13 +1863,19 @@ class CompanyDashboardController extends ApiBaseController
         try {
             foreach ($loan_accounts as $loan_account) {
                 foreach ($users_accs as $users_acc) {
-                    $shared = new SharedLoanApplicationsExtended();
+                    $shared = new AssignedLoanAccountsExtended();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $shared->shared_loan_app_enc_id = $utilitiesModel->encrypt();
-                    $shared->foreign_id = $loan_account;
+                    $shared->assigned_enc_id = $utilitiesModel->encrypt();
+                    $shared->loan_account_enc_id = $loan_account;
                     $shared->shared_by = $user->user_enc_id;
                     $shared->shared_to = $users_acc['id'];
-                    $shared->access = $users_acc['access'];
+                    if ($params['type'] == 'bdo') {
+                        $shared->user_type = 1;
+                        $shared->access = $users_acc['access'];
+                    }
+                    if ($params['type'] == 'collection_manager') {
+                        $shared->user_type = 2;
+                    }
                     $shared->created_by = $shared->updated_by = $user->user_enc_id;
                     $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
                     if (!$shared->save()) {
@@ -2993,18 +3007,20 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            $start_date = $params['start_date'];
+            $end_date = $params['end_date'];
             $employeeAmount1 = LoanApplications::find()
                 ->alias('b')
                 ->select([
                     "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
-                    "SUM(CASE WHEN i.status = '4' THEN IF(i.tl_approved_amount, i.tl_approved_amount, IF(i.bdo_approved_amount, i.bdo_approved_amount, b.amount)) ELSE 0 END) as login_amount",
+                    "SUM(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.amount ELSE 0 END) as login_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount",
                     "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
                     "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
                     "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
                     "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
-                    "COUNT(CASE WHEN i.status = '4' THEN b.loan_app_enc_id END) as login_count",
+                    "COUNT(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.loan_app_enc_id END) as login_count",
                     "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
                     "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
                     "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
