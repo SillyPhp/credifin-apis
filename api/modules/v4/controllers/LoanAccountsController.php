@@ -1266,15 +1266,13 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                 "b.loan_account_number",
-                "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", "c.last_emi_date", 
-                "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
+                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", 
+                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
                 "c.emi_amount", "c.overdue_amount", "c.ledger_amount", 
                 "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type", 
                 "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
                 "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id", 
-                "c.bucket_status_date", "c.pos", "d.location_enc_id as branch", 
-                "(CASE WHEN d.location_name IS NOT NULL THEN d.location_name ELSE bb.location_name END) as branch_name",
+                "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", 
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
