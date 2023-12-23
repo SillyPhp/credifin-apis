@@ -517,7 +517,7 @@ class EmiCollectionsController extends ApiBaseController
                 $update->approved_by = $this->user->user_enc_id;
                 $update->remaining_amount = 0;
                 if (!$update->save()) {
-                    return $this->response(500, ["message" => "an error occurred", "error" => implode(", ", array_column($update->errors, "0", false))]);
+                    return $this->response(500, ["message" => "an error occurred", "error" => implode(" ", array_column($update->errors, "0"))]);
                 }
                 self::updateEmiStatus($params["cash_id"], $user->user_enc_id, "paid");
             } else {
@@ -545,7 +545,7 @@ class EmiCollectionsController extends ApiBaseController
             }
             if ($overdue_update) {
                 $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);
-                if ($emi){
+                if ($emi) {
                     EmiCollectionForm::updateOverdue($emi['loan_account_enc_id'], $emi['amount'], $user_id);
                 }
             }
@@ -613,7 +613,7 @@ class EmiCollectionsController extends ApiBaseController
                 $update->approved_on = date('Y-m-d H:i:s');
                 $update->approved_by = $user->user_enc_id;
                 if (!$update->save()) {
-                    throw new \yii\db\Exception(implode(", ", array_column($update->errors, "0", false)));
+                    throw new \yii\db\Exception(implode(" ", array_column($update->errors, "0")));
                 }
             } else {
                 $this->reject($user->user_enc_id, $cash_id);
@@ -641,7 +641,7 @@ class EmiCollectionsController extends ApiBaseController
             $q->remaining_amount = $item['amount'];
             $q->parent_cash_report_enc_id = null;
             if (!$q->save()) {
-                throw new \Exception(implode(", ", array_column($q->errors, "0", false)));
+                throw new \Exception(implode(" ", array_column($q->errors, "0")));
             }
         }
         $reject = EmployeesCashReportExtended::findOne(['cash_report_enc_id' => $cash_id]);
@@ -649,7 +649,7 @@ class EmiCollectionsController extends ApiBaseController
         $reject->updated_by = $user_id;
         $reject->updated_on = date("Y-m-d H:i:s");
         if (!$reject->save()) {
-            throw new \Exception(implode(", ", array_column($reject->errors, "0", false)));
+            throw new \Exception(implode(" ", array_column($reject->errors, "0")));
         }
     }
 

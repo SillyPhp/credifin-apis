@@ -1677,7 +1677,7 @@ class OrganizationsController extends ApiBaseController
                     $model->updated_by = $user->user_enc_id;
                     $model->updated_on = date('Y-m-d h:i:s');
                     if (!$model->save()) {
-                        throw new Exception(implode(array_column($model->errors, 0, false)));
+                        throw new Exception(implode(' ', array_column($model->errors, 0)));
                     }
                     if ($update_overdue) {
                         EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
@@ -1695,7 +1695,7 @@ class OrganizationsController extends ApiBaseController
                     }
                 }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
-                    throw new Exception(implode(array_column($model->errors, 0, false)));
+                    throw new Exception(implode(' ', array_column($model->errors, 0, false)));
                 }
                 $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
                 $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
@@ -1928,7 +1928,7 @@ class OrganizationsController extends ApiBaseController
             $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status', 'ptp_status', 'collection_start_date', 'collection_end_date',  'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'emi_payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address', 'emi_payment_status', 'ptp_status', 'collection_start_date', 'collection_end_date', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
