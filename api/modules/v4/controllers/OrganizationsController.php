@@ -1695,7 +1695,7 @@ class OrganizationsController extends ApiBaseController
                     }
                 }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
-                    throw new Exception(implode(' ', array_column($model->errors, 0, false)));
+                    throw new Exception(implode(' ', array_column($model->errors, 0)));
                 }
                 $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
                 $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
