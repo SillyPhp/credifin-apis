@@ -7,12 +7,10 @@ use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
-use common\models\extended\Industries;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
-use common\models\LoanPayments;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -136,16 +134,19 @@ class TestController extends ApiBaseController
                 "c.address",
                 "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
                 "c1.name state",
+                "c2.name city",
                 "c.postal_code",
                 "abc.phone",
                 "abc.cibil_score",
                 "abc.aadhaar_number",
                 "abc.voter_card_number",
                 "abc.pan_number",
+                "abc.marital_status",
                 "a.loan_purpose",
                 "a.chassis_number",
                 "a.invoice_number",
                 "a.amount",
+                "e.emi_amount",
                 "a.number_of_emis",
                 "a.roi",
                 "abc.co_applicant_dob applicant_dob",
@@ -162,7 +163,6 @@ class TestController extends ApiBaseController
                 "e.vehicle_brand",
                 "f.name loan_type",
                 "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
-                "a.applicant_dob",
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
@@ -178,19 +178,22 @@ class TestController extends ApiBaseController
             ->joinWith(["assignedLoanProviders b"], false)
             ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
                 $c->joinWith(["stateEnc c1"], false);
+                $c->joinWith(["cityEnc c2"], false);
             }], false)
             ->joinWith(["loanCoApplicants abc" => function ($abc) {
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
                 $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
-                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
-                    "d.cibil_score", "d.driving_license_number", "d.marital_status"]);
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
-                $d->joinWith(["loanApplicantResidentialInfos d1"], false);
-            }], true)
+                $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
+                    $d1->joinWith(["cityEnc d2"], false);
+                }], false);
+            }])
             ->joinWith(["loanApplicationOptions e"], false)
             ->andWhere([
                 "AND",
@@ -225,22 +228,6 @@ class TestController extends ApiBaseController
             unset($item['loanPurposes']);
         }
 
-        foreach ($query as &$item) {
-            $cibils = $this->CreditReports($item["loan_app_enc_id"]);
-            if (!empty($cibils)) {
-
-                if (in_array($item["loan_app_enc_id"], array_keys($cibils))) {
-                    $item["cibil_score"] = $cibils[$item["loan_app_enc_id"]];
-                }
-                if (!empty($item["loanCoApplicants"])) {
-                    foreach ($item["loanCoApplicants"] as &$loanCoApplicant) {
-                        if (in_array($loanCoApplicant["loan_co_app_enc_id"], array_keys($cibils))) {
-                            $loanCoApplicant["cibil_score"] = $cibils[$loanCoApplicant["loan_co_app_enc_id"]];
-                        }
-                    }
-                }
-            }
-        }
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
 
@@ -480,37 +467,57 @@ class TestController extends ApiBaseController
 
     public function actionAssignPaymentLoginDate()
     {
-        if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
+//        if (!$this->isAuthorized()) {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
         $params = Yii::$app->request->post();
 
         $page = !empty($params['page']) ? $params['page'] : 1;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
 
-        $login_date = (new \yii\db\Query())
-            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.payment_status'])
-            ->from(['a' => LoanApplicationsExtended::tableName()])
-            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
-            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
-            ->where(['a.is_deleted' => 0, 'b2.payment_status' => 'captured'])
+//        $login_date = (new \yii\db\Query())
+//            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
+//            ->from(['a' => LoanApplicationsExtended::tableName()])
+//            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
+//            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
+//            ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
+//            ->limit($limit)
+//            ->offset(($page - 1) * $limit)
+//            ->all();
+
+        $login_date = LoanApplications::find()
+            ->alias('a')
+            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
+            ->innerJoinWith(['assignedLoanPayments b1' => function ($b1) {
+                $b1->innerJoinWith(['loanPaymentsEnc b2' => function ($b2) {
+                    $b2->andOnCondition(['b2.payment_status' => 'captured']);
+                }], false);
+            }], false)
+            ->where(['a.is_deleted' => 0])
+            ->andWhere(["IS", 'a.login_date', null])
+//        print_r($login_date->createCommand()->getRawSql());exit();
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->asArray()
             ->all();
+//        print_r($login_date);exit();
+
+        if (!$login_date) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
 
 
         foreach ($login_date as $loan_payment) {
             $loan_app_enc_id = $loan_payment['loan_app_enc_id'];
             $loan_application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_app_enc_id]);
             if ($loan_application) {
-                $loan_application->login_date = $loan_payment['updated_on'];
+                $loan_application->login_date = $loan_payment['updated_on'] ?? $loan_payment['created_on'];
                 if (!$loan_application->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'Failed']);
                 }
-                return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
             }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
 
     }
 
@@ -597,9 +604,9 @@ class TestController extends ApiBaseController
         }
     }
 
-    public static function generateApplicationNumber($cityCode,$purposeCode,$loap_p_code,$yearmonth)
+    public static function generateApplicationNumber($cityCode, $purposeCode, $loap_p_code, $yearmonth)
     {
-        for ($i=0;$i<=100;$i++){
+        for ($i = 0; $i <= 100; $i++) {
             $loan_num['product_code'] = $loap_p_code;
             $branchCode = '';
             $cityCode = $cityCode;
@@ -616,8 +623,8 @@ class TestController extends ApiBaseController
                 ->select(['a.application_number'])
                 ->where([
                     'OR',
-                    ['LIKE', 'application_number', $pattern1,false],
-                    ['LIKE', 'application_number', $pattern2,false]
+                    ['LIKE', 'application_number', $pattern1, false],
+                    ['LIKE', 'application_number', $pattern2, false]
                 ])
                 ->orderBy([
                     "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
@@ -637,18 +644,19 @@ class TestController extends ApiBaseController
         }
     }
 
-    public function actionDuplicate($page=1,$limit=500){
+    public function actionDuplicate($page = 1, $limit = 500)
+    {
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
+            ->select(['application_number', 'COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
+                ['!=', 'application_number', Null],
+                ['!=', 'application_number', '']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -676,17 +684,17 @@ class TestController extends ApiBaseController
                 ];
             }
             // print_r($result);exit();
-            foreach ($result as $dat){
+            foreach ($result as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array)==4){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        echo  $newSeries = self::generateApplicationNumber($loan_array[1],null,$loan_array[0],$loan_array[2]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                if (count($loan_array) == 4) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        echo $newSeries = self::generateApplicationNumber($loan_array[1], null, $loan_array[0], $loan_array[2]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
-                }else if (count($loan_array)==5){
-                    for ($i=0;$i<($dat['count']-1);$i++) {
-                        $newSeries = self::generateApplicationNumber($loan_array[2],$loan_array[1],$loan_array[0],$loan_array[3]);
-                        self::saveNewSeries($newSeries,$dat['IDs'][$i]);
+                } else if (count($loan_array) == 5) {
+                    for ($i = 0; $i < ($dat['count'] - 1); $i++) {
+                        $newSeries = self::generateApplicationNumber($loan_array[2], $loan_array[1], $loan_array[0], $loan_array[3]);
+                        self::saveNewSeries($newSeries, $dat['IDs'][$i]);
                     }
                 }
             }
@@ -694,27 +702,31 @@ class TestController extends ApiBaseController
             echo 'no results left';
         endif;
     }
-    private function saveNewSeries($newSeries,$id){
-        $model = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
+
+    private function saveNewSeries($newSeries, $id)
+    {
+        $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
         $model->application_number = $newSeries;
-        if (!$model->save()){
+        if (!$model->save()) {
             print_r($model->getErrors());
-        }else{
+        } else {
             return false;
         }
     }
-    public function actionCopyDuplicates($page=1,$limit=500){
+
+    public function actionCopyDuplicates($page = 1, $limit = 500)
+    {
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
+            ->select(['application_number', 'COUNT(*) count'])
 //            ->joinWith(['assignedLoanProviders b'=>function($c){
 //                $c->andWhere(['!=','b.status',31]);
 //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
+                ['!=', 'application_number', Null],
+                ['!=', 'application_number', '']
             ])
             ->having('COUNT(*) > 1')
             ->limit($limit)
@@ -723,15 +735,45 @@ class TestController extends ApiBaseController
             ->all();
         $updateAll = [];
         if ($data):
-            foreach ($data as $dat){
+            foreach ($data as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array)>=4):
-                    $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
+                if (count($loan_array) >= 4):
+                    $updateAll[] = LoanApplications::updateAll(['old_application_number' => $dat['application_number']], ['application_number' => $dat['application_number']]);
                 endif;
             }
             echo count($updateAll);
         else:
             echo 'no results left';
         endif;
+    }
+
+    public function actionMoveInitiatedDates($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $data = EmiCollectionExtended::find()
+            ->where(['is_deleted' => 0])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->all();
+
+        $count = 0;
+
+        foreach ($data as $record) {
+            $record->transaction_initiated_date = $record->collection_date;
+            if ($record->save()) {
+                $count++;
+            }
+        }
+        return ['status' => 200, 'found' => count($data), 'updated' => $count];
+    }
+
+    public function actionClearCache()
+    {
+        Yii::$app->cache->flush();
+        print_r('Cache Cleared');
+        exit();
     }
 }

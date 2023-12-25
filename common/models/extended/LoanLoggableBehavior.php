@@ -26,12 +26,12 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                 $this->enc_id = $this->owner->loan_id;
             } elseif (isset($this->owner->loan_application_enc_id)) {
                 $this->enc_id = $this->owner->loan_application_enc_id;
+            } elseif (isset($this->owner->cash_report_enc_id)) {
+                $this->enc_id = $this->owner->cash_report_enc_id;
             } elseif (isset($this->owner->emi_collection_enc_id)) {
                 $this->enc_id = $this->owner->emi_collection_enc_id;
             } elseif (isset($this->owner->loan_account_enc_id)) {
                 $this->enc_id = $this->owner->loan_account_enc_id;
-            } elseif (isset($this->owner->cash_report_enc_id)) {
-                $this->enc_id = $this->owner->cash_report_enc_id;
             }
             $log->model = $this->className;
             $log->old_value = $old_value;
@@ -208,6 +208,11 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                     case 'New Lead':
                     case 'On Going':
                     case 'Accepted':
+                    case 'defferds':
+                    case 'On Hold':
+                    case 'withDrawn':
+                    case 'Non Responsive':
+                    case 'Rejected':
                         $newValue = $value;
                         break;
                     case 'Document Uploaded':
@@ -219,20 +224,12 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                     case 'Done':
                         $newValue = 'Done';
                         break;
-                    case 'defferds':
-                    case 'On Hold':
-                        $newValue = $value;
-                        break;
-                    case 'withDrawn':
-                    case 'Non Responsive':
-                    case 'Rejected':
-                        $newValue = $value;
-                        break;
                     default:
                         $newValue = 'Empty';
                 }
                 break;
             case 'amount':
+            case 'remaining_amount':
             case 'yearly_income':
                 $amount = $value;
                 $fmt = numfmt_create('en_IN', \NumberFormatter::CURRENCY);
