@@ -1845,6 +1845,7 @@ class CompanyDashboardController extends ApiBaseController
             $notificationUsers = new UserUtilities();
             $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
             $updated_by = $user->first_name . " " . $user->last_name;
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
             if (!empty($userIds)) {
                 $allNotifications = [];
                 foreach ($userIds as $uid) {
@@ -1853,7 +1854,7 @@ class CompanyDashboardController extends ApiBaseController
                     $notification = [
                         'notification_enc_id' => $utilitiesModel->encrypt(),
                         'user_enc_id' => $uid,
-                        'title' => "$updated_by commented on a loan application - $comment->comment",
+                        'title' => "$updated_by commented on a loan application $loanApp->application_number",
                         'description' => "",
                         'link' => '/account/loan-application/' . $params['loan_id'],
                         'created_by' => $user->user_enc_id
