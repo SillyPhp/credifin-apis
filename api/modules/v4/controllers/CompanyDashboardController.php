@@ -1841,6 +1841,29 @@ class CompanyDashboardController extends ApiBaseController
             if (!$comment->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
             }
+            
+            $notificationUsers = new UserUtilities();
+            $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
+            $updated_by = $user->first_name . " " . $user->last_name;
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            if (!empty($userIds)) {
+                $allNotifications = [];
+                foreach ($userIds as $uid) {
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $notification = [
+                        'notification_enc_id' => $utilitiesModel->encrypt(),
+                        'user_enc_id' => $uid,
+                        'title' => "$updated_by commented on a loan application $loanApp->application_number",
+                        'description' => "",
+                        'link' => '/account/loan-application/' . $params['loan_id'],
+                        'created_by' => $user->user_enc_id
+                    ];
+
+                    array_push($allNotifications, $notification);
+                }
+            }
+            $notificationUsers->saveNotification($allNotifications);
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         } else {

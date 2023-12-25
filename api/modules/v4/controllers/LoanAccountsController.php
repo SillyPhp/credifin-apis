@@ -1169,7 +1169,7 @@ class LoanAccountsController extends ApiBaseController
                 'a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
                 'a.status', 'a.source', 'a.created_on',
                 "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as created_by",
-                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
                 "CASE WHEN b1.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', b1.logo_location, '/', b1.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b1.name, '&size=200&rounded=false&background=', REPLACE(b1.initials_color, '#', ''), '&color=ffffff') END logo",
             ])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1266,14 +1266,20 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
-                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id", "b.loan_account_number",
-                "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", "c.last_emi_date", "c.name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", "c.loan_type", "c.emi_date", "c.last_emi_received_amount",
-                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos", "d.location_enc_id as branch", "d.location_name as branch_name",
-                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
+                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", 
+                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", 
+                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type", 
+                "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
+                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id", 
+                "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", 
+                "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
             ])
             ->joinWith(['emiCollectionEnc b' => function ($b) {
+                $b->joinWith(['branchEnc bb'], false);
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
                     $cc->joinWith(['branchEnc d'], false);
                     $cc->joinWith(["assignedCaller ac"], false);
