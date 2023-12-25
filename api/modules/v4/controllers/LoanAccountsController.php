@@ -7,6 +7,7 @@ use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
+use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountPtps;
@@ -1235,7 +1236,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_enc_id"']);
         }
 
-        $update = AssignedLoanAccounts::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
+        $update = AssignedLoanAccountsExtended::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
 
         if (!$update) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -1368,7 +1369,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['or',
+            ->where(['and',
                 ['not', ['a.ptp_amount' => NULL]],
                 ['not', ['a.ptp_date' => NULL]]])
             ->andWhere(['a.is_deleted' => 0])
@@ -1379,9 +1380,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach ($data as $key => $d) {
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach ($data as $d) {
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(LoanAccountPtps::tableName(), [
@@ -1424,9 +1425,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach($data as $key => $val){
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach($data as $val){
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(AssignedLoanAccounts::tableName(), [
