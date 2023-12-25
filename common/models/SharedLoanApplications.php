@@ -10,7 +10,6 @@ use Yii;
  * @property int $id
  * @property string $shared_loan_app_enc_id shared loan app enc id
  * @property string $loan_app_enc_id loan app enc id
- * @property string $foreign_id foreign id
  * @property string $shared_by loan app shared by
  * @property string $shared_to loan app shared to
  * @property string $access access to shared user
@@ -43,11 +42,11 @@ class SharedLoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['shared_loan_app_enc_id', 'shared_by', 'shared_to', 'access', 'created_by'], 'required'],
+            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'shared_by', 'shared_to', 'access', 'created_by'], 'required'],
             [['access', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'foreign_id', 'shared_by', 'shared_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['shared_loan_app_enc_id', 'loan_app_enc_id', 'shared_by', 'shared_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['shared_loan_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['shared_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['shared_by' => 'user_enc_id']],
