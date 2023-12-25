@@ -25,8 +25,8 @@ use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -587,9 +587,13 @@ class LoanAccountsController extends ApiBaseController
                 END as borrower_image",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
                 "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
-                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method"
+                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method",
+                "d1.payment_short_url"
             ])
             ->joinWith(['createdBy b'], false)
+            ->joinWith(['assignedLoanPayments d' => function ($d) {
+                $d->joinWith(['loanPaymentsEnc d1'], false);
+            }], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
         $count = $model->count();
         $model = $model
@@ -1318,7 +1322,7 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         if ($ptpcases) {
-            return $this->response(200, ['status' => 200, 'count'=> $count, 'ptpcases' => $ptpcases]);
+            return $this->response(200, ['status' => 200, 'count' => $count, 'ptpcases' => $ptpcases]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
@@ -1418,7 +1422,7 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach($data as $key => $val){
+        foreach ($data as $key => $val) {
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables["string"] = time() . rand(100, 100000);
 
@@ -1435,7 +1439,7 @@ class LoanAccountsController extends ApiBaseController
                     'updated_by' => $val['updated_by'],
                     'updated_on' => $val['updated_on'],
                 ])->execute();
-            if($insert){
+            if ($insert) {
                 $inserted += 1;
             }
         }
