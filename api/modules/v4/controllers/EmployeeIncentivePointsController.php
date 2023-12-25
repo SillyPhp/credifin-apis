@@ -98,11 +98,14 @@ class EmployeeIncentivePointsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
 
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
         $user_id = $user->user_enc_id;
         $incentive_sum = EmployeeIncentivePoints::find()
             ->alias('a')
             ->select(['SUM(a.points_value) as total'])
-            ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
+            ->where(['a.user_enc_id' => $user_id, 'MONTH(a.created_on)' => $currentMonth, 'YEAR(a.created_on)' => $currentYear, 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
