@@ -118,14 +118,23 @@ class PaymentsController extends ApiBaseController
             ->asArray()
             ->one();
 
-        if ($model) {
+        if ($model && $model['emi_payment_status'] != 'paid') {
             $update['collection_date'] = date('Y-m-d');
-            if ($model['emi_payment_status'] != 'paid') {
-                $update['emi_payment_status'] = 'paid';
+            $update['emi_payment_status'] = 'paid';
+            $where = [
+                "AND",
+                ["emi_collection_enc_id" => $model['emi_collection_enc_id']],
+                [
+                    "NOT",
+                    [
+                        "emi_payment_status" => "paid"
+                    ]
+                ]
+            ];
+            $check = Yii::$app->db->createCommand()->update(EmiCollectionExtended::tableName(), $update, $where)->execute();
+            if ($check) {
                 EmiCollectionForm::updateOverdue($model["loan_account_enc_id"], $model['amount']);
             }
-            $where['emi_collection_enc_id'] = $model['emi_collection_enc_id'];
-            Yii::$app->db->createCommand()->update(EmiCollectionExtended::tableName(), $update, $where)->execute();
         }
     }
 
