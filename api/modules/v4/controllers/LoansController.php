@@ -808,7 +808,7 @@ class LoansController extends ApiBaseController
                 $provider->updated_by = $user->user_enc_id;
                 $provider->updated_on = date('Y-m-d H:i:d');
                 if (!$provider->update()) {
-                    throw new Exception(implode(", ", array_column($provider->getErrors(), '0', false)));
+                    throw new Exception(implode(" ", array_column($provider->getErrors(), '0')));
                 }
                 $purposes = LoanPurpose::find()
                     ->select(["financer_loan_purpose_enc_id"])
@@ -821,14 +821,14 @@ class LoansController extends ApiBaseController
                     throw new Exception("Loan Application not found.");
                 }
                 $new_application_number = LoanApplication::generateApplicationNumber($loan_update->loan_products_enc_id, $provider->branch_enc_id, $purposes);
-                if (!$new_application_number){
+                if (!$new_application_number) {
                     throw new Exception("Error occurred while generating new application number.");
                 }
                 $loan_update->application_number = $new_application_number;
                 $loan_update->updated_by = $user->user_enc_id;
                 $loan_update->updated_on = date('Y-m-d H:i:d');
                 if (!$loan_update->save()) {
-                    throw new Exception(implode(", ", array_column($loan_update->getErrors(), '0', false)));
+                    throw new Exception(implode(" ", array_column($loan_update->getErrors(), '0')));
                 }
                 $transaction->commit();
                 return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
