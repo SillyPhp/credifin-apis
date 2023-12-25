@@ -7,6 +7,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAuditTrail;
 use Exception;
 use Yii;
 use yii\filters\Cors;
@@ -32,7 +33,8 @@ class EmiCollectionsController extends ApiBaseController
                 "employee-emi-collection" => ["POST", "OPTIONS"],
                 "list" => ["GET", "OPTIONS"],
                 "get-collected-emi-list" => ["POST", "OPTIONS"],
-                "emi-detail" => ["POST", "OPTIONS"]
+                "emi-detail" => ["POST", "OPTIONS"],
+                "update" => ["POST", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -905,5 +907,73 @@ class EmiCollectionsController extends ApiBaseController
             }
         }
         return ['data' => $model, 'count' => $count];
+    }
+
+    public function actionUpdate()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+        if ((empty($params['collection_date']) && empty($params['amount'])) || empty($params['remarks']) || empty($params['emi_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "collection_date" or "amount" or "remarks" or "emi_id"']);
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!empty($params['collection_date']) && !empty($params['amount'])) {
+                throw new Exception("You can not update collection date and amount both at same time");
+            }
+            $emi_id = $params['emi_id'];
+            $emi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id, 'is_deleted' => 0]);
+            if (!$emi) {
+                $this->response(404, ['message' => 'an error occurred', 'error' => 'emi not found']);
+            }
+            if ($emi->emi_payment_status !== 'collected') {
+                throw new Exception("Emi is only updatable when the status is in collected form.");
+            }
+            if (!empty($params['collection_date'])) {
+                $emi->collection_date = $params['collection_date'];
+            }
+            if (!empty($params['amount'])) {
+                $emi->amount = $params['amount'];
+            }
+            $emi->updated_on = date('Y-m-d H:i:s');
+            $emi->updated_by = $user->user_enc_id;
+            if (!$emi->save()) {
+                throw new Exception(implode(',', array_column($emi->errors, "0")));
+            }
+            $audit = new LoanAuditTrail();
+
+            $audit->old_value = "";
+            $audit->new_value = $params['remarks'];
+            $audit->action = "SET";
+            $audit->model = "EmiCollection";
+            $audit->field = "remarks";
+            $audit->stamp = date('Y-m-d H:i:s');
+            $audit->user_id = (string)Yii::$app->user->identity->id;
+            $audit->model_id = (string)$emi->id;
+            $audit->foreign_id = $emi_id;
+            if (!$audit->save()) {
+                throw new Exception(implode(',', array_column($audit->errors, "0")));
+            }
+            if (!empty($params['amount'])) {
+                $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "parent_cash_report_enc_id" => null, "is_deleted" => 0]);
+                if (!$cash) {
+                    throw new Exception("an error occurred");
+                }
+                $cash->remaining_amount = $cash->amount = $params['amount'];
+                $cash->updated_on = date('Y-m-d H:i:s');
+                $cash->updated_by = $user->user_enc_id;
+                if (!$cash->save()) {
+                    throw new Exception(implode(',', array_column($cash->errors, "0")));
+                }
+            }
+            $transaction->commit();
+            return $this->response(200, ["message" => "updated successfully"]);
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+
+
     }
 }
