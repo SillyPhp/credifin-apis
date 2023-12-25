@@ -18,8 +18,8 @@ use common\models\CreditLoanApplicationReports;
 use common\models\CreditRequestedData;
 use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
-use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\AssignedLoanAccountsExtended;
+use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
@@ -873,7 +873,7 @@ class CompanyDashboardController extends ApiBaseController
         $loan = LoanApplications::find()
             ->alias('a')
             ->select([
-                'a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.old_application_number', 'a.capital_roi', 'a.capital_roi_updated_on', "CONCAT(ub.first_name, ' ', ub.last_name) AS capital_roi_updated_by", 'a.registry_status', 'a.registry_status_updated_on', "CONCAT(rs.first_name, ' ', COALESCE(rs.last_name, '')) AS registry_status_updated_by", "CONCAT(cr.first_name, ' ', COALESCE(cr.last_name, '')) AS created_by",
+                'a.loan_app_enc_id', 'a.is_removed', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.old_application_number', 'a.capital_roi', 'a.capital_roi_updated_on', "CONCAT(ub.first_name, ' ', ub.last_name) AS capital_roi_updated_by", 'a.registry_status', 'a.registry_status_updated_on', "CONCAT(rs.first_name, ' ', COALESCE(rs.last_name, '')) AS registry_status_updated_by", "CONCAT(cr.first_name, ' ', COALESCE(cr.last_name, '')) AS created_by",
                 'lpe.name as loan_product', 'a.chassis_number', 'a.rc_number', 'a.invoice_date', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
                 "CASE WHEN ub.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', ub.image_location, '/', ub.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ub.first_name,' ',ub.last_name), '&size=200&rounded=false&background=', REPLACE(ub.initials_color, '#', ''), '&color=ffffff') END update_image",
                 "CASE WHEN rs.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', rs.image_location, '/', rs.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(rs.first_name,' ',rs.last_name), '&size=200&rounded=false&background=', REPLACE(rs.initials_color, '#', ''), '&color=ffffff') END rs_image",
@@ -988,10 +988,6 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0]);
 
-        if (!$this->isSpecial(1)) {
-            $loan->andWhere(['a.is_removed' => 0]);
-        }
-
         $loan = $loan->limit(1)
             ->asArray()
             ->one();
@@ -1091,13 +1087,17 @@ class CompanyDashboardController extends ApiBaseController
                 $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
             }
 
-            // getting loan type code
-
-            return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
         }
 
-        // if application detail not found
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        if ($loan) {
+            if (!$this->isSpecial(1) && $loan['is_removed'] == 1) {
+                return $this->response(422, ['status' => 422, 'message' => 'Application Removed']);
+            }
+            return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'Not found']);
+        }
     }
 
 
