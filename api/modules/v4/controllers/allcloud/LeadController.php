@@ -112,12 +112,12 @@ class LeadController extends ApiBaseController
                         "Content-Type: application/json", // You can adjust the content type as needed
                         "Authorization: $auth",
                     ]);
-                    $response = curl_exec($ch);
+                return    $response = curl_exec($ch);
                     if (curl_errno($ch)) {
                         return  $this->response(422, ['message'=>'Error','Error'=>'cURL Error: ' . curl_error($ch)]);
                     }else{
                         $decodeResponse = json_decode($response,true);
-                        print_r($decodeResponse);exit();
+                       // print_r($decodeResponse);exit();
                         if (isset($decodeResponse['LeadDetailId'])&&!empty($decodeResponse['LeadDetailId'])){
                             return $this->response(200, ['message'=>'Success','data'=>$decodeResponse]);
                         }else{
