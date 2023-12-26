@@ -792,7 +792,7 @@ class CompanyDashboardController extends ApiBaseController
             ->addSelect(["CONCAT(b.first_name, ' ' ,b.last_name) shared_by"])
             ->joinWith(['sharedBy b'], false)
             ->joinWith(['loanAppEnc c'], false)
-            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0, 'c.is_removed' => 0])
             ->asArray()
             ->all();
         $loan_app_ids = [];
@@ -1086,7 +1086,6 @@ class CompanyDashboardController extends ApiBaseController
             } else {
                 $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
             }
-
         }
 
 
@@ -1841,7 +1840,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!$comment->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
             }
-            
+
             $notificationUsers = new UserUtilities();
             $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
             $updated_by = $user->first_name . " " . $user->last_name;
@@ -1897,7 +1896,7 @@ class CompanyDashboardController extends ApiBaseController
                         "is_deleted" => 0
                     ];
                     $check = AssignedLoanAccountsExtended::findOne($where);
-                    if ($check){
+                    if ($check) {
                         continue;
                     }
                     $shared = new AssignedLoanAccountsExtended();
@@ -3041,37 +3040,19 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
-            $start_date = $params['start_date'];
-            $end_date = $params['end_date'];
             $employeeAmount1 = LoanApplications::find()
                 ->alias('b')
                 ->select([
                     "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
-                    "SUM(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.amount ELSE 0 END) as login_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount",
                     "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
                     "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
                     "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
                     "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
-                    "COUNT(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.loan_app_enc_id END) as login_count",
                     "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
                     "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
                     "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
-                ])->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
-                    $i->joinWith(['providerEnc j']);
-                    if ($service) {
-                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
-                    }
-                    if (!empty($roleUnderId) || $roleUnderId != null) {
-                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
-                    }
-                }], false)
-                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
-
-            $employeeAmount2 = LoanApplications::find()
-                ->alias('b')
-                ->select([
                     "SUM(CASE WHEN i.status = '15' THEN i.soft_approval ELSE 0 END) as soft_approval_amount",
                     "COUNT(CASE WHEN i.status = '15' THEN b.loan_app_enc_id END) as soft_approval_count",
                     "SUM(CASE WHEN i.status = '24' THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount",
@@ -3092,7 +3073,25 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
-                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+                ->Where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+
+            $employeeAmount2 = LoanApplications::find()
+                ->alias('b')
+                ->select([
+                    "SUM(CASE WHEN b.login_date IS NOT NULL THEN b.amount ELSE 0 END) as login_amount",
+                    "COUNT(CASE WHEN b.login_date IS NOT NULL THEN b.loan_app_enc_id END) as login_count",
+                ])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                    if (!empty($roleUnderId) || $roleUnderId != null) {
+                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                    }
+                }], false)
+                ->Where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $employeeAmount1->andWhere(['b.lead_by' => $dsa]);
@@ -3117,17 +3116,38 @@ class CompanyDashboardController extends ApiBaseController
                 $employeeAmount1->andWhere(['i.branch_enc_id' => $params['branch_name']]);
                 $employeeAmount2->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
-            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
             $employeeAmount1 = $employeeAmount1
-                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+                ->andWhere([
+                    'OR',
+                    [
+                        "AND",
+                        ['i.status' => ['0',  '31', '28', '32']],
+                        ['>=', 'b.loan_status_updated_on', $params['start_date']],
+                        ['<=', 'b.loan_status_updated_on', $params['end_date']]
+                    ],
+                    [
+                        "AND",
+                        ['<=', 'b.loan_status_updated_on', $params['end_date']],
+                        [
+                            "OR",
+                            ['i.status' => ['30', '26']],
+                            ['between', 'i.status', '5', '25'],
+                        ]
+                    ],
+                ])
                 ->limit(1)->asArray()->one();
             $employeeAmount2 = $employeeAmount2
-                ->andWhere(['<=', 'b.loan_status_updated_on', $params['end_date']])
+                ->andWhere(
+                    [
+                        "AND",
+                        ['>=', 'b.login_date', $params['start_date']],
+                        ['<=', 'b.login_date', $params['end_date']]
+                    ]
+                )
                 ->limit(1)->asArray()->one();
 
-            $result = array_merge($employeeAmount1, $employeeAmount2);
-            return $this->response(200, ['status' => 200, 'data' => $result]);
+            $employeeAmount = array_merge($employeeAmount1, $employeeAmount2);
+            return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
