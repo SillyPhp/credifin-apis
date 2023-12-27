@@ -1841,7 +1841,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!$comment->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
             }
-            
+
             $notificationUsers = new UserUtilities();
             $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
             $updated_by = $user->first_name . " " . $user->last_name;
@@ -2676,9 +2676,8 @@ class CompanyDashboardController extends ApiBaseController
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '4' THEN c.loan_app_enc_id END) as login",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' THEN c.loan_app_enc_id END) as under_process",
                 ])
-                ->joinWith(['userRoles b' => function ($b) {
-                    $b->joinWith(['designationEnc b1'])
-                        ->joinWith(['designation gd'])
+                ->joinWith(['userRoles0 b' => function ($b) {
+                    $b->joinWith(['designation gd'])
                         ->joinWith(['reportingPerson b2'])
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
@@ -2757,7 +2756,7 @@ class CompanyDashboardController extends ApiBaseController
                     ['like', 'a.phone', $params['keyword']],
                     ['like', 'a.username', $params['keyword']],
                     ['like', 'a.email', $params['keyword']],
-                    ['like', 'b1.designation', $params['keyword']],
+                    ['like', 'gd.designation', $params['keyword']],
                     ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
                     ['like', 'b3.location_name', $params['keyword']],
                 ]);
