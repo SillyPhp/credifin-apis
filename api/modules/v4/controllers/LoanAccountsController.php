@@ -970,7 +970,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image", 
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
                 'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
@@ -1013,7 +1013,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image", 
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
                 'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
@@ -1255,7 +1255,6 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
     }
 
     public function actionGetPtpCases()
@@ -1269,14 +1268,14 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", 
+                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
                 "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", 
-                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type", 
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
+                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
                 "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
-                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id", 
+                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
                 "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
-                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", 
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
             ])
@@ -1327,13 +1326,13 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         if ($ptpcases) {
-            return $this->response(200, ['status' => 200, 'count'=> $count, 'ptpcases' => $ptpcases]);
+            return $this->response(200, ['status' => 200, 'count' => $count, 'ptpcases' => $ptpcases]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public function actionSearchLoanAccount()
+    public function actionGetLoanAccount()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1348,7 +1347,7 @@ class LoanAccountsController extends ApiBaseController
                 ])
                 ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
-                ->andWhere(['like', 'a.loan_account_number', $params['loan_number'], false])
+                ->andWhere(['a.loan_account_number' => $params['loan_number']])
                 ->limit(20)
                 ->asArray()
                 ->all();
@@ -1369,11 +1368,15 @@ class LoanAccountsController extends ApiBaseController
 
         $data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
-                'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['and',
+            ->select([
+                'a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
+                'a.created_by', 'a.updated_by', 'a.updated_on'
+            ])
+            ->where([
+                'and',
                 ['not', ['a.ptp_amount' => NULL]],
-                ['not', ['a.ptp_date' => NULL]]])
+                ['not', ['a.ptp_date' => NULL]]
+            ])
             ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->offset(($page - 1) * $limit)
@@ -1409,7 +1412,8 @@ class LoanAccountsController extends ApiBaseController
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
     }
 
-    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = ''){
+    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = '')
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
             return ['status' => 401, 'msg' => 'authentication failed'];
@@ -1428,7 +1432,7 @@ class LoanAccountsController extends ApiBaseController
 
         $inserted = 0;
         $utilitiesModel = new Utilities();
-        foreach($data as $val){
+        foreach ($data as $val) {
             $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
@@ -1444,12 +1448,11 @@ class LoanAccountsController extends ApiBaseController
                     'updated_by' => $val['updated_by'],
                     'updated_on' => $val['updated_on'],
                 ])->execute();
-            if($insert){
+            if ($insert) {
                 $inserted += 1;
             }
         }
 
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
-
     }
 }
