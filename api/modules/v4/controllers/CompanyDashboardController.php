@@ -2656,20 +2656,21 @@ class CompanyDashboardController extends ApiBaseController
                 ->join('INNER JOIN', ['k2' => CreditRequestedData::tableName()], 'k2.request_enc_id = k1.request_enc_id')
                 ->groupBy(['k.created_by'])
                 ->andWhere(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
-
+            $startDate = $params['start_date'];
+            $endDate = $params['end_date'];
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select([
                     'a.user_enc_id',
                     "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
                     'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation) designation', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' THEN c.loan_app_enc_id END) as new_lead",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' THEN c.loan_app_enc_id END) as sanctioned",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') THEN c.loan_app_enc_id END) as rejected",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' THEN c.loan_app_enc_id END) as disbursed",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '4' THEN c.loan_app_enc_id END) as login",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' THEN c.loan_app_enc_id END) as under_process",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as total_cases",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as new_lead",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as sanctioned",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as rejected",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as disbursed",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c.login_date IS NOT NULL AND c.login_date <= '$endDate' AND c.login_date >= '$startDate' THEN c.loan_app_enc_id END) as login",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process"
                 ])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -2690,25 +2691,8 @@ class CompanyDashboardController extends ApiBaseController
                         $k->from(['subquery' => $subquery]);
                     }
                 ])
-                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    [
-                        'and',
-                        ['c2.value' => ['0', '4', '31', '28', '32']],
-                        ['>=', 'c.loan_status_updated_on', $params['start_date']],
-                        ['<=', 'c.loan_status_updated_on', $params['end_date']]
-                    ],
-                    [
-                        'and',
-                        ['<=', 'c.loan_status_updated_on', $params['end_date']],
-                        [
-                            "OR",
-                            ['c2.value' => '30'],
-                            ['between', 'c2.value', '5', '25'],
-                        ]
-                    ],
-                ])
+                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
@@ -2720,6 +2704,9 @@ class CompanyDashboardController extends ApiBaseController
                 $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
 
+            if (!empty($params['product_id'])) {
+                $employeeStats->andWhere(['c.loan_products_enc_id' => $params['product_id']]);
+            }
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $employeeStats->andWhere([
                     'or',
@@ -2948,7 +2935,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->distinct()
                 ->select([
                     'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
-                    'c1.location_name', 'c3.loan_status', 'd.name product_name'
+                    'ANY_VALUE(c1.location_name)', 'ANY_VALUE(c3.loan_status)', 'd.name product_name'
                 ])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
@@ -2962,10 +2949,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
                     $k->groupBy(['k.loan_app_enc_id']);
                     $k->select([
-                        'k.report_enc_id', 'k.loan_app_enc_id', 'k.created_by',
-                        'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
-                        'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'
+                        'ANY_VALUE(k.report_enc_id)', 'ANY_VALUE(k.loan_app_enc_id)', 'k.created_by',
+                        "COUNT(CASE WHEN k2.request_source = 'CIBIL' THEN k.loan_app_enc_id END) as cibil",
+                        "COUNT(CASE WHEN k2.request_source = 'EQUIFAX' THEN k.loan_app_enc_id END) as equifax",
+                        "COUNT(CASE WHEN k2.request_source = 'CRIF' THEN k.loan_app_enc_id END) as crif"
                     ]);
                     $k->joinWith(['responseEnc k1' => function ($k1) {
                         $k1->joinWith(['requestEnc k2']);
@@ -2973,8 +2960,8 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'])
-                ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
-                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0])
+                ->where(['<=', 'a.created_on', $params['end_date']])
+                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id']);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
@@ -3040,19 +3027,37 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            $start_date = $params['start_date'];
+            $end_date = $params['end_date'];
             $employeeAmount1 = LoanApplications::find()
                 ->alias('b')
                 ->select([
                     "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
+                    "SUM(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.amount ELSE 0 END) as login_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
                     "SUM(CASE WHEN i.status = '31' THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount",
                     "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
                     "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
                     "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
                     "COUNT(CASE WHEN i.status = '31' THEN i.insurance_charges END) as insurance_charges_count",
+                    "COUNT(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.loan_app_enc_id END) as login_count",
                     "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
                     "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
                     "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
+                ])->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                    if (!empty($roleUnderId) || $roleUnderId != null) {
+                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                    }
+                }], false)
+                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+
+            $employeeAmount2 = LoanApplications::find()
+                ->alias('b')
+                ->select([
                     "SUM(CASE WHEN i.status = '15' THEN i.soft_approval ELSE 0 END) as soft_approval_amount",
                     "COUNT(CASE WHEN i.status = '15' THEN b.loan_app_enc_id END) as soft_approval_count",
                     "SUM(CASE WHEN i.status = '24' THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount",
@@ -3073,25 +3078,7 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
-                ->Where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
-
-            $employeeAmount2 = LoanApplications::find()
-                ->alias('b')
-                ->select([
-                    "SUM(CASE WHEN b.login_date IS NOT NULL THEN b.amount ELSE 0 END) as login_amount",
-                    "COUNT(CASE WHEN b.login_date IS NOT NULL THEN b.loan_app_enc_id END) as login_count",
-                ])
-                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
-                    $i->joinWith(['providerEnc j']);
-                    if ($service) {
-                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
-                    }
-                    if (!empty($roleUnderId) || $roleUnderId != null) {
-                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
-                    }
-                }], false)
-                ->Where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
-
+                ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $employeeAmount1->andWhere(['b.lead_by' => $dsa]);
@@ -3116,38 +3103,17 @@ class CompanyDashboardController extends ApiBaseController
                 $employeeAmount1->andWhere(['i.branch_enc_id' => $params['branch_name']]);
                 $employeeAmount2->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
+            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
+            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
             $employeeAmount1 = $employeeAmount1
-                ->andWhere([
-                    'OR',
-                    [
-                        "AND",
-                        ['i.status' => ['0',  '31', '28', '32']],
-                        ['>=', 'b.loan_status_updated_on', $params['start_date']],
-                        ['<=', 'b.loan_status_updated_on', $params['end_date']]
-                    ],
-                    [
-                        "AND",
-                        ['<=', 'b.loan_status_updated_on', $params['end_date']],
-                        [
-                            "OR",
-                            ['i.status' => ['30', '26']],
-                            ['between', 'i.status', '5', '25'],
-                        ]
-                    ],
-                ])
+                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->limit(1)->asArray()->one();
             $employeeAmount2 = $employeeAmount2
-                ->andWhere(
-                    [
-                        "AND",
-                        ['>=', 'b.login_date', $params['start_date']],
-                        ['<=', 'b.login_date', $params['end_date']]
-                    ]
-                )
+                ->andWhere(['<=', 'b.loan_status_updated_on', $params['end_date']])
                 ->limit(1)->asArray()->one();
 
-            $employeeAmount = array_merge($employeeAmount1, $employeeAmount2);
-            return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
+            $result = array_merge($employeeAmount1, $employeeAmount2);
+            return $this->response(200, ['status' => 200, 'data' => $result]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
