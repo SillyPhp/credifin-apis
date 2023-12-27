@@ -1841,6 +1841,29 @@ class CompanyDashboardController extends ApiBaseController
             if (!$comment->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
             }
+            
+            $notificationUsers = new UserUtilities();
+            $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
+            $updated_by = $user->first_name . " " . $user->last_name;
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            if (!empty($userIds)) {
+                $allNotifications = [];
+                foreach ($userIds as $uid) {
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $notification = [
+                        'notification_enc_id' => $utilitiesModel->encrypt(),
+                        'user_enc_id' => $uid,
+                        'title' => "$updated_by commented on a loan application $loanApp->application_number",
+                        'description' => "",
+                        'link' => '/account/loan-application/' . $params['loan_id'],
+                        'created_by' => $user->user_enc_id
+                    ];
+
+                    array_push($allNotifications, $notification);
+                }
+            }
+            $notificationUsers->saveNotification($allNotifications);
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         } else {
@@ -1856,6 +1879,10 @@ class CompanyDashboardController extends ApiBaseController
         if (empty($params['users']) || empty($params['loan_accounts']) || empty($params['type'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts" or "type"']);
         }
+        $type = $params['type'] == 'bdo' ? 1 : ($params['type'] == 'collection_manager' ? 2 : '');
+        if (!$type) {
+            return $this->response(500, ['status' => 422, 'message' => 'unknown user type']);
+        }
         $loan_accounts = $params['loan_accounts'];
         $users_accs = $params['users'];
         $transaction = Yii::$app->db->beginTransaction();
@@ -1863,6 +1890,16 @@ class CompanyDashboardController extends ApiBaseController
         try {
             foreach ($loan_accounts as $loan_account) {
                 foreach ($users_accs as $users_acc) {
+                    $where = [
+                        "loan_account_enc_id" => $loan_account,
+                        "shared_to" => $users_acc['id'],
+                        "user_type" => $type,
+                        "is_deleted" => 0
+                    ];
+                    $check = AssignedLoanAccountsExtended::findOne($where);
+                    if ($check){
+                        continue;
+                    }
                     $shared = new AssignedLoanAccountsExtended();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $shared->assigned_enc_id = $utilitiesModel->encrypt();
@@ -1870,12 +1907,9 @@ class CompanyDashboardController extends ApiBaseController
                     $shared->shared_by = $user->user_enc_id;
                     $shared->shared_to = $users_acc['id'];
                     if ($params['type'] == 'bdo') {
-                        $shared->user_type = 1;
                         $shared->access = $users_acc['access'];
                     }
-                    if ($params['type'] == 'collection_manager') {
-                        $shared->user_type = 2;
-                    }
+                    $shared->user_type = $type;
                     $shared->created_by = $shared->updated_by = $user->user_enc_id;
                     $shared->created_on = $shared->updated_on = date('Y-m-d H:i:s');
                     if (!$shared->save()) {
@@ -2606,7 +2640,6 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionEmployeeStats()
     {
-
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
@@ -2636,11 +2669,12 @@ class CompanyDashboardController extends ApiBaseController
                     "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
                     'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'New Lead' THEN c.loan_app_enc_id END) as new_lead",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Sanctioned' THEN c.loan_app_enc_id END) as sanctioned",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.loan_status = 'Rejected' or c2.loan_status = 'CNI') THEN c.loan_app_enc_id END) as rejected",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Disbursed' THEN c.loan_app_enc_id END) as disbursed",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.loan_status = 'Login' THEN c.loan_app_enc_id END) as login",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' THEN c.loan_app_enc_id END) as new_lead",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' THEN c.loan_app_enc_id END) as sanctioned",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') THEN c.loan_app_enc_id END) as rejected",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' THEN c.loan_app_enc_id END) as disbursed",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '4' THEN c.loan_app_enc_id END) as login",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' THEN c.loan_app_enc_id END) as under_process",
                 ])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -2663,7 +2697,24 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 ])
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere(['between', 'c.loan_status_updated_on', $params['start_date'], $params['end_date']])
+                ->andWhere([
+                    'or',
+                    [
+                        'and',
+                        ['c2.value' => ['0', '4', '31', '28', '32']],
+                        ['>=', 'c.loan_status_updated_on', $params['start_date']],
+                        ['<=', 'c.loan_status_updated_on', $params['end_date']]
+                    ],
+                    [
+                        'and',
+                        ['<=', 'c.loan_status_updated_on', $params['end_date']],
+                        [
+                            "OR",
+                            ['c2.value' => '30'],
+                            ['between', 'c2.value', '5', '25'],
+                        ]
+                    ],
+                ])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!empty($params['fields_search'])) {

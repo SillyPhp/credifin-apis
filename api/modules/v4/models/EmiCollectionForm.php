@@ -97,7 +97,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -149,14 +149,13 @@ class EmiCollectionForm extends Model
         $model->longitude = $this->longitude;
         $model->created_by = $model->updated_by = $user_id;
         $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
-        if ($this->ptp_amount) {
+        if ($this->ptp_amount && $this->ptp_date) {
             $model->ptp_amount = $this->ptp_amount;
+            $model->ptp_date = $this->ptp_date;
+            $model->ptp_payment_method = $this->ptp_payment_method;
         }
         if ($this->comments) {
             $model->comments = $this->comments;
-        }
-        if ($this->ptp_date) {
-            $model->ptp_date = $this->ptp_date;
         }
         if ($this->delay_reason) {
             $model->delay_reason = $this->delay_reason;

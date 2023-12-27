@@ -7,6 +7,7 @@ use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
+use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountPtps;
@@ -25,8 +26,8 @@ use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -662,9 +663,9 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.request_enc_id', 'a.loan_account_enc_id', 'a.vehicle_model', 'a.km_driven',
-                '(CASE WHEN a.insurance = "1" THEN "yes" ELSE "no" END) AS insurance',
-                '(CASE WHEN a.rc = "1" THEN "yes" ELSE "no" END) AS rc', 'a.registration_number', 'a.current_market_value',
-                'a.repossession_date', 'b.loan_account_number', 'CONCAT(c.first_name," ",c.last_name) created_by', 'd.brand_name'
+                "(CASE WHEN a.insurance = '1' THEN 'yes' ELSE 'no' END) AS insurance",
+                "(CASE WHEN a.rc = '1' THEN 'yes' ELSE 'no' END) AS rc", 'a.registration_number', 'a.current_market_value',
+                'a.repossession_date', 'b.loan_account_number', "CONCAT(c.first_name,' ',c.last_name) created_by", 'd.brand_name'
             ])
             ->joinWith(['loanAccountEnc b'], false)
             ->joinWith(['createdBy c'], false)
@@ -867,9 +868,9 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.request_enc_id', 'a.comment', 'a.type', 'a.created_on',
-                'CONCAT(f1.first_name," ",f1.last_name) created_by',
-                'CASE WHEN f1.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",f1.image_location, "/", f1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f1.first_name," ",f1.last_name), "&size=200&rounded=true&background=", REPLACE(f1.initials_color, "#", ""), "&color=ffffff") END user_image',
-                'CASE WHEN f2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", f2.logo_location, "/", f2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f2.name, "&size=200&rounded=false&background=", REPLACE(f2.initials_color, "#", ""), "&color=ffffff") END logo',
+                "CONCAT(f1.first_name,' ',f1.last_name) created_by",
+                "CASE WHEN f1.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',f1.image_location, '/', f1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(f1.first_name,' ',f1.last_name), '&size=200&rounded=true&background=', REPLACE(f1.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN f2.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', f2.logo_location, '/', f2.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', f2.name, '&size=200&rounded=false&background=', REPLACE(f2.initials_color, '#', ''), '&color=ffffff') END logo",
             ])
             ->joinWith(['createdBy f1' => function ($b3) {
                 $b3->joinWith(['organizations f2']);
@@ -931,7 +932,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by', 'b.emi_amount', 'b.last_emi_received_amount'
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image", 'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by", 'b.emi_amount', 'b.last_emi_received_amount'
             ])
             ->joinWith(['loanAccountEnc b'], false)
             ->joinWith(['createdBy c'], false)
@@ -973,7 +974,8 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
+                'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
             ->joinWith(['createdBy c'], false)
@@ -1015,7 +1017,8 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                'CASE WHEN a.request_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, 'https') . '", a.request_image_location, "/", a.request_image) END image', 'a.created_on', 'b.loan_account_number', 'CONCAT(c.first_name , " ", c.last_name) as created_by'
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
+                'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
             ->joinWith(['createdBy c'], false)
@@ -1172,7 +1175,7 @@ class LoanAccountsController extends ApiBaseController
                 'a.comment', 'a.is_important', 'a.reply_to', 'a.loan_account_enc_id',
                 'a.status', 'a.source', 'a.created_on',
                 "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as created_by",
-                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
                 "CASE WHEN b1.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', b1.logo_location, '/', b1.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b1.name, '&size=200&rounded=false&background=', REPLACE(b1.initials_color, '#', ''), '&color=ffffff') END logo",
             ])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1239,7 +1242,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_enc_id"']);
         }
 
-        $update = AssignedLoanAccounts::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
+        $update = AssignedLoanAccountsExtended::findOne(['assigned_enc_id' => $params['assigned_enc_id'], 'is_deleted' => 0]);
 
         if (!$update) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -1269,14 +1272,20 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
-                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id", "b.loan_account_number",
-                "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", "c.last_emi_date", "c.name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", "c.loan_type", "c.emi_date", "c.last_emi_received_amount",
-                "c.advance_interest", "c.bucket", "c.branch_enc_id", "c.bucket_status_date", "c.pos", "d.location_enc_id as branch", "d.location_name as branch_name",
-                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
+                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
+                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
+                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
+                "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
+                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
+                "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
+                "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
             ])
             ->joinWith(['emiCollectionEnc b' => function ($b) {
+                $b->joinWith(['branchEnc bb'], false);
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
                     $cc->joinWith(['branchEnc d'], false);
                     $cc->joinWith(["assignedCaller ac"], false);
@@ -1366,7 +1375,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
                 'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['or',
+            ->where(['and',
                 ['not', ['a.ptp_amount' => NULL]],
                 ['not', ['a.ptp_date' => NULL]]])
             ->andWhere(['a.is_deleted' => 0])
@@ -1377,9 +1386,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach ($data as $key => $d) {
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach ($data as $d) {
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(LoanAccountPtps::tableName(), [
@@ -1422,9 +1431,9 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         $inserted = 0;
-        foreach ($data as $key => $val) {
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables["string"] = time() . rand(100, 100000);
+        $utilitiesModel = new Utilities();
+        foreach($data as $val){
+            $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
                 ->insert(AssignedLoanAccounts::tableName(), [
