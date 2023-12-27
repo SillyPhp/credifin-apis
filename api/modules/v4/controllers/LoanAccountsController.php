@@ -529,13 +529,17 @@ class LoanAccountsController extends ApiBaseController
         $data = (new \yii\db\Query())
             ->select([
                 'a.loan_account_number',
-                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
+                'COUNT(DISTINCT a1.emi_collection_enc_id) as total_emis', 'a.loan_account_enc_id',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
-                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                'a.emi_date', 'a.created_on',
+                'a.last_emi_received_amount',
+                '(CASE WHEN ANY_VALUE(a2.collection_date) IS NOT NULL THEN ANY_VALUE(a2.collection_date) ELSE a.last_emi_received_date END) AS last_emi_received_date',
+                '(CASE WHEN ANY_VALUE(a2.amount) IS NOT NULL THEN ANY_VALUE(a2.amount) ELSE a.last_emi_received_amount END) AS last_emi_received_amount',
                 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
             ])
             ->from(['a' => LoanAccounts::tableName()])
             ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
+            ->join('LEFT JOIN', ['a2' => EmiCollection::tableName()], "a.loan_account_number = a2.loan_account_number AND a2.id = (SELECT MAX(a2.id) FROM " . EmiCollection::tableName() . " z WHERE z.loan_account_number = a2.loan_account_number AND z.emi_payment_status NOT IN ('pending', 'failed', 'rejected'))")
             ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->one();
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
@@ -1268,6 +1272,17 @@ class LoanAccountsController extends ApiBaseController
         $params = $this->post;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        $sub_query = (new \yii\db\Query())
+            ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
+            ->from(['z' => EmiCollection::tableName()])
+            ->where(['z.id' => (new \yii\db\Query())
+                ->select(['MAX(zz.id)'])
+                ->from(['zz' => EmiCollection::tableName()])
+                ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                ->orderBy(['id' => SORT_DESC])
+            ]);
+
         $ptpcases = LoanAccountPtps::find()
             ->alias('a')
             ->select([
@@ -1284,7 +1299,7 @@ class LoanAccountsController extends ApiBaseController
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
             ])
-            ->joinWith(['emiCollectionEnc b' => function ($b) {
+            ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
                 $b->joinWith(['branchEnc bb'], false);
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
                     $cc->joinWith(['branchEnc d'], false);
@@ -1292,6 +1307,9 @@ class LoanAccountsController extends ApiBaseController
                 }]);
             }], false)
             ->joinWith(['collectionManager cm'], false)
+            ->joinWith(['emiCollectionEnc c' => function ($c) use ($sub_query) {
+                $c->from(['subquery' => $sub_query]);
+            }])
             ->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')])
             ->groupBy(['a.ptp_enc_id']);
 
@@ -1413,7 +1431,8 @@ class LoanAccountsController extends ApiBaseController
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
     }
 
-    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = ''){
+    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = '')
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
             return ['status' => 401, 'msg' => 'authentication failed'];
@@ -1432,7 +1451,7 @@ class LoanAccountsController extends ApiBaseController
 
         $inserted = 0;
         $utilitiesModel = new Utilities();
-        foreach($data as $val){
+        foreach ($data as $val) {
             $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
