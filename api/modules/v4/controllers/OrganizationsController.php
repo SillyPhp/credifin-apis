@@ -2471,6 +2471,16 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        $sub_query = (new \yii\db\Query())
+            ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->where(['z.id' => (new \yii\db\Query())
+                ->select(['MAX(zz.id)'])
+                ->from(['zz' => EmiCollectionExtended::tableName()])
+                ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                ->orderBy(['id' => SORT_DESC])
+            ]);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2493,6 +2503,9 @@ class OrganizationsController extends ApiBaseController
                     "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
                 ]);
                 $d->joinWith(['sharedTo d1'], false);
+            }])
+            ->joinWith(["emiCollections e" => function ($e) use ($sub_query) {
+                $e->from(["sub_query" => $sub_query]);
             }])
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
