@@ -1343,12 +1343,10 @@ class LoanAccountsController extends ApiBaseController
                 ->alias('a')
                 ->select([
                     'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
                 ])
-                ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
                 ->andWhere(['a.loan_account_number' => $params['loan_number']])
-                ->limit(20)
                 ->asArray()
                 ->all();
             if ($query) {
