@@ -3005,7 +3005,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanProductsEnc d'])
                 ->where(['<=', 'a.created_on', $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
-                ->groupBy(['a.loan_app_enc_id']);
+                ->groupBy(['a.loan_app_enc_id'])
+                ->orderBy([
+                    "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
+                ]);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
