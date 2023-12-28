@@ -2962,10 +2962,14 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->select([
-                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
+                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
                     'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
-                    'd.name as product_name'
+                    'd.name as product_name',
+                    "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
                 ])
+                ->joinWith(['loanCoApplicants h' => function ($h) {
+                    $h->andOnCondition(['h.borrower_type' => 'Borrower']);
+                }])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
