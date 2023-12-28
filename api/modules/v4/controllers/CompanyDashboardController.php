@@ -792,7 +792,7 @@ class CompanyDashboardController extends ApiBaseController
             ->addSelect(["CONCAT(b.first_name, ' ' ,b.last_name) shared_by"])
             ->joinWith(['sharedBy b'], false)
             ->joinWith(['loanAppEnc c'], false)
-            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0, 'c.is_removed' => 0])
             ->asArray()
             ->all();
         $loan_app_ids = [];
@@ -1086,7 +1086,6 @@ class CompanyDashboardController extends ApiBaseController
             } else {
                 $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
             }
-
         }
 
 
@@ -2657,7 +2656,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->join('INNER JOIN', ['k2' => CreditRequestedData::tableName()], 'k2.request_enc_id = k1.request_enc_id')
                 ->groupBy(['k.created_by'])
                 ->andWhere(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
-
+            $startDate = $params['start_date'];
+            $endDate = $params['end_date'];
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select([
@@ -2668,13 +2668,13 @@ class CompanyDashboardController extends ApiBaseController
                     'ANY_VALUE(gd.assigned_designation_enc_id) assigned_designation_enc_id',
                     "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
                     'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' THEN c.loan_app_enc_id END) as total_cases",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' THEN c.loan_app_enc_id END) as new_lead",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' THEN c.loan_app_enc_id END) as sanctioned",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') THEN c.loan_app_enc_id END) as rejected",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' THEN c.loan_app_enc_id END) as disbursed",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '4' THEN c.loan_app_enc_id END) as login",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' THEN c.loan_app_enc_id END) as under_process",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as total_cases",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as new_lead",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as sanctioned",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as rejected",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as disbursed",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c.login_date IS NOT NULL AND c.login_date <= '$endDate' AND c.login_date >= '$startDate' THEN c.loan_app_enc_id END) as login",
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process"
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designation gd'])
@@ -2695,25 +2695,8 @@ class CompanyDashboardController extends ApiBaseController
                         $k->from(['subquery' => $subquery]);
                     }
                 ])
-                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    [
-                        'and',
-                        ['c2.value' => ['0', '4', '31', '28', '32']],
-                        ['>=', 'c.loan_status_updated_on', $params['start_date']],
-                        ['<=', 'c.loan_status_updated_on', $params['end_date']]
-                    ],
-                    [
-                        'and',
-                        ['<=', 'c.loan_status_updated_on', $params['end_date']],
-                        [
-                            "OR",
-                            ['c2.value' => '30'],
-                            ['between', 'c2.value', '5', '25'],
-                        ]
-                    ],
-                ])
+                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!empty($params['fields_search'])) {
@@ -2749,6 +2732,9 @@ class CompanyDashboardController extends ApiBaseController
                 $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
 
+            if (!empty($params['product_id'])) {
+                $employeeStats->andWhere(['c.loan_products_enc_id' => $params['product_id']]);
+            }
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $employeeStats->andWhere([
                     'or',

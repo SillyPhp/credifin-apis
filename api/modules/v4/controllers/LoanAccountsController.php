@@ -1263,7 +1263,6 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
     }
 
     public function actionGetPtpCases()
@@ -1355,7 +1354,7 @@ class LoanAccountsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public function actionSearchLoanAccount()
+    public function actionGetLoanAccount()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1366,12 +1365,10 @@ class LoanAccountsController extends ApiBaseController
                 ->alias('a')
                 ->select([
                     'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
                 ])
-                ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
-                ->andWhere(['like', 'a.loan_account_number', $params['loan_number'], false])
-                ->limit(20)
+                ->andWhere(['a.loan_account_number' => $params['loan_number']])
                 ->asArray()
                 ->all();
             if ($query) {
@@ -1391,11 +1388,15 @@ class LoanAccountsController extends ApiBaseController
 
         $data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
-                'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['and',
+            ->select([
+                'a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
+                'a.created_by', 'a.updated_by', 'a.updated_on'
+            ])
+            ->where([
+                'and',
                 ['not', ['a.ptp_amount' => NULL]],
-                ['not', ['a.ptp_date' => NULL]]])
+                ['not', ['a.ptp_date' => NULL]]
+            ])
             ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->offset(($page - 1) * $limit)
@@ -1473,6 +1474,5 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
-
     }
 }
