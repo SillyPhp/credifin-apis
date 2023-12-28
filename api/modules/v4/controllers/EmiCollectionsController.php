@@ -262,7 +262,7 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $user_id = $params["user_id"];
 
-        $query_data = $this->emiCashReport($user_id, $params);
+        $query_data = $this->emiCashReport($user_id);
         $count = $query_data['count'];
         $query = $query_data['query'];
 
@@ -273,7 +273,7 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, 'count' => $count, "data" => $query, "display_data" => $display_data, "received_cash" => $received_cash]);
     }
 
-    private function emiCashReport($user_id, $params)
+    private function emiCashReport($user_id)
     {
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -284,7 +284,7 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN b.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',b.pr_receipt_image_location, '/', b.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN b.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',b.other_doc_image_location, '/', b.other_doc_image) ELSE NULL END as other_doc_image",
             ])
-            ->joinWith(["emiCollectionEnc b" => function ($b) {
+            ->innerJoinWith(["emiCollectionEnc b" => function ($b) {
                 $b->andOnCondition(['b.is_deleted' => 0]);
             }], false)
             ->andWhere([
