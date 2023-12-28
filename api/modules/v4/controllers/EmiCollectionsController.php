@@ -248,7 +248,7 @@ class EmiCollectionsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        if (!$users){
+        if (!$users) {
             return $this->response(404, ["message" => "not found"]);
         }
 
@@ -284,7 +284,9 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN b.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',b.pr_receipt_image_location, '/', b.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN b.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',b.other_doc_image_location, '/', b.other_doc_image) ELSE NULL END as other_doc_image",
             ])
-            ->joinWith(["emiCollectionEnc b"], false)
+            ->joinWith(["emiCollectionEnc b" => function ($b) {
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }], false)
             ->andWhere([
                 "AND",
                 ["a.status" => 0],
@@ -495,7 +497,7 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(200, ["status" => 200, "message" => "saved successfully"]);
         } catch (Exception $exception) {
             $transaction->rollBack();
-            return $this->response(500, ["status" => 500, "message" => $exception->getMessage()]);
+            return $this->response(500, ["status" => 500, "message" => "An error occurred.", "error" => $exception->getMessage()]);
         }
     }
 
@@ -916,10 +918,23 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        if ((empty($params['collection_date']) && empty($params['amount'])) || empty($params['remarks']) || empty($params['emi_id'])) {
+        if ((empty($params['collection_date']) && (empty($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "collection_date" or "amount" or "remarks" or "emi_id"']);
         }
         $transaction = Yii::$app->db->beginTransaction();
+        function change_amount($cash_model, $amount, $user_id)
+        {
+            if ($cash_model->remaining_amount != 0) {
+                $cash_model->remaining_amount += $amount;
+            }
+            $cash_model->amount += $amount;
+            $cash_model->updated_on = date('Y-m-d H:i:s');
+            $cash_model->updated_by = $user_id;
+            if (!$cash_model->save()) {
+                throw new Exception(implode(',', array_column($cash_model->errors, "0")));
+            }
+        }
+
         try {
             if (!empty($params['collection_date']) && !empty($params['amount'])) {
                 throw new Exception("You can not update collection date and amount both at same time");
@@ -929,13 +944,14 @@ class EmiCollectionsController extends ApiBaseController
             if (!$emi) {
                 $this->response(404, ['message' => 'an error occurred', 'error' => 'emi not found']);
             }
-            if ($emi->emi_payment_status !== 'collected') {
-                throw new Exception("Emi is only updatable when the status is in collected form.");
+            if ($emi->emi_payment_status === 'paid') {
+                throw new Exception("Emi is only updatable when the status is not in paid status.");
             }
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
             if (!empty($params['amount'])) {
+                $updated_amount = $params['amount'] - $emi->amount;
                 $emi->amount = $params['amount'];
             }
             $emi->updated_on = date('Y-m-d H:i:s');
@@ -958,15 +974,18 @@ class EmiCollectionsController extends ApiBaseController
                 throw new Exception(implode(',', array_column($audit->errors, "0")));
             }
             if (!empty($params['amount'])) {
-                $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "parent_cash_report_enc_id" => null, "is_deleted" => 0]);
-                if (!$cash) {
-                    throw new Exception("an error occurred");
-                }
-                $cash->remaining_amount = $cash->amount = $params['amount'];
-                $cash->updated_on = date('Y-m-d H:i:s');
-                $cash->updated_by = $user->user_enc_id;
-                if (!$cash->save()) {
-                    throw new Exception(implode(',', array_column($cash->errors, "0")));
+                $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
+                if ($cash) {
+                    change_amount($cash, $updated_amount, $user->user_enc_id);
+                    if (!empty($cash->parent_cash_report_enc_id)) {
+                        $cash2 = EmployeesCashReportExtended::findOne(['cash_report_enc_id' => $cash->parent_cash_report_enc_id, "is_deleted" => 0]);
+                        if ($cash2) {
+                            if (!($cash2->type == 1 && $cash2->status == 2) || !empty($cash2->parent_cash_report_enc_id)) {
+                                throw new Exception("Amount can not be changed for this emi.");
+                            }
+                            change_amount($cash2, $updated_amount, $user->user_enc_id);
+                        }
+                    }
                 }
             }
             $transaction->commit();
@@ -975,7 +994,5 @@ class EmiCollectionsController extends ApiBaseController
             $transaction->rollBack();
             return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
-
-
     }
 }
