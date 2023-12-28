@@ -155,7 +155,7 @@ class EmiCollectionsController extends ApiBaseController
             ->select([
                 "a.given_to",
                 "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
-                "SUM(CASE WHEN a.status = 1 AND type = 0 THEN a.remaining_amount END) received_cash",
+                "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
                 "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"])
             ->from(["a" => EmployeesCashReport::tableName()])
             ->andWhere([
