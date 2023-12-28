@@ -529,13 +529,17 @@ class LoanAccountsController extends ApiBaseController
         $data = (new \yii\db\Query())
             ->select([
                 'a.loan_account_number',
-                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
+                'COUNT(DISTINCT a1.emi_collection_enc_id) as total_emis', 'a.loan_account_enc_id',
                 'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
-                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                'a.emi_date', 'a.created_on',
+                'a.last_emi_received_amount',
+                '(CASE WHEN ANY_VALUE(a2.collection_date) IS NOT NULL THEN ANY_VALUE(a2.collection_date) ELSE a.last_emi_received_date END) AS last_emi_received_date',
+                '(CASE WHEN ANY_VALUE(a2.amount) IS NOT NULL THEN ANY_VALUE(a2.amount) ELSE a.last_emi_received_amount END) AS last_emi_received_amount',
                 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
             ])
             ->from(['a' => LoanAccounts::tableName()])
             ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
+            ->join('LEFT JOIN', ['a2' => EmiCollection::tableName()], "a.loan_account_number = a2.loan_account_number AND a2.id = (SELECT MAX(a2.id) FROM " . EmiCollection::tableName() . " z WHERE z.loan_account_number = a2.loan_account_number AND z.emi_payment_status NOT IN ('pending', 'failed', 'rejected'))")
             ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
             ->one();
         $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
@@ -588,9 +592,13 @@ class LoanAccountsController extends ApiBaseController
                 END as borrower_image",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
                 "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
-                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method"
+                WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method",
+                "d1.payment_short_url"
             ])
             ->joinWith(['createdBy b'], false)
+            ->joinWith(['assignedLoanPayments d' => function ($d) {
+                $d->joinWith(['loanPaymentsEnc d1'], false);
+            }], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
         $count = $model->count();
         $model = $model
@@ -970,7 +978,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image", 
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
                 'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
@@ -1013,7 +1021,7 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.remarks', 'a.loan_account_enc_id', 'a.request_enc_id',
-                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image", 
+                "CASE WHEN a.request_image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payment_issues->image, "https") . "', a.request_image_location, '/', a.request_image) END image",
                 'a.created_on', 'b.loan_account_number', "CONCAT(c.first_name , ' ', c.last_name) as created_by"
             ])
             ->joinWith(['loanAccountEnc b'], false)
@@ -1255,7 +1263,6 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
     }
 
     public function actionGetPtpCases()
@@ -1264,23 +1271,34 @@ class LoanAccountsController extends ApiBaseController
         $params = $this->post;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        $sub_query = (new \yii\db\Query())
+            ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
+            ->from(['z' => EmiCollection::tableName()])
+            ->where(['z.id' => (new \yii\db\Query())
+                ->select(['MAX(zz.id)'])
+                ->from(['zz' => EmiCollection::tableName()])
+                ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                ->orderBy(['id' => SORT_DESC])
+            ]);
+
         $ptpcases = LoanAccountPtps::find()
             ->alias('a')
             ->select([
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date", 
+                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
                 "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount", 
-                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type", 
+                "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
+                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
                 "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
-                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id", 
+                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
                 "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
-                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager", 
+                "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
             ])
-            ->joinWith(['emiCollectionEnc b' => function ($b) {
+            ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
                 $b->joinWith(['branchEnc bb'], false);
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
                     $cc->joinWith(['branchEnc d'], false);
@@ -1288,6 +1306,9 @@ class LoanAccountsController extends ApiBaseController
                 }]);
             }], false)
             ->joinWith(['collectionManager cm'], false)
+            ->joinWith(['emiCollectionEnc c' => function ($c) use ($sub_query) {
+                $c->from(['subquery' => $sub_query]);
+            }])
             ->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')])
             ->groupBy(['a.ptp_enc_id']);
 
@@ -1327,13 +1348,13 @@ class LoanAccountsController extends ApiBaseController
             ->all();
 
         if ($ptpcases) {
-            return $this->response(200, ['status' => 200, 'count'=> $count, 'ptpcases' => $ptpcases]);
+            return $this->response(200, ['status' => 200, 'count' => $count, 'ptpcases' => $ptpcases]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public function actionSearchLoanAccount()
+    public function actionGetLoanAccount()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1344,12 +1365,10 @@ class LoanAccountsController extends ApiBaseController
                 ->alias('a')
                 ->select([
                     'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
                 ])
-                ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
-                ->andWhere(['like', 'a.loan_account_number', $params['loan_number'], false])
-                ->limit(20)
+                ->andWhere(['a.loan_account_number' => $params['loan_number']])
                 ->asArray()
                 ->all();
             if ($query) {
@@ -1369,11 +1388,15 @@ class LoanAccountsController extends ApiBaseController
 
         $data = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
-                'a.created_by', 'a.updated_by', 'a.updated_on'])
-            ->where(['and',
+            ->select([
+                'a.emi_collection_enc_id', 'a.ptp_payment_method', 'a.ptp_amount', 'a.ptp_date', 'a.created_on',
+                'a.created_by', 'a.updated_by', 'a.updated_on'
+            ])
+            ->where([
+                'and',
                 ['not', ['a.ptp_amount' => NULL]],
-                ['not', ['a.ptp_date' => NULL]]])
+                ['not', ['a.ptp_date' => NULL]]
+            ])
             ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->offset(($page - 1) * $limit)
@@ -1409,7 +1432,8 @@ class LoanAccountsController extends ApiBaseController
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
     }
 
-    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = ''){
+    public function actionShiftAssignedLoanAccounts($limit = 50, $page = 1, $auth = '')
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
             return ['status' => 401, 'msg' => 'authentication failed'];
@@ -1428,7 +1452,7 @@ class LoanAccountsController extends ApiBaseController
 
         $inserted = 0;
         $utilitiesModel = new Utilities();
-        foreach($data as $val){
+        foreach ($data as $val) {
             $utilitiesModel->variables["string"] = time() . rand(100, 10000000);
 
             $insert = Yii::$app->db->createCommand()
@@ -1444,12 +1468,11 @@ class LoanAccountsController extends ApiBaseController
                     'updated_by' => $val['updated_by'],
                     'updated_on' => $val['updated_on'],
                 ])->execute();
-            if($insert){
+            if ($insert) {
                 $inserted += 1;
             }
         }
 
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
-
     }
 }
