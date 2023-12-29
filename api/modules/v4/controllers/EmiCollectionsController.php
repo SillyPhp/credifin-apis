@@ -5,11 +5,15 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
+use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
+use common\models\extended\UsersExtended;
+use common\models\Users;
 use Exception;
 use Yii;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -146,14 +150,41 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $limit = !empty($params["limit"]) ? $params["limit"] : 10;
         $page = !empty($params["page"]) ? $params["page"] : 1;
-        $select = [
-            "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
-            "ANY_VALUE(b1.employee_code) employee_code", "ANY_VALUE(b2.designation) designation",
-            "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) reporting_person",
-            "ANY_VALUE(b4.location_name) location_name", "ANY_VALUE(b.phone) phone", "b.email",
-            "SUM(a.remaining_amount) total_sum",
-            "a.given_to", "ANY_VALUE(a.received_from) received_from"
-        ];
+
+        $subquery1 = (new Query())
+            ->select([
+                "a.given_to",
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
+                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["IS NOT", "a.given_to", null],
+                ["!=", "a.status", 3],
+                ["IN", "a.type", [0, 2]]
+            ])
+            ->groupBy(["a.given_to"]);
+        $subquery2 = (new Query())
+            ->select([
+                "a.received_from",
+                "SUM(a.remaining_amount) AS bank_unapproved_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["!=", "a.status", 3],
+                ["a.status" => 2],
+                ["a.type" => 1]
+            ])
+            ->groupBy(["a.received_from"]);
+
         $fields_search = [];
         if (!empty($params['field'])) {
             foreach ($params['field'] as $key => $value) {
@@ -163,7 +194,7 @@ class EmiCollectionsController extends ApiBaseController
                             $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
                             break;
                         case 'name':
-                            $fields_search[] = "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) LIKE '%$value%'";
+                            $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
                         case 'reporting_person':
                             $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
@@ -172,87 +203,58 @@ class EmiCollectionsController extends ApiBaseController
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
-                            $fields_search[] = "ANY_VALUE(b.phone) LIKE '%$value%'";
+                            $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
                     }
                 }
             }
             $fields_search = implode(" AND ", $fields_search);
         }
-        $query = EmployeesCashReportExtended::find()
-            ->alias("a")
-            ->select($select)
-            ->joinWith(["givenTo b" => function ($a) {
-                $a->joinWith(["userRoles0 b1" => function ($b1) {
-                    $b1->joinWith(["designation b2"], false);
-                    $b1->joinWith(["reportingPerson b3"], false);
-                    $b1->joinWith(["branchEnc b4"], false);
-                }], false);
-            }], false)
-            ->andWhere(["a.type" => [0, 2]])
-            ->andWhere(["AND",
-                ["NOT",
-                    ["a.remaining_amount" => 0]],
-                ["a.parent_cash_report_enc_id" => null]])
-            ->groupBy(["a.given_to"]);
-        if (!empty($params["branch_id"])) {
-            $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
-        }
-
-        if (!empty($fields_search)) {
-            $query->andWhere($fields_search);
-        }
-        $count = $query->count();
-        $query = $query
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
-            ->asArray()
-            ->all();
-
-        $query = ArrayHelper::index($query, "given_to");
-        $query2 = EmployeesCashReportExtended::find()
-            ->alias("a")
-            ->select($select)
-            ->joinWith(["receivedFrom b" => function ($a) {
-                $a->joinWith(["userRoles0 b1" => function ($b1) {
-                    $b1->joinWith(["designation b2"], false);
-                    $b1->joinWith(["reportingPerson b3"], false);
-                    $b1->joinWith(["branchEnc b4"], false);
-                }], false);
-            }], false)
-            ->andWhere(["a.type" => 1])
-            ->andWhere(["AND",
-                ["NOT",
-                    ["a.remaining_amount" => 0]
-                ],
-                ["a.parent_cash_report_enc_id" => null],
-                ["a.status" => 2]
+        $users = UsersExtended::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id AS user_id',
+                "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) name",
+                "ANY_VALUE(b1.employee_code) employee_code",
+                "ANY_VALUE(b2.designation) designation",
+                "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) reporting_person",
+                "ANY_VALUE(b4.location_name) location_name", "ANY_VALUE(a.phone) phone", "a.email", 'COALESCE(ANY_VALUE(subquery.collected_cash), 0) collected_cash',
+                'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
+                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
             ])
-            ->groupBy(["a.cash_report_enc_id"]);
-        if (!empty($params["branch_id"])) {
-            $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
-        }
-        if (!empty($fields_search)) {
-            $query2->andWhere($fields_search);
-        }
-        $query2 = $query2
+            ->joinWith(["userRoles0 b1" => function ($b1) {
+                $b1->joinWith(["designation b2"], false);
+                $b1->joinWith(["reportingPerson b3"], false);
+                $b1->joinWith(["branchEnc b4"], false);
+            }], false)
+            ->joinWith(["employeesCashReports3 c" => function ($c) use ($subquery1) {
+                $c->from(["subquery" => $subquery1]);
+            }])
+            ->joinWith(["employeesCashReports2 d" => function ($d) use ($subquery2) {
+                $d->from(["subquery2" => $subquery2]);
+            }])
+            ->andWhere([
+                "OR",
+                ["IS NOT", "subquery.given_to", NULL],
+                ["IS NOT", "subquery2.received_from", NULL]
+            ])
+            ->andWhere($fields_search)
+            ->groupBy(['a.user_enc_id']);
+        $count = $users->count();
+        $users = $users
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-        foreach ($query2 as $item) {
-            if (in_array($item["received_from"], $query)) {
-                $query[$item["received_from"]]["total_sum"] += $item["total_sum"];
-            } else {
-                $item["given_to"] = $item["received_from"];
-                $query[$item["received_from"]] = $item;
-            }
+
+        if (!$users){
+            return $this->response(404, ["message" => "not found"]);
         }
-        if ($query) {
-            return $this->response(200, ["status" => 200, "data" => array_values($query), "count" => $count]);
-        }
-        return $this->response(404, ["status" => 404, "message" => "no data found"]);
+
+        return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
     }
+
 
     public function actionEmployeeEmiCollection()
     {
@@ -540,7 +542,7 @@ class EmiCollectionsController extends ApiBaseController
             } else {
                 // emi ids can be more than 1 so using updating function to track everything
                 $emi_id = $this->finder($cash_id);
-                $emi_id = array_column($emi_id,"emi_collection_enc_id");
+                $emi_id = array_column($emi_id, "emi_collection_enc_id");
             }
             if ($overdue_update) {
                 $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);
