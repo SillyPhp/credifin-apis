@@ -2962,9 +2962,14 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->select([
-                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
-                    'ANY_VALUE(c1.location_name)', 'ANY_VALUE(c3.loan_status)', 'd.name product_name'
+                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
+                    'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
+                    'd.name as product_name',
+                    "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
                 ])
+                ->joinWith(['loanCoApplicants h' => function ($h) {
+                    $h->andOnCondition(['h.borrower_type' => 'Borrower']);
+                }])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
@@ -2977,7 +2982,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
                     $k->groupBy(['k.loan_app_enc_id']);
                     $k->select([
-                        'ANY_VALUE(k.report_enc_id)', 'ANY_VALUE(k.loan_app_enc_id)', 'k.created_by',
+                        'ANY_VALUE(k.report_enc_id) as report_enc_id', 'ANY_VALUE(k.loan_app_enc_id) as loan_app_enc_id', 'k.created_by',
                         "COUNT(CASE WHEN k2.request_source = 'CIBIL' THEN k.loan_app_enc_id END) as cibil",
                         "COUNT(CASE WHEN k2.request_source = 'EQUIFAX' THEN k.loan_app_enc_id END) as equifax",
                         "COUNT(CASE WHEN k2.request_source = 'CRIF' THEN k.loan_app_enc_id END) as crif"
@@ -2990,7 +2995,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanProductsEnc d'])
                 ->where(['<=', 'a.created_on', $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
-                ->groupBy(['a.loan_app_enc_id']);
+                ->groupBy(['a.loan_app_enc_id'])
+                ->orderBy([
+                    "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
+                ]);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
