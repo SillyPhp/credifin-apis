@@ -1728,10 +1728,20 @@ class OrganizationsController extends ApiBaseController
                 'emi_payment_status AS status',
                 'amount'
             ])
+            ->andWhere(['is_deleted' => 0])
             ->andWhere([
-                'and',
-                ['between', 'collection_date', $params['start_date'], $params['end_date']],
-                ['is_deleted' => 0]
+                "OR",
+                [
+                    "AND",
+                    ["IS NOT", "collection_date", null],
+                    ['between', 'collection_date', $params['start_date'], $params['end_date']],
+
+                ],
+                [
+                    "AND",
+                    ["IS", "collection_date", null],
+                    ['between', 'created_on', $params['start_date'], $params['end_date']],
+                ]
             ]);
         if (!empty($method)) {
             if (in_array('pending', $method)) {
@@ -2128,42 +2138,40 @@ class OrganizationsController extends ApiBaseController
 
     public function actionDeleteEmi()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (empty($params['emi_collection_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+        $this->isAuth();
+        $user = $this->user;
+        $params = Yii::$app->request->post();
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $removeEmi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if (!$removeEmi) {
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id not found']);
             }
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $removeEmi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
-                if (!$removeEmi) {
-                    return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
-                }
-                $removeEmi->is_deleted = 1;
-                $removeEmi->updated_by = $user->user_enc_id;
-                $removeEmi->updated_on = date('Y-m-d H:i:s');
-                if (!$removeEmi->update()) {
-                    throw new Exception(implode(' ', array_column($removeEmi->errors, "0")));
-                }
-
-                $removecash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' =>
-                $removeEmi->emi_collection_enc_id]);
-                if (!empty($removecash->parent_cash_report_enc_id)) {
-                    throw new Exception("EMI is in pipeline");
-                }
-
-                $removecash->is_deleted = 1;
-                $removecash->updated_by = $user->user_enc_id;
-                $removecash->updated_on = date('Y-m-d H:i:s');
-                if (!$removecash->update()) {
-                    throw new Exception(implode(' ', array_column($removecash->errors, "0")));
-                }
-                $transaction->commit();
-                return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
-            } catch (Exception $exception) {
-                $transaction->rollback();
-                return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+            $removeEmi->is_deleted = 1;
+            $removeEmi->updated_by = $user->user_enc_id;
+            $removeEmi->updated_on = date('Y-m-d H:i:s');
+            if (!$removeEmi->update()) {
+                throw new Exception(implode(' ', array_column($removeEmi->errors, "0")));
             }
+
+            $removeCash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $removeEmi->emi_collection_enc_id]);
+            if (!empty($removeCash->parent_cash_report_enc_id)) {
+                throw new Exception("Emi in pipeline status can not be deleted.");
+            }
+            $removeCash->is_deleted = 1;
+            $removeCash->updated_by = $user->user_enc_id;
+            $removeCash->updated_on = date('Y-m-d H:i:s');
+            if (!$removeCash->update()) {
+                throw new Exception(implode(' ', array_column($removeCash->errors, "0")));
+            }
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        } catch (Exception $exception) {
+            $transaction->rollback();
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
