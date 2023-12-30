@@ -286,8 +286,12 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "Sumit1992"])) {
-            $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "Sumit1992", "wishey"])) {
+            if ($user->username == 'wishey') {
+                $leadsAccessOnly = 'both';
+            } else {
+                $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
+            }
         }
 
         // if user is organization/financer then getting its DSA's
@@ -673,6 +677,10 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($leadsAccessOnly)) {
             if ($leadsAccessOnly == 'vehicle') {
                 $where = ['lp.name' => $this->vehicleList];
+            } else if ($leadsAccessOnly == 'both') {
+                $where = ['lp.name' => $this->vehicleList];
+                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
+                $where['a.loan_products_enc_id'] = ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m'];
             } else {
                 //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
                 $where = ['a.loan_products_enc_id' => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m']];

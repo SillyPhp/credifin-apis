@@ -172,7 +172,7 @@ class LoanApplicationsController extends ApiBaseController
         //get user roles
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "satparkash", "shgarima21", "Sumit1992"])) {
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "Sumit1992"])) {
             $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
         }
         $shared_apps = null;
