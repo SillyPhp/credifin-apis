@@ -526,19 +526,33 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
+        $loan_ids = $params['loan_account_enc_id'];
         $data = (new \yii\db\Query())
-            ->select([
-                'a.loan_account_number',
-                'COUNT(a1.loan_account_number) as total_emis', 'a.loan_account_enc_id',
-                'a.name', 'a.phone', 'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type',
+            ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
+                "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
+                '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name', 
+                '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone', 
+                '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount', 
+                'a.overdue_amount', 'a.ledger_amount', 
+                '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
-                'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
-            ])
-            ->from(['a' => LoanAccounts::tableName()])
-            ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a.loan_account_number = a1.loan_account_number')
-            ->andWhere(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
-            ->one();
-        $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+                'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
+            ->from(['a1' => EmiCollection::tableName()], )
+            ->join('LEFT JOIN', ['a' => LoanAccounts::tableName()], 'a1.loan_account_number = a.loan_account_number');
+                if($loan_ids['loan_account_number']){
+                    $data->where(['a1.loan_account_number' => $params['loan_account_enc_id']]);
+                }else{
+                    $data->where(['a.loan_account_enc_id' => $params['loan_account_enc_id']]);
+                };
+            $data = $data
+            ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
+            ->one(); 
+
+        if($loan_ids['loan_account_number']){
+            $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_enc_id']]);
+         }else{
+            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+        };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
             return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
@@ -620,7 +634,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
-
+ 
     public function actionVehicleRepossession()
     {
         if (!$user = $this->isAuthorized()) {
@@ -1287,8 +1301,13 @@ class LoanAccountsController extends ApiBaseController
                     $cc->joinWith(["assignedCaller ac"], false);
                 }]);
             }], false)
-            ->joinWith(['collectionManager cm'], false)
-            ->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')])
+            ->joinWith(['collectionManager cm'], false);
+            if (isset($params['type']) && $params['type'] == 'dashboad') {
+                $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+            }else{
+                $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+            }
+            $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id']);
 
 
