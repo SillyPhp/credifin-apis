@@ -373,8 +373,10 @@ class EmiCollectionForm extends Model
                 'updated_by' => $data['user_id'],
                 'remaining_amount' => 0
             ];
-            $where = ['cash_report_enc_id' => $cash_ids];
-            UserUtilities::updating("cash", "cash_report_enc_id", $where, $update);
+            $where = ['cash_report_enc_id' => $cash_ids, 'parent_cash_report_enc_id' => null];
+            if (!UserUtilities::updating("cash", "cash_report_enc_id", $where, $update)){
+                throw new \Exception("Duplicate request");
+            }
         }
         return true;
     }

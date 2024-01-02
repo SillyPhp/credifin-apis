@@ -5,11 +5,15 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
+use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
+use common\models\extended\UsersExtended;
+use common\models\Users;
 use Exception;
 use Yii;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -146,14 +150,41 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $limit = !empty($params["limit"]) ? $params["limit"] : 10;
         $page = !empty($params["page"]) ? $params["page"] : 1;
-        $select = [
-            "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
-            "ANY_VALUE(b1.employee_code) employee_code", "ANY_VALUE(b2.designation) designation",
-            "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) reporting_person",
-            "ANY_VALUE(b4.location_name) location_name", "ANY_VALUE(b.phone) phone", "b.email",
-            "SUM(a.remaining_amount) total_sum",
-            "a.given_to", "ANY_VALUE(a.received_from) received_from"
-        ];
+
+        $subquery1 = (new Query())
+            ->select([
+                "a.given_to",
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
+                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["IS NOT", "a.given_to", null],
+                ["!=", "a.status", 3],
+                ["IN", "a.type", [0, 2]]
+            ])
+            ->groupBy(["a.given_to"]);
+        $subquery2 = (new Query())
+            ->select([
+                "a.received_from",
+                "SUM(a.remaining_amount) AS bank_unapproved_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["!=", "a.status", 3],
+                ["a.status" => 2],
+                ["a.type" => 1]
+            ])
+            ->groupBy(["a.received_from"]);
+
         $fields_search = [];
         if (!empty($params['field'])) {
             foreach ($params['field'] as $key => $value) {
@@ -163,7 +194,7 @@ class EmiCollectionsController extends ApiBaseController
                             $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
                             break;
                         case 'name':
-                            $fields_search[] = "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) LIKE '%$value%'";
+                            $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
                         case 'reporting_person':
                             $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
@@ -172,87 +203,58 @@ class EmiCollectionsController extends ApiBaseController
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
-                            $fields_search[] = "ANY_VALUE(b.phone) LIKE '%$value%'";
+                            $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
                     }
                 }
             }
             $fields_search = implode(" AND ", $fields_search);
         }
-        $query = EmployeesCashReportExtended::find()
-            ->alias("a")
-            ->select($select)
-            ->joinWith(["givenTo b" => function ($a) {
-                $a->joinWith(["userRoles0 b1" => function ($b1) {
-                    $b1->joinWith(["designation b2"], false);
-                    $b1->joinWith(["reportingPerson b3"], false);
-                    $b1->joinWith(["branchEnc b4"], false);
-                }], false);
-            }], false)
-            ->andWhere(["a.type" => [0, 2]])
-            ->andWhere(["AND",
-                ["NOT",
-                    ["a.remaining_amount" => 0]],
-                ["a.parent_cash_report_enc_id" => null]])
-            ->groupBy(["a.given_to"]);
-        if (!empty($params["branch_id"])) {
-            $query->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
-        }
-
-        if (!empty($fields_search)) {
-            $query->andWhere($fields_search);
-        }
-        $count = $query->count();
-        $query = $query
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
-            ->asArray()
-            ->all();
-
-        $query = ArrayHelper::index($query, "given_to");
-        $query2 = EmployeesCashReportExtended::find()
-            ->alias("a")
-            ->select($select)
-            ->joinWith(["receivedFrom b" => function ($a) {
-                $a->joinWith(["userRoles0 b1" => function ($b1) {
-                    $b1->joinWith(["designation b2"], false);
-                    $b1->joinWith(["reportingPerson b3"], false);
-                    $b1->joinWith(["branchEnc b4"], false);
-                }], false);
-            }], false)
-            ->andWhere(["a.type" => 1])
-            ->andWhere(["AND",
-                ["NOT",
-                    ["a.remaining_amount" => 0]
-                ],
-                ["a.parent_cash_report_enc_id" => null],
-                ["a.status" => 2]
+        $users = UsersExtended::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id AS user_id',
+                "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) name",
+                "ANY_VALUE(b1.employee_code) employee_code",
+                "ANY_VALUE(b2.designation) designation",
+                "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) reporting_person",
+                "ANY_VALUE(b4.location_name) location_name", "ANY_VALUE(a.phone) phone", "a.email", 'COALESCE(ANY_VALUE(subquery.collected_cash), 0) collected_cash',
+                'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
+                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
             ])
-            ->groupBy(["a.cash_report_enc_id"]);
-        if (!empty($params["branch_id"])) {
-            $query2->andWhere(["b4.location_enc_id" => $params["branch_id"]]);
-        }
-        if (!empty($fields_search)) {
-            $query2->andWhere($fields_search);
-        }
-        $query2 = $query2
+            ->joinWith(["userRoles0 b1" => function ($b1) {
+                $b1->joinWith(["designation b2"], false);
+                $b1->joinWith(["reportingPerson b3"], false);
+                $b1->joinWith(["branchEnc b4"], false);
+            }], false)
+            ->joinWith(["employeesCashReports3 c" => function ($c) use ($subquery1) {
+                $c->from(["subquery" => $subquery1]);
+            }])
+            ->joinWith(["employeesCashReports2 d" => function ($d) use ($subquery2) {
+                $d->from(["subquery2" => $subquery2]);
+            }])
+            ->andWhere([
+                "OR",
+                ["IS NOT", "subquery.given_to", NULL],
+                ["IS NOT", "subquery2.received_from", NULL]
+            ])
+            ->andWhere($fields_search)
+            ->groupBy(['a.user_enc_id']);
+        $count = $users->count();
+        $users = $users
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-        foreach ($query2 as $item) {
-            if (in_array($item["received_from"], $query)) {
-                $query[$item["received_from"]]["total_sum"] += $item["total_sum"];
-            } else {
-                $item["given_to"] = $item["received_from"];
-                $query[$item["received_from"]] = $item;
-            }
+
+        if (!$users) {
+            return $this->response(404, ["message" => "not found"]);
         }
-        if ($query) {
-            return $this->response(200, ["status" => 200, "data" => array_values($query), "count" => $count]);
-        }
-        return $this->response(404, ["status" => 404, "message" => "no data found"]);
+
+        return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
     }
+
 
     public function actionEmployeeEmiCollection()
     {
@@ -260,7 +262,7 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $user_id = $params["user_id"];
 
-        $query_data = $this->emiCashReport($user_id, $params);
+        $query_data = $this->emiCashReport($user_id);
         $count = $query_data['count'];
         $query = $query_data['query'];
 
@@ -271,7 +273,7 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, 'count' => $count, "data" => $query, "display_data" => $display_data, "received_cash" => $received_cash]);
     }
 
-    private function emiCashReport($user_id, $params)
+    private function emiCashReport($user_id)
     {
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
@@ -282,7 +284,9 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN b.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',b.pr_receipt_image_location, '/', b.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN b.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',b.other_doc_image_location, '/', b.other_doc_image) ELSE NULL END as other_doc_image",
             ])
-            ->joinWith(["emiCollectionEnc b"], false)
+            ->innerJoinWith(["emiCollectionEnc b" => function ($b) {
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }], false)
             ->andWhere([
                 "AND",
                 ["a.status" => 0],
@@ -493,7 +497,7 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(200, ["status" => 200, "message" => "saved successfully"]);
         } catch (Exception $exception) {
             $transaction->rollBack();
-            return $this->response(500, ["status" => 500, "message" => $exception->getMessage()]);
+            return $this->response(500, ["status" => 500, "message" => "An error occurred.", "error" => $exception->getMessage()]);
         }
     }
 
@@ -540,7 +544,7 @@ class EmiCollectionsController extends ApiBaseController
             } else {
                 // emi ids can be more than 1 so using updating function to track everything
                 $emi_id = $this->finder($cash_id);
-                $emi_id = array_column($emi_id,"emi_collection_enc_id");
+                $emi_id = array_column($emi_id, "emi_collection_enc_id");
             }
             if ($overdue_update) {
                 $emi = EmiCollection::findOne(["emi_collection_enc_id" => $emi_id]);
@@ -914,10 +918,23 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        if ((empty($params['collection_date']) && empty($params['amount'])) || empty($params['remarks']) || empty($params['emi_id'])) {
+        if ((empty($params['collection_date']) && (empty($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "collection_date" or "amount" or "remarks" or "emi_id"']);
         }
         $transaction = Yii::$app->db->beginTransaction();
+        function change_amount($cash_model, $amount, $user_id)
+        {
+            if ($cash_model->remaining_amount != 0) {
+                $cash_model->remaining_amount += $amount;
+            }
+            $cash_model->amount += $amount;
+            $cash_model->updated_on = date('Y-m-d H:i:s');
+            $cash_model->updated_by = $user_id;
+            if (!$cash_model->save()) {
+                throw new Exception(implode(',', array_column($cash_model->errors, "0")));
+            }
+        }
+
         try {
             if (!empty($params['collection_date']) && !empty($params['amount'])) {
                 throw new Exception("You can not update collection date and amount both at same time");
@@ -927,13 +944,14 @@ class EmiCollectionsController extends ApiBaseController
             if (!$emi) {
                 $this->response(404, ['message' => 'an error occurred', 'error' => 'emi not found']);
             }
-            if ($emi->emi_payment_status !== 'collected') {
-                throw new Exception("Emi is only updatable when the status is in collected form.");
+            if ($emi->emi_payment_status === 'paid') {
+                throw new Exception("Emi is only updatable when the status is not in paid status.");
             }
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
             if (!empty($params['amount'])) {
+                $updated_amount = $params['amount'] - $emi->amount;
                 $emi->amount = $params['amount'];
             }
             $emi->updated_on = date('Y-m-d H:i:s');
@@ -956,15 +974,18 @@ class EmiCollectionsController extends ApiBaseController
                 throw new Exception(implode(',', array_column($audit->errors, "0")));
             }
             if (!empty($params['amount'])) {
-                $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "parent_cash_report_enc_id" => null, "is_deleted" => 0]);
-                if (!$cash) {
-                    throw new Exception("an error occurred");
-                }
-                $cash->remaining_amount = $cash->amount = $params['amount'];
-                $cash->updated_on = date('Y-m-d H:i:s');
-                $cash->updated_by = $user->user_enc_id;
-                if (!$cash->save()) {
-                    throw new Exception(implode(',', array_column($cash->errors, "0")));
+                $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
+                if ($cash) {
+                    change_amount($cash, $updated_amount, $user->user_enc_id);
+                    if (!empty($cash->parent_cash_report_enc_id)) {
+                        $cash2 = EmployeesCashReportExtended::findOne(['cash_report_enc_id' => $cash->parent_cash_report_enc_id, "is_deleted" => 0]);
+                        if ($cash2) {
+                            if (!($cash2->type == 1 && $cash2->status == 2) || !empty($cash2->parent_cash_report_enc_id)) {
+                                throw new Exception("Amount can not be changed for this emi.");
+                            }
+                            change_amount($cash2, $updated_amount, $user->user_enc_id);
+                        }
+                    }
                 }
             }
             $transaction->commit();
@@ -973,7 +994,5 @@ class EmiCollectionsController extends ApiBaseController
             $transaction->rollBack();
             return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
-
-
     }
 }

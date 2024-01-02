@@ -10,6 +10,7 @@ use common\models\AssignedLoanProvider;
 use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
+use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationImagesExtended;
 use common\models\FinancerLoanDocuments;
@@ -1727,10 +1728,20 @@ class OrganizationsController extends ApiBaseController
                 'emi_payment_status AS status',
                 'amount'
             ])
+            ->andWhere(['is_deleted' => 0])
             ->andWhere([
-                'and',
-                ['between', 'collection_date', $params['start_date'], $params['end_date']],
-                ['is_deleted' => 0]
+                "OR",
+                [
+                    "AND",
+                    ["IS NOT", "collection_date", null],
+                    ['between', 'collection_date', $params['start_date'], $params['end_date']],
+
+                ],
+                [
+                    "AND",
+                    ["IS", "collection_date", null],
+                    ['between', 'created_on', $params['start_date'], $params['end_date']],
+                ]
             ]);
         if (!empty($method)) {
             if (in_array('pending', $method)) {
@@ -1910,7 +1921,7 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
@@ -2127,22 +2138,40 @@ class OrganizationsController extends ApiBaseController
 
     public function actionDeleteEmi()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (empty($params['emi_collection_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
-            }
+        $this->isAuth();
+        $user = $this->user;
+        $params = Yii::$app->request->post();
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
             $removeEmi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
             if (!$removeEmi) {
-                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id not found']);
             }
             $removeEmi->is_deleted = 1;
             $removeEmi->updated_by = $user->user_enc_id;
             $removeEmi->updated_on = date('Y-m-d H:i:s');
             if (!$removeEmi->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeEmi->getErrors()]);
+                throw new Exception(implode(' ', array_column($removeEmi->errors, "0")));
             }
+
+            $removeCash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $removeEmi->emi_collection_enc_id]);
+            if (!empty($removeCash->parent_cash_report_enc_id)) {
+                throw new Exception("Emi in pipeline status can not be deleted.");
+            }
+            $removeCash->is_deleted = 1;
+            $removeCash->updated_by = $user->user_enc_id;
+            $removeCash->updated_on = date('Y-m-d H:i:s');
+            if (!$removeCash->update()) {
+                throw new Exception(implode(' ', array_column($removeCash->errors, "0")));
+            }
+            $transaction->commit();
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        } catch (Exception $exception) {
+            $transaction->rollback();
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
@@ -2443,9 +2472,10 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
                 ->alias('a')
-                ->select(['a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
-                    , 'b.collection_date'])
+                ->select([
+                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                ])
                 ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
                 ->andWhere([
@@ -2471,6 +2501,17 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        $sub_query = (new \yii\db\Query())
+            ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->where([
+                'z.id' => (new \yii\db\Query())
+                    ->select(['MAX(zz.id)'])
+                    ->from(['zz' => EmiCollectionExtended::tableName()])
+                    ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                    ->orderBy(['id' => SORT_DESC])
+            ]);
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2488,11 +2529,15 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["collectionManager cm"], false)
             ->joinWith(["assignedLoanAccounts d" => function ($d) {
                 $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
-                $d->select(["d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
+                $d->select([
+                    "d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
                     "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
                     "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
                 ]);
                 $d->joinWith(['sharedTo d1'], false);
+            }])
+            ->joinWith(["emiCollections e" => function ($e) use ($sub_query) {
+                $e->from(["sub_query" => $sub_query]);
             }])
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
