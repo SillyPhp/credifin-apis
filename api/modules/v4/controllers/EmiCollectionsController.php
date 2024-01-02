@@ -10,6 +10,7 @@ use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
+use common\models\LoanAccounts;
 use common\models\Users;
 use Exception;
 use Yii;
@@ -39,6 +40,7 @@ class EmiCollectionsController extends ApiBaseController
                 "get-collected-emi-list" => ["POST", "OPTIONS"],
                 "emi-detail" => ["POST", "OPTIONS"],
                 "update" => ["POST", "OPTIONS"],
+                "update-emi-number" => ["POST", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -156,7 +158,8 @@ class EmiCollectionsController extends ApiBaseController
                 "a.given_to",
                 "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
                 "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
-                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"])
+                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
+            ])
             ->from(["a" => EmployeesCashReport::tableName()])
             ->andWhere([
                 "AND",
@@ -320,7 +323,6 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         return ['count' => $count, 'query' => $query];
-
     }
 
     private function displayData($user_id)
@@ -568,8 +570,10 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
-            ->select(["a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
-                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"])
+            ->select([
+                "a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
+                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"
+            ])
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
                     "b.emi_collection_enc_id", "b.loan_account_number", "b.customer_name",
@@ -577,14 +581,18 @@ class EmiCollectionsController extends ApiBaseController
                 ]);
             }])
             ->joinWith(['receivedFrom c'], false)
-            ->andWhere(["AND",
+            ->andWhere([
+                "AND",
                 ["a.given_to" => $this->user->user_enc_id],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
-                ["NOT",
-                    ["a.remaining_amount" => 0]],
+                [
+                    "NOT",
+                    ["a.remaining_amount" => 0]
+                ],
                 ['a.status' => 2],
-                ['a.type' => 2]])
+                ['a.type' => 2]
+            ])
             ->asArray()
             ->all();
         if (!$query) {
@@ -764,7 +772,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date',
-                'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
+                'a.loan_account_number', 'a.loan_account_enc_id', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
                 "CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) ELSE NULL END as borrower_image",
@@ -993,6 +1001,45 @@ class EmiCollectionsController extends ApiBaseController
         } catch (Exception $exception) {
             $transaction->rollBack();
             return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionUpdateEmiNumber()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
+        }
+        // id = emi_id
+        // value = loan_account_id
+        $params = Yii::$app->request->post();
+        if (empty($params['id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "emi_collection_enc_id']);
+        }
+        if (empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id']);
+        }
+
+        try {
+            $loan_account = LoanAccounts::findOne(["loan_account_enc_id" => $params['value']]);
+            if (empty($loan_account)) {
+                throw new Exception("Loan Account not found.");
+            }
+
+            $update = EmiCollectionExtended::findOne(["emi_collection_enc_id" => $params['id']]);
+            if (empty($update)) {
+                throw new Exception("Emi Account not found.");
+            }
+            $update->loan_account_enc_id = $params['value'];
+            $update->loan_account_number = $loan_account->loan_account_number;
+            $update->customer_name = $loan_account->name;
+            $update->updated_by = $user->user_enc_id;
+            $update->updated_on = date('Y-m-d H:i:s');
+            if (!$update->update()) {
+                throw new Exception(implode(' ', array_column($update->errors, "0")));
+            }
+            return $this->response(200, ["status" => 200, "message" => "saved successfully"]);
+        } catch (Exception $exception) {
+            return $this->response(500, ["status" => 500, "message" => "An error occurred.", "error" => $exception->getMessage()]);
         }
     }
 }
