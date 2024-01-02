@@ -80,6 +80,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_number",
+                "b.lms_loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
