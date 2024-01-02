@@ -678,9 +678,10 @@ class CompanyDashboardController extends ApiBaseController
             if ($leadsAccessOnly == 'vehicle') {
                 $where = ['lp.name' => $this->vehicleList];
             } else if ($leadsAccessOnly == 'both') {
-                $where = ['lp.name' => $this->vehicleList];
+                $where = ["OR"];
+                $where[] = ["lp.name" => $this->vehicleList];
                 //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
-                $where['a.loan_products_enc_id'] = ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m'];
+                $where[] = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m']];
             } else {
                 //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
                 $where = ['a.loan_products_enc_id' => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m']];
