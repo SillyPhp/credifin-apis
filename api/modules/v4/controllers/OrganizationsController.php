@@ -1805,6 +1805,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
 
+    // delete this api actionEmiDetail if you are seeing this message after 10 jan
     public function actionEmiDetail()
     {
         $this->isAuth();
