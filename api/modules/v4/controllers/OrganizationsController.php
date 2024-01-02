@@ -88,7 +88,7 @@ class OrganizationsController extends ApiBaseController
                 "remove-loan-product-image" => ["POST", "OPTIONS"],
                 "upload-application-image" => ["POST", "OPTIONS"],
                 "get-assigned-images" => ["POST", "OPTIONS"],
-                "search-emi" => ["POST", "OPTIONS"],
+                "search-emi" => ["POST", "GET", "OPTIONS"],
                 "update-pendency" => ["POST", "OPTIONS"]
             ]
         ];
@@ -1805,29 +1805,6 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
 
-    public function actionGetCollectedEmiList()
-    {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        $search = '';
-        if (empty($params['organization_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
-        }
-        if (isset($params['fields_search'])) {
-            $search = $params['fields_search'];
-        }
-
-        $org_id = $params['organization_id'];
-        $model = $this->_emiData($org_id, 0, $search, $user);
-        $count = $model['count'];
-        if (!$count > 0) {
-            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
-        }
-        return $this->response(200, ['status' => 200, 'data' => $model['data'], 'count' => $count]);
-    }
-
     public function actionEmiDetail()
     {
         $this->isAuth();
@@ -2463,26 +2440,27 @@ class OrganizationsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public function actionSearchEmi()
+    public function actionSearchEmi($loan_number = '')
     {
         if (!$this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
         $params = Yii::$app->request->post();
+        if ($loan_number) {
+            $params['loan_number'] = $loan_number;
+        }
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
-                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'b.collection_date'
+                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
                 ])
-                ->joinWith(['emiCollections b'], false)
                 ->where(['a.is_deleted' => 0])
                 ->andWhere([
-                    'or',
-                    ['like', 'a.loan_account_number', '%' . $params['loan_number'] . '%', false],
-                    ['like', 'a.phone', '%' . $params['loan_number'] . '%', false],
-
+                    'OR',
+                    ['LIKE', 'a.loan_account_number', $params['loan_number']],
+                    ['LIKE', 'a.phone', $params['loan_number']],
                 ])
                 ->limit(20)
                 ->asArray()
@@ -2491,7 +2469,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'data' => $query]);
             }
         }
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        return $this->response(404, ['status' => 404, 'message' => 'An error occurred.', 'error' => 'Loan Account not found.']);
     }
 
     public function actionGetEmiAccounts()
@@ -2519,10 +2497,12 @@ class OrganizationsController extends ApiBaseController
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
-                "a.created_on", "a.last_emi_received_amount", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
-                "a.last_emi_received_date", "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "a.last_emi_received_date", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount"
+                "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
+                "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
+                "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
             ])
             ->joinWith(["branchEnc b"], false)
             ->joinWith(["assignedCaller ac"], false)
@@ -2536,11 +2516,14 @@ class OrganizationsController extends ApiBaseController
                 ]);
                 $d->joinWith(['sharedTo d1'], false);
             }])
-            ->joinWith(["emiCollections e" => function ($e) use ($sub_query) {
-                $e->from(["sub_query" => $sub_query]);
-            }])
+            ->joinWith(["emiCollectionsCustom e" => function ($e) use ($sub_query) {
+                $e->from(["e" => $sub_query]);
+            }], false)
             ->groupBy(['a.loan_account_enc_id'])
             ->andWhere(["a.is_deleted" => 0]);
+        if (!empty($params['collection_date'])) {
+            $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
+        }
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
