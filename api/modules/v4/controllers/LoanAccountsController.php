@@ -1322,7 +1322,8 @@ class LoanAccountsController extends ApiBaseController
                 $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
             }
             $ptpcases = $ptpcases
-            ->groupBy(['a.ptp_enc_id']);
+            ->groupBy(['a.ptp_enc_id'])
+            ->orderBy(['a.proposed_date' => SORT_ASC]);
 
 
         if (!empty($params["fields_search"])) {
@@ -1372,7 +1373,8 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if (!empty($params['loan_number'])) {
+        $loan_number = $params['loan_number'];
+        if (!empty($loan_number['loan_account_enc_id']) && $loan_number['loan_account_enc_id'] !== "null") {
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
@@ -1380,12 +1382,22 @@ class LoanAccountsController extends ApiBaseController
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
                 ])
                 ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.loan_account_number' => $params['loan_number']])
+                ->andWhere(['a.loan_account_number' => $loan_number['loan_account_number']])
                 ->asArray()
                 ->all();
             if ($query) {
                 return $this->response(200, ['status' => 200, 'data' => $query]);
             }
+        }else{
+            $query = EmiCollection::find()
+                ->select(['loan_account_number', 'customer_name as name', 'phone', 'loan_type'])
+                ->where(['loan_account_number' => $loan_number['loan_account_number']])
+                ->asArray()
+                ->all();
+
+                if ($query) {
+                    return $this->response(200, ['status' => 200, 'data' => $query]);
+                }
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
