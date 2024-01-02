@@ -3,12 +3,9 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\Employee;
-use common\models\EmployeeIncentivePoints;
-use common\models\UserRoles;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
-use common\models\Utilities;
 
 class EmployeeController extends ApiBaseController
 {
