@@ -1,181 +1,229 @@
 <?php
 
 namespace frontend\controllers;
-use common\models\Categories;
-use common\models\CreditLoanApplicationReports;
-use common\models\LoanApplicantResidentialInfo;
-use common\models\LoanCoApplicants;
-use common\models\OpenTitles;
-use common\models\TestData;
-use common\models\User;
-use common\models\Usernames;
-use common\models\UserTypes;
-use frontend\models\applications\Careerjet_API;
-use common\models\AppliedApplications;
-use common\models\Auth;
-use common\models\EducationLoanPayments;
+use common\models\FinancerLoanProductPurpose;
+use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
-use common\models\Posts;
-use common\models\SkillsUpPostAssignedBlogs;
-use common\models\Users;
-use common\models\EmiCollection;
-use common\models\RandomColors;
-use common\models\Utilities;
-use yii\helpers\Url;
+use common\models\OrganizationLocations;
+use common\models\spaces\Spaces;
+use common\models\TestData;
+use Razorpay\Api\Api;
+use yii\db\Expression;
 use yii\web\Controller;
 use Yii;
-use yii\web\Response;
-
 class TestCacheController extends Controller
 {
-
-    public function actionFaker(){
-        $result = self::generateApplicationNumber();
-        $model = new TestData();
-        $model->loan_account_number = $result;
-        if (!$model->save()) {
-            print_r($model->getErrors());
-            exit();
-        }
-        //echo $result;
-        echo $result;
+    public function actionTokenTest(){
+        $x = $this->generateAllCloudAuthHeader('GET','https://staging.allcloud.in/apiv2phfleasing/api/Customer/GetCustomerByCIFIdAsync/92','');
+        print_r($x);
     }
 
-    public static function generateApplicationNumber($cityCode,$purposeCode,$loap_p_code,$yearmonth)
-    {
-        for ($i=0;$i<=100;$i++){
-            $loan_num['product_code'] = $loap_p_code;
-            $branchCode = '';
-            $cityCode = $cityCode;
-            $purposeCode = $purposeCode;
-            $finalPurposeCode = $purposeCode ? '-' . $purposeCode : '';
+    private  function generateAllCloudAuthHeader($requestHttpMethod, $Request_URL, $payload){
+        try {
+            $returnArr = [];
 
-            $yearmonth = $yearmonth;
+            $AppId = '4d53bce03ec34c0a911182d4c228ee6c';
+            $USER_TOKEN = '786df557-a7ed-4368-a491-e931ba349aba';
+            $USER_SECRET = 'b621f322-e85e-47ff-b965-e731a26e5872';
 
-            $loanAccountNumber = "{$loan_num['product_code']}{$finalPurposeCode}-{$cityCode}-{$yearmonth}";
-            $pattern1 = "{$loan_num['product_code']}-%-{$cityCode}-{$yearmonth}-%";
-            $pattern2 = "{$loan_num['product_code']}-{$cityCode}-{$yearmonth}-%";
-            $incremental = LoanApplications::find()
-                ->alias('a')
-                ->select(['a.application_number'])
-                ->where([
-                    'OR',
-                    ['LIKE', 'application_number', $pattern1,false],
-                    ['LIKE', 'application_number', $pattern2,false]
-                ])
-                ->orderBy([
-                    "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
-                ])
-                ->limit(1)
-                ->one();
-            if ($incremental) {
-                $my_string = $incremental['application_number'];
-                $my_array = explode('-', $my_string);
-                $prev_num = ((int)$my_array[count($my_array) - 1] + 1);
-                $new_num = $prev_num <= 9 ? '00' . $prev_num : ($prev_num < 99 ? '0' . $prev_num : $prev_num);
-                $final_num = "$loanAccountNumber-{$new_num}";
-                return $final_num;
+            if(isset($requestHttpMethod) && isset($Request_URL)){
+
+                // Get Request URI
+                $Request_URI = strtolower(urlencode($Request_URL));
+
+                // Get Request Time Stamp
+                $epochStart = date("Y")."-01-01 00:00:00";
+                $currentDateTime = date('Y-m-d H:i:s');
+                $epochStartDate = new \DateTime($epochStart);
+                $currentDate = new \DateTime($currentDateTime);
+                $requestTimeStamp = $currentDate->getTimestamp() - $epochStartDate->getTimestamp();
+
+                // Get Nonce - It should be a new Global unique identifier which is converted to Numeric format
+                $nonce = self::GenerateUniqueId(32);
+
+                if($requestHttpMethod!='GET'){
+                    $requestContentHash = md5($payload,true);
+                    $requestContentBase64String = base64_encode($requestContentHash);
+                }else{
+                    $requestContentBase64String='';
+                }
+
+                // Generate below data for encryption and Generating the Authorization
+                $signatureRawData = $AppId.$requestHttpMethod.$Request_URI.$requestTimeStamp.$nonce.$requestContentBase64String;
+
+                $secretKeyByteArray = $USER_SECRET;
+
+                $signatureBytes = hash_hmac("sha256", $signatureRawData, $secretKeyByteArray, true);
+
+                $requestSignatureBase64String = base64_encode($signatureBytes);
+
+                // Setting the values in the Authorization header using custom scheme (amx)
+                $AllCloudAuthorizationHeader = "amx ".$AppId.":".$requestSignatureBase64String.":".$nonce.":".$requestTimeStamp.":".$USER_TOKEN;
+
+                // Response Array
+                $returnArr = [
+                    'status' => true,'message' => 'Sucess','data' => ['Authorization' => $AllCloudAuthorizationHeader]
+                ];
+
+
             } else {
-                return "$loanAccountNumber-001";
+                $returnArr = ['status'=>false, "message" => "Invalid Parameters. Please provide all required parameters to this API."];
             }
+
+            return $returnArr;
+        } catch (\Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
-    public function actionDuplicate($page=1,$limit=500){
-        $offset = ($page - 1) * $limit;
-        $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
-            ->joinWith(['assignedLoanProviders b'=>function($c){
-                $c->andWhere(['!=','b.status',31]);
-            }],false,'INNER JOIN')
-            ->groupBy('application_number')
-            ->where([
-                'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
-            ])
-            ->having('COUNT(*) > 1')
-            ->limit($limit)
-            ->offset($offset)
-            ->asArray()
-            ->all();
-        if ($data):
-        foreach ($data as $app) {
-            $applicationNumber = $app['application_number'];
-            $count = $app['count'];
+    private static function GenerateUniqueId($n){
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
 
-            $ids = LoanApplications::find()
-                ->select(['loan_app_enc_id'])
-                ->joinWith(['assignedLoanProviders b'=>function($c){
-                    $c->andWhere(['!=','b.status',31]);
-                }],false,'INNER JOIN')
-                ->where(['application_number' => $applicationNumber])
-                ->asArray()
-                ->column(); // Fetching IDs directly as an array
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
 
-            $result[] = [
-                'application_number' => $applicationNumber,
-                'count' => $count,
-                'IDs' => $ids,
-            ];
-        }
-       // print_r($result);exit();
-        foreach ($result as $dat){
-            $loan_array = explode("-", $dat['application_number']);
-            if (count($loan_array)==4){
-                for ($i=0;$i<($dat['count']-1);$i++) {
-                  echo  $newSeries = self::generateApplicationNumber($loan_array[1],null,$loan_array[0],$loan_array[2]);
-                    self::saveNewSeries($newSeries,$dat['IDs'][$i]);
-                }
-            }else if (count($loan_array)==5){
-                for ($i=0;$i<($dat['count']-1);$i++) {
-                    $newSeries = self::generateApplicationNumber($loan_array[2],$loan_array[1],$loan_array[0],$loan_array[3]);
-                   self::saveNewSeries($newSeries,$dat['IDs'][$i]);
-                }
-            }
-        }
-        else:
-            echo 'no results left';
-            endif;
+        return $randomString;
     }
-    private function saveNewSeries($newSeries,$id){
-        $model = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
-        $model->application_number = $newSeries;
-        if (!$model->save()){
-            print_r($model->getErrors());
-        }else{
-            return false;
+
+    public function actionCurlSaveCustomer(){
+        // Data to send in the POST request (key-value pairs)
+        $data = '{
+        "FirstName": "Sneh",
+        "LastName": "Kant",
+        "DOB": "1993-06-08",
+        "ContactNumber":9597868802,
+        "PrimaryAddressLine1":"xyz",
+        "PrimaryArea": "HSR Layout",
+        "PrimaryTown": "Bangalore",
+        "PrimaryPostcode": "560006",
+        "PrimaryStateId": 12,
+        "PrimaryStateName": "Karnataka",
+        }';
+        // API endpoint URL
+        $url = 'https://staging.allcloud.in/apiv2phfleasing/api/Customer/SaveCustomerData';
+
+        $token =  $this->generateAllCloudAuthHeader('POST',$url,$data);
+        $auth = $token['data']['Authorization'];
+        // Custom headers
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "Authorization: $auth", // Add any authorization headers here
+        ];
+
+// Initialize cURL session
+        $ch = curl_init($url);
+
+// Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+
+// Execute cURL session and store the response in $response
+        return  $response = curl_exec($ch);
+
+// Check for cURL errors
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
         }
+
+// Close cURL session
+        curl_close($ch);
+
+// Display the response from the server
+        echo $response;
+
+        echo '<br>';
+        echo 'url hit on: '.$url;
     }
-    public function actionCopyDuplicates($page=1,$limit=500){
-        $offset = ($page - 1) * $limit;
-        $data = LoanApplications::find()
-            ->select(['application_number','COUNT(*) count'])
-            ->joinWith(['assignedLoanProviders b'=>function($c){
-                $c->andWhere(['!=','b.status',31]);
-            }],false,'INNER JOIN')
-            ->groupBy('application_number')
-            ->where([
-                'or',
-                ['!=','application_number',Null],
-                ['!=','application_number','']
-            ])
-            ->having('COUNT(*) > 1')
-            ->limit($limit)
-            ->offset($offset)
-            ->asArray()
-            ->all();
-        $updateAll = [];
-        if ($data):
-        foreach ($data as $dat){
-            $loan_array = explode("-", $dat['application_number']);
-            if (count($loan_array)>=4):
-            $updateAll[] =  LoanApplications::updateAll(['old_application_number'=>$dat['application_number']],['application_number'=>$dat['application_number']]);
-            endif;
+
+    public function actionCurlSaveLead(){
+        // Data to send in the POST request (key-value pairs)
+        $data = '{
+  "LeadDetailId": 0,
+  "ProductTypeId": 1,
+  "CentreName": "Default Centre",
+  "CompanyRoleId": "198",
+  "LoanCategoryId": 0,
+  "LoanAmount": 200000,
+  "LoanTenure": 24,
+  "SubmitLead": true,
+  "IsLms": true,
+  "LeadSourceId": 2,
+  "DealerId": 3,
+  "LeadSourceDetailId": 3,
+  "PurposeofLoan": "1",
+  "SchemeId": 6,
+  "DownPayment": 0,
+  "LoanSegmentId": 1,
+  "LoanTypeId": 9,
+  "LstLeadCustomers": [
+    {
+      "BorrowerId": 93,
+      "BorrowerTypeId": 0,
+      "OrderTypeId": 0,
+      "RelationToBorrower": 1,
+      "GuarantorTypeId": null
+    }
+  ],
+  "LstTaggingDto": null,
+  "ObjVlVehicleDto": {
+    "MfgYear": 2021,
+    "VehicleTypeId": 1,
+    "VehicleClassId": 1,
+    "VehicleMakeId": 2,
+    "VehicleClassVariantId": 1,
+    "RegistrationNo": "CFDGKd",
+    "InvoiceAmount": 20000,
+    "ResidualValue": 20000,
+    "UploadDocumentDTOCollection": null
+  },
+  "ObjPlSalaryBorrowerDto": null,
+  "ObjPlOrganizationBorrowerDto": null,
+  "IsProgramType": false
+}';
+        // API endpoint URL
+        //$url = 'https://staging.allcloud.in/apiv2phfleasing/api/Loan/SaveNewLoanByLeadDetail';
+        $url = 'https://staging.allcloud.in/apiv2phfleasing/api/LeadDetail/AddLeadDetail';
+
+        $token =  $this->generateAllCloudAuthHeader('POST',$url,$data);
+        $auth = $token['data']['Authorization'];
+        // Custom headers
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "Authorization: $auth", // Add any authorization headers here
+        ];
+
+// Initialize cURL session
+        $ch = curl_init($url);
+
+// Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+
+// Execute cURL session and store the response in $response
+          $response = curl_exec($ch);
+        print_r(json_decode($response,true));
+        die();
+
+// Check for cURL errors
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
         }
-        echo count($updateAll);
-        else:
-            echo 'no results left';
-            endif;
+
+// Close cURL session
+        curl_close($ch);
+
+// Display the response from the server
+       print_r(json_decode($response,true));
+
+        echo '<br>';
+        echo 'url hit on: '.$url;
     }
+
 }
