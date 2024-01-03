@@ -7,7 +7,6 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
-use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -28,7 +27,6 @@ use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
-use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\UserTypes;
@@ -2539,6 +2537,8 @@ class OrganizationsController extends ApiBaseController
                         $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }
