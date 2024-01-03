@@ -405,7 +405,8 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
                     "b.emi_collection_enc_id", "b.loan_account_number", "b.customer_name",
-                    "b.loan_type", "b.emi_collection_enc_id", "b.amount"
+                    "b.loan_type", "b.emi_collection_enc_id", "b.amount",
+                    "b.pr_receipt_image", "b.pr_receipt_image_location", "b.collection_date"
                 ]);
             }])
             ->andWhere([
@@ -427,9 +428,18 @@ class EmiCollectionsController extends ApiBaseController
         }
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $pr_receipt_base = Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
         foreach ($approval as &$item) {
             if (empty($item['emiCollectionEnc'])) {
                 $item['emiCollectionEnc'] = $this->finder($item['cash_report_enc_id']);
+            }
+            foreach ($item['emiCollectionEnc'] as &$emi) {
+                $image = $emi['pr_receipt_image'];
+                if (!empty($image)) {
+                    $image_location = $emi['pr_receipt_image_location'];
+                    $emi['pr_receipt'] = $my_space->signedURL("$pr_receipt_base$image_location/$image");
+                }
+                unset($emi['pr_receipt_image'], $emi['pr_receipt_image_location']);
             }
             $item['receipt'] = $my_space->signedURL($item['receipt']);
         }
@@ -459,7 +469,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(["emiCollectionEnc c" => function ($c) {
                 $c->select([
                     "c.emi_collection_enc_id", "c.loan_account_number", "c.customer_name",
-                    "c.loan_type", "c.emi_collection_enc_id", "c.amount"
+                    "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
             }])
             ->andWhere($where)
