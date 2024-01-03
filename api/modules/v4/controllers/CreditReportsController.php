@@ -3,12 +3,10 @@
 namespace api\modules\v4\controllers;
 
 use common\models\CreditLoanApplicationReports;
-use yii\filters\VerbFilter;
-use yii\filters\Cors;
-use Yii;
 use common\models\CreditReportsControllers;
-use yii\web\UploadedFile;
-use common\models\Utilities;
+use Yii;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
 
 
 class CreditReportsController extends ApiBaseController
@@ -53,7 +51,13 @@ class CreditReportsController extends ApiBaseController
             $creditReport = CreditLoanApplicationReports::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'b.applicant_name', 'b.loan_type', 'c.file_url', 'c.created_by', 'c1.request_source', "CONCAT(d.first_name,' ',d.last_name) created_by_name",'e.name as co_applicant_name','e.relation','e.borrower_type'])
+                ->select(['a.loan_app_enc_id',
+                    'b.applicant_name', 'b.loan_type',
+                    'c.file_url', 'c.created_by',
+                    'c1.request_source',
+                    "CONCAT(d.first_name,' ', COALESCE(d.last_name, '')) as created_by_name",
+                    'e.name as co_applicant_name', 'e.relation', 'e.borrower_type'
+                ])
                 ->joinWith(['loanAppEnc b' => function ($b) {
                     $b->joinWith(['assignedLoanProviders b1']);
                 }], false)
@@ -63,26 +67,27 @@ class CreditReportsController extends ApiBaseController
                 }], false)
                 ->joinWith(['createdBy d'], false)
                 ->joinWith(['loanCoAppEnc e'], false)
-                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id,'b1.is_deleted' => 0]);
+                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id, 'b1.is_deleted' => 0]);
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $creditReport->andWhere([
                     'or',
                     ['like', 'b.applicant_name', $params['keyword']],
                     ['like', 'e.name', $params['keyword']],
-                    ['like', 'concat(d.first_name," ",d.last_name)', $params['keyword']],
+//                    ['like', 'concat(d.first_name," ",d.last_name)', $params['keyword']],
+                    ['like', "CONCAT(d.first_name,' ', COALESCE(d.last_name, ''))", $params['keyword']],
                     ['like', 'b.loan_type', $params['keyword']],
                 ]);
             }
 
             $count = $creditReport->count();
-                $creditReport = $creditReport
+            $creditReport = $creditReport
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $creditReport,'count'=> $count]);
+            return $this->response(200, ['status' => 200, 'data' => $creditReport, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
