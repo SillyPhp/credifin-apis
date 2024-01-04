@@ -7,7 +7,6 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
-use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -28,7 +27,6 @@ use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
-use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\UserTypes;
@@ -1765,7 +1763,7 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['branch_enc_id'])) {
             $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $data = $data->andWhere(['IN', 'created_by', $juniors]);
         }
@@ -1870,7 +1868,7 @@ class OrganizationsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date',
+                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
@@ -2539,6 +2537,8 @@ class OrganizationsController extends ApiBaseController
                         $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }

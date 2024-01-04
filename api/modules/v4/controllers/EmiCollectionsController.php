@@ -80,6 +80,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_number",
+                "b.lms_loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -404,7 +405,8 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
                     "b.emi_collection_enc_id", "b.loan_account_number", "b.customer_name",
-                    "b.loan_type", "b.emi_collection_enc_id", "b.amount"
+                    "b.loan_type", "b.emi_collection_enc_id", "b.amount",
+                    "b.pr_receipt_image", "b.pr_receipt_image_location", "b.collection_date"
                 ]);
             }])
             ->andWhere([
@@ -426,9 +428,18 @@ class EmiCollectionsController extends ApiBaseController
         }
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $pr_receipt_base = Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
         foreach ($approval as &$item) {
             if (empty($item['emiCollectionEnc'])) {
                 $item['emiCollectionEnc'] = $this->finder($item['cash_report_enc_id']);
+            }
+            foreach ($item['emiCollectionEnc'] as &$emi) {
+                $image = $emi['pr_receipt_image'];
+                if (!empty($image)) {
+                    $image_location = $emi['pr_receipt_image_location'];
+                    $emi['pr_receipt'] = $my_space->signedURL("$pr_receipt_base$image_location/$image");
+                }
+                unset($emi['pr_receipt_image'], $emi['pr_receipt_image_location']);
             }
             $item['receipt'] = $my_space->signedURL($item['receipt']);
         }
@@ -458,7 +469,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(["emiCollectionEnc c" => function ($c) {
                 $c->select([
                     "c.emi_collection_enc_id", "c.loan_account_number", "c.customer_name",
-                    "c.loan_type", "c.emi_collection_enc_id", "c.amount"
+                    "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
             }])
             ->andWhere($where)
@@ -771,7 +782,7 @@ class EmiCollectionsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date',
+                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
@@ -799,7 +810,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }

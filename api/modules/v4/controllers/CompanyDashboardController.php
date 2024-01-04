@@ -802,7 +802,7 @@ class CompanyDashboardController extends ApiBaseController
             ->addSelect(["CONCAT(b.first_name, ' ' ,b.last_name) shared_by"])
             ->joinWith(['sharedBy b'], false)
             ->joinWith(['loanAppEnc c'], false)
-            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0, 'c.is_removed' => 0])
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
             ->asArray()
             ->all();
         $loan_app_ids = [];
@@ -1345,7 +1345,8 @@ class CompanyDashboardController extends ApiBaseController
                         THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) 
                         ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') 
                     END image",
-                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name',
+                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
+                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone',
                 'b.status', 'c.user_type', 'a.employee_code', 'd.designation', 'a.designation_id',
                 "CONCAT(e.first_name, ' ', COALESCE(e.last_name, '')) reporting_person", "CONCAT(f.location_name, ', ', f1.name) AS branch_name",
                 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on platform_joining_date'
@@ -1395,7 +1396,7 @@ class CompanyDashboardController extends ApiBaseController
                             $employee->andWhere(['like', "CONCAT(e.first_name, ' ', COALESCE(e.last_name, ''))", $value]);
                             break;
                         case 'branch':
-                            $employee->andWhere(['like', 'f.location_enc_id', $value]);
+                            $employee->andWhere(['IN', 'f.location_enc_id', $value]);
                             break;
                     }
                 }
@@ -2339,8 +2340,25 @@ class CompanyDashboardController extends ApiBaseController
             $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             $field = $params['id'];
 
-            // if not empty employee
-            if (!empty($employee)) {
+            if ($employee && $params['id'] == 'user_name' || $params['id'] == 'user_number' || $params['id'] == 'user_email') {
+                $users = Users::findOne(['user_enc_id' => $params['parent_id']]);
+                if ($params['id'] == 'user_number') {
+                    $users->phone = $params['value'];
+                } elseif ($params['id'] == 'user_email') {
+                    $users->email = $params['value'];
+                } elseif ($params['id'] == 'user_name') {
+                    $full_name = explode(' ', $params['value'], 2);
+                    $first_name = $full_name[0];
+                    $last_name = isset($full_name[1]) ? $full_name[1] : '';
+                    $users->first_name = $first_name;
+                    $users->last_name = $last_name;
+                }
+                $users->last_updated_on = date('Y-m-d H:i:s');
+                if (!$users->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $users->getErrors()]);
+                }
+            } // if not empty employee
+            elseif (!empty($employee)) {
                 // field name and value
                 $employee->$field = $params['value'];
                 $employee->updated_by = $user->user_enc_id;
@@ -2673,11 +2691,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->select([
                     'a.user_enc_id',
                     "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
-                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
-                    'ANY_VALUE(gd.designation) designation',
-                    'ANY_VALUE(gd.assigned_designation_enc_id) assigned_designation_enc_id',
-                    "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
-                    'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
+                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation) designation', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as total_cases",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as new_lead",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as sanctioned",
@@ -2686,8 +2700,8 @@ class CompanyDashboardController extends ApiBaseController
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c.login_date IS NOT NULL AND c.login_date <= '$endDate' AND c.login_date >= '$startDate' THEN c.loan_app_enc_id END) as login",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process"
                 ])
-                ->joinWith(['userRoles0 b' => function ($b) {
-                    $b->joinWith(['designation gd'])
+                ->joinWith(['userRoles b' => function ($b) {
+                    $b->joinWith(['designationEnc b1'])
                         ->joinWith(['reportingPerson b2'])
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
@@ -2709,30 +2723,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
-            if (!empty($params['fields_search'])) {
-                foreach ($params['fields_search'] as $key => $value) {
-                    if (!empty($value)) {
-                        if ($key == 'employee_code') {
-                            $employeeStats->andWhere(['like', 'b.' . $key, $value]);
-                        } elseif ($key == 'phone') {
-                            $employeeStats->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'username') {
-                            $employeeStats->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'employee_name') {
-                            $employeeStats->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
-                        } elseif ($key == 'reporting_person') {
-                            $employeeStats->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
-                        } elseif ($key == 'branch') {
-                            $employeeStats->andWhere(['IN', 'b3.location_enc_id', $value]);
-                        } elseif ($key == 'designation_id') {
-                            $employeeStats->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
-                        } else {
-                            $employeeStats->andWhere(['like', $key, $value]);
-                        }
-                    }
-                }
-            }
-
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
                 $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
                 $employeeStats->andWhere(['a.user_enc_id' => $juniors]);
@@ -2745,6 +2735,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['product_id'])) {
                 $employeeStats->andWhere(['c.loan_products_enc_id' => $params['product_id']]);
             }
+
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $employeeStats->andWhere([
                     'or',
@@ -2752,7 +2743,7 @@ class CompanyDashboardController extends ApiBaseController
                     ['like', 'a.phone', $params['keyword']],
                     ['like', 'a.username', $params['keyword']],
                     ['like', 'a.email', $params['keyword']],
-                    ['like', 'gd.designation', $params['keyword']],
+                    ['like', 'b1.designation', $params['keyword']],
                     ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
                     ['like', 'b3.location_name', $params['keyword']],
                 ]);
@@ -3193,20 +3184,16 @@ class CompanyDashboardController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                "SUM(c.amount) as new_lead_amount",
-                "SUM(IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount,
-                 c.amount))) as login_amount",
-                "SUM(CASE WHEN b.status = '31' THEN b.disbursement_approved ELSE 0 END) as disbursed_amount",
-                "SUM(b.disbursement_approved) as disbursed_approval_amount",
-                "SUM(b.insurance_charges) as insurance_charges_amount",
-                "SUM(b.soft_sanction) as soft_sanctioned_amount",
-                "SUM(b.soft_approval) as soft_approval_amount",
-                "SUM(CASE WHEN b.status = '32' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
-                 b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount",
-                "SUM(CASE WHEN b.status = '28' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
-                 b.soft_approval, c.amount)) ELSE 0 END) as cni_amount",
-                "SUM(CASE WHEN b.status = '30' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
-                 b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount",
+                'SUM(c.amount) as new_lead_amount',
+                'SUM(IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount))) as login_amount',
+                'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
+                'SUM(b.disbursement_approved) as disbursed_approval_amount',
+                'SUM(b.insurance_charges) as insurance_charges_amount',
+                'SUM(b.soft_sanction) as soft_sanctioned_amount',
+                'SUM(b.soft_approval) as soft_approval_amount',
+                'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
+                'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
+                'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
@@ -3237,21 +3224,16 @@ class CompanyDashboardController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                "COUNT(CASE WHEN b.status = '0' THEN c.amount END) as new_lead_amount",
-                "COUNT(CASE WHEN b.status = '4' THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount",
-                "COUNT(CASE WHEN b.status = '31' THEN b.disbursement_approved END) as disbursed_amount",
-                "COUNT(CASE WHEN b.status = '26' THEN b.disbursement_approved END) as disbursed_approval_amount",
-                "COUNT(CASE WHEN b.status = '24' THEN b.soft_sanction END) as soft_sanctioned_amount",
-                "COUNT(CASE WHEN b.status = '15' THEN b.soft_approval END) as soft_approval_amount",
-                "COUNT(CASE WHEN b.status != '0' AND b.status != '4' AND b.status != '15' AND b.status != '31' 
-                AND b.status != '26' AND b.status != '32' AND b.status != '30' AND b.status != '28' AND b.status
-                 != '24' THEN c.amount END) as under_process_amount",
-                "COUNT(CASE WHEN b.status = '32' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval
-                , b.soft_approval, c.amount)) END) as rejected_amount",
-                "COUNT(CASE WHEN b.status = '28' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
-                 b.soft_approval, c.amount)) END) as cni_amount",
-                "COUNT(CASE WHEN b.status = '30' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, 
-                b.soft_approval, c.amount)) END) as sanctioned_amount"
+                'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
+                'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
+                'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
+                'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
+                'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
+                'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
+                'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
+                'COUNT(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount',
+                'COUNT(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount',
+                'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
