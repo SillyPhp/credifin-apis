@@ -1345,7 +1345,8 @@ class CompanyDashboardController extends ApiBaseController
                         THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) 
                         ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') 
                     END image",
-                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name',
+                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
+                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone',
                 'b.status', 'c.user_type', 'a.employee_code', 'd.designation', 'a.designation_id',
                 "CONCAT(e.first_name, ' ', COALESCE(e.last_name, '')) reporting_person", "CONCAT(f.location_name, ', ', f1.name) AS branch_name",
                 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on platform_joining_date'
@@ -1395,7 +1396,7 @@ class CompanyDashboardController extends ApiBaseController
                             $employee->andWhere(['like', "CONCAT(e.first_name, ' ', COALESCE(e.last_name, ''))", $value]);
                             break;
                         case 'branch':
-                            $employee->andWhere(['like', 'f.location_enc_id', $value]);
+                            $employee->andWhere(['IN', 'f.location_enc_id', $value]);
                             break;
                     }
                 }
@@ -2339,8 +2340,25 @@ class CompanyDashboardController extends ApiBaseController
             $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             $field = $params['id'];
 
-            // if not empty employee
-            if (!empty($employee)) {
+            if ($employee && $params['id'] == 'user_name' || $params['id'] == 'user_number' || $params['id'] == 'user_email') {
+                $users = Users::findOne(['user_enc_id' => $params['parent_id']]);
+                if ($params['id'] == 'user_number') {
+                    $users->phone = $params['value'];
+                } elseif ($params['id'] == 'user_email') {
+                    $users->email = $params['value'];
+                } elseif ($params['id'] == 'user_name') {
+                    $full_name = explode(' ', $params['value'], 2);
+                    $first_name = $full_name[0];
+                    $last_name = isset($full_name[1]) ? $full_name[1] : '';
+                    $users->first_name = $first_name;
+                    $users->last_name = $last_name;
+                }
+                $users->last_updated_on = date('Y-m-d H:i:s');
+                if (!$users->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $users->getErrors()]);
+                }
+            } // if not empty employee
+            elseif (!empty($employee)) {
                 // field name and value
                 $employee->$field = $params['value'];
                 $employee->updated_by = $user->user_enc_id;
