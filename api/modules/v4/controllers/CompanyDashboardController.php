@@ -2691,7 +2691,11 @@ class CompanyDashboardController extends ApiBaseController
                 ->select([
                     'a.user_enc_id',
                     "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
-                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'ANY_VALUE(b1.designation) designation', "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person", 'ANY_VALUE(b3.location_name) location_name',
+                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
+                    'ANY_VALUE(gd.designation) designation',
+                    'ANY_VALUE(gd.assigned_designation_enc_id) assigned_designation_enc_id',
+                    "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
+                    'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as total_cases",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '0' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as new_lead",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '30' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as sanctioned",
@@ -2702,6 +2706,7 @@ class CompanyDashboardController extends ApiBaseController
                 ])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
+                        ->joinWith(['designation gd'])
                         ->joinWith(['reportingPerson b2'])
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
@@ -2722,6 +2727,30 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
+
+            if (!empty($params['fields_search'])) {
+                foreach ($params['fields_search'] as $key => $value) {
+                    if (!empty($value)) {
+                        if ($key == 'employee_code') {
+                            $employeeStats->andWhere(['like', 'b.' . $key, $value]);
+                        } elseif ($key == 'phone') {
+                            $employeeStats->andWhere(['like', 'a.' . $key, $value]);
+                        } elseif ($key == 'username') {
+                            $employeeStats->andWhere(['like', 'a.' . $key, $value]);
+                        } elseif ($key == 'employee_name') {
+                            $employeeStats->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
+                        } elseif ($key == 'reporting_person') {
+                            $employeeStats->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
+                        } elseif ($key == 'branch') {
+                            $employeeStats->andWhere(['IN', 'b3.location_enc_id', $value]);
+                        } elseif ($key == 'designation_id') {
+                            $employeeStats->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
+                        } else {
+                            $employeeStats->andWhere(['like', $key, $value]);
+                        }
+                    }
+                }
+            }
 
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
                 $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
