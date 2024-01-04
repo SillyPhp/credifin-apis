@@ -3,9 +3,11 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\Employee;
-use yii\filters\VerbFilter;
+use common\models\UserAccessTokens;
+use common\models\Users;
 use Yii;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 
 class EmployeeController extends ApiBaseController
 {
@@ -55,4 +57,40 @@ class EmployeeController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionResetPassword()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['user_enc_id']) || empty($params['new_password'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing user_enc_id or new_password']);
+        }
+
+        $user_enc_id = $params['user_enc_id'];
+        $new_password = $params['new_password'];
+
+        $user = Users::findOne(['user_enc_id' => $user_enc_id, 'is_deleted' => 0]);
+
+        if ($user != null) {
+            $user->password = Yii::$app->getSecurity()->generatePasswordHash($new_password);
+            $user->is_email_verified = 1;
+            $user->update();
+
+            UserAccessTokens::updateAll(
+                [
+                    'is_deleted' => 1,
+                    'last_updated_on' => date('Y-m-d H:i:s')
+                ],
+                ['and',
+                    ['user_enc_id' => $user_enc_id],
+                    ['is_deleted' => 0]
+                ]
+            );
+
+            return $this->response(200, ['status' => 200, 'message' => 'Password changed successfully']);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'User not found']);
+        }
+    }
+
 }
