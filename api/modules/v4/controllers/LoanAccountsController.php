@@ -527,31 +527,40 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_ids = $params['loan_account_enc_id'];
-        $data = (new \yii\db\Query())
-            ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
-                "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
-                '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name', 
-                '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone', 
-                '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount', 
-                'a.overdue_amount', 'a.ledger_amount', 
-                '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
-                'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
-                'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
-            ->from(['a1' => EmiCollection::tableName()], )
-            ->join('LEFT JOIN', ['a' => LoanAccounts::tableName()], 'a1.loan_account_number = a.loan_account_number');
-                if($loan_ids['loan_account_number']){
-                    $data->where(['a1.loan_account_number' => $loan_ids['loan_account_number']]);
-                }else{
-                    $data->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
-                };
-            $data = $data
-            ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
-            ->one(); 
+        if($loan_ids['loan_account_enc_id']){        
+            $data = (new \yii\db\Query())
+                ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
+                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
+                    '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name', 
+                    '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone', 
+                    '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount', 
+                    'a.overdue_amount', 'a.ledger_amount', 
+                    '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
+                    'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                    'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
+                ->from(['a' => LoanAccounts::tableName()], )
+                ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
+                ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])  
+                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
+                ->one(); 
+            }else{
+                $data = (new \yii\db\Query())
+                ->select(["a1.loan_account_number",
+                    "COUNT(a1.loan_account_number) as total_emis", 'a1.customer_name as name', 
+                    'a1.phone', 
+                    'a1.amount as emi_amount', 
+                    'a1.loan_type',
+                   ])
+                ->from(['a1' => EmiCollection::tableName()], )
+                ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])  
+                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount','a1.loan_account_number'])
+                ->one(); 
+            };
 
-        if($loan_ids['loan_account_number']){
-            $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
-         }else{
+        if($loan_ids['loan_account_enc_id']){
             $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
+        }else{
+             $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
         };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
