@@ -1396,7 +1396,7 @@ class CompanyDashboardController extends ApiBaseController
                             $employee->andWhere(['like', "CONCAT(e.first_name, ' ', COALESCE(e.last_name, ''))", $value]);
                             break;
                         case 'branch':
-                            $employee->andWhere(['like', 'f.location_enc_id', $value]);
+                            $employee->andWhere(['IN', 'f.location_enc_id', $value]);
                             break;
                     }
                 }
