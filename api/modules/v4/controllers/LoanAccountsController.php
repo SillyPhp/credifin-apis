@@ -22,12 +22,13 @@ use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use Yii;
+use yii\db\Exception;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -530,27 +531,27 @@ class LoanAccountsController extends ApiBaseController
         $data = (new \yii\db\Query())
             ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
                 "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
-                '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name', 
-                '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone', 
-                '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount', 
-                'a.overdue_amount', 'a.ledger_amount', 
+                '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
+                '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
+                '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
+                'a.overdue_amount', 'a.ledger_amount',
                 '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                 'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
                 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
-            ->from(['a1' => EmiCollection::tableName()], )
+            ->from(['a1' => EmiCollection::tableName()],)
             ->join('LEFT JOIN', ['a' => LoanAccounts::tableName()], 'a1.loan_account_number = a.loan_account_number');
-                if($loan_ids['loan_account_number']){
-                    $data->where(['a1.loan_account_number' => $params['loan_account_enc_id']]);
-                }else{
-                    $data->where(['a.loan_account_enc_id' => $params['loan_account_enc_id']]);
-                };
-            $data = $data
+        if ($loan_ids['loan_account_number']) {
+            $data->where(['a1.loan_account_number' => $params['loan_account_enc_id']]);
+        } else {
+            $data->where(['a.loan_account_enc_id' => $params['loan_account_enc_id']]);
+        };
+        $data = $data
             ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
-            ->one(); 
+            ->one();
 
-        if($loan_ids['loan_account_number']){
+        if ($loan_ids['loan_account_number']) {
             $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_enc_id']]);
-         }else{
+        } else {
             $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
         };
         $model = $this->_emiAccData($lac)['data'];
@@ -638,7 +639,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
- 
+
     public function actionVehicleRepossession()
     {
         if (!$user = $this->isAuthorized()) {
@@ -1316,12 +1317,12 @@ class LoanAccountsController extends ApiBaseController
                 }]);
             }], false)
             ->joinWith(['collectionManager cm'], false);
-            if (isset($params['type']) && $params['type'] == 'dashboad') {
-                $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
-            }else{
-                $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
-            }
-            $ptpcases = $ptpcases
+        if (isset($params['type']) && $params['type'] == 'dashboad') {
+            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+        } else {
+            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+        }
+        $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
             ->orderBy(['a.proposed_date' => SORT_ASC]);
 
@@ -1388,16 +1389,16 @@ class LoanAccountsController extends ApiBaseController
             if ($query) {
                 return $this->response(200, ['status' => 200, 'data' => $query]);
             }
-        }else{
+        } else {
             $query = EmiCollection::find()
                 ->select(['loan_account_number', 'customer_name as name', 'phone', 'loan_type'])
                 ->where(['loan_account_number' => $loan_number['loan_account_number']])
                 ->asArray()
                 ->all();
 
-                if ($query) {
-                    return $this->response(200, ['status' => 200, 'data' => $query]);
-                }
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
@@ -1498,5 +1499,44 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
+    }
+
+    public function actionUpdatePriority()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $loan_account_enc_id = $params['loan_account_enc_id'];
+
+        if (empty($loan_account_enc_id)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information "loan_account_enc_id"']);
+        }
+
+        foreach ($loan_account_enc_id as $loan_account_enc_ids) {
+            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loan_account_enc_ids]);
+            if (!$priority) {
+                throw new Exception('Loan account not found');
+            }
+
+            $priority_types = ['telecaller_priority', 'collection_priority', 'sales_priority'];
+
+            foreach ($priority_types as $type) {
+                if (isset($params[$type])) {
+                    $priority->$type = $params[$type];
+                }
+            }
+
+            $priority->updated_by = $user->user_enc_id;
+            $priority->updated_on = date('Y-m-d H:i:s');
+
+            if (!$priority->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $priority->getErrors()]);
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 }
