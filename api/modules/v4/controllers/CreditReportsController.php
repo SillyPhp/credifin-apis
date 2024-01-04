@@ -56,10 +56,12 @@ class CreditReportsController extends ApiBaseController
                     'c.file_url', 'c.created_by',
                     'c1.request_source',
                     "CONCAT(d.first_name,' ', COALESCE(d.last_name, '')) as created_by_name",
-                    'e.name as co_applicant_name', 'e.relation', 'e.borrower_type'
+                    'e.name as co_applicant_name', 'e.relation', 'e.borrower_type', 'b2.financer_loan_product_enc_id',
+                    'b2.name as loan_product'
                 ])
                 ->joinWith(['loanAppEnc b' => function ($b) {
                     $b->joinWith(['assignedLoanProviders b1']);
+                    $b->joinWith(['loanProductsEnc b2']);
                 }], false)
                 ->joinWith(['responseEnc c' => function ($c) {
                     $c->joinWith(['requestEnc c1' => function ($c1) {
@@ -69,12 +71,29 @@ class CreditReportsController extends ApiBaseController
                 ->joinWith(['loanCoAppEnc e'], false)
                 ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id, 'b1.is_deleted' => 0]);
 
+            if (!empty($params['fields_search'])) {
+                foreach ($params['fields_search'] as $key => $value) {
+                    if (!empty($value)) {
+                        if ($key == 'applicant_name') {
+                            $creditReport->andWhere(['like', 'e.name', $value]);
+                        } elseif ($key == 'loan_product_enc_id') {
+                            $creditReport->andWhere(['IN', 'b2.financer_loan_product_enc_id', $value]);
+                        } elseif ($key == 'request_source') {
+                            $creditReport->andWhere(['like', 'c1.' . $key, $value]);
+                        } elseif ($key == 'created_by_name') {
+                            $creditReport->andWhere(['like', "CONCAT(d.first_name,' ',COALESCE(d.last_name))", $value]);
+                        } else {
+                            $creditReport->andWhere(['like', $key, $value]);
+                        }
+                    }
+                }
+            }
+
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $creditReport->andWhere([
                     'or',
                     ['like', 'b.applicant_name', $params['keyword']],
                     ['like', 'e.name', $params['keyword']],
-//                    ['like', 'concat(d.first_name," ",d.last_name)', $params['keyword']],
                     ['like', "CONCAT(d.first_name,' ', COALESCE(d.last_name, ''))", $params['keyword']],
                     ['like', 'b.loan_type', $params['keyword']],
                 ]);
