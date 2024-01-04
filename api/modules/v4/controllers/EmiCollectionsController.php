@@ -83,8 +83,7 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "a.loan_account_number",
-                "b.lms_loan_account_number",
+                "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -117,7 +116,7 @@ class EmiCollectionsController extends ApiBaseController
                     $c1->andOnCondition(["c1.payment_status" => "captured"]);
                 }], false);
             }], false)
-            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
+            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
             ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
