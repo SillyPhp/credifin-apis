@@ -73,7 +73,11 @@ class EmiCollectionsController extends ApiBaseController
         if (empty($params["start_date"]) || empty($params["end_date"])) {
             return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
         }
-        if (strtotime($params["end_date"]) <= strtotime($params["start_date"])) {
+        $start_date = strtotime($params["start_date"]);
+        $end_date = strtotime($params["end_date"]);
+        if ($start_date === $end_date) {
+            $end_date += (24 * 60 * 60) - 1;
+        } else if ($end_date <= $start_date) {
             return $this->response(500, ["error" => "end date must be greater than start date"]);
         }
         $query = EmiCollection::find()
@@ -114,7 +118,7 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
-            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", strtotime($params["start_date"]), strtotime($params["end_date"])])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
