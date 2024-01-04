@@ -540,18 +540,18 @@ class LoanAccountsController extends ApiBaseController
             ->from(['a1' => EmiCollection::tableName()], )
             ->join('LEFT JOIN', ['a' => LoanAccounts::tableName()], 'a1.loan_account_number = a.loan_account_number');
                 if($loan_ids['loan_account_number']){
-                    $data->where(['a1.loan_account_number' => $params['loan_account_enc_id']]);
+                    $data->where(['a1.loan_account_number' => $loan_ids['loan_account_number']]);
                 }else{
-                    $data->where(['a.loan_account_enc_id' => $params['loan_account_enc_id']]);
+                    $data->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
                 };
             $data = $data
             ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
             ->one(); 
 
         if($loan_ids['loan_account_number']){
-            $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_enc_id']]);
+            $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
          }else{
-            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
         };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
