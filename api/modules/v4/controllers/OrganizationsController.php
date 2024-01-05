@@ -7,7 +7,6 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
-use common\models\AssignedLoanAccounts;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -28,7 +27,6 @@ use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
-use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\UserTypes;
@@ -2495,7 +2493,7 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
-                "a.loan_account_number", "a.last_emi_date", "a.name",
+                "a.loan_account_number", "a.last_emi_date", "a.name", 'a.sales_priority', 'a.telecaller_priority', 'a.collection_priority',
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
