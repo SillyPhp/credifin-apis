@@ -11,13 +11,11 @@ use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
-use common\models\Users;
 use Exception;
 use Yii;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -83,7 +81,8 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "b.lms_loan_account_number AS loan_account_number",
+                "a.loan_account_number",
+                "b.lms_loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -155,7 +154,8 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "b.lms_loan_account_number AS loan_account_number",
+                "a.loan_account_number",
+                "b.lms_loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -174,12 +174,7 @@ class EmiCollectionsController extends ApiBaseController
                 "b.company_id",
                 "b.company_name",
             ])
-            ->joinWith(["loanAccountEnc b" => function ($b) {
-                $b->andOnCondition(["NOT", [
-                    "b.company_id" => [null, ''],
-                    "b.company_name" => [null, '']
-                ]]);
-            }], false)
+            ->joinWith(["loanAccountEnc b"], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
                 $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
