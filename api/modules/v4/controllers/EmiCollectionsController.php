@@ -81,8 +81,8 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "a.loan_account_number",
-                "b.lms_loan_account_number",
+                "a.loan_account_number AS file_number",
+                "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -154,8 +154,8 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "a.loan_account_number",
-                "b.lms_loan_account_number",
+                "a.loan_account_number AS file_number",
+                "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
