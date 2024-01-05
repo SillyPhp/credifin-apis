@@ -174,7 +174,7 @@ class EmiCollectionsController extends ApiBaseController
                 "b.company_id",
                 "b.company_name",
             ])
-            ->innerJoinWith(["loanAccountEnc b" => function ($b) {
+            ->joinWith(["loanAccountEnc b" => function ($b) {
                 $b->andOnCondition(["NOT", [
                     "b.company_id" => [null, ''],
                     "b.company_name" => [null, '']
