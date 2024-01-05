@@ -2704,7 +2704,7 @@ class CompanyDashboardController extends ApiBaseController
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c.login_date IS NOT NULL AND c.login_date <= '$endDate' AND c.login_date >= '$startDate' THEN c.loan_app_enc_id END) as login",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process"
                 ])
-                ->joinWith(['userRoles b' => function ($b) {
+                ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
                         ->joinWith(['designation gd'])
                         ->joinWith(['reportingPerson b2'])
@@ -3213,16 +3213,20 @@ class CompanyDashboardController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                'SUM(c.amount) as new_lead_amount',
-                'SUM(IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount))) as login_amount',
-                'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
-                'SUM(b.disbursement_approved) as disbursed_approval_amount',
-                'SUM(b.insurance_charges) as insurance_charges_amount',
-                'SUM(b.soft_sanction) as soft_sanctioned_amount',
-                'SUM(b.soft_approval) as soft_approval_amount',
-                'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
-                'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
-                'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
+                "SUM(c.amount) as new_lead_amount",
+                "SUM(IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount,
+                 c.amount))) as login_amount",
+                "SUM(CASE WHEN b.status = '31' THEN b.disbursement_approved ELSE 0 END) as disbursed_amount",
+                "SUM(b.disbursement_approved) as disbursed_approval_amount",
+                "SUM(b.insurance_charges) as insurance_charges_amount",
+                "SUM(b.soft_sanction) as soft_sanctioned_amount",
+                "SUM(b.soft_approval) as soft_approval_amount",
+                "SUM(CASE WHEN b.status = '32' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
+                 b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount",
+                "SUM(CASE WHEN b.status = '28' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
+                 b.soft_approval, c.amount)) ELSE 0 END) as cni_amount",
+                "SUM(CASE WHEN b.status = '30' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval,
+                 b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount",
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')

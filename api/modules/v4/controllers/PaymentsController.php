@@ -73,10 +73,8 @@ class PaymentsController extends ApiBaseController
                 $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
-                if ($key == 0) {
-                    self::updateStatus($mod['loan_payments_enc_id']);
-                }
             }
+            self::updateStatus($model[0]['loan_payments_enc_id']);
         }
     }
 
@@ -88,7 +86,7 @@ class PaymentsController extends ApiBaseController
             ->joinWith(['loanAppEnc b' => function ($b) {
                 $b->joinWith(['assignedLoanProviders c'], false, 'INNER JOIN');
             }], false, 'INNER JOIN')
-            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<', 'c.status', 4]])
+            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<=', 'c.status', 4]])
             ->asArray()
             ->one();
 
@@ -97,7 +95,7 @@ class PaymentsController extends ApiBaseController
                 ->update(
                     LoanApplicationsExtended::tableName(),
                     ['login_date' => date('Y-m-d H:i:s')],
-                    ['loan_app_enc_id' => $query->loan_app_enc_id]
+                    ['loan_app_enc_id' => $query['loan_app_enc_id']]
                 )
                 ->execute();
             Yii::$app->db->createCommand()
@@ -237,7 +235,7 @@ class PaymentsController extends ApiBaseController
             $options['amount'] = $amount;
             $options['amount_enc_ids'] = $amount_enc_ids;
             $options['description'] = 'Payment for ' . implode(', ', $desc);
-            $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
+            $org_name = Organizations::findOne(['organization_enc_id' => $options['org_id']])['name'];
             $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
