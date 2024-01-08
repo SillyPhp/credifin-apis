@@ -107,7 +107,10 @@ class ApiBaseController extends Controller
         }
 
         // getting token detail from DB
-        $access_token = UserAccessTokens::find()->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])->one();
+        $access_token = UserAccessTokens::find()
+            ->select(['user_enc_id', 'access_token_expiration'])
+            ->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])
+            ->one();
 
         // check if token exists in token detail and source == token detail source
         if (!empty($access_token)) {
