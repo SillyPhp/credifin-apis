@@ -22,12 +22,13 @@ use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use Yii;
+use yii\db\Exception;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 
 class LoanAccountsController extends ApiBaseController
@@ -69,6 +70,355 @@ class LoanAccountsController extends ApiBaseController
         ];
 
         return $behaviors;
+    }
+
+    public function actionLoanAccountsUpload()
+    {
+
+        $this->isAuth(2);
+        $user = $this->user;
+        $branches = [
+            "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
+            "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
+            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
+            "JGN" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
+            "HSX" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
+            "NAWA" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
+            "MEX" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
+            "BAT" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
+            "TTO" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
+            "KXH" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
+            "NRO" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
+            "MKS" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
+            "SGNR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
+            "ABS" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
+            "MOT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
+            "NDLS" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
+            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
+            "KNN" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
+            "MET" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
+            "ASR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
+            "KARR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
+            "ZKP" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
+            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
+            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
+            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
+            "FZP" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
+            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
+            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
+            "ROK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
+            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
+            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
+            "RK" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
+            "HW" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
+            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
+            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
+            "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
+            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
+            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
+            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
+            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
+            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
+            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
+            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+        ];
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            $utilitiesModel = new Utilities();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
+                if (!$loan) {
+                    $loan = new LoanAccounts();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
+                    $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                    $loan->lms_loan_account_number = $data[array_search('LmsNumber', $header)];
+                    $loan->loan_account_number = trim($data[array_search('LoanNo', $header)]);
+                    $loan->name = trim($data[array_search('CustomerName', $header)]);
+                    $loan->loan_type = $data[array_search('LoanType', $header)];
+                    $loan->emi_date = date('Y-m-d', strtotime($data[array_search('FirstInstallmentDate', $header)]));
+                    $loan->last_emi_date = date('Y-m-d', strtotime($data[array_search('LastInstallmentDate', $header)]));
+                    $loan->emi_amount = $data[array_search('EmiAmount', $header)];
+                    $loan->total_installments = $data[array_search('TotalInstallments', $header)];
+                    $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
+                    $tmp = $branches[$data[array_search('Branch', $header)]];
+                    if (array_search('VehicleType', $header)) {
+                        $loan->vehicle_type = $data[array_search('VehicleType', $header)];
+                    }
+                    if (array_search('VehicleModel', $header)) {
+                        $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
+                    }
+                    if (array_search('VehicleMake', $header)) {
+                        $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
+                    }
+                    if (array_search('VehicleEngineNo', $header)) {
+                        $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
+                    }
+                    if (array_search('VehicleChassisNo', $header)) {
+                        $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
+                    }
+                    if (array_search('RcNumber', $header)) {
+                        $loan->rc_number = $data[array_search('RcNumber', $header)];
+                    }
+                    $loan->branch_enc_id = $tmp;
+                    $loan->created_on = date('Y-m-d h:i:s');
+                    $loan->created_by = $user->user_enc_id;
+                }
+                $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
+                $loan->bucket = $data[array_search('SMASTATUS', $header)];
+                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
+                if (empty($last_emi_amount)) {
+                    $last_emi_amount = 0;
+                }
+                $loan->last_emi_received_amount = $last_emi_amount;
+                $last_emi_date = $data[array_search('LastRecDate', $header)];
+                if (!empty($last_emi_date)) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
+                }
+                $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
+                $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
+                $loan->pos = $data[array_search('Pos', $header)];
+                $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
+                $loan->stock = $data[array_search('Stock', $header)];
+                $cm = array_search('CollectionManager', $header);
+                if (!empty($data[$cm])) {
+                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
+                }
+                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
+                    $loan->collection_manager = $collection_manager['user_enc_id'];
+                }
+                !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
+                $loan->updated_on = date('Y-m-d h:i:s');
+                $loan->updated_by = $user->user_enc_id;
+                if (!$loan->save()) {
+                    $transaction->rollBack();
+                    print_r($loan->getErrors());
+                    print_r($data);
+                    exit();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        }
+    }
+
+    public function actionLoanAccountsUpload3()
+    {
+
+        $this->isAuth(2);
+        $user = $this->user;
+        $branches = [
+            "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
+            "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
+            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
+            "JGN" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
+            "HSX" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
+            "NAWA" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
+            "MEX" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
+            "BAT" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
+            "TTO" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
+            "KXH" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
+            "NRO" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
+            "MKS" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
+            "SGNR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
+            "ABS" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
+            "MOT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
+            "NDLS" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
+            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
+            "KNN" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
+            "MET" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
+            "ASR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
+            "KARR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
+            "ZKP" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
+            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
+            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
+            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
+            "FZP" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
+            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
+            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
+            "ROK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
+            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
+            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
+            "RK" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
+            "HW" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
+            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
+            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
+            "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
+            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
+            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
+            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
+            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
+            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
+            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
+            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+        ];
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = true;
+            $transaction = Yii::$app->db->beginTransaction();
+            $utilitiesModel = new Utilities();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count) {
+                    $header = $data;
+                    $count = false;
+                    continue;
+                }
+
+                $data = array_map(function ($key, $item) use ($header) {
+                    $item = trim($item);
+                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
+                }, array_keys($data), $data);
+
+                $loan = new LoanAccounts();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
+                $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                $loan->lms_loan_account_number = $data[array_search('LmsNumber', $header)];
+                $loan->loan_account_number = trim($data[array_search('LoanNo', $header)]);
+                $loan->name = trim($data[array_search('CustomerName', $header)]);
+                $loan->loan_type = $data[array_search('LoanType', $header)];
+                $loan->emi_date = date('Y-m-d', strtotime($data[array_search('FirstInstallmentDate', $header)]));
+                $loan->last_emi_date = date('Y-m-d', strtotime($data[array_search('LastInstallmentDate', $header)]));
+                $loan->emi_amount = $data[array_search('EmiAmount', $header)];
+                $loan->total_installments = $data[array_search('TotalInstallments', $header)];
+                $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
+                $tmp = $branches[$data[array_search('Branch', $header)]];
+                if (array_search('VehicleType', $header)) {
+                    $loan->vehicle_type = $data[array_search('VehicleType', $header)];
+                }
+                if (array_search('VehicleModel', $header)) {
+                    $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
+                }
+                if (array_search('VehicleMake', $header)) {
+                    $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
+                }
+                if (array_search('VehicleEngineNo', $header)) {
+                    $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
+                }
+                if (array_search('VehicleChassisNo', $header)) {
+                    $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
+                }
+                if (array_search('RcNumber', $header)) {
+                    $loan->rc_number = $data[array_search('RcNumber', $header)];
+                }
+                $loan->branch_enc_id = $tmp;
+                $loan->created_on = date('Y-m-d h:i:s');
+                $loan->created_by = $user->user_enc_id;
+                $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
+                $loan->bucket = $data[array_search('SMASTATUS', $header)];
+                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
+                if (empty($last_emi_amount)) {
+                    $last_emi_amount = 0;
+                }
+                $loan->last_emi_received_amount = $last_emi_amount;
+                $last_emi_date = $data[array_search('LastRecDate', $header)];
+                if (!empty($last_emi_date)) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
+                }
+                $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
+                $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
+                $loan->pos = $data[array_search('Pos', $header)];
+                $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
+                $loan->stock = $data[array_search('Stock', $header)];
+                $cm = array_search('CollectionManager', $header);
+                if (!empty($data[$cm])) {
+                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
+                }
+                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
+                    $loan->collection_manager = $collection_manager['user_enc_id'];
+                }
+                !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
+                $loan->updated_on = date('Y-m-d h:i:s');
+                $loan->updated_by = $user->user_enc_id;
+                if (!$loan->save()) {
+                    $transaction->rollBack();
+                    print_r($loan->getErrors());
+                    print_r($data);
+                    exit();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        }
+    }
+
+    public function actionLoanAccountsUpload2()
+    {
+        $user = $this->isAuthorized();
+        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
+            return $this->response(500, 'Not Authorized');
+        }
+        $file = $_FILES['file'];
+        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+            $count = 1;
+            $transaction = Yii::$app->db->beginTransaction();
+            $utilitiesModel = new Utilities();
+            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+                if ($count == 1) {
+                    $count++;
+                    continue;
+                }
+                $save = 'update';
+                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
+                if (!$loan) {
+                    $loan = new LoanAccounts();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
+                    $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                    $loan->lms_loan_account_number = $data[0];
+                    $loan->loan_account_number = trim($data[1]);
+                    $loan->name = $data[2];
+                    if (!empty($data[3])) {
+                        $loan->phone = $data[3];
+                    }
+                    $loan->loan_type = $data[6];
+                    $loan->created_on = date('Y-m-d h:i:s');
+                    $loan->created_by = $user->user_enc_id;
+                    $save = 'save';
+                }
+                $loan->emi_date = date('Y-m-d', strtotime($data[5]));
+                $loan->emi_amount = $data[4];
+                if (!empty($data[7])) {
+                    $loan->overdue_amount = $data[7];
+                }
+                if (!empty($data[8])) {
+                    $loan->ledger_amount = $data[8];
+                }
+                if (!empty($data[9])) {
+                    $loan->last_emi_received_amount = $data[9];
+                }
+                if (!empty($data[10])) {
+                    $loan->last_emi_received_date = date('Y-m-d', strtotime($data[10]));
+                }
+                $loan->updated_on = date('Y-m-d h:i:s');
+                $loan->updated_by = $user->user_enc_id;
+                if (!$loan->$save()) {
+                    $transaction->rollBack();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+                }
+            }
+            fclose($handle);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        }
     }
 
     public function actionEmiPaymentIssues()
@@ -178,34 +528,34 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_ids = $params['loan_account_enc_id'];
-        if($loan_ids['loan_account_enc_id']){        
+        if($loan_ids['loan_account_enc_id']){
             $data = (new \yii\db\Query())
                 ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
                     "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
-                    '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name', 
-                    '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone', 
-                    '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount', 
-                    'a.overdue_amount', 'a.ledger_amount', 
+                    '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
+                    '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
+                    '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
+                    'a.overdue_amount', 'a.ledger_amount',
                     '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                     'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
                     'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
                 ->from(['a' => LoanAccounts::tableName()], )
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
-                ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])  
+                ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
-                ->one(); 
+                ->one();
             }else{
                 $data = (new \yii\db\Query())
                 ->select(["a1.loan_account_number",
-                    "COUNT(a1.loan_account_number) as total_emis", 'a1.customer_name as name', 
-                    'a1.phone', 
-                    'a1.amount as emi_amount', 
+                    "COUNT(a1.loan_account_number) as total_emis", 'a1.customer_name as name',
+                    'a1.phone',
+                    'a1.amount as emi_amount',
                     'a1.loan_type',
                    ])
                 ->from(['a1' => EmiCollection::tableName()], )
-                ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])  
+                ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount','a1.loan_account_number'])
-                ->one(); 
+                ->one();
             };
 
         if($loan_ids['loan_account_enc_id']){
@@ -298,7 +648,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
- 
+
     public function actionVehicleRepossession()
     {
         if (!$user = $this->isAuthorized()) {
@@ -976,12 +1326,12 @@ class LoanAccountsController extends ApiBaseController
                 }]);
             }], false)
             ->joinWith(['collectionManager cm'], false);
-            if (isset($params['type']) && $params['type'] == 'dashboad') {
-                $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
-            }else{
-                $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
-            }
-            $ptpcases = $ptpcases
+        if (isset($params['type']) && $params['type'] == 'dashboad') {
+            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+        } else {
+            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+        }
+        $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
             ->orderBy(['a.proposed_date' => SORT_ASC]);
 
@@ -1048,16 +1398,16 @@ class LoanAccountsController extends ApiBaseController
             if ($query) {
                 return $this->response(200, ['status' => 200, 'data' => $query]);
             }
-        }else{
+        } else {
             $query = EmiCollection::find()
                 ->select(['loan_account_number', 'customer_name as name', 'phone', 'loan_type'])
                 ->where(['loan_account_number' => $loan_number['loan_account_number']])
                 ->asArray()
                 ->all();
 
-                if ($query) {
-                    return $this->response(200, ['status' => 200, 'data' => $query]);
-                }
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
@@ -1158,5 +1508,44 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return ['status' => 200, 'found' => count($data), 'inserted' => $inserted];
+    }
+
+    public function actionUpdatePriority()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $loan_account_enc_id = $params['loan_account_enc_id'];
+
+        if (empty($loan_account_enc_id)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information "loan_account_enc_id"']);
+        }
+
+        foreach ($loan_account_enc_id as $loan_account_enc_ids) {
+            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loan_account_enc_ids]);
+            if (!$priority) {
+                throw new Exception('Loan account not found');
+            }
+
+            $priority_types = ['telecaller_priority', 'collection_priority', 'sales_priority'];
+
+            foreach ($priority_types as $type) {
+                if (isset($params[$type])) {
+                    $priority->$type = $params[$type];
+                }
+            }
+
+            $priority->updated_by = $user->user_enc_id;
+            $priority->updated_on = date('Y-m-d H:i:s');
+
+            if (!$priority->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $priority->getErrors()]);
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 }
