@@ -804,7 +804,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
