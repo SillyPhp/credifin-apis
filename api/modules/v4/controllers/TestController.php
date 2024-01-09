@@ -28,6 +28,7 @@ class TestController extends ApiBaseController
                 "testxl" => ["POST", "OPTIONS"],
                 "pool" => ["POST", "OPTIONS"],
                 "update-data" => ["GET", "OPTIONS"],
+                "login-date-update" => ["GET", "OPTIONS"],
             ]
         ];
 
@@ -520,7 +521,39 @@ class TestController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
 
     }
-
+    public function actionLoginDateUpdate($limit=100,$page=1,$count=false){
+        $login_date = LoanApplications::find()
+            ->alias('a')
+            ->select(['b1.loan_app_enc_id'])
+            ->innerJoinWith(['assignedLoanPayments b1' => function ($b1) {
+                $b1->select(['b1.id','b1.loan_app_enc_id','b1.loan_payments_enc_id','b2.payment_amount','b2.payment_status','b2.updated_on']);
+                $b1->innerJoinWith(['loanPaymentsEnc b2' => function ($b2) {
+                    $b2->andOnCondition(['b2.payment_status' => 'captured']);
+                }], false);
+            }], true)
+            ->where(['a.is_deleted' => 0])
+            ->groupBy('a.loan_app_enc_id')
+            //->andWhere(["IS", 'a.login_date', null])
+            ->orderBy(['a.id' => SORT_ASC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        if ($count){
+            return count($login_date);
+        }
+        $k = 0;
+        if ($login_date){
+            foreach ($login_date as $logins){
+                $model = LoanApplications::findOne(['loan_app_enc_id'=>$logins['loan_app_enc_id']]);
+                $model->login_date = $logins['assignedLoanPayments'][0]['updated_on'];
+                if ($model->save()){
+                    $k++;
+                }
+            }
+            echo $k.' results updated ';
+        }
+    }
     public function actionAssignAuditLoginDate()
     {
         if (!$this->isAuthorized()) {
