@@ -676,7 +676,7 @@ class EmiCollectionsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        $params = Yii::$app->request->post();
+        $params = $this->post;
         $search = '';
         if (empty($params['organization_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
@@ -821,6 +821,9 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params['custom_status'])) {
             $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
         }
+        if (!empty($params['discrepancy_list'])) {
+            $model->andWhere(['a.loan_account_enc_id' => null]);
+        }
         if (!empty($search)) {
             $a = ['loan_account_number', 'customer_name', 'loan_account_number', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
@@ -907,20 +910,17 @@ class EmiCollectionsController extends ApiBaseController
 
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        foreach ($model as $key => $value) {
-            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
-            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+        foreach ($model as &$value) {
+            $value['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $value['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
             if ($value['other_doc_image']) {
-                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
-                $model[$key]['other_doc_image'] = $proof;
+                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image']);
             }
             if ($value['borrower_image']) {
-                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
-                $model[$key]['borrower_image'] = $proof;
+                $value['borrower_image'] = $my_space->signedURL($value['borrower_image']);
             }
             if ($value['pr_receipt_image']) {
-                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
-                $model[$key]['pr_receipt_image'] = $proof;
+                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image']);
             }
         }
         return ['data' => $model, 'count' => $count];
