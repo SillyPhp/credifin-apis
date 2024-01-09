@@ -2691,8 +2691,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->select([
                     'a.user_enc_id',
                     "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
+                    "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
+                    "(CASE WHEN ANY_VALUE(b2.image) IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',ANY_VALUE(b2.image_location), '/', ANY_VALUE(b2.image)) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)), '&size=200&rounded=true&background=', REPLACE(ANY_VALUE(b2.initials_color), '#', ''), '&color=ffffff') END) reporting_image",
                     'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
-                    'ANY_VALUE(gd.designation) designation',
+                    'ANY_VALUE(gd.designation) designation', 'ANY_VALUE(c.login_date) as login_date',
                     'ANY_VALUE(gd.assigned_designation_enc_id) assigned_designation_enc_id',
                     "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
                     'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
@@ -2724,6 +2726,7 @@ class CompanyDashboardController extends ApiBaseController
                         $k->from(['subquery' => $subquery]);
                     }
                 ])
+                ->joinWith(['assignedFinancerLoanTypes afl'], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
@@ -2763,6 +2766,10 @@ class CompanyDashboardController extends ApiBaseController
 
             if (!empty($params['product_id'])) {
                 $employeeStats->andWhere(['c.loan_products_enc_id' => $params['product_id']]);
+            }
+
+            if (!empty($params['loan_type_enc_id'])) {
+                $employeeStats->andWhere(['afl.loan_type_enc_id' => $params['loan_type_enc_id']]);
             }
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
@@ -2993,6 +3000,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->distinct()
                 ->select([
                     'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
+                    'a.loan_status_updated_on',
                     'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
                     'd.name as product_name',
                     "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
