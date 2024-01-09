@@ -1888,7 +1888,7 @@ class CompanyDashboardController extends ApiBaseController
         if (empty($params['users']) || empty($params['loan_accounts']) || empty($params['type'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "users" or "loan_accounts" or "type"']);
         }
-        $type = $params['type'] == 'bdo' ? 1 : ($params['type'] == 'collection_manager' ? 2 : '');
+        $type = $params['type'] == 'bdo' ? 1 : ($params['type'] == 'collection_manager' ? 2 : ($params['type'] == 'telecaller' ? 3 : ''));
         if (!$type) {
             return $this->response(500, ['status' => 422, 'message' => 'unknown user type']);
         }

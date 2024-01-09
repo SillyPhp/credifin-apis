@@ -2478,6 +2478,18 @@ class OrganizationsController extends ApiBaseController
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
 
+        if ($this->isSpecial(1)) {
+            $selectQuery =
+                "(CASE WHEN a.sales_priority THEN a.sales_priority END) as sales_priority,
+                 (CASE WHEN a.collection_priority THEN a.collection_priority END) as collection_priority,
+                 (CASE WHEN a.telecaller_priority THEN a.telecaller_priority END) as telecaller_priority";
+        } else {
+            $selectQuery = "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+            ELSE NULL END) AS priority";
+        }
+
         $sub_query = (new \yii\db\Query())
             ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
             ->from(['z' => EmiCollectionExtended::tableName()])
@@ -2488,12 +2500,14 @@ class OrganizationsController extends ApiBaseController
                     ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
                     ->orderBy(['id' => SORT_DESC])
             ]);
+
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
                 "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
-                "a.loan_account_number", "a.last_emi_date", "a.name", 'a.sales_priority', 'a.telecaller_priority', 'a.collection_priority',
+                "a.loan_account_number", "a.last_emi_date", "a.name",
+                $selectQuery,
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
@@ -2508,7 +2522,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["assignedLoanAccounts d" => function ($d) {
                 $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
                 $d->select([
-                    "d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' END) as user_type",
+                    "d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
                     "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
                     "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
                 ]);
@@ -2518,10 +2532,18 @@ class OrganizationsController extends ApiBaseController
                 $e->from(["e" => $sub_query]);
             }], false)
             ->groupBy(['a.loan_account_enc_id'])
+            ->orderBy([
+                ("CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                    WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority
+                    WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                    ELSE NULL END") => SORT_DESC
+            ])
             ->andWhere(["a.is_deleted" => 0]);
+
         if (!empty($params['collection_date'])) {
             $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
         }
+
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
@@ -2537,6 +2559,8 @@ class OrganizationsController extends ApiBaseController
                         $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
                         $query->andWhere(["like", $key, "$value%", false]);
                     }
