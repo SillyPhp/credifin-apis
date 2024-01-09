@@ -11,13 +11,11 @@ use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
-use common\models\Users;
 use Exception;
 use Yii;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -69,18 +67,21 @@ class EmiCollectionsController extends ApiBaseController
             $this->response(401, ["message" => "unauthorized"]);
         }
         $params = Yii::$app->request->get();
-        $c = !empty($params['company']);
         if (empty($params["start_date"]) || empty($params["end_date"])) {
             return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
         }
-        if (strtotime($params["end_date"]) <= strtotime($params["start_date"])) {
+        $start_date = strtotime($params["start_date"]);
+        $end_date = strtotime($params["end_date"]);
+        if ($start_date === $end_date) {
+            $end_date += (24 * 60 * 60) - 1;
+        } else if ($end_date <= $start_date) {
             return $this->response(500, ["error" => "end date must be greater than start date"]);
         }
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "a.loan_account_number",
-                "b.lms_loan_account_number",
+                "a.loan_account_number AS file_number",
+                "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -99,22 +100,15 @@ class EmiCollectionsController extends ApiBaseController
                 "b.company_id",
                 "b.company_name",
             ])
-            ->innerJoinWith(["loanAccountEnc b" => function ($b) use ($c) {
-                if (!$c) {
-                    $b->andOnCondition(["NOT", [
-                        "b.company_id" => [null, ''],
-                        "b.company_name" => [null, '']
-                    ]]);
-                }
-            }], false)
+            ->joinWith(["loanAccountEnc b"], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
                 $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
                     $c1->andOnCondition(["c1.payment_status" => "captured"]);
                 }], false);
             }], false)
-            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
-            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", strtotime($params["start_date"]), strtotime($params["end_date"])])
+            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
