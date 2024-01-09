@@ -99,6 +99,7 @@ class EmiCollectionsController extends ApiBaseController
                 "a.emi_payment_status",
                 "b.company_id",
                 "b.company_name",
+                "a.emi_collection_enc_id AS collection_id"
             ])
             ->joinWith(["loanAccountEnc b"], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
