@@ -26,7 +26,7 @@ use yii\db\Command;
 // this class is used to get user related data
 class UserUtilities
 {
-    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head'];
+    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head','HO Credit Manager'];
 
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
