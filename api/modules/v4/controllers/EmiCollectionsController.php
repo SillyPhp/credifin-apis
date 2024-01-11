@@ -574,6 +574,9 @@ class EmiCollectionsController extends ApiBaseController
     public function actionApproveByEmployeeList()
     {
         $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $user_id = $params['user_id'] ?? $user->user_enc_id;
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select([
@@ -589,7 +592,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(['receivedFrom c'], false)
             ->andWhere([
                 "AND",
-                ["a.given_to" => $this->user->user_enc_id],
+                ["a.given_to" => $user_id],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
                 [
@@ -805,7 +808,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }

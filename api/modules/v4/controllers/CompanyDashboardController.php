@@ -1345,7 +1345,7 @@ class CompanyDashboardController extends ApiBaseController
                         THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', b.image_location, '/', b.image) 
                         ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') 
                     END image",
-                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
+                "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as name",
                 'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone',
                 'b.status', 'c.user_type', 'a.employee_code', 'd.designation', 'a.designation_id',
                 "CONCAT(e.first_name, ' ', COALESCE(e.last_name, '')) reporting_person", "CONCAT(f.location_name, ', ', f1.name) AS branch_name",
@@ -1549,13 +1549,12 @@ class CompanyDashboardController extends ApiBaseController
             if ($employees) {
 
                 // looping employees
-                foreach ($employees as $key => $val) {
+                foreach ($employees as &$val) {
 
                     // adding lead_by and managed_by = false in employees
-                    $employees[$key]["lead_by"] = $loan_id != null && $val["user_enc_id"] == LoanApplications::findOne(["loan_app_enc_id" => $params["loan_id"]])->lead_by;
-                    $employees[$key]["managed_by"] = $loan_id != null && $val["user_enc_id"] == LoanApplications::findOne(["loan_app_enc_id" => $params["loan_id"]])->managed_by;
-                    $employees[$key]["id"] = $val["user_enc_id"];
-                    $employees[$key]["name"] = $val["first_name"] . " " . $val["last_name"];
+                    $val["lead_by"] = $loan_id != null && $val["user_enc_id"] == LoanApplications::findOne(["loan_app_enc_id" => $params["loan_id"]])->lead_by;
+                    $val["managed_by"] = $loan_id != null && $val["user_enc_id"] == LoanApplications::findOne(["loan_app_enc_id" => $params["loan_id"]])->managed_by;
+                    $val["id"] = $val["user_enc_id"];
                 }
             }
         }
