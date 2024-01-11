@@ -574,6 +574,9 @@ class EmiCollectionsController extends ApiBaseController
     public function actionApproveByEmployeeList()
     {
         $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $user_id = $params['user_id'] ?? $user->user_enc_id;
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select([
@@ -589,7 +592,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(['receivedFrom c'], false)
             ->andWhere([
                 "AND",
-                ["a.given_to" => $this->user->user_enc_id],
+                ["a.given_to" => $user_id],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
                 [
