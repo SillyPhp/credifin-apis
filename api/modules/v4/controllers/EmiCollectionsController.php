@@ -80,10 +80,11 @@ class EmiCollectionsController extends ApiBaseController
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
+                "a.emi_collection_enc_id AS collection_id",
                 "a.loan_account_number AS file_number",
                 "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
-                "a.phone",
+                "a.phone as collected_emi_phone",
                 "a.amount collected_amount",
                 "a.emi_payment_method",
                 "(CASE 
@@ -99,8 +100,12 @@ class EmiCollectionsController extends ApiBaseController
                 "a.emi_payment_status",
                 "b.company_id",
                 "b.company_name",
-                "a.emi_collection_enc_id AS collection_id"
+                "b.phone",
+                "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name,'')) collected_by",
+                "br.location_name as branch"
             ])
+            ->innerJoinWith(["createdBy cb"], false)
+            ->innerJoinWith(["branchEnc br"], false)
             ->joinWith(["loanAccountEnc b"], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);

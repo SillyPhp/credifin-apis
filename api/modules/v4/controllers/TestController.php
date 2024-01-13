@@ -236,7 +236,7 @@ class TestController extends ApiBaseController
     {
         $findCashDe = EmployeesCashReport::find()
             ->select(['status', 'parent_cash_report_enc_id'])
-            ->where(['cash_report_enc_id' => $id])
+            ->where(['cash_report_enc_id' => $id, 'type' => 1])
             ->limit(1)
             ->one();
         if ($findCashDe['status'] != 1 && !empty($findCashDe['parent_cash_report_enc_id'])) {
