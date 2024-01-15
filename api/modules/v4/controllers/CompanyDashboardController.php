@@ -2989,7 +2989,6 @@ class CompanyDashboardController extends ApiBaseController
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
-
             if (empty($params['user_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "user_enc_id"']);
             }
@@ -2999,7 +2998,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->distinct()
                 ->select([
                     'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
-                    'a.loan_status_updated_on',
+                    'a.loan_status_updated_on', 'a.login_date',
                     'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
                     'd.name as product_name',
                     "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
