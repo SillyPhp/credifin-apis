@@ -11,13 +11,11 @@ use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
-use common\models\Users;
 use Exception;
 use Yii;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -69,18 +67,21 @@ class EmiCollectionsController extends ApiBaseController
             $this->response(401, ["message" => "unauthorized"]);
         }
         $params = Yii::$app->request->get();
-        $c = !empty($params['company']);
         if (empty($params["start_date"]) || empty($params["end_date"])) {
             return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
         }
-        if (strtotime($params["end_date"]) <= strtotime($params["start_date"])) {
+        $start_date = strtotime($params["start_date"]);
+        $end_date = strtotime($params["end_date"]);
+        if ($start_date === $end_date) {
+            $end_date += (24 * 60 * 60) - 1;
+        } else if ($end_date <= $start_date) {
             return $this->response(500, ["error" => "end date must be greater than start date"]);
         }
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
-                "a.loan_account_number",
-                "b.lms_loan_account_number",
+                "a.loan_account_number AS file_number",
+                "b.lms_loan_account_number AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone",
                 "a.amount collected_amount",
@@ -98,23 +99,17 @@ class EmiCollectionsController extends ApiBaseController
                 "a.emi_payment_status",
                 "b.company_id",
                 "b.company_name",
+                "a.emi_collection_enc_id AS collection_id"
             ])
-            ->innerJoinWith(["loanAccountEnc b" => function ($b) use ($c) {
-                if (!$c) {
-                    $b->andOnCondition(["NOT", [
-                        "b.company_id" => [null, ''],
-                        "b.company_name" => [null, '']
-                    ]]);
-                }
-            }], false)
+            ->joinWith(["loanAccountEnc b"], false)
             ->joinWith(["assignedLoanPayments c" => function ($c) {
                 $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
                 $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
                     $c1->andOnCondition(["c1.payment_status" => "captured"]);
                 }], false);
             }], false)
-            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => "paid"])
-            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", strtotime($params["start_date"]), strtotime($params["end_date"])])
+            ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -579,6 +574,9 @@ class EmiCollectionsController extends ApiBaseController
     public function actionApproveByEmployeeList()
     {
         $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $user_id = $params['user_id'] ?? $user->user_enc_id;
         $query = EmployeesCashReportExtended::find()
             ->alias("a")
             ->select([
@@ -594,7 +592,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(['receivedFrom c'], false)
             ->andWhere([
                 "AND",
-                ["a.given_to" => $this->user->user_enc_id],
+                ["a.given_to" => $user_id],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
                 [
@@ -682,7 +680,7 @@ class EmiCollectionsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        $params = Yii::$app->request->post();
+        $params = $this->post;
         $search = '';
         if (empty($params['organization_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
@@ -810,7 +808,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
@@ -826,6 +824,9 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['custom_status'])) {
             $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
+        }
+        if (!empty($params['discrepancy_list'])) {
+            $model->andWhere(['a.loan_account_enc_id' => null]);
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'customer_name', 'loan_account_number', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
@@ -913,20 +914,17 @@ class EmiCollectionsController extends ApiBaseController
 
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        foreach ($model as $key => $value) {
-            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
-            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+        foreach ($model as &$value) {
+            $value['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $value['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
             if ($value['other_doc_image']) {
-                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
-                $model[$key]['other_doc_image'] = $proof;
+                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image']);
             }
             if ($value['borrower_image']) {
-                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
-                $model[$key]['borrower_image'] = $proof;
+                $value['borrower_image'] = $my_space->signedURL($value['borrower_image']);
             }
             if ($value['pr_receipt_image']) {
-                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
-                $model[$key]['pr_receipt_image'] = $proof;
+                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image']);
             }
         }
         return ['data' => $model, 'count' => $count];
