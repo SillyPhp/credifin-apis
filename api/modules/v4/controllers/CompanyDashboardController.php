@@ -885,6 +885,7 @@ class CompanyDashboardController extends ApiBaseController
             ->select([
                 'a.loan_app_enc_id', 'a.is_removed', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.old_application_number', 'a.capital_roi', 'a.capital_roi_updated_on', "CONCAT(ub.first_name, ' ', ub.last_name) AS capital_roi_updated_by", 'a.registry_status', 'a.registry_status_updated_on', "CONCAT(rs.first_name, ' ', COALESCE(rs.last_name, '')) AS registry_status_updated_by", "CONCAT(cr.first_name, ' ', COALESCE(cr.last_name, '')) AS created_by",
                 'lpe.name as loan_product', 'a.chassis_number', 'a.rc_number', 'a.invoice_date', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
+                "ANY_VALUE(CONCAT(qa.first_name, ' ', COALESCE(qa.last_name, ''))) AS fi_collection_manager",
                 "CASE WHEN ub.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', ub.image_location, '/', ub.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ub.first_name,' ',ub.last_name), '&size=200&rounded=false&background=', REPLACE(ub.initials_color, '#', ''), '&color=ffffff') END update_image",
                 "CASE WHEN rs.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', rs.image_location, '/', rs.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(rs.first_name,' ',rs.last_name), '&size=200&rounded=false&background=', REPLACE(rs.initials_color, '#', ''), '&color=ffffff') END rs_image",
                 'ANY_VALUE(b.status) as loan_status', 'a.loan_type', 'ANY_VALUE(i1.name) city', 'ANY_VALUE(i2.name) state',
@@ -946,17 +947,17 @@ class CompanyDashboardController extends ApiBaseController
                 $g->joinWith(['financerLoanPurposeEnc g1'], false);
                 $g->onCondition(['g.is_deleted' => 0]);
             }])
-            ->joinWith(['loanVerificationLocations h' => function ($h) {
-                $h->select([
-                    'h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
-                    'h.local_address', 'h.latitude', 'h.longitude', "CONCAT(h1.first_name,' ',h1.last_name) created_by", 'h.created_on',
-                    "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image",
-                    "ab.name", "ab.borrower_type"
-                ]);
-                $h->joinWith(['assignedBorrowerEnc ab'], false);
-                $h->joinWith(['createdBy h1'], false);
-                $h->onCondition(['h.is_deleted' => 0]);
-            }])
+            // ->joinWith(['loanVerificationLocations h' => function ($h) {
+            //     $h->select([
+            //         'h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
+            //         'h.local_address', 'h.latitude', 'h.longitude', "CONCAT(h1.first_name,' ',h1.last_name) created_by", 'h.created_on',
+            //         "CASE WHEN h1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', h1.image_location, '/', h1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(h1.first_name,' ',h1.last_name), '&size=200&rounded=false&background=', REPLACE(h1.initials_color, '#', ''), '&color=ffffff') END image",
+            //         "ab.name", "ab.borrower_type"
+            //     ]);
+            //     $h->joinWith(['assignedBorrowerEnc ab'], false);
+            //     $h->joinWith(['createdBy h1'], false);
+            //     $h->onCondition(['h.is_deleted' => 0]);
+            // }])
             ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
                 $i->joinWith(['cityEnc i1'], false);
                 $i->joinWith(['stateEnc i2'], false);
@@ -992,6 +993,9 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['loanApplicationFis q' => function ($m) {
                 $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
+                $m->joinWith(['collectionManager qa' => function ($qa) {
+                    $qa->select(['qa.first_name', 'qa.last_name']);
+                }]);
             }])
             ->joinWith(["assignedDisbursementCharges adc" => function ($adc) {
                 $adc->select(["adc.disbursement_charges_enc_id", "adc.amount", "adc.loan_app_enc_id"]);

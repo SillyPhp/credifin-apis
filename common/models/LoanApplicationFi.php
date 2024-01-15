@@ -14,6 +14,7 @@ use Yii;
  * @property string $documents
  * @property string $documents_location
  * @property string $assigned_to Assigned to user enc id
+ * @property string $collection_manager
  * @property string $created_on Created On
  * @property string $created_by Created By
  * @property string $updated_on Updated On
@@ -23,6 +24,7 @@ use Yii;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Users $assignedTo
+ * @property Users $collectionManager
  */
 class LoanApplicationFi extends \yii\db\ActiveRecord
 {
@@ -43,15 +45,36 @@ class LoanApplicationFi extends \yii\db\ActiveRecord
             [['loan_application_fi_enc_id', 'loan_app_enc_id', 'status', 'created_by'], 'required'],
             [['status'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['loan_application_fi_enc_id', 'loan_app_enc_id', 'documents', 'documents_location', 'assigned_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_application_fi_enc_id', 'loan_app_enc_id', 'documents', 'documents_location', 'assigned_to', 'collection_manager', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['loan_application_fi_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_to' => 'user_enc_id']],
+            [['collection_manager'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['collection_manager' => 'user_enc_id']],
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'loan_application_fi_enc_id' => 'Loan Application Fi Enc ID',
+            'loan_app_enc_id' => 'Loan App Enc ID',
+            'status' => 'Status',
+            'documents' => 'Documents',
+            'documents_location' => 'Documents Location',
+            'assigned_to' => 'Assigned To',
+            'collection_manager' => 'Collection Manager',
+            'created_on' => 'Created On',
+            'created_by' => 'Created By',
+            'updated_on' => 'Updated On',
+            'updated_by' => 'Updated By',
+        ];
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -83,5 +106,13 @@ class LoanApplicationFi extends \yii\db\ActiveRecord
     public function getAssignedTo()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'assigned_to']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollectionManager()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'collection_manager']);
     }
 }
