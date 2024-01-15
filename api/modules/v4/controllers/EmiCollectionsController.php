@@ -11,11 +11,13 @@ use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
+use common\models\spaces\Spaces;
 use Exception;
 use Yii;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -789,6 +791,7 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
+                "b.user_enc_id as collected_by_id",
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
             ])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1050,5 +1053,40 @@ class EmiCollectionsController extends ApiBaseController
         } catch (Exception $exception) {
             return $this->response(500, ["status" => 500, "message" => "An error occurred.", "error" => $exception->getMessage()]);
         }
+    }
+
+    public function actionUploadReceipt()
+    {
+        $params = Yii::$app->request->post();
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
+        }
+
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "emi_collection_enc_id']);
+        }
+
+        $receipt = UploadedFile::getInstanceByName('pr_receipt_image');
+        $pr = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $pr->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $receipt->extension;
+        $pr->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
+        $path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
+
+        $base_path = $path . $pr->pr_receipt_image_location;
+        $type = $receipt->type;
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $result = $my_space->uploadFileSources($receipt->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $pr->pr_receipt_image, "private", ['params' => ['ContentType' => $type]]);
+
+        if (!$result) {
+            throw new \Exception('Error occurred while uploading receipt image');
+        }
+        if (!$pr->save()) {
+            throw new \Exception('Error occurred while saving the model');
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Receipt image uploaded successfully']);
     }
 }
