@@ -908,7 +908,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanCoApplicants d' => function ($d) use ($date, $subquery) {
                 $d->select([
-                    'd.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
+                    'd.loan_co_app_enc_id', 'd.father_name', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                     'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation',
                     'ANY_VALUE(d1.address) address', 'ANY_VALUE(d2.name) city', 'ANY_VALUE(d3.name) state', 'ANY_VALUE(d3.abbreviation) state_abbreviation', 'ANY_VALUE(d1.postal_code) postal_code', 'ANY_VALUE(d3.state_code) state_code',
                     'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
@@ -3035,6 +3035,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->orderBy([
                     "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
                 ]);
+
+            if (!empty($params) && $params['product_id']) {
+                $employeeLoanList->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+            }
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
