@@ -108,7 +108,8 @@ class CompanyDashboardController extends ApiBaseController
                 'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'update-references' => ['POST', 'OPTIONS'],
                 'loan-payments' => ['POST', 'OPTIONS'],
-                'share-loan-accounts' => ['POST', 'OPTIONS']
+                'share-loan-accounts' => ['POST', 'OPTIONS'],
+                'get-collection-managers' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -3463,6 +3464,9 @@ class CompanyDashboardController extends ApiBaseController
             $loan_fi->loan_app_enc_id = $params['loan_app_enc_id'];
             $loan_fi->created_on = date('Y-m-d H:i:s');
             $loan_fi->created_by = $user->user_enc_id;
+            if($params['collection_manager']){
+                $loan_fi->collection_manager = $params['collection_manager'];
+            }
         }
         $document = UploadedFile::getInstanceByName('document');
         if ($document) {
@@ -3782,7 +3786,6 @@ class CompanyDashboardController extends ApiBaseController
         return ['status' => 404, 'message' => 'not found'];
     }
 
-
     // adding city codes in cities table
     public function actionAddCity()
     {
@@ -3822,5 +3825,31 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
         return 'Data updated successfully.';
+    }
+
+    public function actionGetCollectionManagers()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        if (empty($params['branch_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
+        }
+        $branch_id = $params['branch_id'];
+        $query = Users::find()
+            ->alias('a')
+            ->select(["CONCAT(a.first_name, ' ', a.last_name) name", 'a.user_enc_id',
+                "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', a.last_name), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END image"
+            ])
+            ->innerJoinWith(['userRoles0 AS b' => function ($b) use ($branch_id) {
+                $b->innerJoinWith(['designation AS c' => function ($c) {
+                    $c->andOnCondition(['c.designation' => 'Collection Manager']);
+                }], false);
+                $b->andOnCondition(['b.branch_enc_id' => $branch_id]);
+            }], false)
+            ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->groupBy(['a.user_enc_id'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ['message' => 'fetched successfully', 'data' => $query]);
     }
 }
