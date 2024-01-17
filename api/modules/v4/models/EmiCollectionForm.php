@@ -184,7 +184,7 @@ class EmiCollectionForm extends Model
             $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location, $path);
         }
 
-        if (!in_array($this->payment_method, ["1", "6", "7"]) && !$this->pr_receipt_image) {
+        if (!in_array($this->payment_method, ["1", "2", "6", "7"]) && !$this->pr_receipt_image) {
             throw new \Exception('pr receipt is required');
         }
         if ($this->pr_receipt_image) {
