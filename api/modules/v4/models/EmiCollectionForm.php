@@ -97,6 +97,13 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
+            [['pr_receipt_image'],
+                'safe',
+                'when' => function ($model) {
+                    return in_array($model->payment_method, [1, 6, 7]);
+                },
+                'skipOnError' => false,
+            ],
             [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
