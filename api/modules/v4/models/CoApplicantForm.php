@@ -4,7 +4,6 @@ namespace api\modules\v4\models;
 
 use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanCoApplicantsExtended;
-use common\models\Utilities;
 use Yii;
 use yii\base\Model;
 
@@ -14,6 +13,7 @@ class CoApplicantForm extends Model
     public $phone;
     public $dob;
     public $relation;
+    public $father_name;
     public $borrower_type;
     public $pan_number;
     public $aadhaar_number;
@@ -32,12 +32,12 @@ class CoApplicantForm extends Model
     public function rules()
     {
         return [
-            [['name', 'dob', 'relation', 'borrower_type', 'loan_id'], 'required', 'when' => function ($model) {
+            [['name', 'dob', 'relation', 'borrower_type', 'father_name', 'loan_id'], 'required', 'when' => function ($model) {
                 return !isset($model->loan_co_app_enc_id);
             }],
             [['pan_number', 'phone', 'loan_co_app_enc_id', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender', 'driving_license_number', 'marital_status'], 'safe'],
-            [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
-            [['name'], 'string', 'max' => 200],
+            [['name', 'father_name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
+            [['name', 'father_name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
         ];
     }
@@ -62,6 +62,7 @@ class CoApplicantForm extends Model
             $co_applicant->phone = $this->phone;
             $co_applicant->co_applicant_dob = $this->dob;
             $co_applicant->relation = $this->relation;
+            $co_applicant->father_name = $this->father_name;
             $co_applicant->gender = $this->gender;
             $co_applicant->borrower_type = $this->borrower_type;
             $co_applicant->pan_number = $this->pan_number;
@@ -122,7 +123,7 @@ class CoApplicantForm extends Model
             }
             $transaction->commit();
             return ['status' => 200, 'message' => 'successfully updated'];
-        }catch
+        } catch
         (\Exception $exception) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
@@ -140,6 +141,7 @@ class CoApplicantForm extends Model
                 $co_applicant->borrower_type = $this->borrower_type;
             } else {
                 $co_applicant->name = $this->name;
+                $co_applicant->father_name = $this->father_name;
                 $co_applicant->co_applicant_dob = $this->dob;
                 $co_applicant->phone = $this->phone;
                 $co_applicant->gender = $this->gender;

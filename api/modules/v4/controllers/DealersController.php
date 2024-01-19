@@ -9,12 +9,11 @@ use common\models\FinancerVehicleTypes;
 use common\models\OrganizationLocations;
 use common\models\UserRoles;
 use common\models\Users;
-use yii\web\UploadedFile;
-use yii\filters\VerbFilter;
-use yii\filters\Cors;
-use yii\helpers\Url;
-
 use yii;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
+use yii\helpers\Url;
+use yii\web\UploadedFile;
 
 class DealersController extends ApiBaseController
 {
@@ -148,9 +147,11 @@ class DealersController extends ApiBaseController
         $dealer_list = AssignedFinancerDealers::find()
             ->alias('a')
             ->select([
-                'a.dealer_enc_id', 'b1.bank_details_enc_id', 'a.assigned_dealer_enc_id', 'c.category', '(CASE WHEN c.trade_certificate = 1 THEN "yes" ELSE "no" END) as trade_certificate', '(CASE WHEN c.dealer_type = 0 THEN "vehicle" ELSE "electronics" END) as dealer_type',
+                'a.dealer_enc_id', 'b1.bank_details_enc_id', 'a.assigned_dealer_enc_id', 'c.category',
+                "(CASE WHEN c.trade_certificate = 1 THEN 'yes' ELSE 'no' END) as trade_certificate",
+                "(CASE WHEN c.dealer_type = 0 THEN 'vehicle' ELSE 'electronics' END) as dealer_type",
                 'b1.name', 'b1.bank_name', 'b1.bank_account_number', 'b1.ifsc_code', 'b.name as org_name',
-                'e.email', 'e.phone', 'CONCAT(e.first_name," ",COALESCE(e.last_name, "")) as contact_person', 'e.status'
+                'e.email', 'e.phone', "CONCAT(e.first_name,' ',COALESCE(e.last_name, '')) as contact_person", 'e.status'
             ])
             ->joinWith(['dealerEnc b' => function ($b) {
                 $b->select(['a.assigned_dealer_enc_id']);
