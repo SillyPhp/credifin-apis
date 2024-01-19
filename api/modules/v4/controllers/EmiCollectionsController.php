@@ -89,6 +89,7 @@ class EmiCollectionsController extends ApiBaseController
                 "a.phone as collected_emi_phone",
                 "a.amount collected_amount",
                 "a.emi_payment_method",
+                "COALESCE(b.loan_type, a.loan_type) AS loan_type",
                 "(CASE 
                     WHEN a.emi_payment_method NOT IN (1, 2, 3) 
                         THEN DATE_FORMAT(a.collection_date, '%d-%m-%Y') 
