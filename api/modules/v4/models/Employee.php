@@ -23,12 +23,12 @@ class Employee extends Model
     public function rules()
     {
         return [
-            [['first_name','userId','last_name', 'email','phone'], 'required'],
+            [['userId'], 'required'],
             [['first_name','userId','last_name', 'email'],'string', 'max' => 100],
             [['email'],'email'],
             [['phone'], 'string','min'=>10, 'max' => 10],
             [['phone'], 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'Phone can only contain numbers'],
-            [['userType'], 'safe'],
+            [['userType','first_name','last_name','phone','email'], 'safe'],
             [['organization_enc_id'], 'required', 'when' => function () {
                 return $this->userType == 'Employee';
             }],
@@ -47,10 +47,18 @@ class Employee extends Model
               throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false)));
           }
           if ($model){
-              $model->first_name = $this->first_name;
-              $model->last_name = $this->last_name;
-              $model->email = $this->email;
-              $model->phone = $this->phone;
+              if($this->first_name){
+                  $model->first_name = $this->first_name;
+              }
+              if($this->last_name){
+                  $model->last_name = $this->last_name;
+              }
+              if($this->email){
+                  $model->email = $this->email;
+              }
+              if($this->phone){
+                  $model->phone = $this->phone;
+              }
               $model->last_updated_on = date('Y-m-d H:i:s');
               if (isset($this->userType)&&!empty($this->userType)){
                   $typeId = UserTypes::findOne(['user_type' => $this->userType]);

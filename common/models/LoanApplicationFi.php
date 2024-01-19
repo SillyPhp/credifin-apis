@@ -56,27 +56,6 @@ class LoanApplicationFi extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'loan_application_fi_enc_id' => 'Loan Application Fi Enc ID',
-            'loan_app_enc_id' => 'Loan App Enc ID',
-            'status' => 'Status',
-            'documents' => 'Documents',
-            'documents_location' => 'Documents Location',
-            'assigned_to' => 'Assigned To',
-            'collection_manager' => 'Collection Manager',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'updated_on' => 'Updated On',
-            'updated_by' => 'Updated By',
-        ];
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getLoanAppEnc()
