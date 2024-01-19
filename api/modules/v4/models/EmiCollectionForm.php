@@ -97,14 +97,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['pr_receipt_image'],
-                'safe',
-                'when' => function ($model) {
-                    return in_array($model->payment_method, [1, 6, 7]);
-                },
-                'skipOnError' => false,
-            ],
-            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -191,6 +184,9 @@ class EmiCollectionForm extends Model
             $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location, $path);
         }
 
+        if (!in_array($this->payment_method, ["1", "2", "6", "7"]) && !$this->pr_receipt_image) {
+            throw new \Exception('pr receipt is required');
+        }
         if ($this->pr_receipt_image) {
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $this->pr_receipt_image->extension;
@@ -202,7 +198,8 @@ class EmiCollectionForm extends Model
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
 
-        if($this->ptp_amount && $this->ptp_date){
+
+        if ($this->ptp_amount && $this->ptp_date) {
 
             $ptp_model = new LoanAccountPtps;
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -215,7 +212,7 @@ class EmiCollectionForm extends Model
             $ptp_model->created_by = $user_id;
             $ptp_model->created_on = date('Y-m-d h:i:s');
 
-            if(!$ptp_model->save()){
+            if (!$ptp_model->save()) {
                 throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($ptp_model->errors, 0, false)));
             }
         }
@@ -335,7 +332,7 @@ class EmiCollectionForm extends Model
                 ])->execute();
             }
         }
-        
+
         $remaining_amount = $data['amount'];
         $query->status = $status;
         $query->remarks = !empty($data['remarks']) ? $data['remarks'] : '';
@@ -344,7 +341,7 @@ class EmiCollectionForm extends Model
         $query->created_by = $query->updated_by = $data['user_id'];
         $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
 
-      
+
         if (!empty($data['type']) && $data['type'] == 1) {
             $image_parts = explode(";base64,", $data['receipt']);
             $image_base64 = base64_decode($image_parts[1]);
@@ -381,7 +378,7 @@ class EmiCollectionForm extends Model
                 'remaining_amount' => 0
             ];
             $where = ['cash_report_enc_id' => $cash_ids, 'parent_cash_report_enc_id' => null];
-            if (!UserUtilities::updating("cash", "cash_report_enc_id", $where, $update)){
+            if (!UserUtilities::updating("cash", "cash_report_enc_id", $where, $update)) {
                 throw new \Exception("Duplicate request");
             }
         }

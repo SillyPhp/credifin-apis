@@ -1194,20 +1194,19 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
-            $loan_update = false;
 
-            if ($params['status'] == 4) {
+            if (!$loanApp['login_date'] && !$this->checkFeeStructure($loanApp['loan_products_enc_id'])) {
                 $loan_update = Yii::$app->db->createCommand()
                     ->update(
                         LoanApplicationsExtended::tableName(),
-                        ['login_date' => $provider->loan_status_updated_on],
+                        ['login_date' => date('Y-m-d H:i:s')],
                         ['loan_app_enc_id' => $params['loan_id']]
                     )
                     ->execute();
             }
 
 
-            if ($loanApp->update() && $provider->update() && ($params['status'] != 4 || $loan_update)) {
+            if ($loanApp->update() && $provider->update()) {
                 $notificationUsers = new UserUtilities();
                 $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
                 $searchable = [$prevStatus, $params['status']];
@@ -1247,6 +1246,18 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    private function checkFeeStructure($productId)
+    {
+        $loan = FinancerLoanProducts::find()
+            ->alias('a')
+            ->innerJoinWith(['financerLoanProductLoginFeeStructures l' => function ($l) {
+                $l->andOnCondition(['l.is_deleted' => 0]);
+            }], false)
+            ->where(['a.financer_loan_product_enc_id' => $productId, 'a.is_deleted' => 0])
+            ->count();
+        return $loan > 0;
     }
 
     // saving data for organization tracking
