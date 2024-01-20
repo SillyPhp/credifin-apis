@@ -909,7 +909,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanCoApplicants d' => function ($d) use ($date, $subquery) {
                 $d->select([
-                    'd.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
+                    'd.loan_co_app_enc_id', 'd.father_name', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                     'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation',
                     'ANY_VALUE(d1.address) address', 'ANY_VALUE(d2.name) city', 'ANY_VALUE(d3.name) state', 'ANY_VALUE(d3.abbreviation) state_abbreviation', 'ANY_VALUE(d1.postal_code) postal_code', 'ANY_VALUE(d3.state_code) state_code',
                     'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
@@ -1194,20 +1194,19 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
-            $loan_update = false;
 
-            if ($params['status'] == 4) {
+            if (!$loanApp['login_date'] && !$this->checkFeeStructure($loanApp['loan_products_enc_id'])) {
                 $loan_update = Yii::$app->db->createCommand()
                     ->update(
                         LoanApplicationsExtended::tableName(),
-                        ['login_date' => $provider->loan_status_updated_on],
+                        ['login_date' => date('Y-m-d H:i:s')],
                         ['loan_app_enc_id' => $params['loan_id']]
                     )
                     ->execute();
             }
 
 
-            if ($loanApp->update() && $provider->update() && ($params['status'] != 4 || $loan_update)) {
+            if ($loanApp->update() && $provider->update()) {
                 $notificationUsers = new UserUtilities();
                 $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
                 $searchable = [$prevStatus, $params['status']];
@@ -1247,6 +1246,18 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    private function checkFeeStructure($productId)
+    {
+        $loan = FinancerLoanProducts::find()
+            ->alias('a')
+            ->innerJoinWith(['financerLoanProductLoginFeeStructures l' => function ($l) {
+                $l->andOnCondition(['l.is_deleted' => 0]);
+            }], false)
+            ->where(['a.financer_loan_product_enc_id' => $productId, 'a.is_deleted' => 0])
+            ->count();
+        return $loan > 0;
     }
 
     // saving data for organization tracking
@@ -2714,6 +2725,11 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
+                    $c->joinWith(['loanProductsEnc lop' => function ($lop) {
+                        $lop->joinWith(['assignedFinancerLoanTypeEnc lop1' => function ($b) {
+                            $b->joinWith(['loanTypeEnc lop2'], false);
+                        }], false);
+                    }], false);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2726,10 +2742,17 @@ class CompanyDashboardController extends ApiBaseController
                         $k->from(['subquery' => $subquery]);
                     }
                 ])
-                ->joinWith(['assignedFinancerLoanTypes afl'], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
+
+            if (!empty($params['product_id'])) {
+                $employeeStats->andWhere(['IN', 'lop.financer_loan_product_enc_id', $params['product_id']]);
+            }
+
+            if (!empty($params['loan_type_enc_id'])) {
+                $employeeStats->andWhere(['IN', 'lop2.loan_type_enc_id', $params['loan_type_enc_id']]);
+            }
 
             if (!empty($params['fields_search'])) {
                 foreach ($params['fields_search'] as $key => $value) {
@@ -2762,14 +2785,6 @@ class CompanyDashboardController extends ApiBaseController
 
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
-            }
-
-            if (!empty($params['product_id'])) {
-                $employeeStats->andWhere(['c.loan_products_enc_id' => $params['product_id']]);
-            }
-
-            if (!empty($params['loan_type_enc_id'])) {
-                $employeeStats->andWhere(['afl.loan_type_enc_id' => $params['loan_type_enc_id']]);
             }
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
@@ -3030,12 +3045,16 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'])
-                ->where(['<=', 'a.created_on', $params['end_date']])
+                ->where(['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id'])
                 ->orderBy([
                     "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
                 ]);
+
+            if (!empty($params) && $params['product_id']) {
+                $employeeLoanList->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+            }
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
@@ -3460,7 +3479,7 @@ class CompanyDashboardController extends ApiBaseController
             $loan_fi->loan_app_enc_id = $params['loan_app_enc_id'];
             $loan_fi->created_on = date('Y-m-d H:i:s');
             $loan_fi->created_by = $user->user_enc_id;
-            if($params['collection_manager']){
+            if ($params['collection_manager']) {
                 $loan_fi->collection_manager = $params['collection_manager'];
             }
         }

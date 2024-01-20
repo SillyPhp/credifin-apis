@@ -2458,6 +2458,7 @@ class OrganizationsController extends ApiBaseController
                 ->andWhere([
                     'OR',
                     ['LIKE', 'a.loan_account_number', $params['loan_number']],
+                    ['LIKE', 'a.lms_loan_account_number', $params['loan_number']],
                     ['LIKE', 'a.phone', $params['loan_number']],
                     ['LIKE', 'a.lms_loan_account_number', $params['loan_number']],
                 ])
