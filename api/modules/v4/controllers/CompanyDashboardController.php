@@ -339,14 +339,14 @@ class CompanyDashboardController extends ApiBaseController
 
         // getting loan applications list
         $loans = LoanApplications::find()
-            ->distinct()
             ->alias('a')
             ->select([
-                'a.id', 'a.loan_app_enc_id',
-                'a.created_on as apply_date', 'a.application_number',
-                'i.status status_number',
+                'a.loan_app_enc_id',
+                'a.created_on as apply_date',
+                'a.application_number',
+                'ANY_VALUE(i.status) status_number',
                 'a.amount',
-                'h.name applicant_name',
+                'ANY_VALUE(h.name) applicant_name',
                 'a.amount_received',
                 'a.amount_due',
                 'a.scholarship',
@@ -361,7 +361,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.lead_by',
                 'a.managed_by',
                 'lp.name as loan_product',
-                'i.updated_on',
+                'ANY_VALUE(i.updated_on) updated_on',
                 'a.created_on',
                 'a.loan_status_updated_on as disbursement_date',
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -378,7 +378,11 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
                 END) as gender",
-                "a.login_date"
+                "a.login_date",
+                "COUNT(DISTINCT lp1.id) AS total_certificates",
+                "COUNT(DISTINCT o.certificate_type_enc_id) AS uploaded_certificates",
+                "COUNT(DISTINCT lp2.id) total_loan_images",
+                "COUNT(DISTINCT p.id) uploaded_loan_images"
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
@@ -399,13 +403,20 @@ class CompanyDashboardController extends ApiBaseController
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                 }
-                if (!empty($roleUnderId) || $roleUnderId != null) {
+                if (!empty($roleUnderId)) {
                     $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                 }
                 $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['loanProductsEnc lp' => function ($lp) {
+                $lp->joinWith(['financerLoanProductDocuments lp1' => function ($lp1) {
+                    $lp1->andOnCondition(['lp1.is_deleted' => 0]);
+                }], false);
+                $lp->joinWith(['financerLoanProductImages lp2' => function ($lp1) {
+                    $lp1->andOnCondition(['lp2.is_deleted' => 0]);
+                }], false);
+            }], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
@@ -417,7 +428,13 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
-            }]);
+            }])
+            ->joinWith(['loanCertificates AS o' => function ($o) {
+                $o->andOnCondition(['o.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['loanApplicationImages AS p' => function ($o) {
+                $o->andOnCondition(['p.is_deleted' => 0]);
+            }], false);
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -667,12 +684,14 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 } else {
                     // else order_by i.updated_on desc and created_on desc
-                    $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+                    // updated on in this order by is alias name given in select
+                    $loans->orderBy(['updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
                 }
             }
         } else {
             // else order_by i.updated_on desc and created_on desc
-            $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+            // updated on in this order by is alias name given in select
+            $loans->orderBy(['updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         }
 
         if (!empty($leadsAccessOnly)) {
@@ -692,37 +711,29 @@ class CompanyDashboardController extends ApiBaseController
         $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => $is_removed]);
         $count = $loans->count();
         $loans = $loans
+            ->groupBy(['a.loan_app_enc_id'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
         if ($loans) {
-            foreach ($loans as $key => $val) {
-                $loans[$key]['sharedTo'] = $val['sharedLoanApplications'];
-                unset($loans[$key]['sharedLoanApplications']);
+            foreach ($loans as &$val) {
+                $val['sharedTo'] = $val['sharedLoanApplications'];
+                unset($val['sharedLoanApplications']);
 
-                $loans[$key]['access'] = null;
-                $loans[$key]['shared_by'] = null;
-                $loans[$key]['is_shared'] = false;
+                $val['access'] = null;
+                $val['shared_by'] = null;
+                $val['is_shared'] = false;
                 if ($shared_apps['app_ids']) {
                     foreach ($shared_apps['shared'] as $s) {
                         if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
-                            $loans[$key]['access'] = $s['access'];
-                            $loans[$key]['shared_by'] = $s['shared_by'];
-                            $loans[$key]['is_shared'] = true;
+                            $val['access'] = $s['access'];
+                            $val['shared_by'] = $s['shared_by'];
+                            $val['is_shared'] = true;
                         }
                     }
                 }
-
-                $d = ClaimedDeals::find()
-                    ->alias('a')
-                    ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
-                    ->joinWith(['dealEnc b'], false)
-                    ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
-                    ->asArray()
-                    ->all();
-                $loans[$key]['claimedDeals'] = $d;
 
                 $provider_id = $this->getFinancerId($user);
                 //                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
@@ -738,15 +749,15 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 if (!empty($provider)) {
-                    $loans[$key]['bdo_approved_amount'] = $provider['bdo_approved_amount'];
-                    $loans[$key]['tl_approved_amount'] = $provider['tl_approved_amount'];
-                    $loans[$key]['soft_approval'] = $provider['soft_approval'];
-                    $loans[$key]['soft_sanction'] = $provider['soft_sanction'];
-                    $loans[$key]['valuation'] = $provider['valuation'];
-                    $loans[$key]['disbursement_approved'] = $provider['disbursement_approved'];
-                    $loans[$key]['insurance_charges'] = $provider['insurance_charges'];
-                    $loans[$key]['branch_id'] = $provider['branch_enc_id'];
-                    $loans[$key]['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
+                    $val['bdo_approved_amount'] = $provider['bdo_approved_amount'];
+                    $val['tl_approved_amount'] = $provider['tl_approved_amount'];
+                    $val['soft_approval'] = $provider['soft_approval'];
+                    $val['soft_sanction'] = $provider['soft_sanction'];
+                    $val['valuation'] = $provider['valuation'];
+                    $val['disbursement_approved'] = $provider['disbursement_approved'];
+                    $val['insurance_charges'] = $provider['insurance_charges'];
+                    $val['branch_id'] = $provider['branch_enc_id'];
+                    $val['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
                 }
             }
         }
@@ -780,19 +791,6 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
-
-
-    //    private function __partnerApplications($user)
-    //    {
-    //        return LoanApplicationPartnersExtended::find()
-    //            ->alias('a')
-    //            ->select(['a.loan_app_enc_id'])
-    //            ->joinWith(['providerEnc b'], false)
-    //            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
-    //            ->asArray()
-    //            ->all();
-    //    }
-
     // getting shared loan applications
     private function sharedApps($user_id)
     {
@@ -806,12 +804,7 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
             ->asArray()
             ->all();
-        $loan_app_ids = [];
-        if ($shared) {
-            foreach ($shared as $s) {
-                $loan_app_ids[] = $s["loan_app_enc_id"];
-            }
-        }
+        $loan_app_ids = array_column($shared, 'loan_app_enc_id');
 
         // returning application id's and shared detail
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
@@ -885,7 +878,7 @@ class CompanyDashboardController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.loan_app_enc_id', 'a.is_removed', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.old_application_number', 'a.capital_roi', 'a.capital_roi_updated_on', "CONCAT(ub.first_name, ' ', ub.last_name) AS capital_roi_updated_by", 'a.registry_status', 'a.registry_status_updated_on', "CONCAT(rs.first_name, ' ', COALESCE(rs.last_name, '')) AS registry_status_updated_by", "CONCAT(cr.first_name, ' ', COALESCE(cr.last_name, '')) AS created_by",
-                'lpe.name as loan_product', 'a.chassis_number', 'a.rc_number', 'a.invoice_date', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number',
+                'lpe.name as loan_product', 'a.chassis_number', 'a.rc_number', 'a.invoice_date', 'a.invoice_number', 'a.pf', 'a.roi', 'a.number_of_emis', 'a.emi_collection_date', 'a.battery_number', "ANY_VALUE(CONCAT(qa.first_name, ' ', COALESCE(qa.last_name, ''))) AS  fi_collection_manager",
                 "CASE WHEN ub.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', ub.image_location, '/', ub.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ub.first_name,' ',ub.last_name), '&size=200&rounded=false&background=', REPLACE(ub.initials_color, '#', ''), '&color=ffffff') END update_image",
                 "CASE WHEN rs.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', rs.image_location, '/', rs.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(rs.first_name,' ',rs.last_name), '&size=200&rounded=false&background=', REPLACE(rs.initials_color, '#', ''), '&color=ffffff') END rs_image",
                 'ANY_VALUE(b.status) as loan_status', 'a.loan_type', 'ANY_VALUE(i1.name) city', 'ANY_VALUE(i2.name) state',
@@ -920,11 +913,9 @@ class CompanyDashboardController extends ApiBaseController
                     $d1->joinWith(['cityEnc d2'], false);
                     $d1->joinWith(['stateEnc d3'], false);
                 }], false);
-                $d->joinWith([
-                    'creditLoanApplicationReports d4' => function ($k) use ($subquery) {
-                        $k->from(['subquery' => $subquery]);
-                    }
-                ]);
+                $d->joinWith(['creditLoanApplicationReports d4' => function ($k) use ($subquery) {
+                    $k->from(['subquery' => $subquery]);
+                }]);
             }])
             ->joinWith(['loanApplicationNotifications e' => function ($e) {
                 $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', "CONCAT(e1.first_name,' ',e1.last_name) created_by"]);
@@ -992,6 +983,9 @@ class CompanyDashboardController extends ApiBaseController
                 $o->onCondition(['o.is_deleted' => 0]);
             }])
             ->joinWith(['loanApplicationFis q' => function ($m) {
+                $m->joinWith(['collectionManager qa' => function ($qa) {
+                    $qa->select(['qa.first_name',  'qa.last_name']);
+                }]);
                 $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
             }])
             ->joinWith(["assignedDisbursementCharges adc" => function ($adc) {

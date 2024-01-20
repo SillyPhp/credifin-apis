@@ -12,8 +12,10 @@ use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
+use common\models\UserRoles;
 use Exception;
 use Yii;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -41,6 +43,7 @@ class EmiCollectionsController extends ApiBaseController
                 "emi-detail" => ["POST", "OPTIONS"],
                 "update" => ["POST", "OPTIONS"],
                 "update-emi-number" => ["POST", "OPTIONS"],
+                "ptp-emi" => ["POST", "OPTIONS"]
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -1094,5 +1097,90 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'Receipt image uploaded successfully']);
+    }
+
+    public function actionPtpEmi()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['message' => 'missing information "emi_collection_enc_id"']);
+        }
+        $id = $params['emi_collection_enc_id'];
+        $emi = EmiCollection::find()
+            ->where(["emi_collection_enc_id" => $id])
+            ->andWhere(['IS NOT', 'ptp_amount', null])
+            ->asArray()
+            ->one();
+        if (!$emi) {
+            return $this->response(404, ['message' => 'emi not found']);
+        }
+        $exist_check = EmiCollection::find()
+            ->alias('a')
+            ->select([
+                'a.emi_collection_enc_id',
+                'ANY_VALUE(c.payment_short_url) link'
+            ])
+            ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) {
+                $b->innerJoinWith(['loanPaymentsEnc AS c' => function ($c) {
+                    $c->andOnCondition([
+                        "AND",
+                        ['c.payment_link_type' => '1'],
+                        ['c.payment_amount' => new Expression('a.amount')],
+                        ['>=', 'c.close_by', date('Y-m-d H:i:s')],
+                        ['payment_mode_status' => 'active'],
+                        ['c.payment_status' => 'pending']
+                    ]);
+                }], false);
+            }], false)
+            ->andWhere([
+                'a.emi_payment_status' => 'pending',
+                'a.loan_account_number' => $emi['loan_account_number'],
+                'a.emi_payment_method' => 1,
+                'a.emi_payment_mode' => 1,
+                'a.is_deleted' => 0,
+                'a.amount' => $emi['ptp_amount'],
+                'a.customer_name' => $emi['customer_name']
+            ])
+            ->asArray()
+            ->one();
+        if (!empty($exist_check['link'])) {
+            return $this->response(200, ['message' => 'Saved Successfully', 'links' => ['qr' => $exist_check['link']]]);
+        }
+        if (!$org = $user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$org = $findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model = new EmiCollectionForm();
+            $model->branch_enc_id = $emi['branch_enc_id'];
+            $model->customer_name = $emi['customer_name'];
+            $model->loan_account_number = $emi['loan_account_number'];
+            $model->phone = $emi['phone'];
+            $model->amount = $emi['ptp_amount'];
+            $model->loan_type = $emi['loan_type'];
+            $model->loan_purpose = $emi['loan_purpose'];
+            $model->payment_mode = 1;
+            $model->payment_method = 1;
+            $model->address = $emi['address'];
+            $model->postal_code = $emi['pincode'];
+            $model->latitude = $params['latitude'] ?? $emi['latitude'];
+            $model->longitude = $params['longitude'] ?? $emi['longitude'];
+            $model->org_id = $org;
+            $model->brand = $params['brand'];
+            $save = $model->save($user->user_enc_id);
+            if ($save['status'] != 200) {
+                throw new Exception('An error occurred.');
+            }
+            $transaction->commit();
+            return $this->response(200, $save);
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
+        }
     }
 }
