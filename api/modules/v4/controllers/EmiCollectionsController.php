@@ -944,7 +944,7 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        if ((empty($params['collection_date']) && (empty($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
+        if ((empty($params['collection_date']) && (!isset($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "collection_date" or "amount" or "remarks" or "emi_id"']);
         }
         $transaction = Yii::$app->db->beginTransaction();
@@ -976,7 +976,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
-            if (!empty($params['amount'])) {
+            if (isset($params['amount'])) {
                 $updated_amount = $params['amount'] - $emi->amount;
                 $emi->amount = $params['amount'];
             }
@@ -999,7 +999,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!$audit->save()) {
                 throw new Exception(implode(',', array_column($audit->errors, "0")));
             }
-            if (!empty($params['amount'])) {
+            if (isset($params['amount'])) {
                 $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
                 if ($cash) {
                     change_amount($cash, $updated_amount, $user->user_enc_id);
