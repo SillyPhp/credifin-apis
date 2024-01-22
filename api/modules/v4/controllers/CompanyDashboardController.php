@@ -1221,17 +1221,17 @@ class CompanyDashboardController extends ApiBaseController
                         'a.updated_by',
                         'a.updated_on',
                         'ANY_VALUE(c.vehicle_type) as vehicle_type',
-                        'ANY_VALUE(c.vehicle_making_year) as vehicle_making_year',
+                        'ANY_VALUE(c.model_year) as model_year',
                         'ANY_VALUE(c.vehicle_model) as vehicle_model',
                         'ANY_VALUE(b.branch_enc_id) as branch_enc_id',
                         'ANY_VALUE(c.emi_amount) as emi_amount',
                         'ANY_VALUE(c.engine_number) as engine_number',
                         'd.name as dealer_name',
                         'e.name as loan_type',
-                        "SUM(CASE 
+                        "(CASE 
                         WHEN
-                            b.disbursement_approved IS NULL THEN 0 
-                        ELSE b.disbursement_approved 
+                            ANY_VALUE(b.disbursement_approved) IS NULL THEN 0 
+                        ELSE ANY_VALUE(b.disbursement_approved) 
                     END) AS disbursement_approved",
                         "SUM(CASE 
                         WHEN f.amount IS NULL THEN 0 
@@ -1270,7 +1270,7 @@ class CompanyDashboardController extends ApiBaseController
                     $update->branch_enc_id = $update_data['branch_enc_id'];
                     $update->emi_date = $update_data['emi_collection_date'];
                     $update->vehicle_type = $update_data['vehicle_type'];
-                    $update->vehicle_make = $update_data['vehicle_making_year'];
+                    $update->vehicle_make = $update_data['model_year'];
                     $update->vehicle_model = $update_data['vehicle_model'];
                     $update->vehicle_engine_no = $update_data['engine_number'];
                     $update->vehicle_chassis_no = $update_data['chassis_number'];
