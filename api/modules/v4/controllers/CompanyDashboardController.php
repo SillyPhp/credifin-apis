@@ -3137,7 +3137,7 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'])
-                ->where(['<=', 'a.created_on', $params['end_date']])
+                ->where(['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id'])
                 ->orderBy([
