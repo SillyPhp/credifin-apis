@@ -433,6 +433,23 @@ class LoanApplicationsController extends ApiBaseController
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
 
+    public function actionDownloadQrCode($url, $name){
+        $file_path = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" . $url . "&choe=UTF-8&chld=0|1";
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . $name . '.png"');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+
+// Clear output buffer
+        ob_clean();
+        flush();
+        readfile($file_path);
+        exit();
+    }
 
 }
 
