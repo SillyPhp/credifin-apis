@@ -2664,7 +2664,7 @@ class OrganizationsController extends ApiBaseController
         if ($auth !== Yii::$app->params->loanAccounts->authKey) {
             return ['status' => 401, 'message' => 'authentication failed'];
         }
-        if (!empty($start_date)) {
+        if (empty($start_date)) {
             return ['status' => 500, 'message' => 'start_date missing'];
         }
         $data = LoanApplications::find()
@@ -2707,7 +2707,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['assignedDisbursementCharges f'], false)
             ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
         if (!empty($end_date)) {
-            $data->where(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
+            $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
         }
         $data = $data
             ->andWhere(['IS NOT', 'emi_collection_date', null])
