@@ -1211,6 +1211,9 @@ class EmiCollectionsController extends ApiBaseController
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
+            if (!empty($params['reference_number'])) {
+                $emi->reference_number = $params['reference_number'];
+            }
             if (($image = UploadedFile::getInstanceByName('image'))) {
                 $utilitiesModel = new Utilities;
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
