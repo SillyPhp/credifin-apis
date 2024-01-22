@@ -1191,11 +1191,11 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        if (empty($params['mode']) || empty($params['method']) || empty($params['emi_id'])) {
-            return $this->response(422, ['message' => 'missing information "mode" or "method" or "emi_id"']);
+        if (empty($params['payment_mode']) || empty($params['payment_method']) || empty($params['emi_id'])) {
+            return $this->response(422, ['message' => 'missing information "payment mode" or "payment method" or "emi_id"']);
         }
-        $mode = $params['mode'];
-        $method = $params['method'];
+        $mode = $params['payment_mode'];
+        $method = $params['payment_method'];
         $modes_methods = EmiCollectionForm::$modes_methods;
         try {
             if (!in_array($method, $modes_methods[$mode])) {
@@ -1214,13 +1214,13 @@ class EmiCollectionsController extends ApiBaseController
             if (!empty($params['reference_number'])) {
                 $emi->reference_number = $params['reference_number'];
             }
-            if (($image = UploadedFile::getInstanceByName('image'))) {
+            if (($image = UploadedFile::getInstanceByName('pr_receipt_image'))) {
                 $utilitiesModel = new Utilities;
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $type = explode('/', $image->type)[1];
                 $emi->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $type;
                 $emi->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
-                $base_path = Yii::$app->params->upload_directories->notice->image . $emi->pr_receipt_image_location;
+                $base_path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . $emi->pr_receipt_image_location;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $result = $my_space->uploadFileSources(
