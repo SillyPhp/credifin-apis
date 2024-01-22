@@ -3044,7 +3044,7 @@ class CompanyDashboardController extends ApiBaseController
                     }]);
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
-                ->joinWith(['loanProductsEnc d'])
+                ->joinWith(['loanProductsEnc d'], false)
                 ->where(['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id'])
@@ -3054,6 +3054,10 @@ class CompanyDashboardController extends ApiBaseController
 
             if (!empty($params) && $params['product_id']) {
                 $employeeLoanList->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+            }
+
+            if (!empty($params) && $params['loan_type_enc_id']) {
+                $employeeLoanList->andWhere(['d.loan_products_enc_id' => $params['loan_type_enc_id']]);
             }
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
