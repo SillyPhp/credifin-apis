@@ -24,6 +24,8 @@ use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
+use common\models\LoanAccounts;
+use common\models\LoanApplications;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
@@ -37,6 +39,7 @@ use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 
@@ -1733,7 +1736,6 @@ class OrganizationsController extends ApiBaseController
                     "AND",
                     ["IS NOT", "collection_date", null],
                     ['between', 'collection_date', $params['start_date'], $params['end_date']],
-
                 ],
                 [
                     "AND",
@@ -2654,5 +2656,117 @@ class OrganizationsController extends ApiBaseController
             return $this->response(201, ["status" => 201, "message" => "Already exists"]);
         }
         return $this->response(200, ["status" => 200, "message" => "Doesn't exist"]);
+    }
+
+    public function actionUpdateType($start_date, $end_date = '', $limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== Yii::$app->params->loanAccounts->authKey) {
+            return ['status' => 401, 'message' => 'authentication failed'];
+        }
+        if (!empty($start_date)) {
+            return ['status' => 500, 'message' => 'start_date missing'];
+        }
+        $data = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id',
+                'a.application_number',
+                'a.number_of_emis',
+                'a.applicant_name',
+                'a.phone',
+                'a.emi_collection_date',
+                'a.chassis_number',
+                'a.rc_number',
+                'a.created_on',
+                'a.lead_by AS created_by',
+                'a.updated_by',
+                'a.updated_on',
+                'ANY_VALUE(c.vehicle_type) as vehicle_type',
+                'ANY_VALUE(c.vehicle_making_year) as vehicle_making_year',
+                'ANY_VALUE(c.vehicle_model) as vehicle_model',
+                'ANY_VALUE(b.branch_enc_id) as branch_enc_id',
+                'ANY_VALUE(c.emi_amount) as emi_amount',
+                'ANY_VALUE(c.engine_number) as engine_number',
+                'd.name as dealer_name',
+                'e.name as loan_type',
+                "SUM(CASE 
+                        WHEN
+                            b.disbursement_approved IS NULL THEN 0 
+                        ELSE b.disbursement_approved 
+                    END) AS disbursement_approved",
+                "SUM(CASE 
+                        WHEN f.amount IS NULL THEN 0 
+                            ELSE f.amount 
+                    END) AS disbursement_charges"
+            ])
+            ->joinWith(['assignedLoanProviders b'], false)
+            ->joinWith(['loanApplicationOptions c'], false)
+            ->joinWith(['assignedDealer d'], false)
+            ->joinWith(['loanProductsEnc e'], false)
+            ->joinWith(['assignedDisbursementCharges f'], false)
+            ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
+        if (!empty($end_date)) {
+            $data->where(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
+        }
+        $data = $data
+            ->andWhere(['IS NOT', 'emi_collection_date', null])
+            ->andWhere(['IS NOT', 'application_number', null])
+            ->andWhere(['b.status' => 31])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        $inserted = 0;
+        $utilitiesModel = new Utilities();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($data as $update_data) {
+                $application_number = str_replace(' ', '', $update_data['application_number']);
+                if (LoanAccounts::find()->where(['OR', ["loan_account_number" => $application_number], ["lms_loan_account_number" => $application_number]])->one()) {
+                    continue;
+                }
+                $total_emis = $data['number_of_emis'];
+                $start_emis = $data['emi_collection_date'];
+                $last_emi_date = null;
+                if (!empty($total_emis) && !empty($start_emis)) {
+                    $last_emi_date = date('Y-m-d', strtotime("+$total_emis months", strtotime($start_emis)));
+                }
+                $update = new LoanAccounts();
+                $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                $update->loan_account_enc_id = $utilitiesModel->encrypt();
+                $update->loan_account_number = $application_number;
+                $update->lms_loan_account_number = $application_number;
+                $update->dealer_name = $update_data['dealer_name'];
+                $update->total_installments = $update_data['number_of_emis'];
+                $update->name = $update_data['applicant_name'];
+                $update->phone = $update_data['phone'];
+                $update->loan_type = $update_data['loan_type'];
+                $update->last_emi_date = $last_emi_date;
+                $update->financed_amount = $update_data['disbursement_approved'] + $update_data['disbursement_charges'];
+                $update->branch_enc_id = $update_data['branch_enc_id'];
+                $update->emi_date = $update_data['emi_collection_date'];
+                $update->vehicle_type = $update_data['vehicle_type'];
+                $update->vehicle_make = $update_data['vehicle_making_year'];
+                $update->vehicle_model = $update_data['vehicle_model'];
+                $update->vehicle_engine_no = $update_data['engine_number'];
+                $update->vehicle_chassis_no = $update_data['chassis_number'];
+                $update->rc_number = $update_data['rc_number'];
+                $update->created_on = $update_data['created_on'];
+                $update->created_by = $update_data['created_by'];
+                $update->updated_on = $update_data['updated_on'];
+                $update->updated_by = $update_data['updated_by'];
+                if (!$update->save()) {
+                    throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                }
+                $inserted += 1;
+            }
+            $transaction->commit();
+            return ['status' => 200, 'found' => count($data), 'updated' => $inserted];
+        } catch (Exception $e) {
+            $transaction->rollback();
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()];
+        }
     }
 }
