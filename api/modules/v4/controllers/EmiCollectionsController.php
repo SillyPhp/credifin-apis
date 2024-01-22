@@ -13,6 +13,7 @@ use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
+use common\models\Utilities;
 use Exception;
 use Yii;
 use yii\db\Expression;
@@ -1181,6 +1182,61 @@ class EmiCollectionsController extends ApiBaseController
         } catch (Exception $exception) {
             $transaction->rollBack();
             return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionUpdatePaymentMethod()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+        if (empty($params['mode']) || empty($params['method']) || empty($params['emi_id'])) {
+            return $this->response(422, ['message' => 'missing information "mode" or "method" or "emi_id"']);
+        }
+        $mode = $params['mode'];
+        $method = $params['method'];
+        $modes_methods = EmiCollectionForm::$modes_methods;
+        try {
+            if (!in_array($method, $modes_methods[$mode])) {
+                throw new Exception('Incorrect payment method.');
+            }
+            $emi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_id']]);
+            if (!$emi) {
+                return $this->response(404, ['message' => 'Emi not found.']);
+            }
+            $emi->emi_payment_mode = $mode;
+            $emi->emi_payment_method = $method;
+            $emi->emi_payment_status = in_array($method, [9, 10, 81, 82, 83, 84]) ? 'pipeline' : (in_array($method, [4, 5]) ? 'collected' : 'pending');
+            if (!empty($params['collection_date'])) {
+                $emi->collection_date = $params['collection_date'];
+            }
+            if (($image = UploadedFile::getInstanceByName('image'))) {
+                $utilitiesModel = new Utilities;
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $type = explode('/', $image->type)[1];
+                $emi->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $type;
+                $emi->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->notice->image . $emi->pr_receipt_image_location;
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources(
+                    $image->tempName,
+                    Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $emi->pr_receipt_image,
+                    "private",
+                    ['params' => ['ContentType' => $image->type]]
+                );
+                if (!$result) {
+                    throw new Exception("An error occurred while saving image.");
+                }
+            }
+            $emi->updated_on = date('Y-m-d H:i:s');
+            $emi->updated_by = $user->user_enc_id;
+            if (!$emi->save()) {
+                throw new Exception(implode(' ', array_column($emi->errors, "0")));
+            }
+            return $this->response(200, ['message' => 'Successfully saved.']);
+        } catch (Exception $exception) {
+            return $this->response(500, ['message' => 'An error occurred.', 'error' => $exception->getMessage()]);
         }
     }
 }
