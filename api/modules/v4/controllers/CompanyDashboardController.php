@@ -20,6 +20,7 @@ use common\models\CreditResponseData;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
@@ -995,7 +996,7 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['loanApplicationFis q' => function ($m) {
                 $m->joinWith(['collectionManager qa' => function ($qa) {
-                    $qa->select(['qa.first_name',  'qa.last_name']);
+                    $qa->select(['qa.first_name', 'qa.last_name']);
                 }]);
                 $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
             }])
@@ -1188,6 +1189,7 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
         }
         $transaction = Yii::$app->db->beginTransaction();
+        $utilitiesModel = new Utilities();
         try {
             $loanApp = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
@@ -1202,7 +1204,7 @@ class CompanyDashboardController extends ApiBaseController
 
 
             if (!$loanApp['login_date'] && !$this->checkFeeStructure($loanApp['loan_products_enc_id'])) {
-                $loan_update = Yii::$app->db->createCommand()
+                Yii::$app->db->createCommand()
                     ->update(
                         LoanApplicationsExtended::tableName(),
                         ['login_date' => date('Y-m-d H:i:s')],
@@ -1215,13 +1217,35 @@ class CompanyDashboardController extends ApiBaseController
                 $update_data = LoanApplications::find()
                     ->alias('a')
                     ->select([
-                        'a.loan_app_enc_id', 'a.application_number', 'a.number_of_emis',
-                        'a.applicant_name', 'a.phone', 'a.emi_collection_date',
-                        'a.chassis_number', 'a.rc_number', 'a.created_on', 'a.lead_by', 'a.updated_by',
-                        'ANY_VALUE(c.vehicle_type) as vehicle_type', 'ANY_VALUE(c.vehicle_making_year) as vehicle_making_year', 'ANY_VALUE(c.vehicle_model) as vehicle_model', 'ANY_VALUE(b.branch_enc_id) as branch_enc_id', 'ANY_VALUE(c.emi_amount) as emi_amount',
-                        'ANY_VALUE(c.engine_number) as engine_number', 'd.name as dealer_name', 'e.name as loan_type',
-                        "SUM(CASE WHEN b.disbursement_approved IS NULL THEN 0 ELSE b.disbursement_approved END) AS disbursement_approved",
-                        "SUM(CASE WHEN f.amount IS NULL THEN 0 ELSE f.amount END) AS disbursement_charges"
+                        'a.loan_app_enc_id',
+                        'a.application_number',
+                        'a.number_of_emis',
+                        'a.applicant_name',
+                        'a.phone',
+                        'a.emi_collection_date',
+                        'a.chassis_number',
+                        'a.rc_number',
+                        'a.created_on',
+                        'a.lead_by AS created_by',
+                        'a.updated_by',
+                        'a.updated_on',
+                        'ANY_VALUE(c.vehicle_type) as vehicle_type',
+                        'ANY_VALUE(c.vehicle_making_year) as vehicle_making_year',
+                        'ANY_VALUE(c.vehicle_model) as vehicle_model',
+                        'ANY_VALUE(b.branch_enc_id) as branch_enc_id',
+                        'ANY_VALUE(c.emi_amount) as emi_amount',
+                        'ANY_VALUE(c.engine_number) as engine_number',
+                        'd.name as dealer_name',
+                        'e.name as loan_type',
+                        "SUM(CASE 
+                        WHEN
+                            b.disbursement_approved IS NULL THEN 0 
+                        ELSE b.disbursement_approved 
+                    END) AS disbursement_approved",
+                        "SUM(CASE 
+                        WHEN f.amount IS NULL THEN 0 
+                            ELSE f.amount 
+                    END) AS disbursement_charges"
                     ])
                     ->joinWith(['assignedLoanProviders b'], false)
                     ->joinWith(['loanApplicationOptions c'], false)
@@ -1235,41 +1259,45 @@ class CompanyDashboardController extends ApiBaseController
                 $total_emis = $update_data['number_of_emis'];
                 $start_emis = $update_data['emi_collection_date'];
                 $last_emi_date = null;
+                $application_number = str_replace(' ', '', $update_data['application_number']);
                 if (!empty($total_emis) && !empty($start_emis)) {
                     $last_emi_date = date('Y-m-d', strtotime("+$total_emis months", strtotime($start_emis)));
                 }
-                $update = new LoanAccounts();
-                $update->loan_account_enc_id = Yii::$app->getSecurity()->generateRandomString();
-                $update->loan_account_number = trim($update_data['application_number']);
-                $update->lms_loan_account_number = trim($update_data['application_number']);
-                $update->dealer_name = $update_data['dealer_name'];
-                $update->total_installments     = $update_data['number_of_emis'];
-                $update->name     = $update_data['applicant_name'];
-                $update->phone     = $update_data['phone'];
-                $update->loan_type     = $update_data['loan_type'];
-                $update->last_emi_date     = $last_emi_date;
-                $update->financed_amount     = $update_data['disbursement_approved'] + $update_data['disbursement_charges'];
-                $update->branch_enc_id     = $update_data['branch_enc_id'];
-                $update->emi_date     = $update_data['emi_collection_date'];
-                $update->vehicle_type    = $update_data['vehicle_type'];
-                $update->vehicle_make     = $update_data['vehicle_making_year'];
-                $update->vehicle_model     = $update_data['vehicle_model'];
-                $update->vehicle_engine_no    = $update_data['engine_number'];
-                $update->vehicle_chassis_no     = $update_data['chassis_number'];
-                $update->rc_number     = $update_data['rc_number'];
-                $update->created_on     = $update_data['created_on'];
-                $update->created_by     = $update_data['lead_by'];
-                $update->updated_on     = date('Y-m-d H:i:s');
-                $update->updated_by     = $user->user_enc_id;
-                if (!$update->save()) {
-                    throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                if (!(LoanAccounts::find()->where(['OR', ["loan_account_number" => $application_number], ["lms_loan_account_number" => $application_number]])->one())) {
+                    $update = new LoanAccountsExtended();
+                    $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                    $update->loan_account_enc_id = $utilitiesModel->encrypt();
+                    $update->loan_account_number = $application_number;
+                    $update->lms_loan_account_number = $application_number;
+                    $update->dealer_name = $update_data['dealer_name'];
+                    $update->total_installments = $update_data['number_of_emis'];
+                    $update->name = $update_data['applicant_name'];
+                    $update->phone = $update_data['phone'];
+                    $update->loan_type = $update_data['loan_type'];
+                    $update->last_emi_date = $last_emi_date;
+                    $update->financed_amount = $update_data['disbursement_approved'] + $update_data['disbursement_charges'];
+                    $update->branch_enc_id = $update_data['branch_enc_id'];
+                    $update->emi_date = $update_data['emi_collection_date'];
+                    $update->vehicle_type = $update_data['vehicle_type'];
+                    $update->vehicle_make = $update_data['vehicle_making_year'];
+                    $update->vehicle_model = $update_data['vehicle_model'];
+                    $update->vehicle_engine_no = $update_data['engine_number'];
+                    $update->vehicle_chassis_no = $update_data['chassis_number'];
+                    $update->rc_number = $update_data['rc_number'];
+                    $update->created_on = $update_data['created_on'];
+                    $update->created_by = $update_data['created_by'];
+                    $update->updated_on = date('Y-m-d H:i:s');
+                    $update->updated_by = $user->user_enc_id;
+                    if (!$update->save()) {
+                        throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                    }
                 }
             }
 
-            if (!$loanApp->update()) {
+            if (!$loanApp->save()) {
                 throw new Exception(implode(", ", array_column($loanApp->getErrors(), "0")));
             }
-            if (!$provider->update()) {
+            if (!$provider->save()) {
                 throw new Exception(implode(", ", array_column($provider->getErrors(), "0")));
             }
             $notificationUsers = new UserUtilities();
@@ -1287,7 +1315,6 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($userIds)) {
                 $allNotifications = [];
                 foreach ($userIds as $uid) {
-                    $utilitiesModel = new \common\models\Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $notification = [
                         'notification_enc_id' => $utilitiesModel->encrypt(),
