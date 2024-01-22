@@ -2661,7 +2661,7 @@ class OrganizationsController extends ApiBaseController
     public function actionUpdateType($start_date, $end_date = '', $limit = 50, $page = 1, $auth = '')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($auth !== Yii::$app->params->loanAccounts->authKey) {
+        if ($auth !== Yii::$app->params->apiAccessKey) {
             return ['status' => 401, 'message' => 'authentication failed'];
         }
         if (empty($start_date)) {
