@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -17,6 +15,7 @@ use Yii;
  * @property int $crif_score
  * @property string $phone
  * @property string $relation
+ * @property string $father_name
  * @property string $borrower_type borrower type
  * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
  * @property int $employment_type  1 as Salaried, 2 as Self Employed, 3 as Non Working
@@ -41,10 +40,12 @@ use Yii;
  *
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
+ * @property LoanApplicationPendencies[] $loanApplicationPendencies
  * @property LoanCertificates[] $loanCertificates
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property LoanVerificationLocations[] $loanVerificationLocations
  */
 class LoanCoApplicants extends \yii\db\ActiveRecord
 {
@@ -67,7 +68,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['relation', 'borrower_type', 'marital_status'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'father_name', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -78,7 +79,6 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -94,6 +94,14 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getLoanApplicantResidentialInfos()
     {
         return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPendencies()
+    {
+        return $this->hasMany(LoanApplicationPendencies::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 
     /**
@@ -126,5 +134,13 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanVerificationLocations()
+    {
+        return $this->hasMany(LoanVerificationLocations::className(), ['assigned_borrower_enc_id' => 'loan_co_app_enc_id']);
     }
 }

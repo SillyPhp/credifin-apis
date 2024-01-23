@@ -107,7 +107,10 @@ class ApiBaseController extends Controller
         }
 
         // getting token detail from DB
-        $access_token = UserAccessTokens::find()->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])->one();
+        $access_token = UserAccessTokens::find()
+            ->select(['user_enc_id', 'access_token_expiration'])
+            ->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])
+            ->one();
 
         // check if token exists in token detail and source == token detail source
         if (!empty($access_token)) {
@@ -115,42 +118,35 @@ class ApiBaseController extends Controller
             // it checks if the access token is still valid.
             if (strtotime($access_token->access_token_expiration) > strtotime("now")) {
 
-                // If the access token is valid, it refreshes the access and refresh token expiration times.
-                $time_now = date('Y-m-d H:i:s');
-                $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
-                $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
-
                 // after token validation getting user data object
-                $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
+                $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id, 'is_deleted' => 0, 'status' => 'Active']);
 
-                if ($user['status'] != 'Active' || $user['is_deleted'] == 1) {
-                    return false;
+                if ($user) {
+
+                    // identity login
+                    Yii::$app->user->login($user);
+
+                    $this->post = Yii::$app->request->post();
+                    $this->user = $user;
+
+                    // returning user object
+                    return $user;
                 }
-
-                // identity login
-                Yii::$app->user->login($user);
-                // returning user object
-                return $user;
             }
-
-            return false;
         }
-
         return false;
     }
 
     public function isAuth($type = false): void
     {
-        if ((!$user = $this->isAuthorized()) && (!$type || $this->isSpecial($type))) {
+        if (!($this->isAuthorized() && $this->isSpecial($type))) {
             $this->response(401, ["message" => "unauthorized"]);
         }
-        $this->post = Yii::$app->request->post();
-        $this->user = $user;
     }
 
     public function isSpecial($type): bool
     {
-        $res = false;
+        $res = !$type;
         if ($type == 1) {
             $res = (UserUtilities::getUserType($this->user->user_enc_id) == 'Financer' || self::specialCheck($this->user->user_enc_id));
         } elseif ($type == 2) {
