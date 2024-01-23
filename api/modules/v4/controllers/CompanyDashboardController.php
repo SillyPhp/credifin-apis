@@ -385,7 +385,7 @@ class CompanyDashboardController extends ApiBaseController
                 "COALESCE(COUNT(DISTINCT lp1.id), 0) AS total_certificates",
                 "COALESCE(COUNT(DISTINCT o.certificate_type_enc_id), 0) AS uploaded_certificates",
                 "COALESCE(COUNT(DISTINCT lp2.id), 0) total_loan_images",
-                "COALESCE(COUNT(DISTINCT p.id), 0) uploaded_loan_images"
+                "COALESCE(COUNT(DISTINCT p.product_image_enc_id), 0) uploaded_loan_images"
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
