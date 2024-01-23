@@ -79,6 +79,13 @@ class EmiCollectionForm extends Model
         '24' => 'Online Off System Transaction',
     ];
 
+    public static $modes_methods = [
+        '1' => ['1', '2', '3'],
+        '2' => ['4', '5'],
+        '3' => ['6', '7'],
+        '4' => ['81', '82', '83', '84', '9', '10', '11']
+    ];
+
     public function formName()
     {
         return '';
