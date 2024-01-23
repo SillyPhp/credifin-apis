@@ -6,6 +6,7 @@ use api\modules\v4\models\FinancerVehicleTypeForm;
 use common\models\AssignedFinancerDealers;
 use common\models\BankDetails;
 use common\models\FinancerVehicleTypes;
+use common\models\LoanApplications;
 use common\models\OrganizationLocations;
 use common\models\UserRoles;
 use common\models\Users;
@@ -436,7 +437,7 @@ class DealersController extends ApiBaseController
                 "CASE WHEN d.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, "https") . "', d.logo_location, '/', d.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', d.name, '&size=200&rounded=false&background=', REPLACE(d.initials_color, '#', ''), '&color=ffffff') END logo",
                 'c.category', "(CASE WHEN c.trade_certificate = 1 THEN 'yes' ELSE 'no' END) as trade_certificate", "(CASE WHEN c.dealer_type = 0 THEN 'vehicle' ELSE 'electronics' END) as dealer_type",
                 'b.username', 'b.email', 'b.phone', 'd.name', "CONCAT(b.first_name,' ',COALESCE(b.last_name, '')) as contact_person", 'b.status', 'c.dealership_date'
-         ])
+            ])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['assignedDealerOptions c'], false)
             ->joinWith(['dealerEnc d'], false)
@@ -492,6 +493,188 @@ class DealersController extends ApiBaseController
             ->all();
     }
 
+    public function actionDealerStats()
+    {
+        // Check authorization
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+
+        $start_date = $params['start_date'];
+        $end_date = $params['end_date'];
+
+        $dealer_stats = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id', 'a.assigned_dealer',
+                'de.name as dealer_name',
+                'cb.user_enc_id', 'a.login_date',
+                "CASE WHEN cb.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', cb.image_location, '/', cb.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(cb.first_name, ' ', COALESCE(cb.last_name, '')), '&size=200&rounded=false&background=', REPLACE(cb.initials_color, '#', ''), '&color=ffffff') END contact_image",
+                "CASE WHEN de.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',de.logo_location, '/', de.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', de.name, '&size=200&rounded=true&background=', REPLACE(de.initials_color, '#', ''), '&color=ffffff') END dealer_logo",
+                'cb.phone', 'cb.email', 'cb.status',
+                "CONCAT(cb.first_name,' ',COALESCE(cb.last_name, '')) as contact_person",
+                "(CASE WHEN ANY_VALUE(afd1.dealer_type) = 0 THEN 'vehicle' ELSE 'electronics' END) as dealer_type",
+                'ANY_VALUE(afd1.category) as category',
+                'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as total_cases",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '0' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as new_lead",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '30' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as sanctioned",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and (c2.value = '32' or c2.value = '28') AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as rejected",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '31' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as disbursed",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' AND a.form_type = 'others' AND a.login_date IS NOT NULL AND a.login_date <= '$end_date' AND a.login_date >= '$start_date' THEN a.loan_app_enc_id END) as login",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value > '4' and c2.value < '26' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as under_process"
+            ])
+            ->joinWith(['assignedDealer de' => function ($de) {
+                $de->joinWith(['assignedFinancerDealers afd' => function ($afd) {
+                    $afd->joinWith(['assignedDealerOptions afd1'], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanProductsEnc lop' => function ($lop) {
+                $lop->joinWith(['assignedFinancerLoanTypeEnc lop1' => function ($b) {
+                    $b->joinWith(['loanTypeEnc lop2'], false);
+                }], false);
+            }], false)
+            ->joinWith(['assignedLoanProviders c1' => function ($c1) {
+                $c1->joinWith(['status0 c2']);
+            }], false)
+            ->joinWith(['createdBy cb' => function ($cb) {
+                $cb->joinWith(['userRoles0 b' => function ($b) {
+                    $b->joinWith(['branchEnc b3'], false)
+                        ->joinWith(['userTypeEnc b4'], false);
+                }], false);
+            }], false);
+
+        if (isset($params['loan_id']) and !empty($params['loan_id'])) {
+            $dealer_stats->andWhere(['a.loan_type' => $params['loan_id']]);
+        }
+
+        if (!empty($params['product_id'])) {
+            $dealer_stats->andWhere(['IN', 'lop.financer_loan_product_enc_id', $params['product_id']]);
+        }
+
+        if (!empty($params['loan_type_enc_id'])) {
+            $dealer_stats->andWhere(['IN', 'lop2.loan_type_enc_id', $params['loan_type_enc_id']]);
+        }
+
+        $dealer_stats
+            ->where(['not', ['a.assigned_dealer' => null]])
+            ->andWhere(['cb.status' => 'active', 'cb.is_deleted' => 0, 'b.is_deleted' => 0, 'a.is_removed' => 0, 'a.is_deleted' => 0])
+            ->groupBy(['a.loan_app_enc_id']);
+
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'phone') {
+                        $dealer_stats->andWhere(['like', 'cb.' . $key, $value]);
+                    } elseif ($key == 'dealer_name') {
+                        $dealer_stats->andWhere(['like', 'de.name', $value]);
+                    } elseif ($key == 'dealer_type') {
+                        $dealer_stats->andWhere(['afd1.dealer_type' => ($value == 'electronics' ? 1 : 0)]);
+                    } elseif ($key == 'category') {
+                        $dealer_stats->andWhere(['IN', 'afd1.' . $key, $value]);
+                    } elseif ($key == 'contact_person') {
+                        $dealer_stats->andWhere(['like', "CONCAT(cb.first_name,' ',COALESCE(cb.last_name,''))", $value]);
+                    } elseif ($key == 'branch') {
+                        $dealer_stats->andWhere(['IN', 'b3.location_enc_id', $value]);
+                    } else {
+                        $dealer_stats->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
+            $dealer_stats->orderBy(['cb.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
+        }
+
+        if (isset($params['keyword']) && !empty($params['keyword'])) {
+            $dealer_stats->andWhere([
+                'or',
+                ['like', "CONCAT(cb.first_name,' ',cb.last_name)", $params['keyword']],
+                ['like', 'cb.phone', $params['keyword']],
+                ['like', 'cb.email', $params['keyword']],
+                ['like', "CONCAT(b2.first_name,' ',b2.last_name)", $params['keyword']],
+                ['like', 'b3.location_name', $params['keyword']],
+            ]);
+        }
+
+        $count = $dealer_stats->count();
+        $dealer_stats = $dealer_stats
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        return $this->response(200, ['status' => 200, 'data' => $dealer_stats, 'count' => $count]);
+    }
+
+    public function actionDealerReportDetails()
+    {
+        $this->isAuth();
+        $params = Yii::$app->request->post();
+
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+
+        if (empty($params['organization_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "organization_enc_id']);
+        }
+        $dealer_report = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
+                'a.loan_status_updated_on', 'a.login_date',
+                'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
+                'd.name as product_name',
+                "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
+            ])
+            ->joinWith(['loanCoApplicants h'], false)
+            ->joinWith(['assignedLoanProviders c' => function ($c) {
+                $c->joinWith(['branchEnc c1']);
+            }], false)
+            ->joinWith(['assignedLoanProviders c2' => function ($c2) use ($params) {
+                $c2->joinWith(['status0 c3']);
+                if ($params['status']) {
+                    $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
+                }
+            }], false)
+            ->joinWith(['loanProductsEnc d'], false)
+            ->where([
+                'AND',
+                ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                ['=', 'a.assigned_dealer', $params['organization_enc_id']]
+            ])
+            ->andWhere(['a.is_deleted' => 0, 'a.is_removed' => 0])
+            ->groupBy(['a.loan_app_enc_id', 'a.assigned_dealer'])
+            ->orderBy([
+                "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
+            ]);
+
+        if (!empty($params) && $params['product_id']) {
+            $dealer_report->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+        }
+
+        if (!empty($params) && $params['loan_type_enc_id']) {
+            $dealer_report->andWhere(['d.loan_products_enc_id' => $params['loan_type_enc_id']]);
+        }
+
+        $count = $dealer_report->count();
+        $dealer_report = $dealer_report
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($dealer_report) {
+            return $this->response(200, ['status' => 200, 'loanDetails' => $dealer_report, 'count' => $count, 'limit' => $limit, 'page' => $page]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
+    }
 }
 
 ?>
