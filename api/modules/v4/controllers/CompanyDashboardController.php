@@ -342,14 +342,14 @@ class CompanyDashboardController extends ApiBaseController
 
         // getting loan applications list
         $loans = LoanApplications::find()
+            ->distinct()
             ->alias('a')
             ->select([
-                'a.loan_app_enc_id',
-                'a.created_on as apply_date',
-                'a.application_number',
-                'ANY_VALUE(i.status) status_number',
+                'a.id', 'a.loan_app_enc_id',
+                'a.created_on as apply_date', 'a.application_number',
+                'i.status status_number',
                 'a.amount',
-                'ANY_VALUE(h.name) applicant_name',
+                'h.name applicant_name',
                 'a.amount_received',
                 'a.amount_due',
                 'a.scholarship',
@@ -364,7 +364,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.lead_by',
                 'a.managed_by',
                 'lp.name as loan_product',
-                'ANY_VALUE(i.updated_on) updated_on',
+                'i.updated_on',
                 'a.created_on',
                 'a.loan_status_updated_on as disbursement_date',
                 "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
@@ -402,7 +402,7 @@ class CompanyDashboardController extends ApiBaseController
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                 }
-                if (!empty($roleUnderId)) {
+                if (!empty($roleUnderId) || $roleUnderId != null) {
                     $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                 }
                 $i->joinWith(['branchEnc be']);
@@ -683,14 +683,12 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 } else {
                     // else order_by i.updated_on desc and created_on desc
-                    // updated on in this order by is alias name given in select
-                    $loans->orderBy(['updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+                    $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
                 }
             }
         } else {
             // else order_by i.updated_on desc and created_on desc
-            // updated on in this order by is alias name given in select
-            $loans->orderBy(['updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+            $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         }
 
         if (!empty($leadsAccessOnly)) {
@@ -710,7 +708,6 @@ class CompanyDashboardController extends ApiBaseController
         $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => $is_removed]);
         $count = $loans->count();
         $loans = $loans
-            ->groupBy(['a.loan_app_enc_id'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -803,7 +800,12 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
             ->asArray()
             ->all();
-        $loan_app_ids = array_column($shared, 'loan_app_enc_id');
+        $loan_app_ids = [];
+        if ($shared) {
+            foreach ($shared as $s) {
+                $loan_app_ids[] = $s["loan_app_enc_id"];
+            }
+        }
 
         // returning application id's and shared detail
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
