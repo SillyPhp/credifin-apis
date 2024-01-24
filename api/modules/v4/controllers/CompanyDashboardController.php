@@ -408,14 +408,7 @@ class CompanyDashboardController extends ApiBaseController
                 $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['loanProductsEnc lp' => function ($lp) {
-                $lp->joinWith(['financerLoanProductDocuments lp1' => function ($lp1) {
-                    $lp1->andOnCondition(['lp1.is_deleted' => 0]);
-                }], false);
-                $lp->joinWith(['financerLoanProductImages lp2' => function ($lp1) {
-                    $lp1->andOnCondition(['lp2.is_deleted' => 0]);
-                }], false);
-            }], false)
+            ->joinWith(['loanProductsEnc lp'], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
@@ -427,13 +420,7 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
-            }])
-            ->joinWith(['loanCertificates AS o' => function ($o) {
-                $o->andOnCondition(['o.is_deleted' => 0]);
-            }], false)
-            ->joinWith(['loanApplicationImages AS p' => function ($o) {
-                $o->andOnCondition(['p.is_deleted' => 0]);
-            }], false);
+            }]);
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -1273,6 +1260,18 @@ class CompanyDashboardController extends ApiBaseController
                     $update->updated_by = $user->user_enc_id;
                     if (!$update->save()) {
                         throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                    }
+                    $bdo = new AssignedLoanAccountsExtended();
+                    $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                    $bdo->assigned_enc_id = $utilitiesModel->encrypt();
+                    $bdo->loan_account_enc_id = $update->loan_account_enc_id;
+                    $bdo->shared_by = $user->user_enc_id;
+                    $bdo->shared_to = $update_data['created_by'];
+                    $bdo->user_type = 1;
+                    $update->created_on = $update->updated_on = date('Y-m-d H:i:s');
+                    $update->created_by = $update->updated_by = $user->user_enc_id;
+                    if (!$bdo->save()) {
+                        throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
                     }
                 }
             }
