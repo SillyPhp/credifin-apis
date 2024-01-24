@@ -1207,7 +1207,7 @@ class EmiCollectionsController extends ApiBaseController
             }
             $emi->emi_payment_mode = $mode;
             $emi->emi_payment_method = $method;
-            $emi->emi_payment_status = in_array($method, [9, 10, 81, 82, 83, 84]) ? 'pipeline' : (in_array($method, [4, 5]) ? 'collected' : 'pending');
+            $emi->emi_payment_status = in_array($method, [5, 9, 10, 81, 82, 83, 84]) ? 'pipeline' : ($method == 4 ? 'collected' : 'pending');
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
