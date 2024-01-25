@@ -528,9 +528,10 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_ids = $params['loan_account_enc_id'];
-        if($loan_ids['loan_account_enc_id']){
+        if ($loan_ids['loan_account_enc_id']) {
             $data = (new \yii\db\Query())
-                ->select(["(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
+                ->select([
+                    "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
                     "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
@@ -538,30 +539,32 @@ class LoanAccountsController extends ApiBaseController
                     'a.overdue_amount', 'a.ledger_amount',
                     '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                     'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
-                    'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',])
-                ->from(['a' => LoanAccounts::tableName()], )
+                    'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
+                ])
+                ->from(['a' => LoanAccounts::tableName()],)
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
                 ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
-            }else{
-                $data = (new \yii\db\Query())
-                ->select(["a1.loan_account_number",
+        } else {
+            $data = (new \yii\db\Query())
+                ->select([
+                    "a1.loan_account_number",
                     "COUNT(a1.loan_account_number) as total_emis", 'a1.customer_name as name',
                     'a1.phone',
                     'a1.amount as emi_amount',
                     'a1.loan_type',
-                   ])
-                ->from(['a1' => EmiCollection::tableName()], )
+                ])
+                ->from(['a1' => EmiCollection::tableName()],)
                 ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])
-                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount','a1.loan_account_number'])
+                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
-            };
+        };
 
-        if($loan_ids['loan_account_enc_id']){
+        if ($loan_ids['loan_account_enc_id']) {
             $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
-        }else{
-             $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
+        } else {
+            $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
         };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
@@ -1289,17 +1292,19 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
+        $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
 
         $sub_query = (new \yii\db\Query())
             ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
             ->from(['z' => EmiCollection::tableName()])
-            ->where(['z.id' => (new \yii\db\Query())
-                ->select(['MAX(zz.id)'])
-                ->from(['zz' => EmiCollection::tableName()])
-                ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
-                ->orderBy(['id' => SORT_DESC])
+            ->where([
+                'z.id' => (new \yii\db\Query())
+                    ->select(['MAX(zz.id)'])
+                    ->from(['zz' => EmiCollection::tableName()])
+                    ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                    ->orderBy(['id' => SORT_DESC])
             ]);
 
         $ptpcases = LoanAccountPtps::find()
@@ -1316,7 +1321,8 @@ class LoanAccountsController extends ApiBaseController
                 "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount"
+                "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount",
+                "a.created_by"
             ])
             ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
                 $b->joinWith(['branchEnc bb'], false);
@@ -1334,7 +1340,10 @@ class LoanAccountsController extends ApiBaseController
         $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
             ->orderBy(['a.proposed_date' => SORT_ASC]);
-
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $ptpcases = $ptpcases->andWhere(['IN', 'a.created_by', $juniors]);
+        }
 
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
