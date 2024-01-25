@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
@@ -12,6 +13,7 @@ use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
 use Yii;
+use yii\db\Exception;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -42,6 +44,45 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionUpdateUsersEmi($user_id = '', $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== Yii::$app->params->apiAccessKey) {
+            return ['status' => 401, 'message' => 'authentication failed'];
+        }
+        if (empty($user_id)) {
+            return ['status' => 500, 'message' => 'user_id missing'];
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            $emis = EmiCollection::findAll(
+                [
+                    'created_by' => $user_id,
+                    'emi_payment_mode' => 1,
+                    'emi_payment_status' => 'pending',
+                    'is_deleted' => 0
+                ]
+            );
+            foreach ($emis as $emi) {
+                $emi->emi_payment_mode = 2;
+                $emi->emi_payment_method = 4;
+                $emi->emi_payment_status = 'collected';
+                if (!$emi->save()) {
+                    throw new Exception(implode(' ', array_column($emi->getErrors(), '0')));
+                }
+                $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
+                $trackCash['amount'] = $emi->amount;
+                $trackCash['emi_id'] = $emi->emi_collection_enc_id;
+                EmiCollectionForm::collect_cash($trackCash);
+            }
+            $transaction->commit();
+            return ['status' => 200, 'found and updated' => count($emis)];
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+        }
     }
 
     public function actionUpdateData($limit = 50, $page = 1, $auth = '')
@@ -521,12 +562,14 @@ class TestController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
 
     }
-    public function actionLoginDateUpdate($limit=100,$page=1,$count=false){
+
+    public function actionLoginDateUpdate($limit = 100, $page = 1, $count = false)
+    {
         $login_date = LoanApplications::find()
             ->alias('a')
             ->select(['b1.loan_app_enc_id'])
             ->innerJoinWith(['assignedLoanPayments b1' => function ($b1) {
-                $b1->select(['b1.id','b1.loan_app_enc_id','b1.loan_payments_enc_id','b2.payment_amount','b2.payment_status','b2.updated_on']);
+                $b1->select(['b1.id', 'b1.loan_app_enc_id', 'b1.loan_payments_enc_id', 'b2.payment_amount', 'b2.payment_status', 'b2.updated_on']);
                 $b1->innerJoinWith(['loanPaymentsEnc b2' => function ($b2) {
                     $b2->andOnCondition(['b2.payment_status' => 'captured']);
                 }], false);
@@ -539,21 +582,22 @@ class TestController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-        if ($count){
+        if ($count) {
             return count($login_date);
         }
         $k = 0;
-        if ($login_date){
-            foreach ($login_date as $logins){
-                $model = LoanApplications::findOne(['loan_app_enc_id'=>$logins['loan_app_enc_id']]);
+        if ($login_date) {
+            foreach ($login_date as $logins) {
+                $model = LoanApplications::findOne(['loan_app_enc_id' => $logins['loan_app_enc_id']]);
                 $model->login_date = $logins['assignedLoanPayments'][0]['updated_on'];
-                if ($model->save()){
+                if ($model->save()) {
                     $k++;
                 }
             }
-            echo $k.' results updated ';
+            echo $k . ' results updated ';
         }
     }
+
     public function actionAssignAuditLoginDate()
     {
         if (!$this->isAuthorized()) {
