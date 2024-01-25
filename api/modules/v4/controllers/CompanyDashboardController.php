@@ -7,6 +7,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
+use common\models\AssignedDisbursementCharges;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanPayments;
 use common\models\AssignedLoanProvider;
@@ -56,6 +57,7 @@ use common\models\Utilities;
 use Exception;
 use Yii;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -1189,6 +1191,16 @@ class CompanyDashboardController extends ApiBaseController
                     ->execute();
             }
 
+            $subquery = (new \yii\db\Query())
+                ->select([
+                    'z.shared_to', 'z.loan_app_enc_id'
+                ])
+                ->from(['z' => SharedLoanApplications::tableName()])
+                ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
+                ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
+                ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
+                ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
+
             if ($params['status'] == 31) {
                 $update_data = LoanApplications::find()
                     ->alias('a')
@@ -1209,7 +1221,7 @@ class CompanyDashboardController extends ApiBaseController
                         'ANY_VALUE(c.engine_number) as engine_number',
                         'd.name as dealer_name',
                         'e.name as loan_type',
-                        '(COALESCE(ANY_VALUE(b.disbursement_approved), 0) + COALESCE(SUM(f.amount), 0)) AS financed_amount',
+                        "(COALESCE(ANY_VALUE(b.disbursement_approved), 0) + COALESCE((SELECT SUM(amount) FROM " . AssignedDisbursementCharges::tableName() . " WHERE loan_app_enc_id = a.loan_app_enc_id AND is_deleted = 0), 0)) AS financed_amount",
                         'a.created_on',
                         'a.lead_by AS created_by',
                         'a.updated_by',
@@ -1219,7 +1231,9 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['loanApplicationOptions c'], false)
                     ->joinWith(['assignedDealer d'], false)
                     ->joinWith(['loanProductsEnc e'], false)
-                    ->joinWith(['assignedDisbursementCharges f'], false)
+                    ->joinWith(['sharedLoanApplications AS g' => function ($g) use ($subquery) {
+                        $g->from(['sharedLoanApplications' => $subquery]);
+                    }])
                     ->where(['a.loan_app_enc_id' => $params['loan_id']])
                     ->groupBy(['a.loan_app_enc_id'])
                     ->asArray()
@@ -1261,17 +1275,19 @@ class CompanyDashboardController extends ApiBaseController
                     if (!$update->save()) {
                         throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
                     }
-                    $bdo = new AssignedLoanAccountsExtended();
-                    $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
-                    $bdo->assigned_enc_id = $utilitiesModel->encrypt();
-                    $bdo->loan_account_enc_id = $update->loan_account_enc_id;
-                    $bdo->shared_by = $user->user_enc_id;
-                    $bdo->shared_to = $update_data['created_by'];
-                    $bdo->user_type = 1;
-                    $update->created_on = $update->updated_on = date('Y-m-d H:i:s');
-                    $update->created_by = $update->updated_by = $user->user_enc_id;
-                    if (!$bdo->save()) {
-                        throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                    foreach ($update_data['sharedLoanApplications'] as $item) {
+                        $bdo = new AssignedLoanAccountsExtended();
+                        $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                        $bdo->assigned_enc_id = $utilitiesModel->encrypt();
+                        $bdo->loan_account_enc_id = $update->loan_account_enc_id;
+                        $bdo->shared_by = $user->user_enc_id;
+                        $bdo->shared_to = $item['shared_to'];
+                        $bdo->user_type = 1;
+                        $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
+                        $bdo->created_by = $bdo->updated_by = $user->user_enc_id;
+                        if (!$bdo->save()) {
+                            throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                        }
                     }
                 }
             }
