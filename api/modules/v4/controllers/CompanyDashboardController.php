@@ -1191,17 +1191,17 @@ class CompanyDashboardController extends ApiBaseController
                     ->execute();
             }
 
-            $subquery = (new \yii\db\Query())
-                ->select([
-                    'z.shared_to', 'z.loan_app_enc_id'
-                ])
-                ->from(['z' => SharedLoanApplications::tableName()])
-                ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
-                ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
-                ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
-                ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
 
             if ($params['status'] == 31) {
+                $subquery = (new \yii\db\Query())
+                    ->select([
+                        'z.shared_to', 'z.loan_app_enc_id'
+                    ])
+                    ->from(['z' => SharedLoanApplications::tableName()])
+                    ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
+                    ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
+                    ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
+                    ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
                 $update_data = LoanApplications::find()
                     ->alias('a')
                     ->select([
