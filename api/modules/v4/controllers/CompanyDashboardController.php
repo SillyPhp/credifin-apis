@@ -7,6 +7,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
+use common\models\AssignedDisbursementCharges;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanPayments;
 use common\models\AssignedLoanProvider;
@@ -56,6 +57,7 @@ use common\models\Utilities;
 use Exception;
 use Yii;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -408,14 +410,7 @@ class CompanyDashboardController extends ApiBaseController
                 $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['loanProductsEnc lp' => function ($lp) {
-                $lp->joinWith(['financerLoanProductDocuments lp1' => function ($lp1) {
-                    $lp1->andOnCondition(['lp1.is_deleted' => 0]);
-                }], false);
-                $lp->joinWith(['financerLoanProductImages lp2' => function ($lp1) {
-                    $lp1->andOnCondition(['lp2.is_deleted' => 0]);
-                }], false);
-            }], false)
+            ->joinWith(['loanProductsEnc lp'], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
@@ -427,13 +422,7 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
-            }])
-            ->joinWith(['loanCertificates AS o' => function ($o) {
-                $o->andOnCondition(['o.is_deleted' => 0]);
-            }], false)
-            ->joinWith(['loanApplicationImages AS p' => function ($o) {
-                $o->andOnCondition(['p.is_deleted' => 0]);
-            }], false);
+            }]);
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -1202,7 +1191,17 @@ class CompanyDashboardController extends ApiBaseController
                     ->execute();
             }
 
+
             if ($params['status'] == 31) {
+                $subquery = (new \yii\db\Query())
+                    ->select([
+                        'z.shared_to', 'z.loan_app_enc_id'
+                    ])
+                    ->from(['z' => SharedLoanApplications::tableName()])
+                    ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
+                    ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
+                    ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
+                    ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
                 $update_data = LoanApplications::find()
                     ->alias('a')
                     ->select([
@@ -1222,7 +1221,7 @@ class CompanyDashboardController extends ApiBaseController
                         'ANY_VALUE(c.engine_number) as engine_number',
                         'd.name as dealer_name',
                         'e.name as loan_type',
-                        '(COALESCE(ANY_VALUE(b.disbursement_approved), 0) + COALESCE(SUM(f.amount), 0)) AS financed_amount',
+                        "(COALESCE(ANY_VALUE(b.disbursement_approved), 0) + COALESCE((SELECT SUM(amount) FROM " . AssignedDisbursementCharges::tableName() . " WHERE loan_app_enc_id = a.loan_app_enc_id AND is_deleted = 0), 0)) AS financed_amount",
                         'a.created_on',
                         'a.lead_by AS created_by',
                         'a.updated_by',
@@ -1232,7 +1231,9 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['loanApplicationOptions c'], false)
                     ->joinWith(['assignedDealer d'], false)
                     ->joinWith(['loanProductsEnc e'], false)
-                    ->joinWith(['assignedDisbursementCharges f'], false)
+                    ->joinWith(['sharedLoanApplications AS g' => function ($g) use ($subquery) {
+                        $g->from(['sharedLoanApplications' => $subquery]);
+                    }])
                     ->where(['a.loan_app_enc_id' => $params['loan_id']])
                     ->groupBy(['a.loan_app_enc_id'])
                     ->asArray()
@@ -1259,6 +1260,8 @@ class CompanyDashboardController extends ApiBaseController
                     $update->last_emi_date = $last_emi_date;
                     $update->financed_amount = $update_data['financed_amount'];
                     $update->branch_enc_id = $update_data['branch_enc_id'];
+                    $update->bucket = 'OnTime';
+                    $update->bucket_status_date = date('Y-m-d');
                     $update->emi_date = $update_data['emi_collection_date'];
                     $update->vehicle_type = $update_data['vehicle_type'];
                     $update->vehicle_make = $update_data['model_year'];
@@ -1273,6 +1276,20 @@ class CompanyDashboardController extends ApiBaseController
                     $update->updated_by = $user->user_enc_id;
                     if (!$update->save()) {
                         throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                    }
+                    foreach ($update_data['sharedLoanApplications'] as $item) {
+                        $bdo = new AssignedLoanAccountsExtended();
+                        $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                        $bdo->assigned_enc_id = $utilitiesModel->encrypt();
+                        $bdo->loan_account_enc_id = $update->loan_account_enc_id;
+                        $bdo->shared_by = $user->user_enc_id;
+                        $bdo->shared_to = $item['shared_to'];
+                        $bdo->user_type = 1;
+                        $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
+                        $bdo->created_by = $bdo->updated_by = $user->user_enc_id;
+                        if (!$bdo->save()) {
+                            throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                        }
                     }
                 }
             }
