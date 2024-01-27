@@ -68,8 +68,7 @@ class TestController extends ApiBaseController
             );
             foreach ($emis as $emi) {
                 $emi->emi_payment_mode = 2;
-                $date = strtotime($emi->created_on); 
-                $emi->collection_date = date('Y-m-d', $date);
+                $emi->collection_date = $emi->transaction_initiated_date;
                 $emi->reference_number = $emi->emi_collection_enc_id;
                 $emi->emi_payment_method = 4;
                 $emi->emi_payment_status = 'collected';
