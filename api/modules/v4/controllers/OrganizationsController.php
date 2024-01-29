@@ -1695,12 +1695,6 @@ class OrganizationsController extends ApiBaseController
             } else {
                 $model = new EmiCollectionForm();
                 $model->org_id = $org;
-                if (!empty($params['loan_account_number'])) {
-                    $query = LoanAccountsExtended::findOne(["loan_account_number" => $params['loan_account_number']]);
-                    if ($query) {
-                        $model->loan_account_enc_id = $query['loan_account_enc_id'];
-                    }
-                }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                     throw new Exception(implode(' ', array_column($model->errors, 0)));
                 }
