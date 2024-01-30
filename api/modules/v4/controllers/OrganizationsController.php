@@ -1736,7 +1736,8 @@ class OrganizationsController extends ApiBaseController
              OR 
              ((collection_date IS NULL) AND (created_on BETWEEN :start_date AND :end_date))
         )
-        AND is_deleted = 0";
+        AND is_deleted = 0
+        ";
 
         $bind = [
             ':start_date' => $start_date,
@@ -1799,6 +1800,7 @@ class OrganizationsController extends ApiBaseController
                     ]
                 ];
             }
+
 
             foreach ($statusName as $val) {
                 $data[$val] = [
