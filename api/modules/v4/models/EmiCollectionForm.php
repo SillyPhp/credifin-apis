@@ -79,6 +79,13 @@ class EmiCollectionForm extends Model
         '24' => 'Online Off System Transaction',
     ];
 
+    public static $modes_methods = [
+        '1' => ['1', '2', '3'],
+        '2' => ['4', '5'],
+        '3' => ['6', '7'],
+        '4' => ['81', '82', '83', '84', '9', '10', '11']
+    ];
+
     public function formName()
     {
         return '';
@@ -165,7 +172,7 @@ class EmiCollectionForm extends Model
         }
         $model->emi_payment_mode = $this->payment_mode;
         $model->emi_payment_method = $this->payment_method;
-        $model->emi_payment_status = in_array($this->payment_method, [9, 10, 81, 82, 83, 84]) ? 'pipeline' : (in_array($this->payment_method, [4, 5]) ? 'collected' : 'pending');
+        $model->emi_payment_status = in_array($this->payment_method, [5, 9, 10, 81, 82, 83, 84]) ? 'pipeline' : ($this->payment_method == 4 ? 'collected' : 'pending');
         $model->dealer_name = $this->dealer_name ?? '';
         $model->reference_number = $this->reference_number ?? '';
         if ($this->other_doc_image) {

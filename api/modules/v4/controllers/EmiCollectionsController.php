@@ -12,8 +12,11 @@ use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
+use common\models\UserRoles;
+use common\models\Utilities;
 use Exception;
 use Yii;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -41,6 +44,8 @@ class EmiCollectionsController extends ApiBaseController
                 "emi-detail" => ["POST", "OPTIONS"],
                 "update" => ["POST", "OPTIONS"],
                 "update-emi-number" => ["POST", "OPTIONS"],
+                "ptp-emi" => ["POST", "OPTIONS"],
+                "update-payment-method" => ["POST", "OPTIONS"]
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -118,6 +123,86 @@ class EmiCollectionsController extends ApiBaseController
             }], false)
             ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
             ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
+            ->asArray()
+            ->all();
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $query = array_map(function ($e) use ($payment_methods) {
+            $e["emi_payment_method"] = $payment_methods[$e["emi_payment_method"]];
+            return $e;
+        }, $query);
+        return $this->response(200, ["data" => $query]);
+    }
+
+    public function actionGetTelecallersList()
+    {
+        $bearer_token = Yii::$app->request->headers->get('Authorization');
+        $token = explode(" ", $bearer_token);
+        if (isset($token[0]) && $token[0] != 'Bearer') {
+            $unAuthorised = 1;
+        }
+        if (!isset($token[1])) {
+            $unAuthorised = 1;
+        }
+        if (!empty($unAuthorised) || $token[1] !== Yii::$app->params->emiCollection->authKey) {
+            $this->response(401, ["message" => "unauthorized"]);
+        }
+        $params = Yii::$app->request->get();
+        if (empty($params["start_date"]) || empty($params["end_date"])) {
+            return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
+        }
+        $start_date = strtotime($params["start_date"]);
+        $end_date = strtotime($params["end_date"]);
+        if ($start_date === $end_date) {
+            $end_date += (24 * 60 * 60) - 1;
+        } else if ($end_date <= $start_date) {
+            return $this->response(500, ["error" => "end date must be greater than start date"]);
+        }
+        $query = EmiCollection::find()
+            ->alias("a")
+            ->select([
+                "a.emi_collection_enc_id AS collection_id",
+                "a.loan_account_number AS file_number",
+                "b.lms_loan_account_number AS loan_account_number",
+                "TRIM(a.customer_name) AS customer_name",
+                "a.phone as collected_emi_phone",
+                "a.amount collected_amount",
+                "a.emi_payment_method",
+                "COALESCE(b.loan_type, a.loan_type) AS loan_type",
+                "(CASE 
+                    WHEN a.emi_payment_method NOT IN (1, 2, 3) 
+                        THEN DATE_FORMAT(a.collection_date, '%d-%m-%Y') 
+                        ELSE DATE_FORMAT(c1.updated_on, '%d-%m-%Y')
+                END) as collection_date",
+                "(CASE 
+                    WHEN a.emi_payment_method IN (1, 2, 3)
+                        THEN c1.payment_id
+                        ELSE a.reference_number
+                END) AS reference_id",
+                "a.emi_payment_status",
+                "b.company_id",
+                "b.company_name",
+                "b.phone",
+                "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name,'')) collected_by",
+                "br.location_name as branch"
+            ])
+            ->innerJoinWith(["createdBy cb" => function ($cb) {
+                $cb->innerJoinWith(["userRoles0 ur" => function ($ur){
+                    $ur->andOnCondition(['in', 'designation_id', ['39pOaLxn1RyA6ewg0m14RwrK85kq6m', 'jE3DW981MQMDwAbvpx1Vdl5zrZyBag']]);
+                }], false);
+            }], false)
+            ->innerJoinWith(["branchEnc br"], false)
+            ->joinWith(["loanAccountEnc b"], false)
+            ->joinWith(["assignedLoanPayments c" => function ($c) {
+                $c->andOnCondition(["IS NOT", "c.emi_collection_enc_id", null]);
+                $c->joinWith(["loanPaymentsEnc c1" => function ($c1) {
+                    $c1->andOnCondition(["c1.payment_status" => "captured"]);
+                }], false);
+            }], false)
+            ->andWhere(["a.is_deleted" => 0]);
+            if (!empty($params['status'])) {
+                $query->andWhere(["a.emi_payment_status" => $params['status']]);
+            }
+            $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -944,7 +1029,7 @@ class EmiCollectionsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        if ((empty($params['collection_date']) && (empty($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
+        if ((empty($params['collection_date']) && (!isset($params['amount']) || $params['amount'] < 0)) || empty($params['remarks']) || empty($params['emi_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "collection_date" or "amount" or "remarks" or "emi_id"']);
         }
         $transaction = Yii::$app->db->beginTransaction();
@@ -976,7 +1061,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!empty($params['collection_date'])) {
                 $emi->collection_date = $params['collection_date'];
             }
-            if (!empty($params['amount'])) {
+            if (isset($params['amount'])) {
                 $updated_amount = $params['amount'] - $emi->amount;
                 $emi->amount = $params['amount'];
             }
@@ -999,7 +1084,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!$audit->save()) {
                 throw new Exception(implode(',', array_column($audit->errors, "0")));
             }
-            if (!empty($params['amount'])) {
+            if (isset($params['amount'])) {
                 $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
                 if ($cash) {
                     change_amount($cash, $updated_amount, $user->user_enc_id);
@@ -1094,5 +1179,148 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'Receipt image uploaded successfully']);
+    }
+
+    public function actionPtpEmi()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['message' => 'missing information "emi_collection_enc_id"']);
+        }
+        $id = $params['emi_collection_enc_id'];
+        $emi = EmiCollection::find()
+            ->where(["emi_collection_enc_id" => $id])
+            ->andWhere(['IS NOT', 'ptp_amount', null])
+            ->asArray()
+            ->one();
+        if (!$emi) {
+            return $this->response(404, ['message' => 'emi not found']);
+        }
+        $exist_check = EmiCollection::find()
+            ->alias('a')
+            ->select([
+                'a.emi_collection_enc_id',
+                'ANY_VALUE(c.payment_short_url) link'
+            ])
+            ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) {
+                $b->innerJoinWith(['loanPaymentsEnc AS c' => function ($c) {
+                    $c->andOnCondition([
+                        "AND",
+                        ['c.payment_link_type' => '1'],
+                        ['c.payment_amount' => new Expression('a.amount')],
+                        ['>=', 'c.close_by', date('Y-m-d H:i:s')],
+                        ['payment_mode_status' => 'active'],
+                        ['c.payment_status' => 'pending']
+                    ]);
+                }], false);
+            }], false)
+            ->andWhere([
+                'a.emi_payment_status' => 'pending',
+                'a.loan_account_number' => $emi['loan_account_number'],
+                'a.emi_payment_method' => 1,
+                'a.emi_payment_mode' => 1,
+                'a.is_deleted' => 0,
+                'a.amount' => $emi['ptp_amount'],
+                'a.customer_name' => $emi['customer_name']
+            ])
+            ->asArray()
+            ->one();
+        if (!empty($exist_check['link'])) {
+            return $this->response(200, ['message' => 'Saved Successfully', 'links' => ['qr' => $exist_check['link']]]);
+        }
+        if (!$org = $user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$org = $findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model = new EmiCollectionForm();
+            $model->branch_enc_id = $emi['branch_enc_id'];
+            $model->customer_name = $emi['customer_name'];
+            $model->loan_account_number = $emi['loan_account_number'];
+            $model->phone = $emi['phone'];
+            $model->amount = $emi['ptp_amount'];
+            $model->loan_type = $emi['loan_type'];
+            $model->loan_purpose = $emi['loan_purpose'];
+            $model->payment_mode = 1;
+            $model->payment_method = 1;
+            $model->address = $emi['address'];
+            $model->postal_code = $emi['pincode'];
+            $model->latitude = $params['latitude'] ?? $emi['latitude'];
+            $model->longitude = $params['longitude'] ?? $emi['longitude'];
+            $model->org_id = $org;
+            $model->brand = $params['brand'];
+            $save = $model->save($user->user_enc_id);
+            if ($save['status'] != 200) {
+                throw new Exception('An error occurred.');
+            }
+            $transaction->commit();
+            return $this->response(200, $save);
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionUpdatePaymentMethod()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+        if (empty($params['payment_mode']) || empty($params['payment_method']) || empty($params['emi_id'])) {
+            return $this->response(422, ['message' => 'missing information "payment mode" or "payment method" or "emi_id"']);
+        }
+        $mode = $params['payment_mode'];
+        $method = $params['payment_method'];
+        $modes_methods = EmiCollectionForm::$modes_methods;
+        try {
+            if (!in_array($method, $modes_methods[$mode])) {
+                throw new Exception('Incorrect payment method.');
+            }
+            $emi = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_id']]);
+            if (!$emi) {
+                return $this->response(404, ['message' => 'Emi not found.']);
+            }
+            $emi->emi_payment_mode = $mode;
+            $emi->emi_payment_method = $method;
+            $emi->emi_payment_status = in_array($method, [5, 9, 10, 81, 82, 83, 84]) ? 'pipeline' : ($method == 4 ? 'collected' : 'pending');
+            if (!empty($params['collection_date'])) {
+                $emi->collection_date = $params['collection_date'];
+            }
+            if (!empty($params['reference_number'])) {
+                $emi->reference_number = $params['reference_number'];
+            }
+            if (($image = UploadedFile::getInstanceByName('pr_receipt_image'))) {
+                $utilitiesModel = new Utilities;
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $type = explode('/', $image->type)[1];
+                $emi->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $type;
+                $emi->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . $emi->pr_receipt_image_location;
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources(
+                    $image->tempName,
+                    Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $emi->pr_receipt_image,
+                    "private",
+                    ['params' => ['ContentType' => $image->type]]
+                );
+                if (!$result) {
+                    throw new Exception("An error occurred while saving image.");
+                }
+            }
+            $emi->updated_on = date('Y-m-d H:i:s');
+            $emi->updated_by = $user->user_enc_id;
+            if (!$emi->save()) {
+                throw new Exception(implode(' ', array_column($emi->errors, "0")));
+            }
+            return $this->response(200, ['message' => 'Successfully saved.']);
+        } catch (Exception $exception) {
+            return $this->response(500, ['message' => 'An error occurred.', 'error' => $exception->getMessage()]);
+        }
     }
 }
