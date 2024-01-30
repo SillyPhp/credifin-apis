@@ -2707,6 +2707,9 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['sharedLoanApplications AS g' => function ($g) use ($subquery) {
                 $g->from(['sharedLoanApplications' => $subquery]);
             }])
+            ->joinWith(['loanApplicationFis AS h' => function ($h) {
+                $h->select(['h.loan_app_enc_id', 'h.collection_manager']);
+            }])
             ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
         if (!empty($end_date)) {
             $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
@@ -2768,12 +2771,14 @@ class OrganizationsController extends ApiBaseController
                 if (!$update->save()) {
                     throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
                 }
-                foreach ($update_data['sharedLoanApplications'] as $item) {
+                $assigning_ids = array_merge(array_column($update_data['sharedLoanApplications'], 'shared_to'), array_column($update_data['loanApplicationFis'], 'collection_manager'));
+                $assigning_ids = array_unique($assigning_ids);
+                foreach ($assigning_ids as $item) {
                     $bdo = new AssignedLoanAccounts();
                     $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
                     $bdo->assigned_enc_id = $utilitiesModel->encrypt();
                     $bdo->loan_account_enc_id = $update->loan_account_enc_id;
-                    $bdo->shared_to = $item['shared_to'];
+                    $bdo->shared_to = $item;
                     $bdo->user_type = 1;
                     $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
                     $bdo->shared_by = $bdo->created_by = $bdo->updated_by = $update_data['updated_by'];
