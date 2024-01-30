@@ -4,14 +4,17 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedDisbursementCharges;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
+use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationImagesExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductImages;
@@ -29,8 +32,10 @@ use common\models\LoanApplications;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
+use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
+use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
@@ -2667,44 +2672,47 @@ class OrganizationsController extends ApiBaseController
         if (empty($start_date)) {
             return ['status' => 500, 'message' => 'start_date missing'];
         }
+        $subquery = (new \yii\db\Query())
+            ->select([
+                'z.shared_to', 'z.loan_app_enc_id'
+            ])
+            ->from(['z' => SharedLoanApplications::tableName()])
+            ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
+            ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
+            ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
+            ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
         $data = LoanApplications::find()
             ->alias('a')
             ->select([
                 'a.loan_app_enc_id',
-                'a.application_number',
+                "REPLACE(a.application_number, ' ', '') AS application_number",
                 'a.number_of_emis',
                 'a.applicant_name',
                 'a.phone',
                 'a.emi_collection_date',
                 'a.chassis_number',
                 'a.rc_number',
-                'a.created_on',
-                'a.lead_by AS created_by',
-                'a.updated_by',
-                'a.updated_on',
                 'ANY_VALUE(c.vehicle_type) as vehicle_type',
-                'ANY_VALUE(c.vehicle_making_year) as vehicle_making_year',
+                'ANY_VALUE(c.model_year) as model_year',
                 'ANY_VALUE(c.vehicle_model) as vehicle_model',
                 'ANY_VALUE(b.branch_enc_id) as branch_enc_id',
-                'ANY_VALUE(c.emi_amount) as emi_amount',
+                'COALESCE(ANY_VALUE(c.emi_amount), 0) as emi_amount',
                 'ANY_VALUE(c.engine_number) as engine_number',
                 'd.name as dealer_name',
                 'e.name as loan_type',
-                "SUM(CASE 
-                        WHEN
-                            b.disbursement_approved IS NULL THEN 0 
-                        ELSE b.disbursement_approved 
-                    END) AS disbursement_approved",
-                "SUM(CASE 
-                        WHEN f.amount IS NULL THEN 0 
-                            ELSE f.amount 
-                    END) AS disbursement_charges"
+                "(COALESCE(ANY_VALUE(b.disbursement_approved), 0) + COALESCE((SELECT SUM(amount) FROM " . AssignedDisbursementCharges::tableName() . " WHERE loan_app_enc_id = a.loan_app_enc_id AND is_deleted = 0), 0)) AS financed_amount",
+                'a.created_on',
+                'a.lead_by AS created_by',
+                'a.updated_by',
+                'a.updated_on'
             ])
             ->joinWith(['assignedLoanProviders b'], false)
             ->joinWith(['loanApplicationOptions c'], false)
             ->joinWith(['assignedDealer d'], false)
             ->joinWith(['loanProductsEnc e'], false)
-            ->joinWith(['assignedDisbursementCharges f'], false)
+            ->joinWith(['sharedLoanApplications AS g' => function ($g) use ($subquery) {
+                $g->from(['sharedLoanApplications' => $subquery]);
+            }])
             ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
         if (!empty($end_date)) {
             $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
@@ -2718,9 +2726,11 @@ class OrganizationsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
         $inserted = 0;
         $utilitiesModel = new Utilities();
         $transaction = Yii::$app->db->beginTransaction();
+
         try {
             foreach ($data as $update_data) {
                 $application_number = str_replace(' ', '', $update_data['application_number']);
@@ -2736,6 +2746,7 @@ class OrganizationsController extends ApiBaseController
                 $update = new LoanAccounts();
                 $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
                 $update->loan_account_enc_id = $utilitiesModel->encrypt();
+                $update->loan_app_enc_id = $update_data['loan_app_enc_id'];
                 $update->loan_account_number = $application_number;
                 $update->lms_loan_account_number = $application_number;
                 $update->dealer_name = $update_data['dealer_name'];
@@ -2744,14 +2755,17 @@ class OrganizationsController extends ApiBaseController
                 $update->phone = $update_data['phone'];
                 $update->loan_type = $update_data['loan_type'];
                 $update->last_emi_date = $last_emi_date;
-                $update->financed_amount = $update_data['disbursement_approved'] + $update_data['disbursement_charges'];
+                $update->financed_amount = $update_data['financed_amount'];
                 $update->branch_enc_id = $update_data['branch_enc_id'];
+                $update->bucket = 'OnTime';
+                $update->bucket_status_date = date('Y-m-d');
                 $update->emi_date = $update_data['emi_collection_date'];
                 $update->vehicle_type = $update_data['vehicle_type'];
-                $update->vehicle_make = $update_data['vehicle_making_year'];
+                $update->vehicle_make = $update_data['model_year'];
                 $update->vehicle_model = $update_data['vehicle_model'];
                 $update->vehicle_engine_no = $update_data['engine_number'];
                 $update->vehicle_chassis_no = $update_data['chassis_number'];
+                $update->emi_amount = $update_data['emi_amount'];
                 $update->rc_number = $update_data['rc_number'];
                 $update->created_on = $update_data['created_on'];
                 $update->created_by = $update_data['created_by'];
@@ -2759,6 +2773,19 @@ class OrganizationsController extends ApiBaseController
                 $update->updated_by = $update_data['updated_by'];
                 if (!$update->save()) {
                     throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
+                }
+                foreach ($update_data['sharedLoanApplications'] as $item) {
+                    $bdo = new AssignedLoanAccounts();
+                    $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                    $bdo->assigned_enc_id = $utilitiesModel->encrypt();
+                    $bdo->loan_account_enc_id = $update->loan_account_enc_id;
+                    $bdo->shared_to = $item['shared_to'];
+                    $bdo->user_type = 1;
+                    $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
+                    $bdo->shared_by = $bdo->created_by = $bdo->updated_by = $update_data['updated_by'];
+                    if (!$bdo->save()) {
+                        throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                    }
                 }
                 $inserted += 1;
             }
