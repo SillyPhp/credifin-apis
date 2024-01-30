@@ -2547,7 +2547,7 @@ class OrganizationsController extends ApiBaseController
                     WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
                     ELSE NULL END") => SORT_DESC
             ])
-            ->andWhere(["a.is_deleted" => 0]);
+            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 0]);
 
         if (!empty($params['collection_date'])) {
             $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);

@@ -8,6 +8,7 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
+use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountPtps;
@@ -1556,5 +1557,161 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+    }
+
+    public function actionHardRecovery()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $loanAccountEncIds = isset($params['loan_accounts']) ? $params['loan_accounts'] : [];
+
+        if (empty($loanAccountEncIds)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_accounts"']);
+        }
+
+        foreach ($loanAccountEncIds as $loanAccountEncId) {
+            $hard_recovery = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loanAccountEncId]);
+
+            if ($hard_recovery) {
+                $hard_recovery->hard_recovery = 1;
+                $hard_recovery->updated_by = $user->user_enc_id;
+                $hard_recovery->updated_on = date('Y-m-d H:i:s');
+
+                if (!$hard_recovery->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $hard_recovery->getErrors()]);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account with ID ' . $loanAccountEncId . ' not found']);
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Hard Recovery Successfully']);
+    }
+
+    public function actionHardRecoveryList()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $user = $this->user;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+
+        if ($this->isSpecial(1)) {
+            $selectQuery =
+                "(CASE WHEN a.sales_priority THEN a.sales_priority END) as sales_priority,
+                 (CASE WHEN a.collection_priority THEN a.collection_priority END) as collection_priority,
+                 (CASE WHEN a.telecaller_priority THEN a.telecaller_priority END) as telecaller_priority";
+        } else {
+            $selectQuery = "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+            ELSE NULL END) AS priority";
+        }
+
+        $sub_query = (new \yii\db\Query())
+            ->select(['z.loan_account_enc_id', 'z.collection_date', 'z.amount', 'z.emi_collection_enc_id'])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->where([
+                'z.id' => (new \yii\db\Query())
+                    ->select(['MAX(zz.id)'])
+                    ->from(['zz' => EmiCollectionExtended::tableName()])
+                    ->where("z.loan_account_enc_id = zz.loan_account_enc_id AND zz.emi_payment_status NOT IN ('pending', 'failed', 'rejected')")
+                    ->orderBy(['id' => SORT_DESC])
+            ]);
+
+        $query = LoanAccountsExtended::find()
+            ->alias("a")
+            ->select([
+                "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
+                "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
+                "a.loan_account_number", "a.last_emi_date", "a.name",
+                $selectQuery,
+                "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
+                "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
+                "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
+                "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
+            ])
+            ->joinWith(["branchEnc b"], false)
+            ->joinWith(["assignedCaller ac"], false)
+            ->joinWith(["collectionManager cm"], false)
+            ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                $d->select([
+                    "d.assigned_enc_id", "d.access", "d.loan_account_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                ]);
+                $d->joinWith(['sharedTo d1'], false);
+            }])
+            ->joinWith(["emiCollectionsCustom e" => function ($e) use ($sub_query) {
+                $e->from(["e" => $sub_query]);
+            }], false)
+            ->groupBy(['a.loan_account_enc_id'])
+            ->orderBy([
+                ("CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                    WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority
+                    WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                    ELSE NULL END") => SORT_DESC
+            ])
+            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 1]);
+
+        if (!empty($params['collection_date'])) {
+            $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
+        }
+
+        if (!empty($params["fields_search"])) {
+            foreach ($params["fields_search"] as $key => $value) {
+                if (!empty($value) || $value == "0") {
+                    if ($key == 'assigned_caller') {
+                        $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'bucket') {
+                        $query->andWhere(['IN', 'a.bucket', $value]);
+                    } elseif ($key == 'loan_type') {
+                        $query->andWhere(['IN', 'a.loan_type', $value]);
+                    } elseif ($key == 'branch') {
+                        $query->andWhere(['IN', 'b.location_enc_id', $value]);
+                    } elseif ($key == 'total_pending_amount') {
+                        $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
+                    } elseif ($key == 'collection_manager') {
+                        $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
+                    } else {
+                        $query->andWhere(["like", $key, "$value%", false]);
+                    }
+                }
+            }
+        }
+        if (!$this->isSpecial(1)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $query->andWhere([
+                "OR",
+                ["IN", "a.assigned_caller", $juniors],
+                ["IN", "a.collection_manager", $juniors],
+                ["IN", "a.created_by", $juniors],
+                ["IN", "d.shared_to", $juniors],
+            ]);
+        }
+        if (!empty($params["bucket"])) {
+            $query->andWhere(["a.bucket" => $params["bucket"]]);
+        }
+        $count = $query->count();
+        $query = $query
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($query) {
+            return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
+        }
+
+        return $this->response(404, ["status" => 404, "message" => "data not found"]);
     }
 }
