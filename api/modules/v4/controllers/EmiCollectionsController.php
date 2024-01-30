@@ -186,7 +186,7 @@ class EmiCollectionsController extends ApiBaseController
                 "br.location_name as branch"
             ])
             ->innerJoinWith(["createdBy cb" => function ($cb) {
-                $cb->innerJoinWith(["userRoles0 ur" => function ($ur){
+                $cb->innerJoinWith(["userRoles0 ur" => function ($ur) {
                     $ur->andOnCondition(['in', 'designation_id', ['39pOaLxn1RyA6ewg0m14RwrK85kq6m', 'jE3DW981MQMDwAbvpx1Vdl5zrZyBag']]);
                 }], false);
             }], false)
@@ -199,10 +199,10 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0]);
-            if (!empty($params['status'])) {
-                $query->andWhere(["a.emi_payment_status" => $params['status']]);
-            }
-            $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
+        if (!empty($params['status'])) {
+            $query->andWhere(["a.emi_payment_status" => $params['status']]);
+        }
+        $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -829,6 +829,9 @@ class EmiCollectionsController extends ApiBaseController
     {
         function payment_method_add($data)
         {
+            if (!is_array($data)) {
+                $data = [$data];
+            }
             if (in_array(4, $data)) {
                 $data[] = 81;
             }
@@ -840,9 +843,11 @@ class EmiCollectionsController extends ApiBaseController
             }
             return $data;
         }
-
         function payment_mode_add($data)
         {
+            if (!is_array($data)) {
+                $data = [$data];
+            }
             if (in_array(1, $data)) {
                 $data[] = 21;
             }
