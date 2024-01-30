@@ -206,7 +206,7 @@ class TestController extends ApiBaseController
                 "e.vehicle_type",
                 "e.vehicle_brand",
                 "f.name loan_type",
-                "CONCAT(g.first_name, ' ', COALESCE(g.last_name)) as leadby",
+                "CONCAT(g.first_name, ' ', COALESCE(g.last_name, '')) as leadby",
                 "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
                 "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
                 "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
@@ -253,6 +253,126 @@ class TestController extends ApiBaseController
         if (!empty($params["status"])) {
             $query->andWhere(["b.status" => $params["status"]]);
         }
+        $query = $query->limit($params["limit"])
+            ->groupBy(["a.loan_app_enc_id"])
+            ->offset(($params["page"] - 1) * $params["limit"])
+            ->asArray()
+            ->all();
+
+        foreach ($query as &$item) {
+            $purposes = [];
+            if (!empty($item['loanPurposes'])) {
+                foreach ($item['loanPurposes'] as $loanPurpose) {
+                    if (!empty($loanPurpose['purpose'])) {
+                        $purposes[] = $loanPurpose['purpose'];
+                    }
+                }
+            }
+            $item['loan_purposes'] = implode(', ', $purposes);
+            unset($item['loanPurposes']);
+        }
+
+        return $this->response(200, ["status" => 200, "data" => $query]);
+    }
+
+    public function actionPool2()
+    {
+        $user = $this->isAuthorized();
+        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != "Financer") {
+            return $this->response(500, "Not Authorized");
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params)) {
+            return $this->response(500, "params missing");
+        }
+        $status = !empty($params['status']) ? $params['status'] : 31;
+        $query = LoanApplications::find()
+            ->alias("a")
+            ->select([
+                "a.application_number",
+                "a.old_application_number",
+                "abc.name applicant_name",
+                "a.invoice_date",
+                "a.loan_status_updated_on as disbursement_date",
+                "DATE_FORMAT(a.loan_status_updated_on, '%Y-%m-%d') disbursement_date",
+                "c.address",
+                "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+                "c1.name state",
+                "c2.name city",
+                "c.postal_code",
+                "abc.phone",
+                "abc.cibil_score",
+                "abc.aadhaar_number",
+                "abc.voter_card_number",
+                "abc.pan_number",
+                "abc.marital_status",
+                "a.loan_purpose",
+                "a.chassis_number",
+                "a.invoice_number",
+                "a.amount",
+                "e.emi_amount",
+                "a.number_of_emis",
+                "a.roi",
+                "abc.co_applicant_dob applicant_dob",
+                "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
+                "b.disbursement_approved",
+                "b.tl_approved_amount",
+                "b.insurance_charges",
+                "a.emi_collection_date",
+                "e.vehicle_model",
+                "e.vehicle_making_year",
+                "a.loan_app_enc_id",
+                "a.loan_products_enc_id",
+                "e.vehicle_type",
+                "e.vehicle_brand",
+                "f.name loan_type",
+                "CONCAT(g.first_name, ' ', COALESCE(g.last_name, '')) as leadby",
+                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
+                "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
+                "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
+                "e.policy_number", "e.payable_value", "e.field_officer",
+                "ad.name as dealer_name"
+            ])
+            ->joinWith(["assignedDealer ad"], false)
+            ->joinWith(['loanPurposes gee' => function ($g) {
+                $g->select(['gee.financer_loan_purpose_enc_id', 'gee.financer_loan_purpose_enc_id', 'gee.loan_app_enc_id', 'g1.purpose']);
+                $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                $g->onCondition(['gee.is_deleted' => 0]);
+            }])
+            ->joinWith(["assignedLoanProviders b"], false)
+            ->joinWith(["loanApplicantResidentialInfos c" => function ($c) {
+                $c->joinWith(["stateEnc c1"], false);
+                $c->joinWith(["cityEnc c2"], false);
+            }], false)
+            ->joinWith(["loanCoApplicants abc" => function ($abc) {
+                $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
+            }], false)
+            ->joinWith(["loanCoApplicants d" => function ($d) {
+                $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
+                    "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
+                    "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
+                $d->onCondition(["d.is_deleted" => 0]);
+                $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
+                $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
+                    $d1->joinWith(["cityEnc d2"], false);
+                }], false);
+            }])
+            ->joinWith(["loanApplicationOptions e"], false)
+            ->andWhere([
+                "AND",
+                ["between", "a.loan_status_updated_on", $params["start_date"], $params["end_date"]],
+                ["b.provider_enc_id" => $params["org_id"]],
+                ["a.is_deleted" => 0],
+                ["b.status" => $status],
+                [
+                    "OR",
+                    ["a.application_number" => null],
+                    ["a.loan_products_enc_id" => null],
+                ]
+            ])
+            ->joinWith(["loanProductsEnc f"], false)
+            ->joinWith(["leadBy g"], false);
         $query = $query->limit($params["limit"])
             ->groupBy(["a.loan_app_enc_id"])
             ->offset(($params["page"] - 1) * $params["limit"])
