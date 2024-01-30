@@ -2516,7 +2516,7 @@ class OrganizationsController extends ApiBaseController
                 "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
-                $selectQuery,
+                $selectQuery, "a.hard_recovery",
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
@@ -2546,8 +2546,13 @@ class OrganizationsController extends ApiBaseController
                     WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority
                     WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
                     ELSE NULL END") => SORT_DESC
-            ])
-            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 0]);
+            ]);
+
+        if (!empty($params['type']) && $params['type'] == 'hard_recovery') {
+            $query->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 1]);
+        } else {
+            $query->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 0]);
+        }
 
         if (!empty($params['collection_date'])) {
             $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
