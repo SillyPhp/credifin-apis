@@ -1557,4 +1557,41 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
+
+    public function actionHardRecovery()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $loanAccountEncIds = isset($params['loan_accounts']) ? $params['loan_accounts'] : [];
+
+        if (empty($loanAccountEncIds)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_accounts"']);
+        }
+
+        foreach ($loanAccountEncIds as $loanAccountEncId) {
+            $hard_recovery = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loanAccountEncId]);
+
+            if ($hard_recovery) {
+                if ($hard_recovery->hard_recovery == 1) {
+                    $hard_recovery->hard_recovery = 0;
+                } else {
+                    $hard_recovery->hard_recovery = 1;
+                }
+
+                $hard_recovery->updated_by = $user->user_enc_id;
+                $hard_recovery->updated_on = date('Y-m-d H:i:s');
+
+                if (!$hard_recovery->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $hard_recovery->getErrors()]);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account with ID ' . $loanAccountEncId . ' not found']);
+            }
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Marked Hard Recovery']);
+    }
+
 }

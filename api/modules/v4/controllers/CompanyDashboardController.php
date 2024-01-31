@@ -219,9 +219,9 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting applications data
             $loans = $this->__getApplications($user, $params);
-            $data = $this->loanApplicationStats();
+//            $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'count' => $loans['count']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1136,30 +1136,30 @@ class CompanyDashboardController extends ApiBaseController
     }
 
 
-    private function loanApplicationStats()
-    {
-        $currentYear = date('Y');
-        $currentMonth = date('m');
-
-        $query = AssignedLoanProvider::find()
-            ->alias('a')
-            ->select([
-                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
-                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
-            ])
-            ->joinWith(['loanApplicationEnc b'], false)
-            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
-            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
-            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
-            ->asArray()
-            ->one();
-
-        if ($query) {
-            return ['status' => 200, 'data' => $query];
-        } else {
-            return ['status' => 404, 'message' => 'Not found'];
-        }
-    }
+//    private function loanApplicationStats()
+//    {
+//        $currentYear = date('Y');
+//        $currentMonth = date('m');
+//
+//        $query = AssignedLoanProvider::find()
+//            ->alias('a')
+//            ->select([
+//                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
+//                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
+//            ])
+//            ->joinWith(['loanApplicationEnc b'], false)
+//            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
+//            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
+//            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
+//            ->asArray()
+//            ->one();
+//
+//        if ($query) {
+//            return ['status' => 200, 'data' => $query];
+//        } else {
+//            return ['status' => 404, 'message' => 'Not found'];
+//        }
+//    }
 
     // getting shared loan applications
     private function sharedApps($user_id)
@@ -3513,6 +3513,11 @@ class CompanyDashboardController extends ApiBaseController
                         $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
                     }
                 }], false)
+                ->joinWith(['loanProductsEnc lop' => function ($lop) {
+                    $lop->joinWith(['assignedFinancerLoanTypeEnc lop1' => function ($b) {
+                        $b->joinWith(['loanTypeEnc lop2'], false);
+                    }], false);
+                }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
                     $k->groupBy(['k.loan_app_enc_id']);
                     $k->select([
@@ -3526,7 +3531,7 @@ class CompanyDashboardController extends ApiBaseController
                     }]);
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
-                ->joinWith(['loanProductsEnc d'], false)
+//                ->joinWith(['loanProductsEnc d'], false)
                 ->where(['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id'])
@@ -3534,12 +3539,12 @@ class CompanyDashboardController extends ApiBaseController
                     "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
                 ]);
 
-            if (!empty($params) && $params['product_id']) {
-                $employeeLoanList->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+            if (!empty($params['product_id'])) {
+                $employeeLoanList->andWhere(['IN', 'lop.financer_loan_product_enc_id', $params['product_id']]);
             }
 
-            if (!empty($params) && $params['loan_type_enc_id']) {
-                $employeeLoanList->andWhere(['d.loan_products_enc_id' => $params['loan_type_enc_id']]);
+            if (!empty($params['loan_type_enc_id'])) {
+                $employeeLoanList->andWhere(['IN', 'lop2.loan_type_enc_id', $params['loan_type_enc_id']]);
             }
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
