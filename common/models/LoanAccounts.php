@@ -14,6 +14,7 @@ namespace common\models;
  * @property int $company_id Company Id
  * @property string $company_name Company Name
  * @property string $dealer_name Dealer Name
+ * @property int $hard_recovery
  * @property int $sales_priority
  * @property int $telecaller_priority
  * @property int $collection_priority
@@ -81,7 +82,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return [
             [['loan_account_enc_id', 'loan_account_number', 'lms_loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
-            [['company_id', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
+            [['company_id', 'hard_recovery', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
             [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
             [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
             [['loan_account_enc_id', 'loan_app_enc_id', 'loan_account_number', 'lms_loan_account_number', 'collection_manager', 'company_name', 'dealer_name', 'coborrower_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],

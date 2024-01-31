@@ -14,6 +14,7 @@ use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
+use yii\db\Expression;
 
 class EmiCollectionForm extends Model
 {
@@ -119,10 +120,15 @@ class EmiCollectionForm extends Model
 
     public function save($user_id)
     {
-        $loan_find = LoanAccounts::findOne(["loan_account_number" => $this->loan_account_number]);
+        $loan_num_temp = strtolower(preg_replace('/[^a-zA-Z0-9\']/', '', $this->loan_account_number));
+        $condition = "LOWER(REGEXP_REPLACE(loan_account_number, '[^a-zA-Z0-9]', '')) = '$loan_num_temp'";
+        $loan_find = LoanAccounts::find()->select(['loan_account_enc_id', 'loan_account_number'])->where($condition)->asArray()->one();
+        $loan_account_number = $this->loan_account_number;
         if ($loan_find) {
             $loan_account = $loan_find['loan_account_enc_id'];
+            $loan_account_number = $loan_find['loan_account_number'];
         }
+
         $model = new EmiCollectionExtended();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -136,7 +142,7 @@ class EmiCollectionForm extends Model
             $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
         }
         $model->transaction_initiated_date = date('Y-m-d');
-        $model->loan_account_number = $this->loan_account_number;
+        $model->loan_account_number = str_replace(' ', '', $loan_account_number);
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
