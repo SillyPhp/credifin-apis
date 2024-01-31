@@ -57,7 +57,6 @@ use common\models\Utilities;
 use Exception;
 use Yii;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -220,9 +219,9 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting applications data
             $loans = $this->__getApplications($user, $params);
-            $data = $this->loanApplicationStats();
+//            $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'count' => $loans['count']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -1239,30 +1238,30 @@ class CompanyDashboardController extends ApiBaseController
     }
 
 
-    private function loanApplicationStats()
-    {
-        $currentYear = date('Y');
-        $currentMonth = date('m');
-
-        $query = AssignedLoanProvider::find()
-            ->alias('a')
-            ->select([
-                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
-                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
-            ])
-            ->joinWith(['loanApplicationEnc b'], false)
-            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
-            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
-            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
-            ->asArray()
-            ->one();
-
-        if ($query) {
-            return ['status' => 200, 'data' => $query];
-        } else {
-            return ['status' => 404, 'message' => 'Not found'];
-        }
-    }
+//    private function loanApplicationStats()
+//    {
+//        $currentYear = date('Y');
+//        $currentMonth = date('m');
+//
+//        $query = AssignedLoanProvider::find()
+//            ->alias('a')
+//            ->select([
+//                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
+//                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
+//            ])
+//            ->joinWith(['loanApplicationEnc b'], false)
+//            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
+//            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
+//            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
+//            ->asArray()
+//            ->one();
+//
+//        if ($query) {
+//            return ['status' => 200, 'data' => $query];
+//        } else {
+//            return ['status' => 404, 'message' => 'Not found'];
+//        }
+//    }
 
     // getting shared loan applications
     private function sharedApps($user_id)
