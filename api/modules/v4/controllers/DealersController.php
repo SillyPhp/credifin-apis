@@ -122,7 +122,7 @@ class DealersController extends ApiBaseController
                 'a.financer_vehicle_type_enc_id',
                 'a.vehicle_type',
 //                '(CASE WHEN a.dealer_type = "0" Then "vehicle" WHEN a.dealer_type = "1" Then "electronics" ELSE NULL END) as dealer_type',
-                'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_types->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE NULL END icon'
+                "CASE WHEN a.icon IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_types->icon, 'https') . "', a.icon_location, '/', a.icon) ELSE NULL END icon"
             ])
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->asArray()
@@ -495,7 +495,6 @@ class DealersController extends ApiBaseController
 
     public function actionDealerStats()
     {
-        // Check authorization
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -512,7 +511,7 @@ class DealersController extends ApiBaseController
             ->select([
                 'a.loan_app_enc_id', 'a.assigned_dealer',
                 'de.name as dealer_name',
-                'cb.user_enc_id', 'a.login_date',
+                'cb.user_enc_id', 'a.login_date', 'lop2.name as loan_type',
                 "CASE WHEN cb.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', cb.image_location, '/', cb.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(cb.first_name, ' ', COALESCE(cb.last_name, '')), '&size=200&rounded=false&background=', REPLACE(cb.initials_color, '#', ''), '&color=ffffff') END contact_image",
                 "CASE WHEN de.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',de.logo_location, '/', de.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', de.name, '&size=200&rounded=true&background=', REPLACE(de.initials_color, '#', ''), '&color=ffffff') END dealer_logo",
                 'cb.phone', 'cb.email', 'cb.status',
@@ -521,12 +520,12 @@ class DealersController extends ApiBaseController
                 'ANY_VALUE(afd1.category) as category',
                 'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
                 "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as total_cases",
-                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '0' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as new_lead",
-                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '30' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as sanctioned",
-                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and (c2.value = '32' or c2.value = '28') AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as rejected",
-                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value = '31' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as disbursed",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c1.status = '0' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as new_lead",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c1.status = '30' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as sanctioned",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and (c1.status = '32' or c1.status = '28') AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as rejected",
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c1.status = '31' AND a.loan_status_updated_on <= '$end_date' AND a.loan_status_updated_on >= '$start_date' THEN a.loan_app_enc_id END) as disbursed",
                 "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' AND a.form_type = 'others' AND a.login_date IS NOT NULL AND a.login_date <= '$end_date' AND a.login_date >= '$start_date' THEN a.loan_app_enc_id END) as login",
-                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c2.value > '4' and c2.value < '26' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as under_process"
+                "COUNT(DISTINCT CASE WHEN a.is_deleted = '0' and a.form_type = 'others' and c1.status > '4' and c1.status < '26' AND a.loan_status_updated_on <= '$end_date' THEN a.loan_app_enc_id END) as under_process"
             ])
             ->joinWith(['assignedDealer de' => function ($de) {
                 $de->joinWith(['assignedFinancerDealers afd' => function ($afd) {
@@ -552,6 +551,11 @@ class DealersController extends ApiBaseController
             $dealer_stats->andWhere(['a.loan_type' => $params['loan_id']]);
         }
 
+        $dealer_stats
+            ->where(['not', ['a.assigned_dealer' => null]])
+            ->andWhere(['cb.status' => 'active', 'cb.is_deleted' => 0, 'b.is_deleted' => 0, 'a.is_removed' => 0, 'a.is_deleted' => 0])
+            ->groupBy(['a.loan_app_enc_id']);
+
         if (!empty($params['product_id'])) {
             $dealer_stats->andWhere(['IN', 'lop.financer_loan_product_enc_id', $params['product_id']]);
         }
@@ -559,11 +563,6 @@ class DealersController extends ApiBaseController
         if (!empty($params['loan_type_enc_id'])) {
             $dealer_stats->andWhere(['IN', 'lop2.loan_type_enc_id', $params['loan_type_enc_id']]);
         }
-
-        $dealer_stats
-            ->where(['not', ['a.assigned_dealer' => null]])
-            ->andWhere(['cb.status' => 'active', 'cb.is_deleted' => 0, 'b.is_deleted' => 0, 'a.is_removed' => 0, 'a.is_deleted' => 0])
-            ->groupBy(['a.loan_app_enc_id']);
 
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
@@ -626,13 +625,19 @@ class DealersController extends ApiBaseController
         $dealer_report = LoanApplications::find()
             ->alias('a')
             ->select([
-                'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
-                'a.loan_status_updated_on', 'a.login_date',
+                'a.loan_app_enc_id', 'a.assigned_dealer', 'a.amount', 'a.application_number',
+                'a.loan_status_updated_on', 'a.login_date', 'lop2.name as loan_type',
                 'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
-                'd.name as product_name',
+                'lop.name as product_name', 'de.name as dealer_name',
                 "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name"
             ])
+            ->joinWith(['loanProductsEnc lop' => function ($lop) {
+                $lop->joinWith(['assignedFinancerLoanTypeEnc lop1' => function ($b) {
+                    $b->joinWith(['loanTypeEnc lop2'], false);
+                }], false);
+            }], false)
             ->joinWith(['loanCoApplicants h'], false)
+            ->joinWith(['assignedDealer de'], false)
             ->joinWith(['assignedLoanProviders c' => function ($c) {
                 $c->joinWith(['branchEnc c1']);
             }], false)
@@ -642,7 +647,6 @@ class DealersController extends ApiBaseController
                     $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
                 }
             }], false)
-            ->joinWith(['loanProductsEnc d'], false)
             ->where([
                 'AND',
                 ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
@@ -654,12 +658,12 @@ class DealersController extends ApiBaseController
                 "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
             ]);
 
-        if (!empty($params) && $params['product_id']) {
-            $dealer_report->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
+        if (!empty($params['product_id'])) {
+            $dealer_report->andWhere(['IN', 'lop.financer_loan_product_enc_id', $params['product_id']]);
         }
 
-        if (!empty($params) && $params['loan_type_enc_id']) {
-            $dealer_report->andWhere(['d.loan_products_enc_id' => $params['loan_type_enc_id']]);
+        if (!empty($params['loan_type_enc_id'])) {
+            $dealer_report->andWhere(['IN', 'lop2.loan_type_enc_id', $params['loan_type_enc_id']]);
         }
 
         $count = $dealer_report->count();
@@ -670,7 +674,7 @@ class DealersController extends ApiBaseController
             ->all();
 
         if ($dealer_report) {
-            return $this->response(200, ['status' => 200, 'loanDetails' => $dealer_report, 'count' => $count, 'limit' => $limit, 'page' => $page]);
+            return $this->response(200, ['status' => 200, 'data' => $dealer_report, 'count' => $count, 'limit' => $limit, 'page' => $page]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
