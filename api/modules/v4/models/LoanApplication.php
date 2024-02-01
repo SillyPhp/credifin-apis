@@ -87,9 +87,11 @@ class LoanApplication extends Model
     {
         return [
             [['applicant_name', 'phone_no'], 'required'],
-            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhaar_number', 'loan_lender',
+            [[
+                'desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhaar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
-                'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'], 'safe'],
+                'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'
+            ], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -174,7 +176,7 @@ class LoanApplication extends Model
 
             if (!$model->save()) {
                 $transaction->rollback();
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             if (!empty($model->lead_by)) {
@@ -219,7 +221,7 @@ class LoanApplication extends Model
                 $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
+                    throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -237,7 +239,7 @@ class LoanApplication extends Model
             $loanCoApplicants->pan_number = $this->pan_number;
             if (!$loanCoApplicants->save()) {
                 $transaction->rollback();
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanCoApplicants->errors, 0, false)));
             }
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
@@ -253,7 +255,7 @@ class LoanApplication extends Model
             $loan_address->created_by = $user_id;
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             // assign lender to loan application
@@ -305,7 +307,6 @@ class LoanApplication extends Model
             $data['user_id'] = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]])->user_enc_id;
 
             return ['status' => 200, 'data' => $data];
-
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'Server Error', 'Error Message' => $exception->getMessage()];
@@ -316,8 +317,10 @@ class LoanApplication extends Model
     {
         $loan_type = FinancerLoanProducts::find()
             ->alias('a')
-            ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
-                'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
+            ->select([
+                'a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
+                'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'
+            ])
             ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
                 $b->joinWith(['loanTypeEnc c'], false);
             }], false)
@@ -400,7 +403,7 @@ class LoanApplication extends Model
         $loan_provider->created_by = $user_id;
         $loan_provider->created_on = date('Y-m-d H:i:s');
         if (!$loan_provider->save()) {
-            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_provider->errors, 0, false)));
+            throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_provider->errors, 0, false)));
         }
     }
 
@@ -424,7 +427,7 @@ class LoanApplication extends Model
             $model->updated_by = $user_id;
             if (!$model->update()) {
                 $transaction->rollback();
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
             }
 
             // saving other options
@@ -452,7 +455,7 @@ class LoanApplication extends Model
                 $loan_options->last_updated_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
+                    throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_options->errors, 0, false)));
                 }
             }
 
@@ -479,7 +482,7 @@ class LoanApplication extends Model
 
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_address->errors, 0, false)));
             }
 
             $transaction->commit();
@@ -488,7 +491,6 @@ class LoanApplication extends Model
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
             $data['payment_url'] = null;
             return ['status' => 200, 'data' => $data];
-
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'an error occurred', 'Error' => $exception->getMessage()];
@@ -532,7 +534,7 @@ class LoanApplication extends Model
             ])
             ->asArray()
             ->one();
-        if ($d):
+        if ($d) :
             return [
                 'surl' => $d['surl'],
                 'status' => 200
@@ -636,9 +638,8 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
-
         } else {
             $data['id'] = $data['loan_app_id'];
             $data['phone'] = str_replace('+', '', $data['phone']);
@@ -647,9 +648,8 @@ class LoanApplication extends Model
             if ($loan_app->update()) {
                 return $user;
             } else {
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
+                throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_app->errors, 0, false)));
             }
-
         }
     }
 
@@ -711,10 +711,9 @@ class LoanApplication extends Model
 
         // generating and saving referral code for sign up user
         $this->addRef($usersModel->user_enc_id);
-//        $this->autoSignupEmail($username, $password, $usersModel);
+        //        $this->autoSignupEmail($username, $password, $usersModel);
 
         return $usersModel;
-
     }
 
     private function autoSignupEmail($username, $password, $usersModel)
@@ -723,7 +722,8 @@ class LoanApplication extends Model
         $params['password'] = $password;
         Yii::$app->mailer->htmlLayout = 'layouts/email';
         $mail = Yii::$app->mailer->compose(
-            ['html' => 'default-user-password'], ['data' => $params]
+            ['html' => 'default-user-password'],
+            ['data' => $params]
         )
             ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$params['email'] => $params['name']])
@@ -866,7 +866,7 @@ class LoanApplication extends Model
                 $query->created_by = $user_id;
                 $query->created_on = date('Y-m-d H:i:s');
                 if (!$query->save()) {
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
+                    throw new \Exception(implode("<br />", \yii\helpers\ArrayHelper::getColumn($query->errors, 0, false)));
                 } else {
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $notification = [
@@ -938,8 +938,8 @@ class LoanApplication extends Model
             ->select(['a.application_number'])
             ->where([
                 'OR',
-                ['LIKE', 'application_number', $pattern1,false],
-                ['LIKE', 'application_number', $pattern2,false]
+                ['LIKE', 'application_number', $pattern1, false],
+                ['LIKE', 'application_number', $pattern2, false]
             ])
             ->orderBy([
                 "CAST(SUBSTRING_INDEX(application_number, '-', -1) AS UNSIGNED)" => SORT_DESC
@@ -957,7 +957,6 @@ class LoanApplication extends Model
         } else {
             return "$loanAccountNumber-001";
         }
-
     }
 
     public function updateLoanAccountPurpose($options)
@@ -1022,5 +1021,4 @@ class LoanApplication extends Model
         }
         return $array;
     }
-
 }

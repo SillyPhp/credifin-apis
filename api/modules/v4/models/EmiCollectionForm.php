@@ -66,7 +66,12 @@ class EmiCollectionForm extends Model
         '9' => 'QR',
         '10' => 'Digital Transfer',
         '11' => 'Paid To Dealer',
+        'paid' => 'Paid',
         'pending' => 'Pending',
+        'collected' => 'Collected',
+        'pipeline' => 'Pipeline',
+        'rejected' => 'Rejected',
+        'failed' => 'Failed',
     ];
     public static $payment_modes = [
         '1' => 'Pay Now',
