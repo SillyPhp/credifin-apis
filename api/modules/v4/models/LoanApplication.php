@@ -60,7 +60,6 @@ class LoanApplication extends Model
     public $occupation;
     public $vehicle_type;
     public $vehicle_option;
-    public $vehicle_colour;
     public $ref_id;
     public $file;
     public $pan_number;
@@ -90,7 +89,7 @@ class LoanApplication extends Model
             [['applicant_name', 'phone_no'], 'required'],
             [[
                 'desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhaar_number', 'loan_lender',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender', 'vehicle_colour',
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
                 'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'
             ], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
@@ -452,7 +451,6 @@ class LoanApplication extends Model
                 $loan_options->occupation = $this->occupation ? $this->occupation : $loan_options->occupation;
                 $loan_options->vehicle_type = $this->vehicle_type ? $this->vehicle_type : $loan_options->vehicle_type;
                 $loan_options->vehicle_option = $this->vehicle_option ? $this->vehicle_option : $loan_options->vehicle_option;
-                $loan_options->vehicle_colour = $this->vehicle_colour ? $this->vehicle_colour : $loan_options->vehicle_colour;
                 $loan_options->last_updated_on = date('Y-m-d H:i:s');
                 $loan_options->last_updated_by = $user_id;
                 if (!$loan_options->save()) {

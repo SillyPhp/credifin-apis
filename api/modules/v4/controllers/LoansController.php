@@ -1580,7 +1580,7 @@ class LoansController extends ApiBaseController
                 $model->updated_on = date('Y-m-d H:i:s');
             } elseif (in_array($type, [
                 'model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
-                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'vehicle_colour', 'field_officer'
+                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'vehicle_color', 'field_officer'
             ])) {
                 $model = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {

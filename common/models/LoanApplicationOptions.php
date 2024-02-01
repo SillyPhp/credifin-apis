@@ -36,7 +36,7 @@ use Yii;
  * @property string $vehicle_brand vehicle brand
  * @property string $vehicle_model vehicle model
  * @property string $vehicle_making_year vehicle making year
- * @property string $vehicle_colour
+ * @property string $vehicle_color vehicle color
  * @property string $model_year
  * @property string $engine_number
  * @property double $ex_showroom_price
@@ -89,7 +89,7 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],
             [['occupation'], 'string', 'max' => 250],
             [['vehicle_making_year', 'model_year'], 'string', 'max' => 10],
-            [['vehicle_colour', 'dealer_name'], 'string', 'max' => 50],
+            [['vehicle_color', 'dealer_name'], 'string', 'max' => 50],
             [['lead_type'], 'string', 'max' => 20],
             [['option_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
