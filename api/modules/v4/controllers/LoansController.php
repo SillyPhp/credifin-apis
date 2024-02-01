@@ -298,12 +298,14 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id',
+            ->select([
+                'd.organization_enc_id org_id',
                 'e.organization_enc_id user_org_id',
                 'g.organization_enc_id branch_org_id',
                 'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id',
                 'ANY_VALUE(f.amount) amount',
-                'ANY_VALUE(f.emi_payment_status) status'])
+                'ANY_VALUE(f.emi_payment_status) status'
+            ])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -832,7 +834,6 @@ class LoansController extends ApiBaseController
                 }
                 $transaction->commit();
                 return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
-
             } catch (\Exception $exception) {
                 $transaction->rollBack();
                 return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
@@ -1504,7 +1505,7 @@ class LoansController extends ApiBaseController
                 }
                 if ($item['model'] !== 'EducationLoanPayments' && $item['field'] !== 'source' && $item['field'] !== 'related_to' && $item['field'] !== 'candidate_status' && $item['field'] !== 'candidate_status_date') {
                     $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-//                    $item['stamp'] = strtotime($item['stamp']);
+                    //                    $item['stamp'] = strtotime($item['stamp']);
 
                     if ($item['field'] === 'gender') {
                         if ($item['new_value'] == 1) {
@@ -1555,7 +1556,6 @@ class LoansController extends ApiBaseController
         if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information "type or id or value"']);
         }
-
         $type = $params['type'];
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -1567,8 +1567,10 @@ class LoansController extends ApiBaseController
                 }
                 $transaction->commit();
                 return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
-            } elseif (in_array($type, ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
-                'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'])) {
+            } elseif (in_array($type, [
+                'invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
+                'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'
+            ])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {
                     throw new Exception('Loan application not found');
@@ -1576,9 +1578,10 @@ class LoansController extends ApiBaseController
                 $model->$type = $params['value'];
                 $model->updated_by = $user->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
-
-            } elseif (in_array($type, ['model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
-                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'field_officer'])) {
+            } elseif (in_array($type, [
+                'model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
+                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'vehicle_color', 'field_officer'
+            ])) {
                 $model = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {
                     $model = new LoanApplicationOptionsExtended();
