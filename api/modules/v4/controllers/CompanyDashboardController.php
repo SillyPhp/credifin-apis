@@ -1665,16 +1665,15 @@ class CompanyDashboardController extends ApiBaseController
                     if (!$update->save()) {
                         throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
                     }
-                    $assigning_ids = array_merge(array_column($update_data['sharedLoanApplications'], 'shared_to'), array_column($update_data['loanApplicationFis'], 'collection_manager'));
-                    $assigning_ids = array_unique($assigning_ids);
-                    foreach ($assigning_ids as $item) {
+                    $assigning_ids = array_merge(array_fill_keys(array_column($update_data['sharedLoanApplications'], 'shared_to'), 1), array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
+                    foreach ($assigning_ids as $id => $type) {
                         $bdo = new AssignedLoanAccountsExtended();
                         $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
                         $bdo->assigned_enc_id = $utilitiesModel->encrypt();
                         $bdo->loan_account_enc_id = $update->loan_account_enc_id;
                         $bdo->shared_by = $user->user_enc_id;
-                        $bdo->shared_to = $item;
-                        $bdo->user_type = 1;
+                        $bdo->shared_to = $id;
+                        $bdo->user_type = $type;
                         $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
                         $bdo->created_by = $bdo->updated_by = $user->user_enc_id;
                         if (!$bdo->save()) {
