@@ -1719,140 +1719,89 @@ class OrganizationsController extends ApiBaseController
         if (!$params = Yii::$app->request->post()) {
             return $this->response(500, ['status' => 500, 'message' => 'params not found']);
         }
-        $start_date = $params['start_date'];
-        $end_date = $params['end_date'];
-
-        $select = "SELECT a.emi_payment_method, emi_payment_status, COUNT(a.emi_payment_method) AS count, SUM(amount) AS sum
-        FROM lJCWPnNNVy3d95ppLp7M_emi_collection a
-        WHERE emi_payment_status NOT IN ('failed','partial') AND
-        (
-            ((collection_date IS NOT NULL) AND (collection_date BETWEEN :start_date AND :end_date))
-             OR 
-             ((collection_date IS NULL) AND (created_on BETWEEN :start_date AND :end_date))
-        )
-        AND is_deleted = 0";
-
-        $bind = [
-            ':start_date' => $start_date,
-            ':end_date' => $end_date,
-            ':created_by' => $user->username,
-        ];
-        $method = [];
+        if (!empty($params['method'])) {
+            $method = [$params['method']];
+        }
+        $data = EmiCollectionExtended::find()
+            ->select([
+                'emi_payment_method AS method',
+                'emi_payment_status AS status',
+                'amount'
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->andWhere([
+                "OR",
+                [
+                    "AND",
+                    ["IS NOT", "collection_date", null],
+                    ['between', 'collection_date', $params['start_date'], $params['end_date']],
+                ],
+                [
+                    "AND",
+                    ["IS", "collection_date", null],
+                    ['between', 'created_on', $params['start_date'], $params['end_date']],
+                ]
+            ]);
+        if (!empty($method)) {
+            if (in_array('pending', $method)) {
+                $data->andWhere(['emi_payment_status' => $method]);
+            } else {
+                if (in_array(1, $method)) {
+                    $method[] = 9;
+                }
+                if (in_array(4, $method)) {
+                    $method[] = 81;
+                }
+                if (in_array(5, $method)) {
+                    $method[] = 82;
+                }
+                $data->andWhere(['emi_payment_method' => $method]);
+            }
+        }
         if (!empty($params['loan_type'])) {
-            $select .= " AND loan_type = :loan_type";
-            $bind[':loan_type'] = $params['loan_type'];
+            $data->andWhere(['loan_type' => $params['loan_type']]);
         }
         if (!empty($params['branch_enc_id'])) {
-            $select .= "AND branch_enc_Id = :branch_enc_id";
-            $bind[':branch_enc_Id'] = $params['branch_enc_Id'];
-        }
-        if (!empty($params['method'])) {
-            $method = $params['method'];
-            $select .= "AND emi_payment_method = :emi_payment_method";
-            $bind[':emi_payment_method'] = $params['method'];
+            $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
         }
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $select .= "AND created_by IN :juniors";
-            $bind[':juniors'] = $juniors;
+            $data = $data->andWhere(['IN', 'created_by', $juniors]);
         }
 
-        $result = \Yii::$app->getDb()->createCommand($select . " GROUP BY emi_payment_method, emi_payment_status
-        ORDER BY emi_payment_method")
-            ->bindValues($bind)
-            ->queryAll();
+        $data = $data->asArray()
+            ->all();
 
-        $data = [];
-        $data['Total'] = [];
-        $methodName = EmiCollectionForm::$payment_methods;
-        $statusName = EmiCollectionForm::$payment_status;
+        $def = EmiCollectionForm::$payment_methods;
         if (!empty($method)) {
-            $data[$methodName[$method]] = [
-                'payment_method' => $methodName[$method],
-                'sum' => 0,
-                'count' => 0,
-                'pending' => [
-                    'sum' => 0,
-                    'count' => 0,
-                ]
-            ];
-            $data[$statusName['pending']] = [
-                'payment_method' => ucfirst($statusName['pending']),
-                'sum' => 0,
-                'count' => 0,
-            ];
-        } else {
-            foreach ($methodName as $val) {
-                $data[$val] = [
-                    'payment_method' => $val,
-                    'sum' => 0,
-                    'count' => 0,
-                    'pending' => [
-                        'sum' => 0,
-                        'count' => 0,
-                    ]
-                ];
-            }
-
-            foreach ($statusName as $val) {
-                $data[$val] = [
-                    'payment_method' => ucfirst($val),
-                    'sum' => 0,
-                    'count' => 0,
-                ];
+            $method = array_merge(['total', 'pending'], $method);
+            $def = array_intersect_key($def, array_fill_keys(array_values($method), 0));
+        }
+        $res = [];
+        foreach ($def as $item) {
+            $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
+            if (!in_array($item, ['Total', 'Pending']) && empty($method)) {
+                $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
-        foreach ($result as $item) {
-            if (empty($method)) {
-                $payment_method = $methodName[$item['emi_payment_method']];
-                $status_method = $statusName[$item['emi_payment_status']];
+        foreach ($data as $item) {
+            $payment_method = $def[$item['method']] ?? '';
+            $amount = $item['amount'];
+            if ($item['status'] == 'paid') {
+                $res[$payment_method]['sum'] += $amount;
+                $res[$payment_method]['count'] += 1;
             } else {
-                $payment_method = $methodName[$method];
-                $status_method = $statusName['pending'];
-            }
-            if (!isset($data[$payment_method])) {
-                $data[$payment_method] = [
-                    'payment_method' => $payment_method,
-                    'sum' => 0,
-                    'count' => 0,
-                    'pending' => [
-                        'sum' => 0,
-                        'count' => 0,
-                    ],
-                ];
-            }
-
-            if ($item['emi_payment_status'] == 'paid') {
-                $data[$payment_method]['sum'] += $item['sum'];
-                $data[$payment_method]['count'] += $item['count'];
-            }
-
-            if ($item['emi_payment_status'] == 'pending') {
-                $data[$payment_method]['pending']['sum'] += $item['sum'];
-                $data[$payment_method]['pending']['count'] += $item['count'];
-            }
-            if (!empty($status_method)) {
-                if (!isset($data[$status_method])) {
-                    $data[$status_method] = [
-                        'payment_method' => ucfirst($status_method),
-                        'sum' => 0,
-                        'count' => 0,
-                    ];
+                if (empty($method)) {
+                    $res[$payment_method]['pending']['count'] += 1;
+                    $res[$payment_method]['pending']['sum'] += $amount;
                 }
-
-                $data[$status_method]['sum'] += $item['sum'];
-                $data[$status_method]['count'] += $item['count'];
+                $res['Pending']['sum'] += $amount;
+                $res['Pending']['count'] += 1;
             }
+            $res['Total']['sum'] += $amount;
+            $res['Total']['count'] += 1;
         }
-        $totalSum = array_sum(array_column($data, 'sum'));
-        $totalCount = array_sum(array_column($data, 'count'));
-        $data['Total'] = [
-            'payment_method' => 'Total',
-            'sum' => $totalSum,
-            'count' => $totalCount,
-        ];
-
-        return $this->response(200, ['status' => 200, 'data' => array_values($data)]);
+        return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
 
     public function actionEmiDetail()
