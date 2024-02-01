@@ -38,7 +38,6 @@ use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
-use LDAP\Result;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -1720,22 +1719,18 @@ class OrganizationsController extends ApiBaseController
         if (!$params = Yii::$app->request->post()) {
             return $this->response(500, ['status' => 500, 'message' => 'params not found']);
         }
-        $methodName = EmiCollectionForm::$payment_methods;
-        $statusName = EmiCollectionForm::$payment_status;
         $start_date = $params['start_date'];
         $end_date = $params['end_date'];
-        $methodName = EmiCollectionForm::$payment_methods;
-        $statusName = EmiCollectionForm::$payment_status;
 
         $select = "SELECT a.emi_payment_method, emi_payment_status, COUNT(a.emi_payment_method) AS count, SUM(amount) AS sum
-            FROM lJCWPnNNVy3d95ppLp7M_emi_collection a
-            WHERE emi_payment_status NOT IN ('failed','partial') AND
-            (
-                ((collection_date IS NOT NULL) AND (collection_date BETWEEN :start_date AND :end_date))
-                 OR 
-                 ((collection_date IS NULL) AND (created_on BETWEEN :start_date AND :end_date))
-            )
-            AND is_deleted = 0
+        FROM lJCWPnNNVy3d95ppLp7M_emi_collection a
+        WHERE emi_payment_status NOT IN ('failed','partial') AND
+        (
+            ((collection_date IS NOT NULL) AND (collection_date BETWEEN :start_date AND :end_date))
+             OR 
+             ((collection_date IS NULL) AND (created_on BETWEEN :start_date AND :end_date))
+        )
+        AND is_deleted = 0
         ";
 
         $bind = [
@@ -1743,36 +1738,38 @@ class OrganizationsController extends ApiBaseController
             ':end_date' => $end_date,
             ':created_by' => $user->username,
         ];
-
         $method = [];
         if (!empty($params['loan_type'])) {
             $select .= " AND loan_type = :loan_type";
             $bind[':loan_type'] = $params['loan_type'];
         }
         if (!empty($params['branch_enc_id'])) {
-            $select .= " AND branch_enc_Id = :branch_enc_id";
+            $select .= "AND branch_enc_Id = :branch_enc_id";
             $bind[':branch_enc_Id'] = $params['branch_enc_Id'];
         }
         if (!empty($params['method'])) {
             $method = $params['method'];
+            $select .= "AND emi_payment_method = :emi_payment_method";
+            $bind[':emi_payment_method'] = $params['method'];
         }
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $select .= " AND created_by IN :juniors";
+            $select .= "AND created_by IN :juniors";
             $bind[':juniors'] = $juniors;
         }
 
         $result = \Yii::$app->getDb()->createCommand($select . " GROUP BY emi_payment_method, emi_payment_status
-            ORDER BY emi_payment_method")
+        ORDER BY emi_payment_method")
             ->bindValues($bind)
             ->queryAll();
+
         $data = [];
         $data['Total'] = [];
-
+        $methodName = EmiCollectionForm::$payment_methods;
+        $statusName = EmiCollectionForm::$payment_status;
         if (!empty($method)) {
-            $method = $methodName[$params['method']];
-            $data[$method] = [
-                'payment_method' => $method,
+            $data[$methodName[$method]] = [
+                'payment_method' => $methodName[$method],
                 'sum' => 0,
                 'count' => 0,
                 'pending' => [
@@ -1807,14 +1804,12 @@ class OrganizationsController extends ApiBaseController
                 ];
             }
         }
-        $totalSum = 0;
-        $totalCount = 0;
         foreach ($result as $item) {
             if (empty($method)) {
                 $payment_method = $methodName[$item['emi_payment_method']];
                 $status_method = $statusName[$item['emi_payment_status']];
             } else {
-                $payment_method = $methodName[$item['emi_payment_method']];
+                $payment_method = $methodName[$method];
                 $status_method = $statusName['pending'];
             }
             if (!isset($data[$payment_method])) {
@@ -1847,14 +1842,12 @@ class OrganizationsController extends ApiBaseController
                     ];
                 }
 
-                if (!empty($status_method)) {
-                    $data[$status_method]['sum'] += $item['sum'];
-                    $data[$status_method]['count'] += $item['count'];
-                }
+                $data[$status_method]['sum'] += $item['sum'];
+                $data[$status_method]['count'] += $item['count'];
             }
-            $totalSum += $item['sum'];
-            $totalCount += $item['count'];
         }
+        $totalSum = array_sum(array_column($data, 'sum'));
+        $totalCount = array_sum(array_column($data, 'count'));
         $data['Total'] = [
             'payment_method' => 'Total',
             'sum' => $totalSum,
