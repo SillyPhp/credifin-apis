@@ -11,9 +11,13 @@ use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
+use common\models\LoanAuditTrail;
 use common\models\LoanCoApplicants;
+use common\models\LoanStatus;
+use common\models\Users;
 use Yii;
 use yii\db\Exception;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -166,53 +170,68 @@ class TestController extends ApiBaseController
         if (empty($params)) {
             return $this->response(500, "params missing");
         }
+        $select = [
+            "a.application_number",
+            "a.old_application_number",
+            "abc.name applicant_name",
+            "a.invoice_date",
+            "a.loan_status_updated_on as disbursement_date",
+            "DATE_FORMAT(a.loan_status_updated_on, '%Y-%m-%d') disbursement_date",
+            "c.address",
+            "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
+            "c1.name state",
+            "c2.name city",
+            "c.postal_code",
+            "abc.phone",
+            "abc.cibil_score",
+            "abc.aadhaar_number",
+            "abc.voter_card_number",
+            "abc.pan_number",
+            "abc.marital_status",
+            "a.loan_purpose",
+            "a.chassis_number",
+            "a.invoice_number",
+            "a.amount",
+            "e.emi_amount",
+            "a.number_of_emis",
+            "a.roi",
+            "abc.co_applicant_dob applicant_dob",
+            "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
+            "b.disbursement_approved",
+            "b.tl_approved_amount",
+            "b.insurance_charges",
+            "a.emi_collection_date",
+            "e.vehicle_model",
+            "e.vehicle_making_year",
+            "a.loan_app_enc_id",
+            "a.loan_products_enc_id",
+            "e.vehicle_type",
+            "e.vehicle_brand",
+            "f.name loan_type",
+            "CONCAT(g.first_name, ' ', COALESCE(g.last_name, '')) as leadby",
+            "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
+            "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
+            "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
+            "e.policy_number", "e.payable_value", "e.field_officer",
+            "ad.name as dealer_name",
+        ];
+        if (!empty($params['status'])) {
+            $status = $params['status'];
+            $sub_query = (new Query())
+                ->select(["CONCAT(zz1.first_name, ' ', zz1.last_name) AS name", "zz.foreign_id"])
+                ->from(['zz' => LoanAuditTrail::tableName()])
+                ->join('INNER JOIN', ['zz1' => Users::tableName()], 'zz1.id = zz.user_id')
+                ->join('INNER JOIN', ['zz2' => LoanStatus::tableName()], "zz2.loan_status = zz.new_value AND zz2.value = $status")
+                ->where([
+                    'model' => 'AssignedLoanProvider',
+                    'field' => 'status'
+                ]);
+            $select[] = "h.name AS status_updated_by";
+        }
+
         $query = LoanApplications::find()
             ->alias("a")
-            ->select([
-                "a.application_number",
-                "a.old_application_number",
-                "abc.name applicant_name",
-                "a.invoice_date",
-                "a.loan_status_updated_on as disbursement_date",
-                "DATE_FORMAT(a.loan_status_updated_on, '%Y-%m-%d') disbursement_date",
-                "c.address",
-                "(CASE WHEN abc.gender = 1 THEN 'Male' WHEN abc.gender = 2 THEN 'Female' ELSE 'Other' END) gender",
-                "c1.name state",
-                "c2.name city",
-                "c.postal_code",
-                "abc.phone",
-                "abc.cibil_score",
-                "abc.aadhaar_number",
-                "abc.voter_card_number",
-                "abc.pan_number",
-                "abc.marital_status",
-                "a.loan_purpose",
-                "a.chassis_number",
-                "a.invoice_number",
-                "a.amount",
-                "e.emi_amount",
-                "a.number_of_emis",
-                "a.roi",
-                "abc.co_applicant_dob applicant_dob",
-                "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
-                "b.disbursement_approved",
-                "b.tl_approved_amount",
-                "b.insurance_charges",
-                "a.emi_collection_date",
-                "e.vehicle_model",
-                "e.vehicle_making_year",
-                "a.loan_app_enc_id",
-                "a.loan_products_enc_id",
-                "e.vehicle_type",
-                "e.vehicle_brand",
-                "f.name loan_type",
-                "CONCAT(g.first_name, ' ', COALESCE(g.last_name, '')) as leadby",
-                "CONCAT('https://www.empowerloans.in/account/loan-application/', a.loan_app_enc_id) AS link",
-                "e.name_of_company", "e.type_of_company", "e.vehicle_making_year", "e.model_year", "e.engine_number",
-                "e.ex_showroom_price", "e.on_road_price", "e.margin_money", "e.ltv", "e.valid_till",
-                "e.policy_number", "e.payable_value", "e.field_officer",
-                "ad.name as dealer_name"
-            ])
+            ->select($select)
             ->joinWith(["assignedDealer ad"], false)
             ->joinWith(['loanPurposes gee' => function ($g) {
                 $g->select(['gee.financer_loan_purpose_enc_id', 'gee.financer_loan_purpose_enc_id', 'gee.loan_app_enc_id', 'g1.purpose']);
@@ -250,7 +269,8 @@ class TestController extends ApiBaseController
         if (!empty($params["loan_products_enc_id"])) {
             $query->andWhere(["a.loan_products_enc_id" => $params["loan_products_enc_id"]]);
         }
-        if (!empty($params["status"])) {
+        if (isset($status) && isset($sub_query)) {
+            $query->leftJoin(['h' => $sub_query], 'h.foreign_id = a.loan_app_enc_id');
             $query->andWhere(["b.status" => $params["status"]]);
         }
         $query = $query->limit($params["limit"])
