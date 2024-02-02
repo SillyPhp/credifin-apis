@@ -3262,7 +3262,11 @@ class CompanyDashboardController extends ApiBaseController
             $params = Yii::$app->request->post();
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
-
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $user_roles->organization_enc_id;
+            }
             $subquery = (new \yii\db\Query())
                 ->select([
                     'k.created_by',
@@ -3323,7 +3327,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 ])
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
-                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!empty($params['product_id'])) {
@@ -3632,11 +3636,11 @@ class CompanyDashboardController extends ApiBaseController
                     "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
                 ]);
 
-            if (!empty($params) && $params['product_id']) {
+            if (!empty($params) && isset($params['product_id'])) {
                 $employeeLoanList->andWhere(['a.loan_products_enc_id' => $params['product_id']]);
             }
 
-            if (!empty($params) && $params['loan_type_enc_id']) {
+            if (!empty($params) && isset($params['product_id'])) {
                 $employeeLoanList->andWhere(['d.loan_products_enc_id' => $params['loan_type_enc_id']]);
             }
             $count = $employeeLoanList->count();
