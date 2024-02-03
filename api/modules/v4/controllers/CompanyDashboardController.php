@@ -3163,7 +3163,11 @@ class CompanyDashboardController extends ApiBaseController
             $params = Yii::$app->request->post();
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
-
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $user_roles->organization_enc_id;
+            }
             $subquery = (new \yii\db\Query())
                 ->select([
                     'k.created_by',
@@ -3224,7 +3228,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 ])
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
-                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!empty($params['product_id'])) {
