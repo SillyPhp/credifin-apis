@@ -37,6 +37,9 @@ class DealersController extends ApiBaseController
                 'index' => ['POST', 'OPTIONS', 'GET'],
                 'check-numbers' => ['POST', 'OPTIONS', 'GET'],
                 'check-email' => ['POST', 'OPTIONS', 'GET'],
+                'dealer-total-stats' => ['POST', 'OPTIONS', 'GET'],
+                'dealer-stats' => ['POST', 'OPTIONS', 'GET'],
+                'dealer-report-details' => ['POST', 'OPTIONS', 'GET'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -517,6 +520,8 @@ class DealersController extends ApiBaseController
             ->select([
                 'a.dealer_enc_id', 'la.assigned_dealer',
                 'de.name as dealer_name',
+                'de.email as organization_email'
+                , 'de.phone as organization_phone', "CONCAT(ANY_VALUE(cb.first_name),' ',COALESCE(ANY_VALUE(cb.last_name), '')) as contact_person",
                 "CASE WHEN de.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',de.logo_location, '/', de.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', de.name, '&size=200&rounded=true&background=', REPLACE(de.initials_color, '#', ''), '&color=ffffff') END dealer_logo",
                 "COUNT(DISTINCT CASE WHEN la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as total_cases",
                 "COUNT(DISTINCT CASE WHEN alp.status = '31' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as disbursed",
@@ -530,10 +535,11 @@ class DealersController extends ApiBaseController
                 "SUM(DISTINCT CASE WHEN alp.status = '0' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as new_lead_amount",
                 "SUM(DISTINCT CASE WHEN alp.status = '30' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as sanctioned_amount",
                 "SUM(DISTINCT CASE WHEN (alp.status = '32' OR alp.status = '28') AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date'  THEN la.amount ELSE 0 END) as rejected_amount",
-                "SUM(DISTINCT CASE WHEN la.login_date IS NOT NULL AND la.login_date <= '$end_date' AND la.login_date >= '$start_date' THEN la.loan_app_enc_id END) as login",
+                "SUM(DISTINCT CASE WHEN la.login_date IS NOT NULL AND la.login_date <= '$end_date' AND la.login_date >= '$start_date' THEN la.amount ELSE 0 END) as login_amount",
                 "SUM(DISTINCT CASE WHEN alp.status > '4' and alp.status < '26' AND la.loan_status_updated_on <= '$end_date' THEN la.amount ELSE 0 END) as under_process_amount"
             ])
             ->joinWith(['assignedDealerOptions afd1'], false)
+            ->joinWith(['createdBy cb'], false)
             ->innerJoinWith(['dealerEnc de' => function ($de) {
                 $de->innerJoinWith(['loanApplications0 la' => function ($la) {
                     $la->joinWith(['loanProductsEnc lop'], false);
@@ -603,16 +609,16 @@ class DealersController extends ApiBaseController
         if (empty($params['organization_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "organization_enc_id']);
         }
+
         $dealer_report = LoanApplications::find()
             ->alias('a')
             ->select([
-                'a.loan_app_enc_id', 'a.assigned_dealer', 'a.amount', 'a.application_number',
+                'a.loan_app_enc_id', 'a.assigned_dealer', 'COALESCE(a.amount,0) as amount', 'a.application_number',
                 'a.loan_status_updated_on', 'a.login_date', 'lop2.name as loan_type',
                 'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
                 'lop.name as product_name', 'lop.financer_loan_product_enc_id', 'de.name as dealer_name',
                 'cb.phone', 'cb.email', 'cb.username', 'cb.status',
-//                "(CASE WHEN ANY_VALUE(h.name) IS NOT NULL THEN ANY_VALUE(h.name) ELSE a.applicant_name END) as name",
-                "COALESCE(ANY_VALUE(h.name), a.applicant_name) as name",
+                "COALESCE(ANY_VALUE(h.name), a.applicant_name) as name"
             ])
             ->joinWith(['loanCoApplicants h' => function ($h) {
                 $h->andOnCondition(['h.borrower_type' => 'Borrower']);
@@ -620,8 +626,8 @@ class DealersController extends ApiBaseController
             ->joinWith(['loanProductsEnc lop' => function ($lop) {
                 $lop->joinWith(['assignedFinancerLoanTypeEnc lop1' => function ($b) {
                     $b->joinWith(['loanTypeEnc lop2'], false);
-                }]);
-            }])
+                }], false);
+            }], false)
             ->joinWith(['createdBy cb'], false)
             ->joinWith(['loanCoApplicants h'], false)
             ->joinWith(['assignedDealer de'], false)
@@ -658,6 +664,66 @@ class DealersController extends ApiBaseController
 
         return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
     }
+
+    public function actionDealerTotalStats()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+
+        $start_date = $params['start_date'];
+        $end_date = $params['end_date'];
+
+        $dealer_stats = AssignedFinancerDealers::find()
+            ->alias('a')
+            ->select([
+                "COUNT(DISTINCT CASE WHEN la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as total_cases_count",
+                "COUNT(DISTINCT CASE WHEN alp.status = '31' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as disbursed_count",
+                "COUNT(DISTINCT CASE WHEN alp.status = '0' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as new_lead_count",
+                "COUNT(DISTINCT CASE WHEN alp.status = '30' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as sanctioned_count",
+                "COUNT(DISTINCT CASE WHEN (alp.status = '32' OR alp.status = '28') AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.loan_app_enc_id END) as rejected_count",
+                "COUNT(DISTINCT CASE WHEN la.login_date IS NOT NULL AND la.login_date <= '$end_date' THEN la.loan_app_enc_id END) as login_count",
+                "COUNT(DISTINCT CASE WHEN alp.status > '4' and alp.status < '26' AND la.loan_status_updated_on <= '$end_date' THEN la.loan_app_enc_id END) as under_process_count",
+
+                "SUM(DISTINCT CASE WHEN la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as total_cases_amount",
+                "SUM(DISTINCT CASE WHEN alp.status = '31' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as disbursed_amount",
+                "SUM(DISTINCT CASE WHEN alp.status = '0' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as new_lead_amount",
+                "SUM(DISTINCT CASE WHEN alp.status = '30' AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as sanctioned_amount",
+                "SUM(DISTINCT CASE WHEN (alp.status = '32' OR alp.status = '28') AND la.loan_status_updated_on <= '$end_date' AND la.loan_status_updated_on >= '$start_date' THEN la.amount ELSE 0 END) as rejected_amount",
+                "SUM(DISTINCT CASE WHEN la.login_date IS NOT NULL AND la.login_date <= '$end_date' THEN la.amount ELSE 0 END) as login_amount",
+                "SUM(DISTINCT CASE WHEN alp.status > '4' AND alp.status < '26' AND la.loan_status_updated_on <= '$end_date' THEN la.amount ELSE 0 END) as under_process_amount"
+            ])
+            ->joinWith(['assignedDealerOptions afd1'], false)
+            ->innerJoinWith(['dealerEnc de' => function ($de) {
+                $de->innerJoinWith(['loanApplications0 la' => function ($la) {
+                    $la->joinWith(['loanProductsEnc lop'], false);
+                    $la->joinWith(['assignedLoanProviders alp'], false);
+                }], false);
+            }], false)
+            ->where(['NOT', ['la.assigned_dealer' => null]])
+            ->andWhere([
+                'alp.provider_enc_id' => $org_id,
+                'la.is_removed' => 0,
+                'a.is_deleted' => 0,
+                'la.is_deleted' => 0,
+                'la.form_type' => 'others'
+            ]);
+
+        $dealer_stats = $dealer_stats
+            ->asArray()
+            ->one();
+
+        return $this->response(200, ['status' => 200, 'data' => $dealer_stats]);
+    }
+
 }
 
 ?>
