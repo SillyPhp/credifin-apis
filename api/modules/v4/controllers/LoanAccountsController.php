@@ -1225,27 +1225,40 @@ class LoanAccountsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $where = ['is_deleted' => 0];
-        if (!empty($params['bucket'])) {
-            $where['bucket'] = $params['bucket'];
+        if (!empty($params['bucketVal'])) {
+            $where['bucket'] = $params['bucketVal'];
+        }
+        if (!empty($params['fields_search'])) {
+            $fields_search = $params['fields_search'];
+            foreach ($fields_search as $key => $value) {
+                if (!empty($value)) {
+
+                    switch ($key) {
+                        case 'branch':
+                            $where['branch_enc_id'] = $value;
+                            break;
+                        case 'loan_type':
+                            $where['loan_type'] = $value;
+                            break;
+                    }
+                }
+            }
         }
         $bucket = LoanAccountsExtended::find()
             ->select([
-                'COUNT(loan_account_enc_id) as total_loan_accounts',
-                'SUM(overdue_amount) AS overdue_amount',
-                'SUM(ledger_amount) AS ledger_amount',
-                'SUM(last_emi_received_amount) AS EMI_received_amount',
-                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
+                "COUNT(loan_account_enc_id) AS loan_accounts_count",
+                "COUNT(NULLIF(overdue_amount, 0)) AS overdue_count",
+                "SUM(overdue_amount) AS overdue_sum",
+                "COUNT(NULLIF(ledger_amount, 0)) AS ledger_count",
+                "SUM(ledger_amount) AS ledger_sum",
+                "COUNT(NULLIF(last_emi_received_amount, 0)) AS emi_received_count",
+                "SUM(last_emi_received_amount) AS emi_received_sum",
+                "(COALESCE(COUNT(ledger_amount), 0) + COALESCE(COUNT(overdue_amount), 0)) AS total_pending_count",
+                "(COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0)) AS total_pending_sum"
             ])
             ->where($where)
             ->asArray()
             ->one();
-        if (!$bucket) {
-            return $this->response(404, ["status" => 404, "message" => "data not found"]);
-        }
-        $bucket = array_map(function ($key, $value) {
-            return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
-        }, array_keys($bucket), $bucket);
-
         return $this->response(200, ["status" => 200, "data" => $bucket]);
     }
 
