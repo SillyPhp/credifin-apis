@@ -1104,7 +1104,7 @@ class OrganizationsController extends ApiBaseController
                     $e->select(["e.financer_loan_product_enc_id", "e.disbursement_charges_enc_id", "e.name"]);
                 }])
                 ->groupBy(['a.financer_loan_product_enc_id'])
-                ->orderBy(['a.created_on' => SORT_DESC])
+                ->orderBy(['a.name' => SORT_ASC])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
