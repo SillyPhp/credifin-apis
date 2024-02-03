@@ -1695,12 +1695,6 @@ class OrganizationsController extends ApiBaseController
             } else {
                 $model = new EmiCollectionForm();
                 $model->org_id = $org;
-                if (!empty($params['loan_account_number'])) {
-                    $query = LoanAccountsExtended::findOne(["loan_account_number" => $params['loan_account_number']]);
-                    if ($query) {
-                        $model->loan_account_enc_id = $query['loan_account_enc_id'];
-                    }
-                }
                 if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                     throw new Exception(implode(' ', array_column($model->errors, 0)));
                 }
@@ -1719,10 +1713,9 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiStats()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        if (!$params = Yii::$app->request->post()) {
+        $this->isAuth();
+        $user = $this->user;
+        if (!$params = $this->post) {
             return $this->response(500, ['status' => 500, 'message' => 'params not found']);
         }
         if (!empty($params['method'])) {
@@ -1732,22 +1725,11 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 'emi_payment_method AS method',
                 'emi_payment_status AS status',
-                'amount'
+                'SUM(amount) AS sum',
+                'COUNT(amount) AS count'
             ])
             ->andWhere(['is_deleted' => 0])
-            ->andWhere([
-                "OR",
-                [
-                    "AND",
-                    ["IS NOT", "collection_date", null],
-                    ['between', 'collection_date', $params['start_date'], $params['end_date']],
-                ],
-                [
-                    "AND",
-                    ["IS", "collection_date", null],
-                    ['between', 'created_on', $params['start_date'], $params['end_date']],
-                ]
-            ]);
+            ->andWhere(['BETWEEN', 'COALESCE(collection_date, created_on)', $params['start_date'], $params['end_date']]);
         if (!empty($method)) {
             if (in_array('pending', $method)) {
                 $data->andWhere(['emi_payment_status' => $method]);
@@ -1774,8 +1756,9 @@ class OrganizationsController extends ApiBaseController
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $data = $data->andWhere(['IN', 'created_by', $juniors]);
         }
-
-        $data = $data->asArray()
+        $data = $data
+            ->groupBy(['method', 'status'])
+            ->asArray()
             ->all();
 
         $def = EmiCollectionForm::$payment_methods;
@@ -1786,26 +1769,28 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
-            $amount = $item['amount'];
-            if ($item['status'] == 'paid') {
-                $res[$payment_method]['sum'] += $amount;
-                $res[$payment_method]['count'] += 1;
-            } else {
-                if (empty($method)) {
-                    $res[$payment_method]['pending']['count'] += 1;
-                    $res[$payment_method]['pending']['sum'] += $amount;
-                }
-                $res['Pending']['sum'] += $amount;
-                $res['Pending']['count'] += 1;
+            $sum = $item['sum'];
+            $count = $item['count'];
+            $status = ucwords($item['status']);
+            if ($status == 'Paid') {
+                $res[$payment_method]['sum'] += $sum;
+                $res[$payment_method]['count'] += $count;
+            } else if (isset($res[$payment_method]['pending'])) {
+                $res[$payment_method]['pending']['count'] += $count;
+                $res[$payment_method]['pending']['sum'] += $sum;
             }
-            $res['Total']['sum'] += $amount;
-            $res['Total']['count'] += 1;
+            if (isset($res[$status])) {
+                $res[$status]['sum'] += $sum;
+                $res[$status]['count'] += $count;
+            }
+            $res['Total']['sum'] += $sum;
+            $res['Total']['count'] += $count;
         }
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
@@ -2718,6 +2703,9 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['sharedLoanApplications AS g' => function ($g) use ($subquery) {
                 $g->from(['sharedLoanApplications' => $subquery]);
             }])
+            ->joinWith(['loanApplicationFis AS h' => function ($h) {
+                $h->select(['h.loan_app_enc_id', 'h.collection_manager']);
+            }])
             ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
         if (!empty($end_date)) {
             $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
@@ -2779,13 +2767,14 @@ class OrganizationsController extends ApiBaseController
                 if (!$update->save()) {
                     throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
                 }
-                foreach ($update_data['sharedLoanApplications'] as $item) {
+                $assigning_ids = array_merge(array_fill_keys(array_column($update_data['sharedLoanApplications'], 'shared_to'), 1), array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
+                foreach ($assigning_ids as $id => $type) {
                     $bdo = new AssignedLoanAccounts();
                     $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
                     $bdo->assigned_enc_id = $utilitiesModel->encrypt();
                     $bdo->loan_account_enc_id = $update->loan_account_enc_id;
-                    $bdo->shared_to = $item['shared_to'];
-                    $bdo->user_type = 1;
+                    $bdo->shared_to = $id;
+                    $bdo->user_type = $type;
                     $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
                     $bdo->shared_by = $bdo->created_by = $bdo->updated_by = $update_data['updated_by'];
                     if (!$bdo->save()) {
