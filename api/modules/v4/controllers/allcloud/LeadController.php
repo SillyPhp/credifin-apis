@@ -15,7 +15,8 @@ class LeadController extends ApiBaseController
             'except' => [
                 'add-new-lead',
                 'add-new-loan',
-                'add-customer'
+                'add-customer',
+                'add-documents',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -25,6 +26,7 @@ class LeadController extends ApiBaseController
                 'add-new-lead' => ['POST', 'OPTIONS'],
                 'add-new-loan' => ['POST', 'OPTIONS'],
                 'add-customer' => ['POST', 'OPTIONS'],
+                'add-documents' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -69,7 +71,7 @@ class LeadController extends ApiBaseController
                         "Content-Type: application/json", // You can adjust the content type as needed
                         "Authorization: $auth",
                     ]);
-                    $response = curl_exec($ch);
+                 return   $response = curl_exec($ch);
                     if (curl_errno($ch)) {
                         return  $this->response(422, ['message'=>'Error','Error'=>'cURL Error: ' . curl_error($ch)]);
                     }else{
@@ -166,6 +168,45 @@ class LeadController extends ApiBaseController
                         }else{
                             return  $this->response(422, ['message'=>'Error','Error'=>$response]);
                         }
+                    }
+                }
+
+            } else{
+                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            }
+        }catch (\Exception $exception){
+            return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
+        }
+    }
+
+    public function actionAddDocuments(){
+        try {
+            if ($user = $this->isAuthorized()){
+                $payload = Yii::$app->request->post();
+                $options = [];
+                $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
+                $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
+                $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
+                $options['requestHttpMethod'] = 'POST';
+                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/UploadDocuments/UploadDocumentsBase64DTO';
+                //$options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Customer/CustomerBase64UploadDocumentDTO';
+                $payload = json_encode($payload);
+                $res = Auth::generateToken($options,$payload);
+                if ($res['status']){
+                    $auth = $res['token']['data']['Authorization'];
+                    $ch = curl_init($options['Request_URL']);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+                    curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload); // Set the POST data
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Content-Type: application/json", // You can adjust the content type as needed
+                        "Authorization: $auth",
+                    ]);
+                 return   $response = curl_exec($ch);
+                    if (curl_errno($ch)) {
+                        return  $this->response(422, ['message'=>'Error','Error'=>'cURL Error: ' . curl_error($ch)]);
+                    }else{
+                        $decodeResponse = json_decode($response,true);
                     }
                 }
 
