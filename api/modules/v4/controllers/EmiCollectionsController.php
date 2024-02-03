@@ -186,7 +186,7 @@ class EmiCollectionsController extends ApiBaseController
                 "br.location_name as branch"
             ])
             ->innerJoinWith(["createdBy cb" => function ($cb) {
-                $cb->innerJoinWith(["userRoles0 ur" => function ($ur){
+                $cb->innerJoinWith(["userRoles0 ur" => function ($ur) {
                     $ur->andOnCondition(['in', 'designation_id', ['39pOaLxn1RyA6ewg0m14RwrK85kq6m', 'jE3DW981MQMDwAbvpx1Vdl5zrZyBag']]);
                 }], false);
             }], false)
@@ -199,10 +199,10 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0]);
-            if (!empty($params['status'])) {
-                $query->andWhere(["a.emi_payment_status" => $params['status']]);
-            }
-            $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
+        if (!empty($params['status'])) {
+            $query->andWhere(["a.emi_payment_status" => $params['status']]);
+        }
+        $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -885,6 +885,12 @@ class EmiCollectionsController extends ApiBaseController
                 "b.user_enc_id as collected_by_id",
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
             ])
+            ->joinWith(['loanAccountEnc lc' => function ($lc) {
+                $lc->joinWith(['assignedLoanAccounts ala' => function ($ala) {
+                    $ala->andOnCondition(['ala.is_deleted' => 0]);
+                    $ala->joinWith(['sharedTo dd1']);
+                }]);
+            }])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1' => function ($b1) {
                     $b1->joinWith(['designation b1a'], false);
@@ -1005,6 +1011,36 @@ class EmiCollectionsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
+
+        foreach ($model as &$item) {
+            $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
+                $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' :
+                    (($assignedLoan['user_type'] == 2) ? 'collection_manager' :
+                        (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
+
+                $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
+                $shared_img = '';
+                if (!empty($assignedLoan['sharedTo']['image'])) {
+                    $shared_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $assignedLoan['sharedTo']['image_location'] . '/' . $assignedLoan['sharedTo']['image'];
+                } else {
+                    $shared_img = 'https://ui-avatars.com/api/?name=' . urlencode($assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? '')) . '&size=200&rounded=false&background=' . str_replace('#', '', $assignedLoan['sharedTo']['initials_color']) . '&color=ffffff';
+                }
+
+
+                return [
+                    'id' => $assignedLoan['id'],
+                    'assigned_enc_id' => $assignedLoan['assigned_enc_id'],
+                    'loan_account_enc_id' => $assignedLoan['loan_account_enc_id'],
+                    'access' => $assignedLoan['access'],
+                    'name' => $shared_name,
+                    'image' => $shared_img,
+                    'user_type' => $user_type,
+                ];
+            }, $item['loanAccountEnc']['assignedLoanAccounts']);
+
+            unset($item['loanAccountEnc']);
+        }
+
 
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
