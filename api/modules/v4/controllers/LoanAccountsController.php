@@ -1307,43 +1307,53 @@ class LoanAccountsController extends ApiBaseController
                     ->orderBy(['id' => SORT_DESC])
             ]);
 
-        $ptpcases = LoanAccountPtps::find()
+        $ptpcases = LoanAccountsExtended::find()
             ->alias('a')
             ->select([
-                "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
-                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
-                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
-                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
-                "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
-                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
-                "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
+                "c.ptp_enc_id", "c.emi_collection_enc_id", "c.proposed_payment_method", "c.proposed_date",
+                "c.proposed_amount", "c.status", "c.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
+                "b.loan_account_number", "a.total_installments", "a.financed_amount", "a.stock", "a.last_emi_received_date",
+                "a.last_emi_date", "(CASE WHEN a.name IS NOT NULL THEN a.name ELSE b.customer_name END) AS name",
+                "a.emi_amount", "a.overdue_amount", "a.ledger_amount",
+                "(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE b.loan_type END) AS loan_type",
+                "a.emi_date", "a.last_emi_received_amount", "a.advance_interest", "a.bucket",
+                "(CASE WHEN a.branch_enc_id IS NOT NULL THEN a.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
+                "a.bucket_status_date", "a.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount",
-                "a.created_by"
+                "(a.ledger_amount + a.overdue_amount) AS total_pending_amount",
+                "c.created_by"
             ])
-            ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
+            ->joinWith(['assignedLoanAccounts ala' => function ($ala) {
+                $ala->select(['ala.loan_account_enc_id', 'ala.access', 'ala.assigned_enc_id',
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image",
+                    "(CASE WHEN ala.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                ]);
+                $ala->andOnCondition(['ala.is_deleted' => 0]);
+                $ala->joinWith(['sharedTo d1'], false);
+            }])
+            ->innerJoinWith(['emiCollections b' => function ($b) {
+                $b->joinWith(['loanAccountPtps c'], false);
                 $b->joinWith(['branchEnc bb'], false);
-                $b->joinWith(['loanAccountEnc c' => function ($cc) {
-                    $cc->joinWith(['branchEnc d'], false);
-                    $cc->joinWith(["assignedCaller ac"], false);
-                }]);
             }], false)
+            ->joinWith(['branchEnc d'], false)
+            ->joinWith(["assignedCaller ac"], false)
             ->joinWith(['collectionManager cm'], false);
+
         if (isset($params['type']) && $params['type'] == 'dashboad') {
-            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+            $ptpcases->andWhere(['between', 'c.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
         } else {
-            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+            $ptpcases->where(['>=', 'c.proposed_date', date('Y-m-d H:i:s')]);
         }
         $ptpcases = $ptpcases
-            ->groupBy(['a.ptp_enc_id'])
-            ->orderBy(['a.proposed_date' => SORT_ASC]);
+            ->groupBy(['c.ptp_enc_id'])
+            ->orderBy(['c.proposed_date' => SORT_ASC]);
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $ptpcases = $ptpcases->andWhere(['IN', 'a.created_by', $juniors]);
+            $ptpcases = $ptpcases->andWhere(['IN', 'c.created_by', $juniors]);
         }
+
 
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
@@ -1353,19 +1363,21 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'bucket') {
-                        $ptpcases->andWhere(['IN', 'c.bucket', $value]);
+                        $ptpcases->andWhere(['IN', 'a.bucket', $value]);
                     } elseif ($key == 'loan_type') {
-                        $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
+                        $ptpcases->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'branch') {
                         $ptpcases->andWhere(['IN', 'd.location_enc_id', $value]);
                     } elseif ($key == 'total_pending_amount') {
-                        $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
+                        $ptpcases->having(['=', "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)", $value]);
                     } elseif ($key == 'collection_manager') {
                         $ptpcases->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } elseif ($key == 'proposed_amount') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
+                        $ptpcases->andWhere(["LIKE", 'c.' . $key, "$value%", false]);
                     } elseif ($key == 'proposed_date') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
+                        $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
                     }
