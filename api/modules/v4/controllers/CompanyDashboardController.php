@@ -3629,11 +3629,34 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'], false)
-                ->where(['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']])
+                ->andWhere([
+                        'OR',
+                        [
+                            'AND',
+                            ['BETWEEN', 'c3.value', '5', '25'],
+                            ['<', 'a.loan_status_updated_on', $params['end_date']],
+                        ],
+                        [
+                            'AND',
+                            ['=', 'c3.value', '30'],
+                            ['<', 'a.loan_status_updated_on', $params['end_date']],
+                        ],
+                        [
+                            'AND',
+                            ['>=', 'c3.value', '26'],
+                            ['<=', 'c3.value', '4'],
+                            ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                        ],
+                        [
+                            'AND',
+                            ['<', 'c3.value', '4'],
+                            ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                        ],
+                    ])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
                 ->groupBy(['a.loan_app_enc_id'])
                 ->orderBy([
-                    "(CASE WHEN ANY_VALUE(c3.loan_status) = 'rejected' THEN 1 END)" => SORT_ASC,
+                    "(CASE WHEN ANY_VALUE(c3.loan_status) = 'Rejected' THEN 1 END)" => SORT_DESC,
                 ]);
 
             if (!empty($params) && isset($params['product_id'])) {
