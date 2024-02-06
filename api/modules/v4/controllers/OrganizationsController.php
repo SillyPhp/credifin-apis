@@ -1659,11 +1659,11 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
+    // delete actionEmiCollection if you are watching this message after 15 Feb
     public function actionEmiCollection()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
+        $this->isAuth();
+        $user = $this->user;
         if (!$org = $user->organization_enc_id) {
             $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
             if (!$org = $findOrg['organization_enc_id']) {
@@ -1675,16 +1675,44 @@ class OrganizationsController extends ApiBaseController
         try {
             $update_overdue = false;
             if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
-                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+                $emi_id = $params['emi_collection_enc_id'];
+                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
                 if ($model) {
-                    if ($params['status'] === 'paid') {
+                    $status = $params['status'];
+                    if ($status === 'paid') {
                         $update_overdue = true;
                     }
-                    $model->emi_payment_status = $params['status'];
+                    $model->emi_payment_status = $status;
+                    UserUtilities::CustomLoanAudit($model->id, $model->emi_collection_enc_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
+                    if ($status === 'rejected') {
+                        $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
+                        if ($cash) {
+                            if (!empty($cash->parent_cash_report_enc_id)) {
+                                $cash2 = EmployeesCashReportExtended::findOne([
+                                    'cash_report_enc_id' => $cash->parent_cash_report_enc_id,
+                                    "is_deleted" => 0,
+                                    'type' => 1,
+                                    'status' => 2
+                                ]);
+                                if (!$cash2) {
+                                    throw new Exception('We can not update this emi.');
+                                }
+                                $cash2->amount -= $cash->amount;
+                                $cash2->remaining_amount -= $cash->amount;
+                                if (!$cash2->save()) {
+                                    throw new \yii\db\Exception(implode(' ', array_column($cash2->errors, 0)));
+                                }
+                            }
+                            $cash->status = 3;
+                            if (!$cash->save()) {
+                                throw new \yii\db\Exception(implode(' ', array_column($cash->errors, 0)));
+                            }
+                        }
+                    }
                     $model->updated_by = $user->user_enc_id;
                     $model->updated_on = date('Y-m-d h:i:s');
                     if (!$model->save()) {
-                        throw new Exception(implode(' ', array_column($model->errors, 0)));
+                        throw new \yii\db\Exception(implode(' ', array_column($model->errors, 0)));
                     }
                     if ($update_overdue) {
                         EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
