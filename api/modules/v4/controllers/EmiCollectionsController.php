@@ -8,7 +8,6 @@ use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
-use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
@@ -440,10 +439,8 @@ class EmiCollectionsController extends ApiBaseController
                 ],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
-                [
-                    "not",
-                    ["a.remaining_amount" => 0]
-                ]
+                ["!=", "a.remaining_amount", 0],
+                ["!=", "a.status", 3],
             ])
             ->asArray()
             ->one();
@@ -559,6 +556,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.emi_collection_enc_id", "c.loan_account_number", "c.customer_name",
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
+                $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
             }])
             ->andWhere($where)
             ->asArray()
@@ -908,7 +906,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
@@ -1106,20 +1104,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!$emi->save()) {
                 throw new Exception(implode(',', array_column($emi->errors, "0")));
             }
-            $audit = new LoanAuditTrail();
-
-            $audit->old_value = "";
-            $audit->new_value = $params['remarks'];
-            $audit->action = "SET";
-            $audit->model = "EmiCollection";
-            $audit->field = "remarks";
-            $audit->stamp = date('Y-m-d H:i:s');
-            $audit->user_id = (string)Yii::$app->user->identity->id;
-            $audit->model_id = (string)$emi->id;
-            $audit->foreign_id = $emi_id;
-            if (!$audit->save()) {
-                throw new Exception(implode(',', array_column($audit->errors, "0")));
-            }
+            UserUtilities::CustomLoanAudit($emi->id, $emi_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
             if (isset($params['amount'])) {
                 $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
                 if ($cash) {
@@ -1357,6 +1342,85 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(200, ['message' => 'Successfully saved.']);
         } catch (Exception $exception) {
             return $this->response(500, ['message' => 'An error occurred.', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionEmiCollection()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        if (!$org = $user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$org = $findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
+        $params = Yii::$app->request->post();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $update_overdue = false;
+            if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
+                $emi_id = $params['emi_collection_enc_id'];
+                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
+                if ($model) {
+                    $status = $params['status'];
+                    if ($status === 'paid') {
+                        $update_overdue = true;
+                    }
+                    $model->emi_payment_status = $status;
+                    UserUtilities::CustomLoanAudit($model->id, $model->emi_collection_enc_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
+                    if ($status === 'rejected') {
+                        $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
+                        if ($cash) {
+                            if (!empty($cash->parent_cash_report_enc_id)) {
+                                $cash2 = EmployeesCashReportExtended::findOne([
+                                    'cash_report_enc_id' => $cash->parent_cash_report_enc_id,
+                                    "is_deleted" => 0,
+                                    'type' => 1,
+                                    'status' => 2
+                                ]);
+                                if (!$cash2) {
+                                    throw new Exception('We can not update this emi.');
+                                }
+                                $cash2->amount -= $cash->amount;
+                                $cash2->remaining_amount -= $cash->amount;
+                                if (!$cash2->save()) {
+                                    throw new \yii\db\Exception(implode(' ', array_column($cash2->errors, 0)));
+                                }
+                            }
+                            $cash->status = 3;
+                            if (!$cash->save()) {
+                                throw new \yii\db\Exception(implode(' ', array_column($cash->errors, 0)));
+                            }
+                        }
+                    }
+                    $model->updated_by = $user->user_enc_id;
+                    $model->updated_on = date('Y-m-d h:i:s');
+                    if (!$model->save()) {
+                        throw new \yii\db\Exception(implode(' ', array_column($model->errors, 0)));
+                    }
+                    if ($update_overdue) {
+                        EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
+                    }
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+                }
+            } else {
+                $model = new EmiCollectionForm();
+                $model->org_id = $org;
+                if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                    throw new Exception(implode(' ', array_column($model->errors, 0)));
+                }
+                $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
+                $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
+                $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
+                $save = $model->save($user->user_enc_id);
+                $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
+                return $this->response($save['status'], $save);
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
         }
     }
 }

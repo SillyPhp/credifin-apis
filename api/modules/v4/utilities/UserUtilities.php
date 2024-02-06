@@ -7,26 +7,24 @@ use common\models\AssignedSupervisor;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanAuditTrail;
 use common\models\Notifications;
 use common\models\NotificationTokens;
 use common\models\Organizations;
-use common\models\PushNotifications;
 use common\models\Referral;
-use common\models\SharedLoanApplications;
-use common\models\UserRoles;
-use yii\db\Exception;
-use yii\helpers\Url;
-use Yii;
 use common\models\SelectedServices;
+use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use yii\db\Command;
+use Yii;
+use yii\db\Exception;
 
 // this class is used to get user related data
 class UserUtilities
 {
-    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head','HO Credit Manager'];
+    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head', 'HO Credit Manager'];
 
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
@@ -417,5 +415,22 @@ class UserUtilities
                 throw new Exception("unknown table name");
         }
         return $res;
+    }
+
+    public static function CustomLoanAudit($id, $enc_id, $action, $model, $field, $new_value, $user_id = '', $old_value = ''): void
+    {
+        $audit = new LoanAuditTrail();
+        $audit->old_value = $old_value;
+        $audit->new_value = $new_value;
+        $audit->action = $action;
+        $audit->model = $model;
+        $audit->field = $field;
+        $audit->stamp = date('Y-m-d H:i:s');
+        $audit->user_id = (string)($user_id);
+        $audit->model_id = (string)$id;
+        $audit->foreign_id = $enc_id;
+        if (!$audit->save()) {
+            throw new Exception(implode(',', array_column($audit->errors, "0")));
+        }
     }
 }
