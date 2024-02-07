@@ -10,6 +10,7 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
+use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -27,6 +28,7 @@ use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanStatus;
@@ -41,6 +43,7 @@ use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -1820,6 +1823,7 @@ class OrganizationsController extends ApiBaseController
             $res['Total']['sum'] += $sum;
             $res['Total']['count'] += $count;
         }
+
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
     }
 
@@ -2578,6 +2582,13 @@ class OrganizationsController extends ApiBaseController
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'bucket') {
                         $query->andWhere(['IN', 'a.bucket', $value]);
+                    } elseif ($key == 'priority') {
+                        $query->andWhere([
+                            'or',
+                            ['and', ['d.user_type' => 1], ['like', 'a.sales_priority', $value]],
+                            ['and', ['d.user_type' => 2], ['like', 'a.collection_priority', $value]],
+                            ['and', ['d.user_type' => 3], ['like', 'a.telecaller_priority', $value]]
+                        ]);
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'branch') {
@@ -2751,7 +2762,7 @@ class OrganizationsController extends ApiBaseController
         $inserted = 0;
         $utilitiesModel = new Utilities();
         $transaction = Yii::$app->db->beginTransaction();
-
+        
         try {
             foreach ($data as $update_data) {
                 $application_number = str_replace(' ', '', $update_data['application_number']);
