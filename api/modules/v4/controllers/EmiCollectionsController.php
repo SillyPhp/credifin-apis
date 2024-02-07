@@ -802,22 +802,29 @@ class EmiCollectionsController extends ApiBaseController
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
-
         $display_data = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                'ANY_VALUE(a.customer_name) customer_name', 'ANY_VALUE(a.loan_account_number) loan_account_number',
-                'ANY_VALUE(a.loan_type) loan_type', 'ANY_VALUE(a.phone) phone', 'SUM(a.amount) total_amount',
-                'COUNT(a.loan_account_number) as total_emis',
-                "CONCAT(ANY_VALUE(b.location_name) , ', ', COALESCE(ANY_VALUE(b1.name), '')) as branch_name",
-                "SUM(CASE WHEN a.emi_payment_status != 'paid' THEN a.amount END) as pending_amount",
-                "SUM(CASE WHEN a.emi_payment_status = 'paid' THEN a.amount END) as paid_amount",
+                'a.customer_name', 'a.loan_account_number', 'a.loan_account_enc_id',
+                "c.sales_priority",
+                "c.collection_priority",
+                "c.telecaller_priority",
+
+                "c.bucket AS bucket_value",
+                'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
+                'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
+                "CONCAT(b.location_name, ', ', COALESCE(b1.name, '')) AS branch_name",
+                "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') AND MONTH(collection_date) = MONTH(CURRENT_DATE()) THEN amount ELSE 0 END) OVER(PARTITION BY loan_account_number) AS collected_amount",
+                "SUM(CASE WHEN a.emi_payment_status = 'pending' THEN a.amount END) OVER(PARTITION BY loan_account_number) AS pending_amount",
+                "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') THEN a.amount END) OVER(PARTITION BY loan_account_number) AS paid_amount",
             ])
             ->joinWith(['branchEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b1'], false);
             }], false)
+            ->joinWith(['loanAccountEnc c'], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
-            ->groupBy(['a.loan_account_number'])
+            ->orderBY(['a.id' => SORT_DESC])
+            ->limit(1)
             ->asArray()
             ->one();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
@@ -1012,9 +1019,7 @@ class EmiCollectionsController extends ApiBaseController
 
         foreach ($model as &$item) {
             $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
-                $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' :
-                    (($assignedLoan['user_type'] == 2) ? 'collection_manager' :
-                        (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
+                $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' : (($assignedLoan['user_type'] == 2) ? 'collection_manager' : (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
 
                 $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
                 $shared_img = '';
