@@ -2615,6 +2615,13 @@ class OrganizationsController extends ApiBaseController
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'bucket') {
                         $query->andWhere(['IN', 'a.bucket', $value]);
+                    } elseif ($key == 'priority') {
+                        $query->andWhere([
+                            'or',
+                            ['and', ['d.user_type' => 1], ['like', 'a.sales_priority', $value]],
+                            ['and', ['d.user_type' => 2], ['like', 'a.collection_priority', $value]],
+                            ['and', ['d.user_type' => 3], ['like', 'a.telecaller_priority', $value]]
+                        ]);
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'branch') {

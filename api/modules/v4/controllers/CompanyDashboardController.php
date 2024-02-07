@@ -3498,7 +3498,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->select([
-                    'a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number',
+                    'a.loan_app_enc_id','c2.status', 'a.amount', 'a.loan_type', 'a.application_number',
                     'a.loan_status_updated_on', 'a.login_date',
                     'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
                     'lop.name as product_name',
@@ -3549,20 +3549,19 @@ class CompanyDashboardController extends ApiBaseController
                         ],
                         [
                             'AND',
-                            ['>=', 'c3.value', '26'],
-                            ['<=', 'c3.value', '4'],
+                            ['<', 'c3.value', '5'],
                             ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
                         ],
                         [
                             'AND',
-                            ['<', 'c3.value', '4'],
+                            ['>', 'c3.value', '25'],
                             ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
                         ],
                     ])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
-                ->groupBy(['a.loan_app_enc_id'])
+                ->groupBy(['a.loan_app_enc_id','c2.status'])
                 ->orderBy([
-                    "(CASE WHEN ANY_VALUE(c3.loan_status) = 'Rejected' THEN 1 END)" => SORT_DESC,
+                     new \yii\db\Expression("CASE WHEN c2.status = 32 THEN 0 ELSE 1 END, c2.status ASC"),
                 ]);
 
             if (!empty($params['product_id'])) {
