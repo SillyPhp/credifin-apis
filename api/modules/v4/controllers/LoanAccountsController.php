@@ -1259,7 +1259,46 @@ class LoanAccountsController extends ApiBaseController
             ->where($where)
             ->asArray()
             ->one();
+        $bucket = array_merge($bucket, $this->ptpCasesStats($where));
         return $this->response(200, ["status" => 200, "data" => $bucket]);
+    }
+
+    private function ptpCasesStats($conditions)
+    {
+        $where = [];
+        foreach ($conditions as $key => $value) {
+            if (in_array($key, ['loan_type', 'branch_enc_id', 'bucket', 'id_deleted'])) {
+                $where ["la.$key"] = $value;
+            }
+        }
+        $subQuery = (new Query())
+            ->select(["DISTINCT REGEXP_REPLACE(z.loan_account_number, '[^a-zA-Z0-9]', '') AS loan_account_number"])
+            ->from(['z' => EmiCollection::tableName()])
+            ->innerJoin(['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id')
+            ->where(['z.is_deleted' => 0]);
+
+        return (new Query())
+            ->select(['COUNT(*) AS ptp_count', 'SUM(a.amount) AS ptp_sum'])
+            ->from([
+                'a' => (new Query())
+                    ->select([
+                        'x.amount',
+                        "RANK() OVER (PARTITION BY REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '') ORDER BY x.id DESC) AS rnk",
+                        'x.created_on',
+                        'x.ptp_date'
+                    ])
+                    ->from(['x' => EmiCollection::tableName()])
+                    ->innerJoin(['y' => $subQuery], "REGEXP_REPLACE(y.loan_account_number, '[^a-zA-Z0-9]', '') = REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '')")
+                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id")
+                    ->where(['x.is_deleted' => 0])
+                    ->andWhere($where)
+            ])
+            ->where([
+                'AND',
+                ['a.rnk' => 1],
+                ['IS NOT', 'a.ptp_date', null]
+            ])
+            ->one();
     }
 
     public function actionLoanAccountsType()
