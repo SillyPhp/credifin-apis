@@ -10,6 +10,7 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
+use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -27,6 +28,7 @@ use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanStatus;
@@ -41,6 +43,7 @@ use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -1820,7 +1823,41 @@ class OrganizationsController extends ApiBaseController
             $res['Total']['sum'] += $sum;
             $res['Total']['count'] += $count;
         }
+        if (empty($method)) {
+            $ptp = $this->ptpCasesStats($params['start_date'], $params['end_date']);
+            $res[] = ['payment_method' => 'Pending Ptp Cases', 'sum' => !empty($ptp['sum']) ? (int)$ptp['sum'] : 0, 'count' => !empty($ptp['count']) ? (int)$ptp['count'] : 0];
+        }
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
+    }
+
+    private function ptpCasesStats($start_date, $end_date)
+    {
+        $subQuery = (new Query())
+            ->select(["DISTINCT REGEXP_REPLACE(z.loan_account_number, '[^a-zA-Z0-9]', '') AS loan_account_number"])
+            ->from(['z' => EmiCollection::tableName()])
+            ->innerJoin(['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id');
+
+        $query = (new Query())
+            ->select(['COUNT(*) AS count', 'SUM(a.amount) AS sum'])
+            ->from([
+                'a' => (new Query())
+                    ->select([
+                        'x.amount',
+                        "RANK() OVER (PARTITION BY REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '') ORDER BY x.id DESC) AS rnk",
+                        'x.created_on',
+                        'x.ptp_date'
+                    ])
+                    ->from(['x' => EmiCollection::tableName()])
+                    ->innerJoin(['y' => $subQuery], "REGEXP_REPLACE(y.loan_account_number, '[^a-zA-Z0-9]', '') = REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '')")
+            ])
+            ->where([
+                'AND',
+                ['a.rnk' => 1],
+                ['BETWEEN', 'a.created_on', $start_date, $end_date],
+                ['IS NOT', 'a.ptp_date', null]
+            ])
+            ->one();
+        return $query;
     }
 
     public function actionEmiDetail()
@@ -2751,7 +2788,7 @@ class OrganizationsController extends ApiBaseController
         $inserted = 0;
         $utilitiesModel = new Utilities();
         $transaction = Yii::$app->db->beginTransaction();
-
+        
         try {
             foreach ($data as $update_data) {
                 $application_number = str_replace(' ', '', $update_data['application_number']);
