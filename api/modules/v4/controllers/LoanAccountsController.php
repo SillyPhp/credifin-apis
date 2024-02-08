@@ -56,6 +56,7 @@ class LoanAccountsController extends ApiBaseController
                 'stats' => ['POST', 'OPTIONS'],
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
                 'update-loan-acc-access' => ['POST', 'OPTIONS'],
+                'update-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1656,6 +1657,41 @@ class LoanAccountsController extends ApiBaseController
             }
         }
         return $this->response(200, ['status' => 200, 'message' => 'Marked Hard Recovery']);
+    }
+
+    public function actionUpdateBranch()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['id']) || empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id" and "value" are required']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $branch = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['id']]);
+            if (!$branch) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $branch->branch_enc_id = $params['value'];
+            $branch->updated_by = $user->user_enc_id;
+            $branch->updated_on = date('Y-m-d H:i:s');
+
+            if (!$branch->save()) {
+                throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
     }
 
 }
