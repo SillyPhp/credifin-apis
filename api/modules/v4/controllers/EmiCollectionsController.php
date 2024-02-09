@@ -275,10 +275,9 @@ class EmiCollectionsController extends ApiBaseController
                 ["a.type" => 1]
             ])
             ->groupBy(["a.received_from"]);
-
         $fields_search = [];
-        if (!empty($params['field'])) {
-            foreach ($params['field'] as $key => $value) {
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     switch ($key) {
                         case 'employee_code':
@@ -295,6 +294,10 @@ class EmiCollectionsController extends ApiBaseController
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
+                            break;
+                        case 'branch':
+                            $branch = "('" . implode("','", $value) . "')";
+                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
                             break;
                     }
                 }
@@ -313,6 +316,7 @@ class EmiCollectionsController extends ApiBaseController
                 'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
                 'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
                 'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
+                'ANY_VALUE(b4.location_enc_id) branch_enc_id'
             ])
             ->joinWith(["userRoles0 b1" => function ($b1) {
                 $b1->joinWith(["designation b2"], false);
@@ -338,7 +342,6 @@ class EmiCollectionsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-
         if (!$users) {
             return $this->response(404, ["message" => "not found"]);
         }
@@ -346,6 +349,26 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
     }
 
+    public function actionCashReportStats()
+    {
+        $this->isAuth();
+        $stats = EmployeesCashReport::find()
+            ->alias('a')
+            ->select([
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash",
+                "SUM(CASE WHEN a.status = 2 AND a.type =1 THEN a.remaining_amount END) AS bank_unapproved_cash"
+            ])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+            ])
+            ->asArray()
+            ->one();
+        return $this->response(200, ['status' => 200, 'data' => $stats]);
+    }
 
     public function actionEmployeeEmiCollection()
     {
