@@ -2744,6 +2744,7 @@ class OrganizationsController extends ApiBaseController
             }])
             ->joinWith(['loanApplicationFis AS h' => function ($h) {
                 $h->select(['h.loan_app_enc_id', 'h.collection_manager']);
+                $h->andOnCondition(['IS NOT', 'h.collection_manager', null]);
             }])
             ->where(['>=', 'a.loan_status_updated_on', "$start_date 00:00:00"]);
         if (!empty($end_date)) {
@@ -2808,16 +2809,18 @@ class OrganizationsController extends ApiBaseController
                 }
                 $assigning_ids = array_merge(array_fill_keys(array_column($update_data['sharedLoanApplications'], 'shared_to'), 1), array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
                 foreach ($assigning_ids as $id => $type) {
-                    $bdo = new AssignedLoanAccounts();
-                    $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
-                    $bdo->assigned_enc_id = $utilitiesModel->encrypt();
-                    $bdo->loan_account_enc_id = $update->loan_account_enc_id;
-                    $bdo->shared_to = $id;
-                    $bdo->user_type = $type;
-                    $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
-                    $bdo->shared_by = $bdo->created_by = $bdo->updated_by = $update_data['updated_by'];
-                    if (!$bdo->save()) {
-                        throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                    if ($id && $type) {
+                        $bdo = new AssignedLoanAccounts();
+                        $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
+                        $bdo->assigned_enc_id = $utilitiesModel->encrypt();
+                        $bdo->loan_account_enc_id = $update->loan_account_enc_id;
+                        $bdo->shared_to = $id;
+                        $bdo->user_type = $type;
+                        $bdo->created_on = $bdo->updated_on = date('Y-m-d H:i:s');
+                        $bdo->shared_by = $bdo->created_by = $bdo->updated_by = $update_data['updated_by'];
+                        if (!$bdo->save()) {
+                            throw new Exception(implode(", ", array_column($bdo->getErrors(), "0")));
+                        }
                     }
                 }
                 $inserted += 1;
