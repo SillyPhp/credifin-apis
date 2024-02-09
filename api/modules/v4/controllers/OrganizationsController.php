@@ -10,7 +10,6 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
-use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -43,7 +42,6 @@ use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -2506,9 +2504,7 @@ class OrganizationsController extends ApiBaseController
 
         if ($this->isSpecial(1)) {
             $selectQuery =
-                "(CASE WHEN a.sales_priority THEN a.sales_priority END) as sales_priority,
-                 (CASE WHEN a.collection_priority THEN a.collection_priority END) as collection_priority,
-                 (CASE WHEN a.telecaller_priority THEN a.telecaller_priority END) as telecaller_priority";
+                ["a.sales_priority", "a.collection_priority", "a.telecaller_priority"];
         } else {
             $selectQuery = "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
             WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
@@ -2527,13 +2523,24 @@ class OrganizationsController extends ApiBaseController
                     ->orderBy(['id' => SORT_DESC])
             ]);
 
+        $sub_query1 = (new \yii\db\Query())
+            ->select([
+                'z.emi_collection_enc_id', 'z.loan_account_enc_id', 'z1.proposed_date', 'z1.proposed_amount',
+                'RANK() OVER(PARTITION BY z.loan_account_enc_id ORDER BY z1.id ASC) AS rnk'
+            ])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->join('INNER JOIN', ['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id')
+            ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0])
+            ->andWhere(['>', 'z1.proposed_date', date('Y-m-d')])
+            ->orderBy(['z1.proposed_date' => SORT_DESC]);
+
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
                 "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
-                $selectQuery, "a.hard_recovery",
+                "a.hard_recovery", 'a.assigned_financer_enc_id',
                 "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
@@ -2542,7 +2549,11 @@ class OrganizationsController extends ApiBaseController
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
             ])
+            ->addSelect($selectQuery)
             ->joinWith(["branchEnc b"], false)
+            ->joinWith(["assignedFinancerEnc af" => function ($af) {
+                $af->select(['af.organization_enc_id', 'af.name']);
+            }])
             ->joinWith(["assignedCaller ac"], false)
             ->joinWith(["collectionManager cm"], false)
             ->joinWith(["assignedLoanAccounts d" => function ($d) {
@@ -2553,6 +2564,10 @@ class OrganizationsController extends ApiBaseController
                     "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
                 ]);
                 $d->joinWith(['sharedTo d1'], false);
+            }])
+            ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
+                $emi->from(['emi' => $sub_query1]);
+                $emi->andOnCondition(['emi.rnk' => 1]);
             }])
             ->joinWith(["emiCollectionsCustom e" => function ($e) use ($sub_query) {
                 $e->from(["e" => $sub_query]);
@@ -2763,7 +2778,7 @@ class OrganizationsController extends ApiBaseController
         $inserted = 0;
         $utilitiesModel = new Utilities();
         $transaction = Yii::$app->db->beginTransaction();
-        
+
         try {
             foreach ($data as $update_data) {
                 $application_number = str_replace(' ', '', $update_data['application_number']);

@@ -14,6 +14,7 @@ use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
+use common\models\LoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
@@ -57,6 +58,7 @@ class LoanAccountsController extends ApiBaseController
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
                 'update-loan-acc-access' => ['POST', 'OPTIONS'],
                 'upload-sheet' => ['POST', 'OPTIONS'],
+                'update-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1922,5 +1924,113 @@ class LoanAccountsController extends ApiBaseController
             $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
+    public function actionUpdateBranch()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['id']) || empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id" and "value" are required']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $branch = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['id']]);
+            if (!$branch) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $branch->branch_enc_id = $params['value'];
+            $branch->updated_by = $user->user_enc_id;
+            $branch->updated_on = date('Y-m-d H:i:s');
+
+            if (!$branch->save()) {
+                throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionFinancerAssigned()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id']) || empty($params['partner_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_id" or "partner_id"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $branch = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_id']]);
+            if (!$branch) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $branch->assigned_financer_enc_id = $params['partner_id'];
+            $branch->updated_by = $user->user_enc_id;
+            $branch->updated_on = date('Y-m-d H:i:s');
+
+            if (!$branch->save()) {
+                throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully Assigned']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionAssignFinancer($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== Yii::$app->params->apiAccessKey) {
+            return ['status' => 401, 'message' => 'authentication failed'];
+        }
+
+        $num = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.application_number', 'a.loan_app_enc_id', 'b.provider_enc_id'])
+            ->innerJoinWith(['loanApplicationPartners b'], false)
+            ->andWhere(['not', ['a.application_number' => null]])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        foreach ($num as $application) {
+            $loan_account = LoanAccounts::findOne(['loan_account_number' => $application['application_number']]);
+            if ($loan_account) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $loan_account->assigned_financer_enc_id = $application['provider_enc_id'];
+
+                    if (!$loan_account->save()) {
+                        throw new Exception(implode(" ", array_column($loan_account->getErrors(), '0')));
+                    }
+                } catch (\Exception $exception) {
+                    $transaction->rollBack();
+                    return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+                }
+            }
+        }
+        $transaction->commit();
+        return ['status' => 200, 'found and updated' => count($num)];
+    }
+
 
 }
