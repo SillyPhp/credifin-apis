@@ -209,4 +209,32 @@ class EmployeeController extends ApiBaseController
 
     }
 
+    public function actionGetEmployeeDetails()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['username'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "username"']);
+        }
+
+        $employee = Users::find()
+            ->alias('a')
+            ->select(['a.username', 'b2.designation', 'b.employee_code', 'b3.location_name', 'a.email', 'a.phone',
+                "CONCAT(a.first_name , ' ', COALESCE(a.last_name, '')) as name",
+                "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",])
+            ->joinWith(['userRoles0 b' => function ($d) {
+                $d->joinWith(['designation b2'], false);
+                $d->joinWith(['branchEnc b3' => function ($f) {
+                }], false);
+            }], false)
+            ->andWhere(['a.username' => $params['username'], 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        if (!$employee) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $employee]);
+    }
+
 }
