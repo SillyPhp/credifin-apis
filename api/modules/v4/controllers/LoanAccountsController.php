@@ -1317,6 +1317,13 @@ class LoanAccountsController extends ApiBaseController
         $this->isAuth(2);
         $user = $this->user;
         $params = $this->post;
+        if (empty($params['branch_loc'])) {
+            return 'send branch loc';
+        }
+        $branch_loc = $params['branch_loc'];
+        if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
+            return 'send correct loc';
+        }
         $branches = [
             "JALANDHAR" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
             "LUDHIANA" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
@@ -1529,14 +1536,13 @@ class LoanAccountsController extends ApiBaseController
 
                             if (in_array($header, ['NachApproved'])) {
                                 $value = $value == 'Yes' ? 1 : 0;
-                            } else if ($header == 'ZoneName') {
+                            } else if ($header == $branch_loc) {
                                 $branch = trim(str_replace($no_need, '', $value));
                                 $branch = $branches[$branch];
                                 if (empty($branch)) {
                                     throw new \Exception('branch not found');
                                 }
                                 $loan->branch_enc_id = $branch;
-                                continue;
                             } else if ($header == 'VehicleModel') {
                                 if (!is_numeric($value) || strlen((string)$value) != 4) {
                                     continue;
@@ -1565,6 +1571,9 @@ class LoanAccountsController extends ApiBaseController
                                     continue;
                                 }
                                 $value = $date;
+                            }
+                            if ($header == 'ZoneName'){
+                                continue;
                             }
 
                             if (empty($defined[$header])) {
