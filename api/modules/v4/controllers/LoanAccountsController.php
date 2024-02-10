@@ -1459,13 +1459,14 @@ class LoanAccountsController extends ApiBaseController
                         $loan_account_number = $data[array_search('FileNumberNew', $headers)];
                     }
                     $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    $case_no = $data[array_search('CaseNo', $headers)];
                     $where = ["AND"];
                     if (!empty($loan_account_number)) {
                         $where[] = ["loan_account_number" => $loan_account_number];
 
                     } else {
                         $company_id = $data[array_search('CompanyID', $headers)];
-                        $where[] = ["lms_loan_account_number" => $lms_loan_account_number];
+                        $where[] = ["case_no" => $case_no];
                         $where[] = ["company_id" => $company_id];
                         $loan_account_number = $lms_loan_account_number;
                     }
@@ -1481,7 +1482,7 @@ class LoanAccountsController extends ApiBaseController
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                         $loan->lms_loan_account_number = $lms_loan_account_number;
-                        $loan->case_no = $data[array_search('CaseNo', $headers)];
+                        $loan->case_no = $case_no;
                         $loan->loan_account_number = $loan_account_number;
                         $loan->created_on = date('Y-m-d h:i:s');
                         $loan->created_by = $user->user_enc_id;
@@ -1572,7 +1573,7 @@ class LoanAccountsController extends ApiBaseController
                                 }
                                 $value = $date;
                             }
-                            if ($header == 'ZoneName'){
+                            if ($header == 'ZoneName') {
                                 continue;
                             }
 
