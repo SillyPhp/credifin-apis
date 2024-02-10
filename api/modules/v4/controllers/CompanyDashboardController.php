@@ -1610,9 +1610,10 @@ class CompanyDashboardController extends ApiBaseController
                         'a.created_on',
                         'a.lead_by AS created_by',
                         'a.updated_by',
-                        'a.updated_on'
+                        'a.updated_on', 'ANY_VALUE(lap.provider_enc_id) provider_enc_id'
                     ])
                     ->joinWith(['assignedLoanProviders b'], false)
+                    ->joinWith(['loanApplicationPartners lap'], false)
                     ->joinWith(['loanApplicationOptions c'], false)
                     ->joinWith(['assignedDealer d'], false)
                     ->joinWith(['loanProductsEnc e'], false)
@@ -1640,6 +1641,7 @@ class CompanyDashboardController extends ApiBaseController
                     $update->loan_app_enc_id = $update_data['loan_app_enc_id'];
                     $update->loan_account_number = $application_number;
                     $update->lms_loan_account_number = $application_number;
+                    $update->assigned_financer_enc_id = $update_data['provider_enc_id'];
                     $update->dealer_name = $update_data['dealer_name'];
                     $update->total_installments = $update_data['number_of_emis'];
                     $update->name = $update_data['applicant_name'];
@@ -3228,7 +3230,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 ])
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0, 'c.is_removed' => 0, 'c.is_deleted' => 0])
-                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
                 ->groupBy(['a.user_enc_id', 'b.employee_code']);
 
             if (!empty($params['product_id'])) {
@@ -3498,7 +3500,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->select([
-                    'a.loan_app_enc_id','c2.status', 'a.amount', 'a.loan_type', 'a.application_number',
+                    'a.loan_app_enc_id', 'c2.status', 'a.amount', 'a.loan_type', 'a.application_number',
                     'a.loan_status_updated_on', 'a.login_date',
                     'ANY_VALUE(c1.location_name) as location_name', 'ANY_VALUE(c3.loan_status) as loan_status',
                     'lop.name as product_name',
@@ -3536,32 +3538,32 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanProductsEnc d'], false)
                 ->andWhere([
-                        'OR',
-                        [
-                            'AND',
-                            ['BETWEEN', 'c3.value', '5', '25'],
-                            ['<', 'a.loan_status_updated_on', $params['end_date']],
-                        ],
-                        [
-                            'AND',
-                            ['=', 'c3.value', '30'],
-                            ['<', 'a.loan_status_updated_on', $params['end_date']],
-                        ],
-                        [
-                            'AND',
-                            ['<', 'c3.value', '5'],
-                            ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
-                        ],
-                        [
-                            'AND',
-                            ['>', 'c3.value', '25'],
-                            ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
-                        ],
-                    ])
+                    'OR',
+                    [
+                        'AND',
+                        ['BETWEEN', 'c3.value', '5', '25'],
+                        ['<', 'a.loan_status_updated_on', $params['end_date']],
+                    ],
+                    [
+                        'AND',
+                        ['=', 'c3.value', '30'],
+                        ['<', 'a.loan_status_updated_on', $params['end_date']],
+                    ],
+                    [
+                        'AND',
+                        ['<', 'c3.value', '5'],
+                        ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                    ],
+                    [
+                        'AND',
+                        ['>', 'c3.value', '25'],
+                        ['BETWEEN', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']],
+                    ],
+                ])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0, 'a.is_removed' => 0])
-                ->groupBy(['a.loan_app_enc_id','c2.status'])
+                ->groupBy(['a.loan_app_enc_id', 'c2.status'])
                 ->orderBy([
-                     new \yii\db\Expression("CASE WHEN c2.status = 32 THEN 0 ELSE 1 END, c2.status ASC"),
+                    new \yii\db\Expression("CASE WHEN c2.status = 32 THEN 0 ELSE 1 END, c2.status ASC"),
                 ]);
 
             if (!empty($params['product_id'])) {
