@@ -1713,7 +1713,7 @@ class LoanAccountsController extends ApiBaseController
         ];
         $defined = [
             'FileNumberNew' => 'loan_account_number',
-            'CaseNo' => 'lms_loan_account_number',
+            'CaseNo' => 'case_no',
             'CompanyID' => 'company_id',
             'CompanyName' => 'company_name',
             'DealerName' => 'dealer_name',
@@ -1724,14 +1724,12 @@ class LoanAccountsController extends ApiBaseController
             'TotalInstallments' => 'total_installments',
             'AmountFinanced' => 'financed_amount',
             'Stock' => 'stock',
-//            '' => 'pos',
             'Adv.HP' => 'advance_interest',
             'SMA_STATUS' => 'bucket',
             'Name' => 'name',
             'SMA_STATUS_DATE' => 'bucket_status_date',
             'MobileNumber' => 'phone',
             'Installment1' => 'emi_amount',
-//            '' => 'overdue_amount',
             'Ledger A/c' => 'ledger_amount',
             'LoanType' => 'loan_type',
             'FirstInstallmentDate' => 'emi_date',
@@ -1750,21 +1748,29 @@ class LoanAccountsController extends ApiBaseController
             'PHF ECO GREEN'
         ];
         $always_required = [
+            'CompanyID',
+            'LmsNumber',
+            'FileNumberNew',
+            'CompanyName',
+            'CaseNo',
             'Stock',
             'Adv.HP',
             'SMA_STATUS',
             'SMA_STATUS_DATE',
             'Ledger A/c',
             'MobileNumber',
-        ];
+            'Name',
 
+        ];
+        $new_cases = 0;
+        $old_cases = 0;
         $file = $_FILES['file'];
         try {
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                 $count = true;
                 $transaction = Yii::$app->db->beginTransaction();
                 $utilitiesModel = new Utilities();
-                while (($data = fgetcsv($handle, 10000)) !== FALSE) {
+                while (($data = fgetcsv($handle, 100000)) !== FALSE) {
                     if ($count) {
                         $headers = $data;
                         $missing = [];
@@ -1784,27 +1790,44 @@ class LoanAccountsController extends ApiBaseController
                         $item = trim($item);
                         return in_array($key, [array_search('FileNumberNew', $headers), array_search('CaseNo', $headers)]) ? str_replace(' ', '', $item) : $item;
                     }, array_keys($data), $data);
-                    $loan_account_number = $data[array_search('FileNumberNew', $headers)];
-                    $lms_loan_account_number = $data[array_search('CaseNo', $headers)];
-                    if ($loan_account_number) {
-                        $where = ['loan_account_number' => $loan_account_number];
+                    unset($loan_account_number);
+                    if (array_search('FileNumberNew', $headers) !== false) {
+                        $loan_account_number = $data[array_search('FileNumberNew', $headers)];
+                    }
+                    $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    $where = ["AND"];
+                    if (!empty($loan_account_number)) {
+                        $where[] = ["loan_account_number" => $loan_account_number];
+
                     } else {
-                        $where = ['lms_loan_account_number' => $lms_loan_account_number, 'company_id' => $data[array_search('CompanyID', $headers)]];
+                        $company_id = $data[array_search('CompanyID', $headers)];
+                        $where[] = ["lms_loan_account_number" => $lms_loan_account_number];
+                        $where[] = ["company_id" => $company_id];
                         $loan_account_number = $lms_loan_account_number;
                     }
-                    $loan = LoanAccounts::findOne($where);
+                    if (array_search('Name', $headers) !== false) {
+                        $name = $data[array_search('Name', $headers)];
+                        $name = explode(' ', $name)[0];
+                        $where[] = ['LIKE', 'name', "$name%", false];
+                    }
+                    $loan = LoanAccounts::find()->where($where)->one();
                     if (!$loan) {
                         $new = true;
                         $loan = new LoanAccounts();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                         $loan->lms_loan_account_number = $lms_loan_account_number;
+                        $loan->case_no = $data[array_search('CaseNo', $headers)];
                         $loan->loan_account_number = $loan_account_number;
                         $loan->created_on = date('Y-m-d h:i:s');
                         $loan->created_by = $user->user_enc_id;
+                        $new_cases++;
+                    } else {
+                        $old_cases++;
                     }
                     $loan->updated_on = date('Y-m-d h:i:s');
                     $loan->updated_by = $user->user_enc_id;
+
                     if (in_array('LoanType', $headers)) {
                         $loan_type = $data[array_search('LoanType', $headers)];
                     } else {
@@ -1824,7 +1847,6 @@ class LoanAccountsController extends ApiBaseController
                             'TotalInstallments',
                             'AmountFinanced',
                             'Stock',
-                            //'pos',
                             'AmountFinanced',
                             'SMA_STATUS',
                             'SMA_STATUS_DATE',
@@ -1878,7 +1900,8 @@ class LoanAccountsController extends ApiBaseController
                                         if ($amount === false) {
                                             throw new \Exception('LastRecAmount field not found');
                                         }
-                                        $loan->last_emi_received_amount = $amount ?? 0;
+                                        if (!empty($amount))
+                                            $loan->last_emi_received_amount = $amount;
                                     }
                                     continue;
                                 }
@@ -1915,10 +1938,11 @@ class LoanAccountsController extends ApiBaseController
                 }
                 fclose($handle);
                 $transaction->commit();
-                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
             }
         } catch (\Exception $exception) {
-            print_r($exception);exit();
+            print_r($exception);
+            exit();
             $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }

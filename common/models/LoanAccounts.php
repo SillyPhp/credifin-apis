@@ -8,8 +8,10 @@ namespace common\models;
  * @property int $id Primary Id
  * @property string $loan_account_enc_id Loan Account
  * @property string $loan_app_enc_id Loan Application Enc Id
+ * @property string $assigned_financer_enc_id
  * @property string $loan_account_number Loan Account Number
  * @property string $lms_loan_account_number Lms Account Number
+ * @property string $case_no Case Number
  * @property string $collection_manager Collection Manager
  * @property int $company_id Company Id
  * @property string $company_name Company Name
@@ -62,6 +64,7 @@ namespace common\models;
  * @property OrganizationLocations $branchEnc
  * @property Users $collectionManager
  * @property LoanApplications $loanAppEnc
+ * @property Organizations $assignedFinancerEnc
  * @property LoanActionRequests[] $loanActionRequests
  * @property VehicleRepossession[] $vehicleRepossessions
  */
@@ -85,18 +88,19 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['company_id', 'hard_recovery', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
             [['last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
             [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
-            [['loan_account_enc_id', 'loan_app_enc_id', 'loan_account_number', 'lms_loan_account_number', 'collection_manager', 'company_name', 'dealer_name', 'coborrower_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_account_enc_id', 'loan_app_enc_id', 'assigned_financer_enc_id', 'loan_account_number', 'lms_loan_account_number', 'case_no', 'collection_manager', 'company_name', 'dealer_name', 'coborrower_name', 'branch_enc_id', 'name', 'loan_type', 'assigned_caller', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['coborrower_phone', 'phone'], 'string', 'max' => 15],
             [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
             [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
             [['loan_account_enc_id'], 'unique'],
-            [['loan_account_number'], 'unique'],
+            [['lms_loan_account_number', 'company_id'], 'unique', 'targetAttribute' => ['lms_loan_account_number', 'company_id']],
             [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
             [['collection_manager'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['collection_manager' => 'user_enc_id']],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
+            [['assigned_financer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_financer_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -178,6 +182,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getLoanAppEnc()
     {
         return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerEnc()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_financer_enc_id']);
     }
 
     /**
