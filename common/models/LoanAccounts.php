@@ -36,7 +36,7 @@ namespace common\models;
  * @property string $branch_enc_id Branch Enc Id
  * @property string $bucket_status_date Bucket Status Date
  * @property string $name Name
- * @property string $phones Phone
+ * @property string $phone Phone
  * @property double $emi_amount Emi Amount
  * @property double $overdue_amount Overdue Amount
  * @property double $ledger_amount Ledger Amount
@@ -87,7 +87,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_account_enc_id', 'loan_account_number', 'lms_loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
+            [['loan_account_enc_id', 'loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
             [['company_id', 'hard_recovery', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
             [['sales_target_date', 'telecaller_target_date', 'collection_target_date', 'last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
             [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
@@ -96,7 +96,6 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
             [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
             [['loan_account_enc_id'], 'unique'],
-            [['case_no', 'company_id'], 'unique', 'targetAttribute' => ['case_no', 'company_id']],
             [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
