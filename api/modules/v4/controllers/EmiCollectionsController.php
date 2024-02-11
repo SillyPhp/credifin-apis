@@ -20,6 +20,7 @@ use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -357,6 +358,8 @@ class EmiCollectionsController extends ApiBaseController
         $limit = !empty($params["limit"]) ? $params["limit"] : 10;
         $page = !empty($params["page"]) ? $params["page"] : 1;
         $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+        $currentUser = [$user->user_enc_id];
+        $juniors = array_diff($juniors, $currentUser);
         $subquery1 = (new Query())
             ->select([
                 "a.given_to",
@@ -428,6 +431,11 @@ class EmiCollectionsController extends ApiBaseController
                 "ANY_VALUE(b1.employee_code) employee_code",
                 "ANY_VALUE(b2.designation) designation",
                 "ANY_VALUE(a.phone) phone", 'COALESCE(ANY_VALUE(subquery.collected_cash), 0) collected_cash',
+                "CASE 
+                    WHEN a.image IS NOT NULL 
+                        THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) 
+                        ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') 
+                    END image",
                 'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
                 'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
 //                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
