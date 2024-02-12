@@ -915,16 +915,20 @@ class LoanAccountsController extends ApiBaseController
             ->where($where);
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+
+            $assigned_lc = (new Query())
+                ->select(['z.loan_account_enc_id'])
+                ->from(['z' => AssignedLoanAccounts::tableName()])
+                ->where(['IN', 'z.shared_to', $juniors])
+                ->andWhere(['z.is_deleted' => 0, 'z.status' => 'Active']);
             $bucket
-                ->joinWith(['assignedLoanAccounts b'], false)
                 ->andWhere([
                     "OR",
                     ["IN", "a.assigned_caller", $juniors],
                     ["IN", "a.collection_manager", $juniors],
                     ["IN", "a.created_by", $juniors],
-                    ["IN", "b.shared_to", $juniors],
-                ])
-                ->groupBy(['a.loan_account_enc_id']);
+                    ["IN", "a.loan_account_enc_id", $assigned_lc],
+                ]);
         }
         $bucket = $bucket->asArray()->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
