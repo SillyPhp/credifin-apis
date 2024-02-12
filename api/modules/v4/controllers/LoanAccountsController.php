@@ -198,7 +198,7 @@ class LoanAccountsController extends ApiBaseController
                 ->from(['a' => LoanAccounts::tableName()],)
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
                 ->where(['a.loan_account_enc_id' => $loan_ids])
-                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
+                ->groupBy(['a1.loan_type', 'a.loan_account_enc_id', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         } else {
             $data = (new \yii\db\Query())
