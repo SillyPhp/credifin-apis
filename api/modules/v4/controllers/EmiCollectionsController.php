@@ -1080,6 +1080,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['discrepancy_list'])) {
             $model->andWhere(['a.loan_account_enc_id' => null]);
+
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
@@ -1168,16 +1169,12 @@ class EmiCollectionsController extends ApiBaseController
         foreach ($model as &$item) {
             $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
                 $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' : (($assignedLoan['user_type'] == 2) ? 'collection_manager' : (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
-
                 $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
-                $shared_img = '';
                 if (!empty($assignedLoan['sharedTo']['image'])) {
                     $shared_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $assignedLoan['sharedTo']['image_location'] . '/' . $assignedLoan['sharedTo']['image'];
                 } else {
                     $shared_img = 'https://ui-avatars.com/api/?name=' . urlencode($assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? '')) . '&size=200&rounded=false&background=' . str_replace('#', '', $assignedLoan['sharedTo']['initials_color']) . '&color=ffffff';
                 }
-
-
                 return [
                     'id' => $assignedLoan['id'],
                     'assigned_enc_id' => $assignedLoan['assigned_enc_id'],
@@ -1188,7 +1185,6 @@ class EmiCollectionsController extends ApiBaseController
                     'user_type' => $user_type,
                 ];
             }, $item['loanAccountEnc']['assignedLoanAccounts']);
-
             unset($item['loanAccountEnc']);
         }
 

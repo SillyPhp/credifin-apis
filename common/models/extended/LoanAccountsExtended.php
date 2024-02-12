@@ -19,11 +19,6 @@ class LoanAccountsExtended extends LoanAccounts
         ];
     }
 
-    public function getAssignedLoanAccounts()
-    {
-        return $this->hasMany(AssignedLoanAccounts::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
-    }
-
     public function getEmiCollectionsCustom()
     {
         return $this->hasOne(EmiCollection::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
