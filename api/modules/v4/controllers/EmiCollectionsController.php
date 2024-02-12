@@ -45,7 +45,8 @@ class EmiCollectionsController extends ApiBaseController
                 "update" => ["POST", "OPTIONS"],
                 "update-emi-number" => ["POST", "OPTIONS"],
                 "ptp-emi" => ["POST", "OPTIONS"],
-                "update-payment-method" => ["POST", "OPTIONS"]
+                "update-payment-method" => ["POST", "OPTIONS"],
+                "employee-cash-stats" => ["POST", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
