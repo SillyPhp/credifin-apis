@@ -1810,7 +1810,7 @@ class OrganizationsController extends ApiBaseController
             if ($status == 'Paid') {
                 $res[$payment_method]['sum'] += $sum;
                 $res[$payment_method]['count'] += $count;
-            } else if (isset($res[$payment_method]['pending'])) {
+            } else if (isset($res[$payment_method]['pending']) && !in_array($status, ['Failed', 'Rejected'])) {
                 $res[$payment_method]['pending']['count'] += $count;
                 $res[$payment_method]['pending']['sum'] += $sum;
             }
