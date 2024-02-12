@@ -1535,7 +1535,8 @@ class LoanAccountsController extends ApiBaseController
                             'FirstInstallmentDate',
                             'VehicleMain',
                             'LastInstallmentDate',
-                            'ZoneName'
+                            'ZoneName',
+                            'OverDue'
                         ])) {
                             $value = $data[array_search($header, $headers)];
 
@@ -1615,7 +1616,7 @@ class LoanAccountsController extends ApiBaseController
                 return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
             }
         } catch (\Exception $exception) {
-            print_r(['exception' => $exception, 'raw_sql' => $raw ?? 'not set', 'data' => $data ?? 'not set', 'loan' => $loan, 'new' => $new, 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
+            print_r(['exception' => $exception]);
             exit();
             $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
