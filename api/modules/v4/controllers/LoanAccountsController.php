@@ -182,7 +182,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_ids = $params['loan_account_enc_id'];
-        if ($loan_ids['loan_account_enc_id']) {
+        if (!empty($loan_ids)) {
             $data = (new \yii\db\Query())
                 ->select([
                     "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
@@ -190,14 +190,14 @@ class LoanAccountsController extends ApiBaseController
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
                     '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
-                    'a.overdue_amount', 'a.ledger_amount',
+                    'a.overdue_amount', 'a.ledger_amount', 'a.sales_priority', 'telecaller_priority', 'a.collection_priority', 'a.bucket',
                     '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                     'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
                     'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
                 ])
                 ->from(['a' => LoanAccounts::tableName()],)
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
-                ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])
+                ->where(['a.loan_account_enc_id' => $loan_ids])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         } else {
@@ -210,15 +210,15 @@ class LoanAccountsController extends ApiBaseController
                     'a1.loan_type',
                 ])
                 ->from(['a1' => EmiCollection::tableName()],)
-                ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])
+                ->where(['a1.loan_account_number' => $loan_ids])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         };
 
-        if ($loan_ids['loan_account_enc_id']) {
-            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
+        if ($loan_ids) {
+            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids]);
         } else {
-            $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
+            $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_number']]);
         };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
@@ -922,7 +922,7 @@ class LoanAccountsController extends ApiBaseController
         $where = [];
         foreach ($conditions as $key => $value) {
             if (in_array($key, ['loan_type', 'branch_enc_id', 'bucket', 'id_deleted'])) {
-                $where ["la.$key"] = $value;
+                $where["la.$key"] = $value;
             }
         }
         $subQuery = (new Query())
@@ -1031,7 +1031,8 @@ class LoanAccountsController extends ApiBaseController
                 "c.created_by"
             ])
             ->joinWith(['assignedLoanAccounts ala' => function ($ala) {
-                $ala->select(['ala.loan_account_enc_id', 'ala.access', 'ala.assigned_enc_id',
+                $ala->select([
+                    'ala.loan_account_enc_id', 'ala.access', 'ala.assigned_enc_id',
                     "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image",
                     "(CASE WHEN ala.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
                     "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
