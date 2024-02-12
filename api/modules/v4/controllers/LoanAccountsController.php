@@ -878,7 +878,8 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
-        $where = ['is_deleted' => 0];
+        $user = $this->user;
+        $where = ['a.is_deleted' => 0];
         if (!empty($params['bucketVal'])) {
             $where['bucket'] = $params['bucketVal'];
         }
@@ -889,30 +890,43 @@ class LoanAccountsController extends ApiBaseController
 
                     switch ($key) {
                         case 'branch':
-                            $where['branch_enc_id'] = $value;
+                            $where['a.branch_enc_id'] = $value;
                             break;
                         case 'loan_type':
-                            $where['loan_type'] = $value;
+                            $where['a.loan_type'] = $value;
                             break;
                     }
                 }
             }
         }
         $bucket = LoanAccountsExtended::find()
+            ->alias('a')
             ->select([
-                "COUNT(loan_account_enc_id) AS loan_accounts_count",
-                "COUNT(NULLIF(overdue_amount, 0)) AS overdue_count",
-                "SUM(overdue_amount) AS overdue_sum",
-                "COUNT(NULLIF(ledger_amount, 0)) AS ledger_count",
-                "SUM(ledger_amount) AS ledger_sum",
-                "COUNT(NULLIF(last_emi_received_amount, 0)) AS emi_received_count",
-                "SUM(last_emi_received_amount) AS emi_received_sum",
-                "(COALESCE(COUNT(ledger_amount), 0) + COALESCE(COUNT(overdue_amount), 0)) AS total_pending_count",
-                "(COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0)) AS total_pending_sum"
+                "COUNT(a.loan_account_enc_id) AS loan_accounts_count",
+                "COUNT(NULLIF(a.overdue_amount, 0)) AS overdue_count",
+                "SUM(a.overdue_amount) AS overdue_sum",
+                "COUNT(NULLIF(a.ledger_amount, 0)) AS ledger_count",
+                "SUM(a.ledger_amount) AS ledger_sum",
+                "COUNT(NULLIF(a.last_emi_received_amount, 0)) AS emi_received_count",
+                "SUM(a.last_emi_received_amount) AS emi_received_sum",
+                "(COALESCE(COUNT(a.ledger_amount), 0) + COALESCE(COUNT(a.overdue_amount), 0)) AS total_pending_count",
+                "(COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) AS total_pending_sum"
             ])
-            ->where($where)
-            ->asArray()
-            ->one();
+            ->where($where);
+        if (!$this->isSpecial(1)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $bucket
+                ->joinWith(['assignedLoanAccounts b'], false)
+                ->andWhere([
+                    "OR",
+                    ["IN", "a.assigned_caller", $juniors],
+                    ["IN", "a.collection_manager", $juniors],
+                    ["IN", "a.created_by", $juniors],
+                    ["IN", "b.shared_to", $juniors],
+                ])
+                ->groupBy(['a.loan_account_enc_id']);
+        }
+        $bucket = $bucket->asArray()->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
         return $this->response(200, ["status" => 200, "data" => $bucket]);
     }
