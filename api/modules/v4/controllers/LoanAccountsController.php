@@ -1386,6 +1386,7 @@ class LoanAccountsController extends ApiBaseController
             'AmountFinanced' => 'financed_amount',
             'Stock' => 'stock',
             'Adv.HP' => 'advance_interest',
+            'OverDue' => 'overdue_amount',
             'SMA_STATUS' => 'bucket',
             'Name' => 'name',
             'SMA_STATUS_DATE' => 'bucket_status_date',
@@ -1591,7 +1592,8 @@ class LoanAccountsController extends ApiBaseController
                                     'SMA_STATUS',
                                     'SMA_STATUS_DATE',
                                     'MobileNumber',
-                                    'Ledger A/c'
+                                    'Ledger A/c',
+                                    'OverDue'
                                 ])) {
                                     $loan->$def = $value;
                                 } else {
