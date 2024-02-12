@@ -2615,7 +2615,7 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'sharedTo') {
                         $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
-                        $query->andWhere(["like", $key, "$value%", false]);
+                        $query->andWhere(["like", 'a.'.$key, "$value%", false]);
                     }
                 }
             }
