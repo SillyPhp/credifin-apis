@@ -1723,5 +1723,40 @@ class LoanAccountsController extends ApiBaseController
         return ['status' => 200, 'found and updated' => count($num)];
     }
 
+    public function actionUpdateTargetDates()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
 
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_number"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $target_date = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+            if (!$target_date) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $target_date->sales_target_date = !empty($params['sales_target_date']) ? $params['sales_target_date'] : $target_date->sales_target_date;
+            $target_date->collection_target_date = !empty($params['collection_target_date']) ? $params['collection_target_date'] : $target_date->collection_target_date;
+            $target_date->telecaller_target_date = !empty($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $target_date->telecaller_target_date;
+            $target_date->updated_by = $user->user_enc_id;
+            $target_date->updated_on = date('Y-m-d H:i:s');
+
+            if (!$target_date->save()) {
+                throw new Exception(implode(" ", array_column($target_date->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
 }
