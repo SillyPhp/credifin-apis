@@ -59,6 +59,7 @@ class LoanAccountsController extends ApiBaseController
                 'update-loan-acc-access' => ['POST', 'OPTIONS'],
                 'upload-sheet' => ['POST', 'OPTIONS'],
                 'update-branch' => ['POST', 'OPTIONS'],
+                'update-target-dates' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -186,7 +187,7 @@ class LoanAccountsController extends ApiBaseController
             $data = (new \yii\db\Query())
                 ->select([
                     "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
-                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
+                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id', 'a.sales_target_date', 'a.telecaller_target_date', 'a.collection_target_date',
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
                     '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
@@ -1732,7 +1733,7 @@ class LoanAccountsController extends ApiBaseController
         $params = Yii::$app->request->post();
 
         if (empty($params['loan_account_enc_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_number"']);
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
         }
 
         $transaction = Yii::$app->db->beginTransaction();
