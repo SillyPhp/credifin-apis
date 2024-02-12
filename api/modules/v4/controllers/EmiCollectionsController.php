@@ -19,8 +19,8 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 use yii\helpers\Url;
+use yii\web\UploadedFile;
 
 class EmiCollectionsController extends ApiBaseController
 {
@@ -366,7 +366,7 @@ class EmiCollectionsController extends ApiBaseController
                 "a.given_to",
                 "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
                 "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
-                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
+//                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
             ])
             ->from(["a" => EmployeesCashReport::tableName()])
             ->andWhere([
@@ -438,7 +438,7 @@ class EmiCollectionsController extends ApiBaseController
                         ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') 
                     END image",
                 'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
-                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+//                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
 //                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
             ])
             ->joinWith(["userRoles0 b1" => function ($b1) {
@@ -459,6 +459,7 @@ class EmiCollectionsController extends ApiBaseController
             ])
             ->andWhere($fields_search)
             ->andWhere(['IN', 'a.user_enc_id', $juniors])
+            ->orderBy(['COALESCE(ANY_VALUE(subquery.collected_cash), 0)' => SORT_DESC])
             ->groupBy(['a.user_enc_id']);
         $count = $users->count();
         $users = $users
@@ -1079,6 +1080,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['discrepancy_list'])) {
             $model->andWhere(['a.loan_account_enc_id' => null]);
+
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
@@ -1167,16 +1169,12 @@ class EmiCollectionsController extends ApiBaseController
         foreach ($model as &$item) {
             $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
                 $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' : (($assignedLoan['user_type'] == 2) ? 'collection_manager' : (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
-
                 $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
-                $shared_img = '';
                 if (!empty($assignedLoan['sharedTo']['image'])) {
                     $shared_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $assignedLoan['sharedTo']['image_location'] . '/' . $assignedLoan['sharedTo']['image'];
                 } else {
                     $shared_img = 'https://ui-avatars.com/api/?name=' . urlencode($assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? '')) . '&size=200&rounded=false&background=' . str_replace('#', '', $assignedLoan['sharedTo']['initials_color']) . '&color=ffffff';
                 }
-
-
                 return [
                     'id' => $assignedLoan['id'],
                     'assigned_enc_id' => $assignedLoan['assigned_enc_id'],
@@ -1187,7 +1185,6 @@ class EmiCollectionsController extends ApiBaseController
                     'user_type' => $user_type,
                 ];
             }, $item['loanAccountEnc']['assignedLoanAccounts']);
-
             unset($item['loanAccountEnc']);
         }
 
