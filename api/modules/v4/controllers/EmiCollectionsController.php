@@ -8,7 +8,6 @@ use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
-use common\models\extended\LoanAuditTrail;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
@@ -20,6 +19,7 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 class EmiCollectionsController extends ApiBaseController
@@ -45,7 +45,8 @@ class EmiCollectionsController extends ApiBaseController
                 "update" => ["POST", "OPTIONS"],
                 "update-emi-number" => ["POST", "OPTIONS"],
                 "ptp-emi" => ["POST", "OPTIONS"],
-                "update-payment-method" => ["POST", "OPTIONS"]
+                "update-payment-method" => ["POST", "OPTIONS"],
+                "employee-cash-stats" => ["POST", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -186,7 +187,7 @@ class EmiCollectionsController extends ApiBaseController
                 "br.location_name as branch"
             ])
             ->innerJoinWith(["createdBy cb" => function ($cb) {
-                $cb->innerJoinWith(["userRoles0 ur" => function ($ur){
+                $cb->innerJoinWith(["userRoles0 ur" => function ($ur) {
                     $ur->andOnCondition(['in', 'designation_id', ['39pOaLxn1RyA6ewg0m14RwrK85kq6m', 'jE3DW981MQMDwAbvpx1Vdl5zrZyBag']]);
                 }], false);
             }], false)
@@ -199,10 +200,10 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0]);
-            if (!empty($params['status'])) {
-                $query->andWhere(["a.emi_payment_status" => $params['status']]);
-            }
-            $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
+        if (!empty($params['status'])) {
+            $query->andWhere(["a.emi_payment_status" => $params['status']]);
+        }
+        $query = $query->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -276,10 +277,9 @@ class EmiCollectionsController extends ApiBaseController
                 ["a.type" => 1]
             ])
             ->groupBy(["a.received_from"]);
-
         $fields_search = [];
-        if (!empty($params['field'])) {
-            foreach ($params['field'] as $key => $value) {
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     switch ($key) {
                         case 'employee_code':
@@ -296,6 +296,10 @@ class EmiCollectionsController extends ApiBaseController
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
+                            break;
+                        case 'branch':
+                            $branch = "('" . implode("','", $value) . "')";
+                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
                             break;
                     }
                 }
@@ -314,6 +318,7 @@ class EmiCollectionsController extends ApiBaseController
                 'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
                 'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
                 'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
+                'ANY_VALUE(b4.location_enc_id) branch_enc_id'
             ])
             ->joinWith(["userRoles0 b1" => function ($b1) {
                 $b1->joinWith(["designation b2"], false);
@@ -339,7 +344,6 @@ class EmiCollectionsController extends ApiBaseController
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-
         if (!$users) {
             return $this->response(404, ["message" => "not found"]);
         }
@@ -347,6 +351,149 @@ class EmiCollectionsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
     }
 
+    public function actionEmployeeCashStats()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $limit = !empty($params["limit"]) ? $params["limit"] : 10;
+        $page = !empty($params["page"]) ? $params["page"] : 1;
+        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+        $currentUser = [$user->user_enc_id];
+        $juniors = array_diff($juniors, $currentUser);
+        $subquery1 = (new Query())
+            ->select([
+                "a.given_to",
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
+//                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["IS NOT", "a.given_to", null],
+                ["!=", "a.status", 3],
+                ["IN", "a.type", [0, 2]]
+            ])
+            ->groupBy(["a.given_to"]);
+        $subquery2 = (new Query())
+            ->select([
+                "a.received_from",
+                "SUM(a.remaining_amount) AS bank_unapproved_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["!=", "a.status", 3],
+                ["a.status" => 2],
+                ["a.type" => 1]
+            ])
+            ->groupBy(["a.received_from"]);
+        $fields_search = [];
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    switch ($key) {
+                        case 'employee_code':
+                            $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
+                            break;
+                        case 'name':
+                            $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
+                            break;
+//                        case 'reporting_person':
+//                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+//                            break;
+                        case 'designation':
+                            $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
+                            break;
+                        case 'phone':
+                            $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
+                            break;
+//                        case 'branch':
+//                            $branch = "('" . implode("','", $value) . "')";
+//                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+//                            break;
+                    }
+                }
+            }
+            $fields_search = implode(" AND ", $fields_search);
+        }
+        $users = UsersExtended::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id AS user_id',
+                "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) name",
+                "ANY_VALUE(b1.employee_code) employee_code",
+                "ANY_VALUE(b2.designation) designation",
+                "ANY_VALUE(a.phone) phone", 'COALESCE(ANY_VALUE(subquery.collected_cash), 0) collected_cash',
+                "CASE 
+                    WHEN a.image IS NOT NULL 
+                        THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) 
+                        ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') 
+                    END image",
+                'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
+//                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+//                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
+            ])
+            ->joinWith(["userRoles0 b1" => function ($b1) {
+                $b1->joinWith(["designation b2"], false);
+//                $b1->joinWith(["reportingPerson b3"], false);
+//                $b1->joinWith(["branchEnc b4"], false);
+            }], false)
+            ->joinWith(["employeesCashReports3 c" => function ($c) use ($subquery1) {
+                $c->from(["subquery" => $subquery1]);
+            }])
+//            ->joinWith(["employeesCashReports2 d" => function ($d) use ($subquery2) {
+//                $d->from(["subquery2" => $subquery2]);
+//            }])
+            ->andWhere([
+                "OR",
+                ["IS NOT", "subquery.given_to", NULL],
+//                ["IS NOT", "subquery2.received_from", NULL]
+            ])
+            ->andWhere($fields_search)
+            ->andWhere(['IN', 'a.user_enc_id', $juniors])
+            ->orderBy(['COALESCE(ANY_VALUE(subquery.collected_cash), 0)' => SORT_DESC])
+            ->groupBy(['a.user_enc_id']);
+        $count = $users->count();
+        $users = $users
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        if (!$users) {
+            return $this->response(404, ["message" => "not found"]);
+        }
+
+        return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
+    }
+
+    public function actionCashReportStats()
+    {
+        $this->isAuth();
+        $stats = EmployeesCashReport::find()
+            ->alias('a')
+            ->select([
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash",
+                "SUM(CASE WHEN a.status = 2 AND a.type =1 THEN a.remaining_amount END) AS bank_unapproved_cash"
+            ])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+            ])
+            ->asArray()
+            ->one();
+        return $this->response(200, ['status' => 200, 'data' => $stats]);
+    }
 
     public function actionEmployeeEmiCollection()
     {
@@ -440,10 +587,8 @@ class EmiCollectionsController extends ApiBaseController
                 ],
                 ["a.is_deleted" => 0],
                 ["a.parent_cash_report_enc_id" => null],
-                [
-                    "not",
-                    ["a.remaining_amount" => 0]
-                ]
+                ["!=", "a.remaining_amount", 0],
+                ["!=", "a.status", 3],
             ])
             ->asArray()
             ->one();
@@ -559,6 +704,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.emi_collection_enc_id", "c.loan_account_number", "c.customer_name",
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
+                $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
             }])
             ->andWhere($where)
             ->asArray()
@@ -804,22 +950,29 @@ class EmiCollectionsController extends ApiBaseController
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
-
         $display_data = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                'ANY_VALUE(a.customer_name) customer_name', 'ANY_VALUE(a.loan_account_number) loan_account_number',
-                'ANY_VALUE(a.loan_type) loan_type', 'ANY_VALUE(a.phone) phone', 'SUM(a.amount) total_amount',
-                'COUNT(a.loan_account_number) as total_emis',
-                "CONCAT(ANY_VALUE(b.location_name) , ', ', COALESCE(ANY_VALUE(b1.name), '')) as branch_name",
-                "SUM(CASE WHEN a.emi_payment_status != 'paid' THEN a.amount END) as pending_amount",
-                "SUM(CASE WHEN a.emi_payment_status = 'paid' THEN a.amount END) as paid_amount",
+                'a.customer_name', 'a.loan_account_number', 'a.loan_account_enc_id',
+                "c.sales_priority",
+                "c.collection_priority",
+                "c.telecaller_priority",
+
+                "c.bucket AS bucket_value",
+                'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
+                'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
+                "CONCAT(b.location_name, ', ', COALESCE(b1.name, '')) AS branch_name",
+                "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') AND MONTH(collection_date) = MONTH(CURRENT_DATE()) THEN amount ELSE 0 END) OVER(PARTITION BY loan_account_number) AS collected_amount",
+                "SUM(CASE WHEN a.emi_payment_status = 'pending' THEN a.amount END) OVER(PARTITION BY loan_account_number) AS pending_amount",
+                "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') THEN a.amount END) OVER(PARTITION BY loan_account_number) AS paid_amount",
             ])
             ->joinWith(['branchEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b1'], false);
             }], false)
+            ->joinWith(['loanAccountEnc c'], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
-            ->groupBy(['a.loan_account_number'])
+            ->orderBY(['a.id' => SORT_DESC])
+            ->limit(1)
             ->asArray()
             ->one();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
@@ -885,6 +1038,12 @@ class EmiCollectionsController extends ApiBaseController
                 "b.user_enc_id as collected_by_id",
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
             ])
+            ->joinWith(['loanAccountEnc lc' => function ($lc) {
+                $lc->joinWith(['assignedLoanAccounts ala' => function ($ala) {
+                    $ala->andOnCondition(['ala.is_deleted' => 0]);
+                    $ala->joinWith(['sharedTo dd1']);
+                }]);
+            }])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1' => function ($b1) {
                     $b1->joinWith(['designation b1a'], false);
@@ -902,7 +1061,7 @@ class EmiCollectionsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $model->andWhere(['IN', 'a.created_by', $juniors]);
         }
@@ -921,9 +1080,10 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['discrepancy_list'])) {
             $model->andWhere(['a.loan_account_enc_id' => null]);
+
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'loan_account_number', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1006,6 +1166,29 @@ class EmiCollectionsController extends ApiBaseController
             ->asArray()
             ->all();
 
+        foreach ($model as &$item) {
+            $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
+                $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' : (($assignedLoan['user_type'] == 2) ? 'collection_manager' : (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
+                $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
+                if (!empty($assignedLoan['sharedTo']['image'])) {
+                    $shared_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $assignedLoan['sharedTo']['image_location'] . '/' . $assignedLoan['sharedTo']['image'];
+                } else {
+                    $shared_img = 'https://ui-avatars.com/api/?name=' . urlencode($assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? '')) . '&size=200&rounded=false&background=' . str_replace('#', '', $assignedLoan['sharedTo']['initials_color']) . '&color=ffffff';
+                }
+                return [
+                    'id' => $assignedLoan['id'],
+                    'assigned_enc_id' => $assignedLoan['assigned_enc_id'],
+                    'loan_account_enc_id' => $assignedLoan['loan_account_enc_id'],
+                    'access' => $assignedLoan['access'],
+                    'name' => $shared_name,
+                    'image' => $shared_img,
+                    'user_type' => $user_type,
+                ];
+            }, $item['loanAccountEnc']['assignedLoanAccounts']);
+            unset($item['loanAccountEnc']);
+        }
+
+
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($model as &$value) {
@@ -1070,20 +1253,7 @@ class EmiCollectionsController extends ApiBaseController
             if (!$emi->save()) {
                 throw new Exception(implode(',', array_column($emi->errors, "0")));
             }
-            $audit = new LoanAuditTrail();
-
-            $audit->old_value = "";
-            $audit->new_value = $params['remarks'];
-            $audit->action = "SET";
-            $audit->model = "EmiCollection";
-            $audit->field = "remarks";
-            $audit->stamp = date('Y-m-d H:i:s');
-            $audit->user_id = (string)Yii::$app->user->identity->id;
-            $audit->model_id = (string)$emi->id;
-            $audit->foreign_id = $emi_id;
-            if (!$audit->save()) {
-                throw new Exception(implode(',', array_column($audit->errors, "0")));
-            }
+            UserUtilities::CustomLoanAudit($emi->id, $emi_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
             if (isset($params['amount'])) {
                 $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
                 if ($cash) {
@@ -1321,6 +1491,85 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(200, ['message' => 'Successfully saved.']);
         } catch (Exception $exception) {
             return $this->response(500, ['message' => 'An error occurred.', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionEmiCollection()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        if (!$org = $user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$org = $findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
+        $params = Yii::$app->request->post();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $update_overdue = false;
+            if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
+                $emi_id = $params['emi_collection_enc_id'];
+                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
+                if ($model) {
+                    $status = $params['status'];
+                    if ($status === 'paid') {
+                        $update_overdue = true;
+                    }
+                    $model->emi_payment_status = $status;
+                    UserUtilities::CustomLoanAudit($model->id, $model->emi_collection_enc_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
+                    if ($status === 'rejected') {
+                        $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
+                        if ($cash) {
+                            if (!empty($cash->parent_cash_report_enc_id)) {
+                                $cash2 = EmployeesCashReportExtended::findOne([
+                                    'cash_report_enc_id' => $cash->parent_cash_report_enc_id,
+                                    "is_deleted" => 0,
+                                    'type' => 1,
+                                    'status' => 2
+                                ]);
+                                if (!$cash2) {
+                                    throw new Exception('We can not update this emi.');
+                                }
+                                $cash2->amount -= $cash->amount;
+                                $cash2->remaining_amount -= $cash->amount;
+                                if (!$cash2->save()) {
+                                    throw new \yii\db\Exception(implode(' ', array_column($cash2->errors, 0)));
+                                }
+                            }
+                            $cash->status = 3;
+                            if (!$cash->save()) {
+                                throw new \yii\db\Exception(implode(' ', array_column($cash->errors, 0)));
+                            }
+                        }
+                    }
+                    $model->updated_by = $user->user_enc_id;
+                    $model->updated_on = date('Y-m-d h:i:s');
+                    if (!$model->save()) {
+                        throw new \yii\db\Exception(implode(' ', array_column($model->errors, 0)));
+                    }
+                    if ($update_overdue) {
+                        EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
+                    }
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+                }
+            } else {
+                $model = new EmiCollectionForm();
+                $model->org_id = $org;
+                if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                    throw new Exception(implode(' ', array_column($model->errors, 0)));
+                }
+                $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
+                $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
+                $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
+                $save = $model->save($user->user_enc_id);
+                $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
+                return $this->response($save['status'], $save);
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
         }
     }
 }

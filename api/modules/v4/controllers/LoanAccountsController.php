@@ -14,6 +14,7 @@ use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
+use common\models\LoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
@@ -56,6 +57,8 @@ class LoanAccountsController extends ApiBaseController
                 'stats' => ['POST', 'OPTIONS'],
                 'loan-accounts-type' => ['POST', 'OPTIONS'],
                 'update-loan-acc-access' => ['POST', 'OPTIONS'],
+                'upload-sheet' => ['POST', 'OPTIONS'],
+                'update-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -70,355 +73,6 @@ class LoanAccountsController extends ApiBaseController
         ];
 
         return $behaviors;
-    }
-
-    public function actionLoanAccountsUpload()
-    {
-
-        $this->isAuth(2);
-        $user = $this->user;
-        $branches = [
-            "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
-            "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
-            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
-            "JGN" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
-            "HSX" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
-            "NAWA" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
-            "MEX" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
-            "BAT" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
-            "TTO" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
-            "KXH" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
-            "NRO" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
-            "MKS" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
-            "SGNR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
-            "ABS" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
-            "MOT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
-            "NDLS" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
-            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
-            "KNN" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
-            "MET" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
-            "ASR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
-            "KARR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
-            "ZKP" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
-            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
-            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
-            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
-            "FZP" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
-            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
-            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
-            "ROK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
-            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
-            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
-            "RK" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
-            "HW" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
-            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
-            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
-            "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
-            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
-            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
-            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
-            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
-            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
-            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
-            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
-            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
-            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
-        ];
-        $file = $_FILES['file'];
-        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
-            $count = true;
-            $transaction = Yii::$app->db->beginTransaction();
-            $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-                if ($count) {
-                    $header = $data;
-                    $count = false;
-                    continue;
-                }
-
-                $data = array_map(function ($key, $item) use ($header) {
-                    $item = trim($item);
-                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
-                }, array_keys($data), $data);
-
-                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[array_search('LoanNo', $header)])]);
-                if (!$loan) {
-                    $loan = new LoanAccounts();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
-                    $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                    $loan->lms_loan_account_number = $data[array_search('LmsNumber', $header)];
-                    $loan->loan_account_number = trim($data[array_search('LoanNo', $header)]);
-                    $loan->name = trim($data[array_search('CustomerName', $header)]);
-                    $loan->loan_type = $data[array_search('LoanType', $header)];
-                    $loan->emi_date = date('Y-m-d', strtotime($data[array_search('FirstInstallmentDate', $header)]));
-                    $loan->last_emi_date = date('Y-m-d', strtotime($data[array_search('LastInstallmentDate', $header)]));
-                    $loan->emi_amount = $data[array_search('EmiAmount', $header)];
-                    $loan->total_installments = $data[array_search('TotalInstallments', $header)];
-                    $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                    $tmp = $branches[$data[array_search('Branch', $header)]];
-                    if (array_search('VehicleType', $header)) {
-                        $loan->vehicle_type = $data[array_search('VehicleType', $header)];
-                    }
-                    if (array_search('VehicleModel', $header)) {
-                        $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
-                    }
-                    if (array_search('VehicleMake', $header)) {
-                        $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
-                    }
-                    if (array_search('VehicleEngineNo', $header)) {
-                        $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
-                    }
-                    if (array_search('VehicleChassisNo', $header)) {
-                        $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
-                    }
-                    if (array_search('RcNumber', $header)) {
-                        $loan->rc_number = $data[array_search('RcNumber', $header)];
-                    }
-                    $loan->branch_enc_id = $tmp;
-                    $loan->created_on = date('Y-m-d h:i:s');
-                    $loan->created_by = $user->user_enc_id;
-                }
-                $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
-                $loan->bucket = $data[array_search('SMASTATUS', $header)];
-                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
-                if (empty($last_emi_amount)) {
-                    $last_emi_amount = 0;
-                }
-                $loan->last_emi_received_amount = $last_emi_amount;
-                $last_emi_date = $data[array_search('LastRecDate', $header)];
-                if (!empty($last_emi_date)) {
-                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
-                }
-                $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
-                $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
-                $loan->pos = $data[array_search('Pos', $header)];
-                $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
-                $loan->stock = $data[array_search('Stock', $header)];
-                $cm = array_search('CollectionManager', $header);
-                if (!empty($data[$cm])) {
-                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
-                }
-                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
-                    $loan->collection_manager = $collection_manager['user_enc_id'];
-                }
-                !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
-                $loan->updated_on = date('Y-m-d h:i:s');
-                $loan->updated_by = $user->user_enc_id;
-                if (!$loan->save()) {
-                    $transaction->rollBack();
-                    print_r($loan->getErrors());
-                    print_r($data);
-                    exit();
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
-                }
-            }
-            fclose($handle);
-            $transaction->commit();
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-        }
-    }
-
-    public function actionLoanAccountsUpload3()
-    {
-
-        $this->isAuth(2);
-        $user = $this->user;
-        $branches = [
-            "JUC1" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
-            "LDH" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
-            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
-            "JGN" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
-            "HSX" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
-            "NAWA" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
-            "MEX" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
-            "BAT" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
-            "TTO" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
-            "KXH" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
-            "NRO" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
-            "MKS" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
-            "SGNR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
-            "ABS" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
-            "MOT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
-            "NDLS" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
-            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
-            "KNN" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
-            "MET" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
-            "ASR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
-            "KARR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
-            "ZKP" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
-            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
-            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
-            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
-            "FZP" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
-            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
-            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
-            "ROK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
-            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
-            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
-            "RK" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
-            "HW" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
-            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
-            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
-            "GZB" => "x8JweG370Q7alG887W65o2z5PrBLyl",
-            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
-            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
-            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
-            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
-            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
-            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
-            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
-            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
-            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
-        ];
-        $file = $_FILES['file'];
-        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
-            $count = true;
-            $transaction = Yii::$app->db->beginTransaction();
-            $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-                if ($count) {
-                    $header = $data;
-                    $count = false;
-                    continue;
-                }
-
-                $data = array_map(function ($key, $item) use ($header) {
-                    $item = trim($item);
-                    return in_array($key, [array_search('LmsNumber', $header), array_search('LoanNo', $header)]) ? str_replace(' ', '', $item) : $item;
-                }, array_keys($data), $data);
-
-                $loan = new LoanAccounts();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
-                $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                $loan->lms_loan_account_number = $data[array_search('LmsNumber', $header)];
-                $loan->loan_account_number = trim($data[array_search('LoanNo', $header)]);
-                $loan->name = trim($data[array_search('CustomerName', $header)]);
-                $loan->loan_type = $data[array_search('LoanType', $header)];
-                $loan->emi_date = date('Y-m-d', strtotime($data[array_search('FirstInstallmentDate', $header)]));
-                $loan->last_emi_date = date('Y-m-d', strtotime($data[array_search('LastInstallmentDate', $header)]));
-                $loan->emi_amount = $data[array_search('EmiAmount', $header)];
-                $loan->total_installments = $data[array_search('TotalInstallments', $header)];
-                $loan->financed_amount = $data[array_search('AmountFinanced', $header)];
-                $tmp = $branches[$data[array_search('Branch', $header)]];
-                if (array_search('VehicleType', $header)) {
-                    $loan->vehicle_type = $data[array_search('VehicleType', $header)];
-                }
-                if (array_search('VehicleModel', $header)) {
-                    $loan->vehicle_make = $data[array_search('VehicleModel', $header)];
-                }
-                if (array_search('VehicleMake', $header)) {
-                    $loan->vehicle_model = $data[array_search('VehicleMake', $header)];
-                }
-                if (array_search('VehicleEngineNo', $header)) {
-                    $loan->vehicle_engine_no = $data[array_search('VehicleEngineNo', $header)];
-                }
-                if (array_search('VehicleChassisNo', $header)) {
-                    $loan->vehicle_chassis_no = $data[array_search('VehicleChassisNo', $header)];
-                }
-                if (array_search('RcNumber', $header)) {
-                    $loan->rc_number = $data[array_search('RcNumber', $header)];
-                }
-                $loan->branch_enc_id = $tmp;
-                $loan->created_on = date('Y-m-d h:i:s');
-                $loan->created_by = $user->user_enc_id;
-                $loan->bucket_status_date = date('Y-m-d', strtotime($data[array_search('SMASTATUSDATE', $header)]));
-                $loan->bucket = $data[array_search('SMASTATUS', $header)];
-                $last_emi_amount = $data[array_search('LastRecAmount', $header)];
-                if (empty($last_emi_amount)) {
-                    $last_emi_amount = 0;
-                }
-                $loan->last_emi_received_amount = $last_emi_amount;
-                $last_emi_date = $data[array_search('LastRecDate', $header)];
-                if (!empty($last_emi_date)) {
-                    $loan->last_emi_received_date = date('Y-m-d', strtotime($last_emi_date));
-                }
-                $loan->ledger_amount = $data[array_search('LedgerAmount', $header)] ?? 0;
-                $loan->overdue_amount = $data[array_search('OverDueAmount', $header)] ?? 0;
-                $loan->pos = $data[array_search('Pos', $header)];
-                $loan->advance_interest = $data[array_search('AdvanceInterest', $header)];
-                $loan->stock = $data[array_search('Stock', $header)];
-                $cm = array_search('CollectionManager', $header);
-                if (!empty($data[$cm])) {
-                    $collection_manager = UserRoles::findOne(['employee_code' => $data[$cm]]);
-                }
-                if (!empty($collection_manager) && !empty($collection_manager['user_enc_id'])) {
-                    $loan->collection_manager = $collection_manager['user_enc_id'];
-                }
-                !empty($data[array_search('Phone', $header)]) ? $loan->phone = $data[array_search('Phone', $header)] : '';
-                $loan->updated_on = date('Y-m-d h:i:s');
-                $loan->updated_by = $user->user_enc_id;
-                if (!$loan->save()) {
-                    $transaction->rollBack();
-                    print_r($loan->getErrors());
-                    print_r($data);
-                    exit();
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
-                }
-            }
-            fclose($handle);
-            $transaction->commit();
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-        }
-    }
-
-    public function actionLoanAccountsUpload2()
-    {
-        $user = $this->isAuthorized();
-        if (!$user && !UserUtilities::getUserType($user->user_enc_id) != 'Financer') {
-            return $this->response(500, 'Not Authorized');
-        }
-        $file = $_FILES['file'];
-        if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
-            $count = 1;
-            $transaction = Yii::$app->db->beginTransaction();
-            $utilitiesModel = new Utilities();
-            while (($data = fgetcsv($handle, 1000)) !== FALSE) {
-                if ($count == 1) {
-                    $count++;
-                    continue;
-                }
-                $save = 'update';
-                $loan = LoanAccounts::findOne(['loan_account_number' => trim($data[1])]);
-                if (!$loan) {
-                    $loan = new LoanAccounts();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 10000000);
-                    $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                    $loan->lms_loan_account_number = $data[0];
-                    $loan->loan_account_number = trim($data[1]);
-                    $loan->name = $data[2];
-                    if (!empty($data[3])) {
-                        $loan->phone = $data[3];
-                    }
-                    $loan->loan_type = $data[6];
-                    $loan->created_on = date('Y-m-d h:i:s');
-                    $loan->created_by = $user->user_enc_id;
-                    $save = 'save';
-                }
-                $loan->emi_date = date('Y-m-d', strtotime($data[5]));
-                $loan->emi_amount = $data[4];
-                if (!empty($data[7])) {
-                    $loan->overdue_amount = $data[7];
-                }
-                if (!empty($data[8])) {
-                    $loan->ledger_amount = $data[8];
-                }
-                if (!empty($data[9])) {
-                    $loan->last_emi_received_amount = $data[9];
-                }
-                if (!empty($data[10])) {
-                    $loan->last_emi_received_date = date('Y-m-d', strtotime($data[10]));
-                }
-                $loan->updated_on = date('Y-m-d h:i:s');
-                $loan->updated_by = $user->user_enc_id;
-                if (!$loan->$save()) {
-                    $transaction->rollBack();
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
-                }
-            }
-            fclose($handle);
-            $transaction->commit();
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-        }
     }
 
     public function actionEmiPaymentIssues()
@@ -528,7 +182,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_ids = $params['loan_account_enc_id'];
-        if ($loan_ids['loan_account_enc_id']) {
+        if (!empty($loan_ids)) {
             $data = (new \yii\db\Query())
                 ->select([
                     "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
@@ -536,14 +190,14 @@ class LoanAccountsController extends ApiBaseController
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
                     '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
-                    'a.overdue_amount', 'a.ledger_amount',
+                    'a.overdue_amount', 'a.ledger_amount', 'a.sales_priority', 'telecaller_priority', 'a.collection_priority', 'a.bucket',
                     '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                     'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
                     'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
                 ])
                 ->from(['a' => LoanAccounts::tableName()],)
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
-                ->where(['a.loan_account_enc_id' => $loan_ids['loan_account_enc_id']])
+                ->where(['a.loan_account_enc_id' => $loan_ids])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         } else {
@@ -556,15 +210,15 @@ class LoanAccountsController extends ApiBaseController
                     'a1.loan_type',
                 ])
                 ->from(['a1' => EmiCollection::tableName()],)
-                ->where(['a1.loan_account_number' => $loan_ids['loan_account_number']])
+                ->where(['a1.loan_account_number' => $loan_ids])
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         };
 
-        if ($loan_ids['loan_account_enc_id']) {
-            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids['loan_account_enc_id']]);
+        if ($loan_ids) {
+            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids]);
         } else {
-            $lac = EmiCollection::findOne(['loan_account_number' => $loan_ids['loan_account_number']]);
+            $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_number']]);
         };
         $model = $this->_emiAccData($lac)['data'];
         if ($data || $model) {
@@ -1224,29 +878,95 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
-        $where = ['is_deleted' => 0];
-        if (!empty($params['bucket'])) {
-            $where['bucket'] = $params['bucket'];
+        $user = $this->user;
+        $where = ['a.is_deleted' => 0];
+        if (!empty($params['bucketVal'])) {
+            $where['bucket'] = $params['bucketVal'];
+        }
+        if (!empty($params['fields_search'])) {
+            $fields_search = $params['fields_search'];
+            foreach ($fields_search as $key => $value) {
+                if (!empty($value)) {
+
+                    switch ($key) {
+                        case 'branch':
+                            $where['a.branch_enc_id'] = $value;
+                            break;
+                        case 'loan_type':
+                            $where['a.loan_type'] = $value;
+                            break;
+                    }
+                }
+            }
         }
         $bucket = LoanAccountsExtended::find()
+            ->alias('a')
             ->select([
-                'COUNT(loan_account_enc_id) as total_loan_accounts',
-                'SUM(overdue_amount) AS overdue_amount',
-                'SUM(ledger_amount) AS ledger_amount',
-                'SUM(last_emi_received_amount) AS EMI_received_amount',
-                'COALESCE(SUM(ledger_amount), 0) + COALESCE(SUM(overdue_amount), 0) AS total_pending_amount'
+                "COUNT(a.loan_account_enc_id) AS loan_accounts_count",
+                "COUNT(NULLIF(a.overdue_amount, 0)) AS overdue_count",
+                "SUM(a.overdue_amount) AS overdue_sum",
+                "COUNT(NULLIF(a.ledger_amount, 0)) AS ledger_count",
+                "SUM(a.ledger_amount) AS ledger_sum",
+                "COUNT(NULLIF(a.last_emi_received_amount, 0)) AS emi_received_count",
+                "SUM(a.last_emi_received_amount) AS emi_received_sum",
+                "(COALESCE(COUNT(a.ledger_amount), 0) + COALESCE(COUNT(a.overdue_amount), 0)) AS total_pending_count",
+                "(COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) AS total_pending_sum"
             ])
-            ->where($where)
-            ->asArray()
-            ->one();
-        if (!$bucket) {
-            return $this->response(404, ["status" => 404, "message" => "data not found"]);
+            ->where($where);
+        if (!$this->isSpecial(1)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $bucket
+                ->joinWith(['assignedLoanAccounts b'], false)
+                ->andWhere([
+                    "OR",
+                    ["IN", "a.assigned_caller", $juniors],
+                    ["IN", "a.collection_manager", $juniors],
+                    ["IN", "a.created_by", $juniors],
+                    ["IN", "b.shared_to", $juniors],
+                ])
+                ->groupBy(['a.loan_account_enc_id']);
         }
-        $bucket = array_map(function ($key, $value) {
-            return ['bucket' => str_replace('_', ' ', $key), 'count' => $value];
-        }, array_keys($bucket), $bucket);
-
+        $bucket = $bucket->asArray()->one();
+        $bucket = array_merge($bucket, $this->ptpCasesStats($where));
         return $this->response(200, ["status" => 200, "data" => $bucket]);
+    }
+
+    private function ptpCasesStats($conditions)
+    {
+        $where = [];
+        foreach ($conditions as $key => $value) {
+            if (in_array($key, ['loan_type', 'branch_enc_id', 'bucket', 'id_deleted'])) {
+                $where["la.$key"] = $value;
+            }
+        }
+        $subQuery = (new Query())
+            ->select(["DISTINCT REGEXP_REPLACE(z.loan_account_number, '[^a-zA-Z0-9]', '') AS loan_account_number"])
+            ->from(['z' => EmiCollection::tableName()])
+            ->innerJoin(['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id')
+            ->where(['z.is_deleted' => 0]);
+
+        return (new Query())
+            ->select(['COUNT(*) AS ptp_count', 'SUM(a.amount) AS ptp_sum'])
+            ->from([
+                'a' => (new Query())
+                    ->select([
+                        'x.amount',
+                        "RANK() OVER (PARTITION BY REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '') ORDER BY x.id DESC) AS rnk",
+                        'x.created_on',
+                        'x.ptp_date'
+                    ])
+                    ->from(['x' => EmiCollection::tableName()])
+                    ->innerJoin(['y' => $subQuery], "REGEXP_REPLACE(y.loan_account_number, '[^a-zA-Z0-9]', '') = REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '')")
+                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id")
+                    ->where(['x.is_deleted' => 0])
+                    ->andWhere($where)
+            ])
+            ->where([
+                'AND',
+                ['a.rnk' => 1],
+                ['IS NOT', 'a.ptp_date', null]
+            ])
+            ->one();
     }
 
     public function actionLoanAccountsType()
@@ -1307,43 +1027,54 @@ class LoanAccountsController extends ApiBaseController
                     ->orderBy(['id' => SORT_DESC])
             ]);
 
-        $ptpcases = LoanAccountPtps::find()
+        $ptpcases = LoanAccountsExtended::find()
             ->alias('a')
             ->select([
-                "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
-                "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
-                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
-                "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
-                "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
-                "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
-                "(CASE WHEN c.branch_enc_id IS NOT NULL THEN c.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
-                "c.bucket_status_date", "c.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
+                "c.ptp_enc_id", "c.emi_collection_enc_id", "c.proposed_payment_method", "c.proposed_date",
+                "c.proposed_amount", "c.status", "c.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
+                "b.loan_account_number", "a.total_installments", "a.financed_amount", "a.stock", "a.last_emi_received_date",
+                "a.last_emi_date", "(CASE WHEN a.name IS NOT NULL THEN a.name ELSE b.customer_name END) AS name",
+                "a.emi_amount", "a.overdue_amount", "a.ledger_amount",
+                "(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE b.loan_type END) AS loan_type",
+                "a.emi_date", "a.last_emi_received_amount", "a.advance_interest", "a.bucket",
+                "(CASE WHEN a.branch_enc_id IS NOT NULL THEN a.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
+                "a.bucket_status_date", "a.pos", "bb.location_enc_id as branch", "bb.location_name as branch_name",
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount",
-                "a.created_by"
+                "(a.ledger_amount + a.overdue_amount) AS total_pending_amount",
+                "c.created_by"
             ])
-            ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
+            ->joinWith(['assignedLoanAccounts ala' => function ($ala) {
+                $ala->select([
+                    'ala.loan_account_enc_id', 'ala.access', 'ala.assigned_enc_id',
+                    "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image",
+                    "(CASE WHEN ala.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                    "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                ]);
+                $ala->andOnCondition(['ala.is_deleted' => 0]);
+                $ala->joinWith(['sharedTo d1'], false);
+            }])
+            ->innerJoinWith(['emiCollections b' => function ($b) {
+                $b->joinWith(['loanAccountPtps c'], false);
                 $b->joinWith(['branchEnc bb'], false);
-                $b->joinWith(['loanAccountEnc c' => function ($cc) {
-                    $cc->joinWith(['branchEnc d'], false);
-                    $cc->joinWith(["assignedCaller ac"], false);
-                }]);
             }], false)
+            ->joinWith(['branchEnc d'], false)
+            ->joinWith(["assignedCaller ac"], false)
             ->joinWith(['collectionManager cm'], false);
+
         if (isset($params['type']) && $params['type'] == 'dashboad') {
-            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+            $ptpcases->andWhere(['between', 'c.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
         } else {
-            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+            $ptpcases->where(['>=', 'c.proposed_date', date('Y-m-d H:i:s')]);
         }
         $ptpcases = $ptpcases
-            ->groupBy(['a.ptp_enc_id'])
-            ->orderBy(['a.proposed_date' => SORT_ASC]);
+            ->groupBy(['c.ptp_enc_id'])
+            ->orderBy(['c.proposed_date' => SORT_ASC]);
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $ptpcases = $ptpcases->andWhere(['IN', 'a.created_by', $juniors]);
+            $ptpcases = $ptpcases->andWhere(['IN', 'c.created_by', $juniors]);
         }
+
 
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
@@ -1353,19 +1084,21 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'bucket') {
-                        $ptpcases->andWhere(['IN', 'c.bucket', $value]);
+                        $ptpcases->andWhere(['IN', 'a.bucket', $value]);
                     } elseif ($key == 'loan_type') {
-                        $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
+                        $ptpcases->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'branch') {
                         $ptpcases->andWhere(['IN', 'd.location_enc_id', $value]);
                     } elseif ($key == 'total_pending_amount') {
-                        $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
+                        $ptpcases->having(['=', "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)", $value]);
                     } elseif ($key == 'collection_manager') {
                         $ptpcases->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'sharedTo') {
+                        $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } elseif ($key == 'proposed_amount') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
+                        $ptpcases->andWhere(["LIKE", 'c.' . $key, "$value%", false]);
                     } elseif ($key == 'proposed_date') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
+                        $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
                     }
@@ -1557,4 +1290,458 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
+
+    public function actionHardRecovery()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $loanAccountEncIds = isset($params['loan_accounts']) ? $params['loan_accounts'] : [];
+
+        if (empty($loanAccountEncIds)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_accounts"']);
+        }
+
+        foreach ($loanAccountEncIds as $loanAccountEncId) {
+            $hard_recovery = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loanAccountEncId]);
+
+            if ($hard_recovery) {
+                if ($hard_recovery->hard_recovery == 1) {
+                    $hard_recovery->hard_recovery = 0;
+                } else {
+                    $hard_recovery->hard_recovery = 1;
+                }
+
+                $hard_recovery->updated_by = $user->user_enc_id;
+                $hard_recovery->updated_on = date('Y-m-d H:i:s');
+
+                if (!$hard_recovery->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $hard_recovery->getErrors()]);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account with ID ' . $loanAccountEncId . ' not found']);
+            }
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Marked Hard Recovery']);
+    }
+
+    public function actionUploadSheet()
+    {
+        $this->isAuth(2);
+        $user = $this->user;
+        $params = $this->post;
+        if (empty($params['branch_loc'])) {
+            return 'send branch loc';
+        }
+        $branch_loc = $params['branch_loc'];
+        if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
+            return 'send correct loc';
+        }
+        $branches = [
+            "JALANDHAR" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
+            "LUDHIANA" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
+            "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
+            "JAGRAON" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",
+            "HOSHIARPUR" => "K8Q1w8QJx9n2dohUt9yaxcXxDNmOXTly",
+            "NAWANSHEHAR" => "JQV0LHItiRIzWEwmLSnoMWKrF9-bN-zd",
+            "MUKERIAN" => "ir5WbWoWWoFyusc_4PQlwOu5DQUgyKxQ",
+            "BATALA" => "_vqfd91_Zeuzyx6YO86LRdN8WsppmYjb",
+            "TARN TARAN" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
+            "TARNTARAN" => "YMvA0ceagxF8VnOM9iZGiLcA1U5ntfYN",
+            "KAPURTHALA" => "7SeaDyQLa9EAJa-VBwU487QWcZtILbKy",
+            "NAKODAR" => "S7jiMDMKxeMyBi7lIiRYkloixUS23CJu",
+            "MUKTSAR" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
+            "GANGA NAGAR" => "64DQhoey0k_yld7EgVkBPRaMzTRHM27g",
+            "ABOHAR" => "_52J89O4vEyuMd1iOiLeXXpF1YNJQacZ",
+            "MALOUT" => "bGWAE6eeiBCMscTJP4_LOWZNrYnfB9ZI",
+            "DELHI" => "gJD3Q3rBN4zd1Y54TzlL3-6H8DdqMonV",
+            "JUC99" => "_3mF57Fx4OjP-k9fI8N8YQcaEunorkX9",
+            "KHANNA" => "Qrbb-ZDFjnfJxPdqaa2p-glNy2M8vR0a",
+            "MALERKOTLA" => "F1mtP7o8JY0dzHQ63pwAuT71mM9kPMES",
+            "AMRITSAR" => "Q53aKrsYXU_dk9BXKlNyBVNHe1dBCzyE",
+            "KHARAR" => "aCQ-LQO7lG3w1PsnDKnpBJrGWKOgOHhl",
+            "ZIRKPUR" => "umIKTkufpaej91B1ZFN7ccRlm2izgBDr",
+            "MOH" => "can4hKTe3yPwYCOlrgntY3U7y9L9j3tv",
+            "HSR" => "62AfH3SduPPkLs7xpaSutKcmlFdBDBhr",
+            "JIND" => "33FmX0h2wsAzZIK2sOGr_L9tvTDrTn-I",
+            "FEROZPUR" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06",
+            "JUCHO" => "3wVg50vYNo8kpYnZb1yZRBGKXJmWpO",
+            "UBC" => "BnE3860mWdnjvDg1eKqLdjw9A2K5DJ",
+            "ROHTAK" => "k4x1rvbEZd3N0KJ34y0JoaY7p5gXMV",
+            "SNP" => "abvgrG4VyQNLv5yKEVaMopW30A9nXK",
+            "PNP" => "VagLPkqymR5362byxxGgdb8K4GeY29",
+            "ROORKEE" => "Yljygz3xWRVLz5Y37anzd6BD7w1LP5",
+            "HARIDWAR" => "nM70aLyBGo9Ar9yVO531oKl2Wp1EVz",
+            "RKSH" => "7B0P3kNEldvA6yaEMk0vom14wrJXbj",
+            "DDN" => "VA1npK2MJdJ24kbq0ayPdrlbjPkBXZ",
+            "GAZIABAD" => "x8JweG370Q7alG887W65o2z5PrBLyl",
+            "MDNR" => "yeD1AaYgZoGWDqLmBB2DoGkOlw9MK5",
+            "NODA" => "yeD1AaYgZoGWDqLmJ4wNoGkOlw9MK5",
+            "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
+            "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
+            "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
+            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
+            "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+        ];
+        $defined = [
+            'FileNumberNew' => 'loan_account_number',
+            'CaseNo' => 'case_no',
+            'CompanyID' => 'company_id',
+            'CompanyName' => 'company_name',
+            'DealerName' => 'dealer_name',
+            'NachApproved' => 'nach_approved',
+            'CoBorrower' => 'coborrower_name',
+            'CoBorrowerMobile' => 'coborrower_phone',
+            'LastInstallmentDate' => 'last_emi_date',
+            'TotalInstallments' => 'total_installments',
+            'AmountFinanced' => 'financed_amount',
+            'Stock' => 'stock',
+            'Adv.HP' => 'advance_interest',
+            'OverDue' => 'overdue_amount',
+            'SMA_STATUS' => 'bucket',
+            'Name' => 'name',
+            'SMA_STATUS_DATE' => 'bucket_status_date',
+            'MobileNumber' => 'phone',
+            'Installment1' => 'emi_amount',
+            'Ledger A/c' => 'ledger_amount',
+            'LoanType' => 'loan_type',
+            'FirstInstallmentDate' => 'emi_date',
+            'LastRecAmount' => 'last_emi_received_amount',
+            'LastRecDate' => 'last_emi_received_date',
+            'VehicleMain' => 'vehicle_type',
+            'VehicleModel' => 'vehicle_make',
+            'VehicleMake' => 'vehicle_model',
+            'VehicleEngineNo' => 'vehicle_engine_no',
+            'VehicleChassisNo' => 'vehicle_chassis_no',
+            'VehicleNo' => 'rc_number',
+        ];
+        $no_need = [
+            'PHF LEASING LTD.',
+            'PHF LEASING LIMITED',
+            'PHF ECO GREEN',
+            'LAP-',
+            'LAP -',
+        ];
+        $always_required = [
+            'CompanyID',
+            'LmsNumber',
+            'FileNumberNew',
+            'CompanyName',
+            'CaseNo',
+            'Stock',
+            'Adv.HP',
+            'SMA_STATUS',
+            'SMA_STATUS_DATE',
+            'ZoneName',
+            'Ledger A/c',
+            'MobileNumber',
+            'Name',
+
+        ];
+        $new_cases = 0;
+        $old_cases = 0;
+        $file = $_FILES['file'];
+        try {
+            if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+                $count = true;
+                $transaction = Yii::$app->db->beginTransaction();
+                $utilitiesModel = new Utilities();
+                while (($data = fgetcsv($handle, 100000)) !== FALSE) {
+                    if ($count) {
+                        $headers = $data;
+                        $missing = [];
+                        foreach ($always_required as $item) {
+                            if (!in_array($item, $headers)) {
+                                $missing[] = $item;
+                            }
+                        }
+                        if (!empty($missing)) {
+                            throw new \Exception("These fields are required" . json_encode($missing));
+                        }
+                        $count = false;
+                        continue;
+                    }
+
+                    $data = array_map(function ($key, $item) use ($headers) {
+                        $item = trim($item);
+                        return in_array($key, [array_search('FileNumberNew', $headers), array_search('CaseNo', $headers)]) ? str_replace(' ', '', $item) : $item;
+                    }, array_keys($data), $data);
+                    unset($loan_account_number);
+                    if (array_search('FileNumberNew', $headers) !== false) {
+                        $loan_account_number = $data[array_search('FileNumberNew', $headers)];
+                    }
+                    $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    $case_no = $data[array_search('CaseNo', $headers)];
+                    $where = ["AND"];
+                    if (!empty($loan_account_number)) {
+                        $where[] = ["loan_account_number" => $loan_account_number];
+
+                    } else {
+                        $company_id = $data[array_search('CompanyID', $headers)];
+                        $where[] = ["case_no" => $case_no];
+                        $where[] = ["company_id" => $company_id];
+                        $loan_account_number = $lms_loan_account_number;
+                    }
+                    if (array_search('Name', $headers) !== false) {
+                        $name = $data[array_search('Name', $headers)];
+                        $name = explode(' ', $name)[0];
+                        $where[] = ['LIKE', 'name', "$name%", false];
+                    }
+                    $loan = LoanAccounts::find()->where($where);
+                    $raw = $loan->createCommand()->getRawSql();
+                    $loan = $loan->one();
+                    if (!$loan) {
+                        $new = true;
+                        $loan = new LoanAccounts();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
+                        $loan->loan_account_enc_id = $utilitiesModel->encrypt();
+                        $loan->lms_loan_account_number = $lms_loan_account_number;
+                        $loan->case_no = $case_no;
+                        $loan->loan_account_number = $loan_account_number;
+                        $loan->created_on = date('Y-m-d h:i:s');
+                        $loan->created_by = $user->user_enc_id;
+                        $new_cases++;
+                    } else {
+                        $old_cases++;
+                    }
+                    $loan->updated_on = date('Y-m-d h:i:s');
+                    $loan->updated_by = $user->user_enc_id;
+
+                    if (in_array('LoanType', $headers)) {
+                        $loan_type = $data[array_search('LoanType', $headers)];
+                    } else {
+                        $loan_type = $params['loan_type'];
+                    }
+                    $loan->loan_type = $loan_type;
+                    $loan->updated_by = $user->user_enc_id;
+                    foreach ($headers as $header) {
+                        if (in_array($header, [
+                            'CompanyID',
+                            'CompanyName',
+                            'DealerName',
+                            'NachApproved',
+                            'CoBorrower',
+                            'CoBorrowerMobile',
+                            'LastInstallmentDate',
+                            'TotalInstallments',
+                            'AmountFinanced',
+                            'Stock',
+                            'AmountFinanced',
+                            'SMA_STATUS',
+                            'SMA_STATUS_DATE',
+                            'Name',
+                            'MobileNumber',
+                            'VehicleMain',
+                            'VehicleMake',
+                            'VehicleModel',
+                            'VehicleEngineNo',
+                            'VehicleChassisNo',
+                            'VehicleNo',
+                            'Adv.HP',
+                            'Installment1',
+                            'Ledger A/c',
+                            'LoanType',
+                            'LastRecDate',
+                            'FirstInstallmentDate',
+                            'VehicleMain',
+                            'LastInstallmentDate',
+                            'ZoneName',
+                            'OverDue'
+                        ])) {
+                            $value = $data[array_search($header, $headers)];
+
+                            if (in_array($header, ['NachApproved'])) {
+                                $value = $value == 'Yes' ? 1 : 0;
+                            } else if ($header == $branch_loc) {
+                                $branch = trim(str_replace($no_need, '', $value));
+                                $branch = $branches[$branch];
+                                if (empty($branch)) {
+                                    throw new \Exception('branch not found');
+                                }
+                                $loan->branch_enc_id = $branch;
+                            } else if ($header == 'VehicleModel') {
+                                if (!is_numeric($value) || strlen((string)$value) != 4) {
+                                    continue;
+                                }
+                            } else if ($header == 'Stock') {
+                                $amount = $data[array_search('Adv.HP', $headers)];
+                                if ($amount === false) {
+                                    throw new \Exception('Adv.HP field not found');
+                                }
+                                $loan->pos = $value + $amount;
+                            } else if (in_array($header, ['LastRecDate', 'FirstInstallmentDate', 'LastInstallmentDate', 'SMA_STATUS_DATE'])) {
+                                if (empty($value) && $value !== 0) {
+                                    continue;
+                                }
+                                $date = date('Y-m-d', strtotime($value));
+                                if ($header == 'LastRecDate') {
+                                    if (empty($loan->last_emi_received_date) || ($loan->last_emi_received_date < $date && !empty($value))) {
+                                        $loan->last_emi_received_date = $date;
+                                        $amount = $data[array_search('LastRecAmount', $headers)];
+                                        if ($amount === false) {
+                                            throw new \Exception('LastRecAmount field not found');
+                                        }
+                                        if (!empty($amount))
+                                            $loan->last_emi_received_amount = $amount;
+                                    }
+                                    continue;
+                                }
+                                $value = $date;
+                            }
+                            if ($header == 'ZoneName') {
+                                continue;
+                            }
+
+                            if (empty($defined[$header])) {
+                                throw new \Exception("db field not found for $header");
+                            }
+
+                            if (!empty($value) || $value === 0) {
+                                $def = $defined[$header];
+                                if (in_array($header, [
+                                    'Stock',
+                                    'Adv.HP',
+                                    'SMA_STATUS',
+                                    'SMA_STATUS_DATE',
+                                    'MobileNumber',
+                                    'Ledger A/c',
+                                    'OverDue'
+                                ])) {
+                                    $loan->$def = $value;
+                                } else {
+                                    if (empty($loan->$def)) {
+                                        $loan->$def = $value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!$loan->save()) {
+                        throw new \Exception(implode(' ', array_column($loan->getErrors(), '0')));
+                    }
+                    unset($new);
+                }
+                fclose($handle);
+                $transaction->commit();
+                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
+            }
+        } catch (\Exception $exception) {
+            print_r(['exception' => $exception]);
+            exit();
+            $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionUpdateBranch()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['id']) || empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id" and "value" are required']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $branch = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['id']]);
+            if (!$branch) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $branch->branch_enc_id = $params['value'];
+            $branch->updated_by = $user->user_enc_id;
+            $branch->updated_on = date('Y-m-d H:i:s');
+
+            if (!$branch->save()) {
+                throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionFinancerAssigned()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id']) || empty($params['partner_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_id" or "partner_id"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $branch = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_id']]);
+            if (!$branch) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $branch->assigned_financer_enc_id = $params['partner_id'];
+            $branch->updated_by = $user->user_enc_id;
+            $branch->updated_on = date('Y-m-d H:i:s');
+
+            if (!$branch->save()) {
+                throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully Assigned']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionAssignFinancer($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== Yii::$app->params->apiAccessKey) {
+            return ['status' => 401, 'message' => 'authentication failed'];
+        }
+
+        $num = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.application_number', 'a.loan_app_enc_id', 'b.provider_enc_id'])
+            ->innerJoinWith(['loanApplicationPartners b'], false)
+            ->andWhere(['not', ['a.application_number' => null]])
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        foreach ($num as $application) {
+            $loan_account = LoanAccounts::findOne(['loan_account_number' => $application['application_number']]);
+            if ($loan_account) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $loan_account->assigned_financer_enc_id = $application['provider_enc_id'];
+
+                    if (!$loan_account->save()) {
+                        throw new Exception(implode(" ", array_column($loan_account->getErrors(), '0')));
+                    }
+                } catch (\Exception $exception) {
+                    $transaction->rollBack();
+                    return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+                }
+            }
+        }
+        $transaction->commit();
+        return ['status' => 200, 'found and updated' => count($num)];
+    }
+
+
 }
