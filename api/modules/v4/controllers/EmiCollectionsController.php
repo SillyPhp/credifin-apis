@@ -366,7 +366,7 @@ class EmiCollectionsController extends ApiBaseController
                 "a.given_to",
                 "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
                 "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
-                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
+//                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
             ])
             ->from(["a" => EmployeesCashReport::tableName()])
             ->andWhere([
@@ -438,7 +438,7 @@ class EmiCollectionsController extends ApiBaseController
                         ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') 
                     END image",
                 'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
-                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+//                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
 //                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
             ])
             ->joinWith(["userRoles0 b1" => function ($b1) {
@@ -459,6 +459,7 @@ class EmiCollectionsController extends ApiBaseController
             ])
             ->andWhere($fields_search)
             ->andWhere(['IN', 'a.user_enc_id', $juniors])
+            ->orderBy(['COALESCE(ANY_VALUE(subquery.collected_cash), 0)' => SORT_DESC])
             ->groupBy(['a.user_enc_id']);
         $count = $users->count();
         $users = $users
