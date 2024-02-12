@@ -1736,6 +1736,10 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
         }
 
+        if (!isset($params['sales_target_date']) && !isset($params['collection_target_date']) && !isset($params['telecaller_target_date'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "sales_target_date" or "collection_target_date" or "telecaller_target_date"']);
+        }
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $target_date = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
@@ -1743,9 +1747,9 @@ class LoanAccountsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
             }
 
-            $target_date->sales_target_date = !empty($params['sales_target_date']) ? $params['sales_target_date'] : $target_date->sales_target_date;
-            $target_date->collection_target_date = !empty($params['collection_target_date']) ? $params['collection_target_date'] : $target_date->collection_target_date;
-            $target_date->telecaller_target_date = !empty($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $target_date->telecaller_target_date;
+            $target_date->sales_target_date = isset($params['sales_target_date']) ? $params['sales_target_date'] : $target_date->sales_target_date;
+            $target_date->collection_target_date = isset($params['collection_target_date']) ? $params['collection_target_date'] : $target_date->collection_target_date;
+            $target_date->telecaller_target_date = isset($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $target_date->telecaller_target_date;
             $target_date->updated_by = $user->user_enc_id;
             $target_date->updated_on = date('Y-m-d H:i:s');
 
@@ -1760,4 +1764,5 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
 }
