@@ -231,10 +231,17 @@ class EmployeeController extends ApiBaseController
                     "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
                     "(CASE WHEN ANY_VALUE(b2.image) IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',ANY_VALUE(b2.image_location), '/', ANY_VALUE(b2.image)) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)), '&size=200&rounded=true&background=', REPLACE(ANY_VALUE(b2.initials_color), '#', ''), '&color=ffffff') END) reporting_image",
                     'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
-                    'ANY_VALUE(gd.designation) designation',
-                    'ANY_VALUE(gd.assigned_designation_enc_id) assigned_designation_enc_id',
+                    'gd.designation designation',
                     "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
-                    'ANY_VALUE(b3.location_name) branch_name', 'ANY_VALUE(b3.location_enc_id) branch_id',
+                    'b3.location_name branch_name', 'b3.location_enc_id branch_id',
+                    'SUM(ec.amount) as total_emi_amount',
+                    "SUM(CASE WHEN ec.emi_payment_status = 'pending' THEN ec.amount ELSE 0 END) as pending_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'partial' THEN ec.amount ELSE 0 END) as partial_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'paid' THEN ec.amount ELSE 0 END) as paid_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'failed' THEN ec.amount ELSE 0 END) as failed_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'rejected' THEN ec.amount ELSE 0 END) as rejected_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'pipeline' THEN ec.amount ELSE 0 END) as pipeline_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'collected' THEN ec.amount ELSE 0 END) as collected_amount",
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -243,10 +250,11 @@ class EmployeeController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith([''])
+                ->joinWith(['emiCollections ec'],false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
+                ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
-                ->groupBy(['a.user_enc_id', 'b.employee_code']);
+                ->groupBy(['a.user_enc_id', 'b.employee_code','gd.designation','b3.location_name','b3.location_enc_id']);
 
             if (!empty($params['fields_search'])) {
                 foreach ($params['fields_search'] as $key => $value) {
