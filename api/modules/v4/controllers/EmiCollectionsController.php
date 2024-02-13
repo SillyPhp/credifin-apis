@@ -107,7 +107,7 @@ class EmiCollectionsController extends ApiBaseController
                         ELSE a.reference_number
                 END) AS reference_id",
                 "a.emi_payment_status",
-                "b.company_id",
+                "(CASE WHEN b.company_id IS NOT NULL THEN b.company_id ELSE a.company_id END) AS company_id",
                 "b.phone",
                 "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name,'')) collected_by",
                 "br.location_name as branch"
