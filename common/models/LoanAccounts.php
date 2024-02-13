@@ -96,7 +96,6 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
             [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
             [['loan_account_enc_id'], 'unique'],
-            [['case_no', 'company_id'], 'unique', 'targetAttribute' => ['case_no', 'company_id']],
             [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

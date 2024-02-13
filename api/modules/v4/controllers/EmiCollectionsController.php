@@ -19,6 +19,7 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 class EmiCollectionsController extends ApiBaseController
@@ -44,7 +45,8 @@ class EmiCollectionsController extends ApiBaseController
                 "update" => ["POST", "OPTIONS"],
                 "update-emi-number" => ["POST", "OPTIONS"],
                 "ptp-emi" => ["POST", "OPTIONS"],
-                "update-payment-method" => ["POST", "OPTIONS"]
+                "update-payment-method" => ["POST", "OPTIONS"],
+                "employee-cash-stats" => ["POST", "OPTIONS"],
             ]
         ];
         $behaviors["corsFilter"] = [
@@ -335,6 +337,129 @@ class EmiCollectionsController extends ApiBaseController
                 ["IS NOT", "subquery2.received_from", NULL]
             ])
             ->andWhere($fields_search)
+            ->groupBy(['a.user_enc_id']);
+        $count = $users->count();
+        $users = $users
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        if (!$users) {
+            return $this->response(404, ["message" => "not found"]);
+        }
+
+        return $this->response(200, ["status" => 200, "data" => $users, "count" => $count]);
+    }
+
+    public function actionEmployeeCashStats()
+    {
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $limit = !empty($params["limit"]) ? $params["limit"] : 10;
+        $page = !empty($params["page"]) ? $params["page"] : 1;
+        $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+        $currentUser = [$user->user_enc_id];
+        $juniors = array_diff($juniors, $currentUser);
+        $subquery1 = (new Query())
+            ->select([
+                "a.given_to",
+                "SUM(CASE WHEN a.status = 0 AND type = 0 THEN a.remaining_amount END) collected_cash",
+                "SUM(CASE WHEN a.status = 1 AND type = 2 THEN a.remaining_amount END) received_cash",
+//                "SUM(CASE WHEN a.status = 2 AND type = 2 THEN a.remaining_amount END) received_pending_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["IS NOT", "a.given_to", null],
+                ["!=", "a.status", 3],
+                ["IN", "a.type", [0, 2]]
+            ])
+            ->groupBy(["a.given_to"]);
+        $subquery2 = (new Query())
+            ->select([
+                "a.received_from",
+                "SUM(a.remaining_amount) AS bank_unapproved_cash"
+            ])
+            ->from(["a" => EmployeesCashReport::tableName()])
+            ->andWhere([
+                "AND",
+                ["!=", "a.remaining_amount", 0],
+                ["a.parent_cash_report_enc_id" => null],
+                ["a.is_deleted" => 0],
+                ["!=", "a.status", 3],
+                ["a.status" => 2],
+                ["a.type" => 1]
+            ])
+            ->groupBy(["a.received_from"]);
+        $fields_search = [];
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    switch ($key) {
+                        case 'employee_code':
+                            $fields_search[] = "ANY_VALUE(b1.employee_code) LIKE '%$value%'";
+                            break;
+                        case 'name':
+                            $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
+                            break;
+//                        case 'reporting_person':
+//                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+//                            break;
+                        case 'designation':
+                            $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
+                            break;
+                        case 'phone':
+                            $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
+                            break;
+//                        case 'branch':
+//                            $branch = "('" . implode("','", $value) . "')";
+//                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+//                            break;
+                    }
+                }
+            }
+            $fields_search = implode(" AND ", $fields_search);
+        }
+        $users = UsersExtended::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id AS user_id',
+                "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) name",
+                "ANY_VALUE(b1.employee_code) employee_code",
+                "ANY_VALUE(b2.designation) designation",
+                "ANY_VALUE(a.phone) phone", 'COALESCE(ANY_VALUE(subquery.collected_cash), 0) collected_cash',
+                "CASE 
+                    WHEN a.image IS NOT NULL 
+                        THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) 
+                        ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') 
+                    END image",
+                'COALESCE(ANY_VALUE(subquery.received_cash), 0) received_cash',
+//                'COALESCE(ANY_VALUE(subquery.received_pending_cash), 0) received_pending_cash',
+//                'COALESCE(ANY_VALUE(subquery2.bank_unapproved_cash), 0) bank_unapproved_cash',
+            ])
+            ->joinWith(["userRoles0 b1" => function ($b1) {
+                $b1->joinWith(["designation b2"], false);
+//                $b1->joinWith(["reportingPerson b3"], false);
+//                $b1->joinWith(["branchEnc b4"], false);
+            }], false)
+            ->joinWith(["employeesCashReports3 c" => function ($c) use ($subquery1) {
+                $c->from(["subquery" => $subquery1]);
+            }])
+//            ->joinWith(["employeesCashReports2 d" => function ($d) use ($subquery2) {
+//                $d->from(["subquery2" => $subquery2]);
+//            }])
+            ->andWhere([
+                "OR",
+                ["IS NOT", "subquery.given_to", NULL],
+//                ["IS NOT", "subquery2.received_from", NULL]
+            ])
+            ->andWhere($fields_search)
+            ->andWhere(['IN', 'a.user_enc_id', $juniors])
+            ->orderBy(['COALESCE(ANY_VALUE(subquery.collected_cash), 0)' => SORT_DESC])
             ->groupBy(['a.user_enc_id']);
         $count = $users->count();
         $users = $users
@@ -955,9 +1080,10 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['discrepancy_list'])) {
             $model->andWhere(['a.loan_account_enc_id' => null]);
+
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'loan_account_number', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1043,16 +1169,12 @@ class EmiCollectionsController extends ApiBaseController
         foreach ($model as &$item) {
             $item['assignedLoanAccounts'] = array_map(function ($assignedLoan) {
                 $user_type = ($assignedLoan['user_type'] == 1) ? 'bdo' : (($assignedLoan['user_type'] == 2) ? 'collection_manager' : (($assignedLoan['user_type'] == 3) ? 'telecaller' : null));
-
                 $shared_name = $assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? null);
-                $shared_img = '';
                 if (!empty($assignedLoan['sharedTo']['image'])) {
                     $shared_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $assignedLoan['sharedTo']['image_location'] . '/' . $assignedLoan['sharedTo']['image'];
                 } else {
                     $shared_img = 'https://ui-avatars.com/api/?name=' . urlencode($assignedLoan['sharedTo']['first_name'] . ' ' . ($assignedLoan['sharedTo']['last_name'] ?? '')) . '&size=200&rounded=false&background=' . str_replace('#', '', $assignedLoan['sharedTo']['initials_color']) . '&color=ffffff';
                 }
-
-
                 return [
                     'id' => $assignedLoan['id'],
                     'assigned_enc_id' => $assignedLoan['assigned_enc_id'],
@@ -1063,7 +1185,6 @@ class EmiCollectionsController extends ApiBaseController
                     'user_type' => $user_type,
                 ];
             }, $item['loanAccountEnc']['assignedLoanAccounts']);
-
             unset($item['loanAccountEnc']);
         }
 
