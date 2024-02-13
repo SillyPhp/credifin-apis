@@ -10,6 +10,8 @@ namespace common\models;
  * @property string $loan_account_enc_id Loan Account Enc Id
  * @property string $branch_enc_id Branch Enc Id
  * @property string $customer_name Customer Name
+ * @property int $company_id
+ * @property string $case_no
  * @property string $collection_date Collection Date
  * @property string $loan_account_number Loan Account Number
  * @property string $phone Phone Number
@@ -45,6 +47,7 @@ namespace common\models;
  * @property string $updated_by Updated By
  * @property string $updated_on Updated On
  * @property int $is_deleted Is Deleted
+ * @property int $discrepency_emi Temporary column
  *
  * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property Users $createdBy
@@ -71,11 +74,11 @@ class EmiCollection extends \yii\db\ActiveRecord
     {
         return [
             [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
+            [['company_id', 'ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted', 'discrepency_emi'], 'integer'],
             [['collection_date', 'transaction_initiated_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
-            [['ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted'], 'integer'],
             [['emi_payment_status', 'address', 'comments'], 'string'],
-            [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'case_no', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['payment_method'], 'string', 'max' => 30],
             [['other_payment_method', 'dealer_name'], 'string', 'max' => 50],

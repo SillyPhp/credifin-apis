@@ -14,7 +14,6 @@ use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
-use yii\db\Expression;
 
 class EmiCollectionForm extends Model
 {
@@ -121,10 +120,12 @@ class EmiCollectionForm extends Model
     {
         $loan_num_temp = strtolower(preg_replace('/[^a-zA-Z0-9\']/', '', $this->loan_account_number));
         $condition = "LOWER(REGEXP_REPLACE(loan_account_number, '[^a-zA-Z0-9]', '')) = '$loan_num_temp'";
-        $loan_find = LoanAccounts::find()->select(['loan_account_enc_id', 'loan_account_number'])->where($condition)->asArray()->one();
+        $loan_find = LoanAccounts::find()->select(['loan_account_enc_id', 'company_id', 'case_no', 'loan_account_number'])->where($condition)->asArray()->one();
         $loan_account_number = $this->loan_account_number;
         if ($loan_find) {
             $loan_account = $loan_find['loan_account_enc_id'];
+            $company_id = $loan_find['company_id'];
+            $case_no = $loan_find['case_no'];
             $loan_account_number = $loan_find['loan_account_number'];
         }
 
@@ -134,6 +135,10 @@ class EmiCollectionForm extends Model
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
         if (!empty($loan_account)) {
             $model->loan_account_enc_id = $loan_account;
+        }
+        if ($loan_account) {
+            $model->company_id = $company_id;
+            $model->case_no = $case_no;
         }
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
