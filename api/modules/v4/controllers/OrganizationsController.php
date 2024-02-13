@@ -2766,9 +2766,10 @@ class OrganizationsController extends ApiBaseController
             $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
         }
         $data = $data
-            ->andWhere(['IS NOT', 'emi_collection_date', null])
-            ->andWhere(['IS NOT', 'application_number', null])
-            ->andWhere(['b.status' => 31])
+            ->andWhere(['IS NOT', 'a.emi_collection_date', null])
+            ->andWhere(['IS NOT', 'a.application_number', null])
+            ->andWhere(['IS NOT', 'a.loan_products_enc_id', null])
+            ->andWhere(['b.status' => 31, 'a.is_deleted' => 0])
             ->groupBy(['a.loan_app_enc_id'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
