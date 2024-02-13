@@ -501,7 +501,10 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AnsweredQuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
     }
-
+    public function getEmiCollections()
+    {
+        return $this->hasMany(EmiCollection::className(), ['created_by' => 'user_enc_id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */
