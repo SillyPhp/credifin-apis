@@ -35,7 +35,6 @@ use Yii;
  * @property Organizations $assignedFinancer
  * @property FinancerRewards[] $financerRewards
  * @property LoanApplications[] $loanApplications
- * @property LoanApplications2[] $loanApplications2s
  */
 class FinancerLoanProducts extends \yii\db\ActiveRecord
 {
@@ -187,11 +186,4 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
         return $this->hasMany(LoanApplications::className(), ['loan_products_enc_id' => 'financer_loan_product_enc_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanApplications2s()
-    {
-        return $this->hasMany(LoanApplications2::className(), ['loan_products_enc_id' => 'financer_loan_product_enc_id']);
-    }
 }
