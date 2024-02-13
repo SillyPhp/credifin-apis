@@ -255,7 +255,9 @@ class EmployeeController extends ApiBaseController
                 ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
                 ->groupBy(['a.user_enc_id', 'b.employee_code','gd.designation','b3.location_name','b3.location_enc_id']);
-
+            if (!empty($params['loan_type'])) {
+                $list->andWhere(['IN','ec.loan_type',$params['loan_type']]);
+            }
             if (!empty($params['fields_search'])) {
                 foreach ($params['fields_search'] as $key => $value) {
                     if (!empty($value)) {
@@ -270,7 +272,7 @@ class EmployeeController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            $list->andWhere(['IN', 'ec.branch_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
