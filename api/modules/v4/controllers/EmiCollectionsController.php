@@ -1080,7 +1080,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($params['discrepancy_list'])) {
             $model->andWhere(['a.loan_account_enc_id' => null]);
-
+            $model->andWhere("IF(a.emi_payment_mode = 1, a.emi_payment_status != 'pending', TRUE)");
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
@@ -1159,7 +1159,7 @@ class EmiCollectionsController extends ApiBaseController
             }
         }
         $count = $model->count();
-
+        
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
