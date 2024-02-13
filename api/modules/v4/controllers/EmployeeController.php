@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\Employee;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\Users;
@@ -22,6 +23,8 @@ class EmployeeController extends ApiBaseController
             'actions' => [
                 'update-profile' => ['POST', 'OPTIONS'],
                 'list-users' => ['POST', 'OPTIONS'],
+                'employee-collected-emi-stats' => ['POST', 'OPTIONS'],
+                'get-employee=details' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -208,7 +211,95 @@ class EmployeeController extends ApiBaseController
             ->all();
 
     }
+    public function actionEmployeeCollectedEmiStats(){
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $user_roles->organization_enc_id;
+            }
+            $startDate = $params['start_date'];
+            $endDate = $params['end_date'];
+            $list  = Users::find()
+                ->alias('a')
+                ->select([
+                    'a.user_enc_id',
+                    "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
+                    "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
+                    "(CASE WHEN ANY_VALUE(b2.image) IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',ANY_VALUE(b2.image_location), '/', ANY_VALUE(b2.image)) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)), '&size=200&rounded=true&background=', REPLACE(ANY_VALUE(b2.initials_color), '#', ''), '&color=ffffff') END) reporting_image",
+                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
+                    'gd.designation designation',
+                    "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
+                    'b3.location_name branch_name', 'b3.location_enc_id branch_id',
+                    'SUM(ec.amount) as total_emi_amount',
+                    "SUM(CASE WHEN ec.emi_payment_status = 'pending' THEN ec.amount ELSE 0 END) as pending_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'partial' THEN ec.amount ELSE 0 END) as partial_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'paid' THEN ec.amount ELSE 0 END) as paid_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'failed' THEN ec.amount ELSE 0 END) as failed_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'rejected' THEN ec.amount ELSE 0 END) as rejected_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'pipeline' THEN ec.amount ELSE 0 END) as pipeline_amount",
+                    "SUM(CASE WHEN ec.emi_payment_status = 'collected' THEN ec.amount ELSE 0 END) as collected_amount",
+                ])
+                ->joinWith(['userRoles0 b' => function ($b) {
+                    $b->joinWith(['designationEnc b1'])
+                        ->joinWith(['designation gd'])
+                        ->joinWith(['reportingPerson b2'])
+                        ->joinWith(['branchEnc b3'])
+                        ->joinWith(['userTypeEnc b4']);
+                }], false)
+                ->joinWith(['emiCollections ec'],false)
+                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
+                ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
+                ->groupBy(['a.user_enc_id', 'b.employee_code','gd.designation','b3.location_name','b3.location_enc_id']);
+            if (!empty($params['loan_type'])) {
+                $list->andWhere(['IN','ec.loan_type',$params['loan_type']]);
+            }
+            if (!empty($params['fields_search'])) {
+                foreach ($params['fields_search'] as $key => $value) {
+                    if (!empty($value)) {
+                        if ($key == 'employee_code') {
+                            $list->andWhere(['like', 'b.' . $key, $value]);
+                        } elseif ($key == 'phone') {
+                            $list->andWhere(['like', 'a.' . $key, $value]);
+                        } elseif ($key == 'username') {
+                            $list->andWhere(['like', 'a.' . $key, $value]);
+                        } elseif ($key == 'employee_name') {
+                            $list->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
+                        } elseif ($key == 'reporting_person') {
+                            $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
+                        } elseif ($key == 'branch') {
+                            $list->andWhere(['IN', 'ec.branch_enc_id', $value]);
+                        } elseif ($key == 'designation_id') {
+                            $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
+                        } else {
+                            $list->andWhere(['like', $key, $value]);
+                        }
+                    }
+                }
+            }
+            if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+                $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+                $list->andWhere(['a.user_enc_id' => $juniors]);
+            }
+            if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
+                $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
+            }
 
+            $count = $list->count();
+            $list = $list
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+            return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
     public function actionGetEmployeeDetails()
     {
         $params = Yii::$app->request->post();
@@ -236,5 +327,4 @@ class EmployeeController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'data' => $employee]);
     }
-
 }
