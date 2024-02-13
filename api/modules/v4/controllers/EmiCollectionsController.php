@@ -957,7 +957,7 @@ class EmiCollectionsController extends ApiBaseController
                 "c.sales_priority",
                 "c.collection_priority",
                 "c.telecaller_priority",
-
+                'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
                 "c.bucket AS bucket_value",
                 'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
                 'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
@@ -1026,6 +1026,7 @@ class EmiCollectionsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
+                'a.company_id', 'a.case_no',
                 'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
@@ -1083,7 +1084,7 @@ class EmiCollectionsController extends ApiBaseController
 
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1095,6 +1096,12 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
                             case 'loan_account_number':
                                 $model->andWhere(['like', 'a.loan_account_number', $value . '%', false]);
+                                break;
+                            case 'company_id':
+                                $model->andWhere(['like', 'a.company_id', $value . '%', false]);
+                                break;
+                            case 'case_no':
+                                $model->andWhere(['like', 'a.case_no', $value . '%', false]);
                                 break;
                             case 'dealer_name':
                                 $model->andWhere(['like', 'a.dealer_name', $value . '%', false]);
@@ -1570,6 +1577,49 @@ class EmiCollectionsController extends ApiBaseController
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionUpdateCompanyCase()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        if ($user->username != 'KKB') {
+            return $this->response(404, ['status' => 404, 'message' => 'Page Not Found']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "emi_collection_enc_id"']);
+        }
+
+        if (!isset($params['company_id']) && !isset($params['case_no'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "company_id" or "case_no"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $case = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if (!$case) {
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id not found']);
+            }
+
+            $case->company_id = isset($params['company_id']) ? $params['company_id'] : $case->company_id;
+            $case->case_no = isset($params['case_no']) ? $params['case_no'] : $case->case_no;
+
+            if (!$case->save()) {
+                throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
 }
