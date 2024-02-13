@@ -90,7 +90,7 @@ class EmiCollectionsController extends ApiBaseController
             ->select([
                 "a.emi_collection_enc_id AS collection_id",
                 "a.loan_account_number AS file_number",
-                "b.lms_loan_account_number AS loan_account_number",
+                "(CASE WHEN b.case_no IS NOT NULL THEN b.case_no ELSE a.case_no END) AS loan_account_number",
                 "TRIM(a.customer_name) AS customer_name",
                 "a.phone as collected_emi_phone",
                 "a.amount collected_amount",
@@ -108,7 +108,6 @@ class EmiCollectionsController extends ApiBaseController
                 END) AS reference_id",
                 "a.emi_payment_status",
                 "b.company_id",
-                "b.company_name",
                 "b.phone",
                 "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name,'')) collected_by",
                 "br.location_name as branch"
