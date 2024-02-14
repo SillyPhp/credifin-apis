@@ -2933,7 +2933,21 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UserTasks::className(), ['assigned_to' => 'user_enc_id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanAccounts()
+    {
+        return $this->hasMany(AssignedLoanAccounts::className(), ['shared_by' => 'user_enc_id']);
+    }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanAccounts0()
+    {
+        return $this->hasMany(AssignedLoanAccounts::className(), ['shared_to' => 'user_enc_id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */
