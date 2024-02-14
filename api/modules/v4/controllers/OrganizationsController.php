@@ -2537,17 +2537,34 @@ class OrganizationsController extends ApiBaseController
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
-                "a.loan_account_enc_id", "a.total_installments", "a.financed_amount", "a.stock",
+                "a.loan_account_enc_id", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.hard_recovery", 'a.assigned_financer_enc_id',
-                "a.emi_amount", "a.overdue_amount", "a.ledger_amount", "a.loan_type", "a.emi_date",
+                "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
+                "CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                            WHEN a.bucket = 'onTime' THEN 1
+                            WHEN a.bucket = 'sma-0' THEN 1.25
+                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                            WHEN a.bucket = 'npa' THEN 2
+                            ELSE 1
+                        END)  
+                        THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                END target_collection_amount"
+
             ])
             ->addSelect($selectQuery)
             ->joinWith(["branchEnc b"], false)
@@ -2615,7 +2632,7 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'sharedTo') {
                         $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
-                        $query->andWhere(["like", 'a.'.$key, "$value%", false]);
+                        $query->andWhere(["like", 'a.' . $key, "$value%", false]);
                     }
                 }
             }
@@ -2766,9 +2783,10 @@ class OrganizationsController extends ApiBaseController
             $data->andWhere(['<=', 'a.loan_status_updated_on', "$end_date 23:59:59"]);
         }
         $data = $data
-            ->andWhere(['IS NOT', 'emi_collection_date', null])
-            ->andWhere(['IS NOT', 'application_number', null])
-            ->andWhere(['b.status' => 31])
+            ->andWhere(['IS NOT', 'a.emi_collection_date', null])
+            ->andWhere(['IS NOT', 'a.application_number', null])
+            ->andWhere(['IS NOT', 'a.loan_products_enc_id', null])
+            ->andWhere(['b.status' => 31, 'a.is_deleted' => 0])
             ->groupBy(['a.loan_app_enc_id'])
             ->limit($limit)
             ->offset(($page - 1) * $limit)

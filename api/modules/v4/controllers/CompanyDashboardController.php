@@ -1853,7 +1853,8 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
             }], false)
-            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Employee', 'a.is_deleted' => 0]);
+            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Employee', 'a.is_deleted' => 0])
+            ->andWhere(['<>', 'b.status', 'Inactive']);
 
         // delete employees list
         if ($deleted) {

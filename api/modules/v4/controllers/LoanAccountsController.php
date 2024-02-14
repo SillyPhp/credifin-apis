@@ -59,6 +59,7 @@ class LoanAccountsController extends ApiBaseController
                 'update-loan-acc-access' => ['POST', 'OPTIONS'],
                 'upload-sheet' => ['POST', 'OPTIONS'],
                 'update-branch' => ['POST', 'OPTIONS'],
+                'update-target-dates' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -186,7 +187,7 @@ class LoanAccountsController extends ApiBaseController
             $data = (new \yii\db\Query())
                 ->select([
                     "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
-                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id',
+                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id', 'a.sales_target_date', 'a.telecaller_target_date', 'a.collection_target_date',
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
                     '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
@@ -915,16 +916,20 @@ class LoanAccountsController extends ApiBaseController
             ->where($where);
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+
+            $assigned_lc = (new Query())
+                ->select(['z.loan_account_enc_id'])
+                ->from(['z' => AssignedLoanAccounts::tableName()])
+                ->where(['IN', 'z.shared_to', $juniors])
+                ->andWhere(['z.is_deleted' => 0, 'z.status' => 'Active']);
             $bucket
-                ->joinWith(['assignedLoanAccounts b'], false)
                 ->andWhere([
                     "OR",
                     ["IN", "a.assigned_caller", $juniors],
                     ["IN", "a.collection_manager", $juniors],
                     ["IN", "a.created_by", $juniors],
-                    ["IN", "b.shared_to", $juniors],
-                ])
-                ->groupBy(['a.loan_account_enc_id']);
+                    ["IN", "a.loan_account_enc_id", $assigned_lc],
+                ]);
         }
         $bucket = $bucket->asArray()->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
@@ -1032,9 +1037,9 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 "c.ptp_enc_id", "c.emi_collection_enc_id", "c.proposed_payment_method", "c.proposed_date",
                 "c.proposed_amount", "c.status", "c.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "a.total_installments", "a.financed_amount", "a.stock", "a.last_emi_received_date",
+                "b.loan_account_number", "a.stock", "a.last_emi_received_date",
                 "a.last_emi_date", "(CASE WHEN a.name IS NOT NULL THEN a.name ELSE b.customer_name END) AS name",
-                "a.emi_amount", "a.overdue_amount", "a.ledger_amount",
+                "a.emi_amount", "a.overdue_amount",
                 "(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE b.loan_type END) AS loan_type",
                 "a.emi_date", "a.last_emi_received_amount", "a.advance_interest", "a.bucket",
                 "(CASE WHEN a.branch_enc_id IS NOT NULL THEN a.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
@@ -1101,6 +1106,8 @@ class LoanAccountsController extends ApiBaseController
                         $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'pos') {
+                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
                     }
                 }
             }
@@ -1743,5 +1750,45 @@ class LoanAccountsController extends ApiBaseController
         return ['status' => 200, 'found and updated' => count($num)];
     }
 
+    public function actionUpdateTargetDates()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
+        }
+
+        if (!isset($params['sales_target_date']) && !isset($params['collection_target_date']) && !isset($params['telecaller_target_date'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "sales_target_date" or "collection_target_date" or "telecaller_target_date"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $target_date = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+            if (!$target_date) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+
+            $target_date->sales_target_date = isset($params['sales_target_date']) ? $params['sales_target_date'] : $target_date->sales_target_date;
+            $target_date->collection_target_date = isset($params['collection_target_date']) ? $params['collection_target_date'] : $target_date->collection_target_date;
+            $target_date->telecaller_target_date = isset($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $target_date->telecaller_target_date;
+            $target_date->updated_by = $user->user_enc_id;
+            $target_date->updated_on = date('Y-m-d H:i:s');
+
+            if (!$target_date->save()) {
+                throw new Exception(implode(" ", array_column($target_date->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
 
 }
