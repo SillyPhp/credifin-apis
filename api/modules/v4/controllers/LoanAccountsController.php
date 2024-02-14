@@ -191,7 +191,7 @@ class LoanAccountsController extends ApiBaseController
                     '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
                     '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
                     '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
-                    'a.overdue_amount', 'a.ledger_amount', 'a.sales_priority', 'telecaller_priority', 'a.collection_priority', 'a.bucket',
+                    'a.overdue_amount', 'a.ledger_amount', 'a.sales_priority', 'a.telecaller_priority', 'a.collection_priority', 'a.bucket',
                     '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
                     'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
                     'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
@@ -199,7 +199,7 @@ class LoanAccountsController extends ApiBaseController
                 ->from(['a' => LoanAccounts::tableName()],)
                 ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
                 ->where(['a.loan_account_enc_id' => $loan_ids])
-                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
+                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number', 'a.loan_account_enc_id'])
                 ->one();
         } else {
             $data = (new \yii\db\Query())
@@ -215,7 +215,15 @@ class LoanAccountsController extends ApiBaseController
                 ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
                 ->one();
         };
-
+        $data['phone'] = [];
+        $index = 0;
+        $query = EmiCollection::findAll(['loan_account_enc_id' => $loan_ids]);
+        foreach ($query as $res) {
+            if (!in_array($res['phone'], $data['phone'])) {
+                $data['phone'][$index] = $res['phone'];
+                $index++;
+            }
+        }
         if ($loan_ids) {
             $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids]);
         } else {
@@ -1484,7 +1492,6 @@ class LoanAccountsController extends ApiBaseController
                     $where = ["AND"];
                     if (!empty($loan_account_number)) {
                         $where[] = ["loan_account_number" => $loan_account_number];
-
                     } else {
                         $company_id = $data[array_search('CompanyID', $headers)];
                         $where[] = ["case_no" => $case_no];
@@ -1788,5 +1795,4 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
-
 }
