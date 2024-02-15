@@ -235,26 +235,25 @@ class EmployeeController extends ApiBaseController
                     "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
 
-                    'total_target_cases_bucket_sma_0' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-0' THEN lac.loan_account_enc_id END)",
-                    'total_target_emi_amount_bucket_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN lac.emi_amount END)",
-                    'total_target_collected_bucket_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+                    'target_cases_sma_0' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-0' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN lac.emi_amount END)",
+                    'collected_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
-                    'total_target_cases_bucket_sma_1' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-1' THEN lac.loan_account_enc_id END)",
-                    'total_target_emi_amount_bucket_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN lac.emi_amount END)",
-                    'total_target_collected_bucket_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+                    'target_cases_sma_1' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-1' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN lac.emi_amount END)",
+                    'collected_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
-                    'total_target_cases_bucket_sma_2' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-2' THEN lac.loan_account_enc_id END)",
-                    'total_target_emi_amount_bucket_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN lac.emi_amount END)",
-                    'total_target_collected_bucket_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+                    'target_cases_sma_2' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-2' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN lac.emi_amount END)",
+                    'collected_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
-                    'total_target_cases_bucket_npa' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'NPA' THEN lac.loan_account_enc_id END)",
-                    'total_target_emi_amount_bucket_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN lac.emi_amount END)",
-                    'total_target_collected_bucket_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+                    'target_cases_npa' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'NPA' THEN lac.loan_account_enc_id END)",
+                    'target_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN lac.emi_amount END)",
+                    'collected_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
-                    'total_target_cases_bucket_ontime' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'OnTime' THEN lac.loan_account_enc_id END)",
-                    'total_target_emi_amount_bucket_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount END)",
-                    'total_target_collected_bucket_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
-
+                    'target_cases_ontime' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'OnTime' THEN lac.loan_account_enc_id END)",
+                    'target_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount END)",
+                    'collected_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -290,7 +289,7 @@ class EmployeeController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            $list->andWhere(['IN', 'ec.branch_enc_id', $value]);
+                            $list->andWhere(['IN', 'b3.location_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
