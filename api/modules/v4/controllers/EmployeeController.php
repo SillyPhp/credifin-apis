@@ -236,23 +236,23 @@ class EmployeeController extends ApiBaseController
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
 
                     'target_cases_sma_0' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-0' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN lac.emi_amount END)",
+                    'target_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.25) ELSE 0 END)",
                     'collected_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
                     'target_cases_sma_1' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-1' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN lac.emi_amount END)",
+                    'target_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END)",
                     'collected_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
                     'target_cases_sma_2' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-2' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN lac.emi_amount END)",
+                    'target_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END )",
                     'collected_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
                     'target_cases_npa' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'NPA' THEN lac.loan_account_enc_id END)",
-                    'target_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN lac.emi_amount END)",
+                    'target_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 2) ELSE 0 END )",
                     'collected_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
 
                     'target_cases_ontime' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'OnTime' THEN lac.loan_account_enc_id END)",
-                    'target_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount END)",
+                    'target_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount ELSE 0 END)",
                     'collected_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
