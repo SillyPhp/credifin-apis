@@ -1306,7 +1306,7 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         try {
-            $loan_account = LoanAccounts::findOne(["loan_account_enc_id" => $params['value']]);
+            $loan_account = LoanAccounts::findOne(["loan_account_number" => $params['value']]);
             if (empty($loan_account)) {
                 throw new Exception("Loan Account not found.");
             }
@@ -1315,7 +1315,7 @@ class EmiCollectionsController extends ApiBaseController
             if (empty($update)) {
                 throw new Exception("Emi Account not found.");
             }
-            $update->loan_account_enc_id = $params['value'];
+            $update->loan_account_enc_id = $loan_account->loan_account_enc_id;
             $update->loan_account_number = $loan_account->loan_account_number;
             $update->customer_name = $loan_account->name;
             $update->updated_by = $user->user_enc_id;
