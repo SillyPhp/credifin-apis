@@ -226,4 +226,99 @@ class TestCacheController extends Controller
         echo 'url hit on: '.$url;
     }
 
+    public function actionCurl(){
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "apikey: l74634c7fd20294499b9abe7b8640c792e",
+            "member-ref-id: NB4117",
+            "cust-ref-id: 669123887322"
+        ];
+
+        $jayParsedAry = [
+            "serviceCode" => "CAS10001",
+            "monitoringDate" => "08102024",
+            "consumerInputSubject" => [
+                "tuefHeader" => [
+                    "headerType" => "TUEF",
+                    "version" => "12",
+                    "memberRefNo" => "NB4117",
+                    "gstStateCode" => "01",
+                    "enquiryMemberUserId" => "NB41178888_UATC2CNPE",
+                    "enquiryPassword" => "xdoyuywjbfDc@vw1krijctlzik",
+                    "enquiryPurpose" => "10",
+                    "enquiryAmount" => "000049500",
+                    "scoreType" => "08",
+                    "outputFormat" => "03",
+                    "responseSize" => "1",
+                    "ioMedia" => "CC",
+                    "authenticationMethod" => "L"
+                ],
+                "names" => [
+                    [
+                        "index" => "N01",
+                        "firstName" => "KATHIR",
+                        "middleName" => "ESAN",
+                        "lastName" => "MARIAM",
+                        "birthDate" => "04071989",
+                        "gender" => "2"
+                    ]
+                ],
+                "ids" => [
+                    [
+                        "index" => "I01",
+                        "idNumber" => "PHAPAXXXXX",
+                        "idType" => "03"
+                    ]
+                ],
+                "telephones" => [
+                    [
+                        "index" => "T01",
+                        "telephoneNumber" => "98934XXXXX",
+                        "telephoneType" => "01"
+                    ]
+                ],
+                "addresses" => [
+                    [
+                        "index" => "A01",
+                        "line1" => "NO 843",
+                        "line2" => "KONGU VIBROSTREET TNAGAR",
+                        "stateCode" => "33",
+                        "pinCode" => "600054",
+                        "addressCategory" => "01",
+                        "residenceCode" => "01"
+                    ]
+                ],
+                "enquiryAccounts" => [
+                    [
+                        "index" => "I01",
+                        "accountNumber" => ""
+                    ]
+                ]
+            ]
+        ];
+        $certificate_path = dirname(__DIR__, 2) . "/bin/p12WePayIndia_.p12";
+        $file = fopen($certificate_path, 'r');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($jayParsedAry)); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        //curl_setopt($ch, CURLOPT_INFILE, $file);
+        curl_setopt($ch, CURLOPT_SSLCERT, $certificate_path);
+        curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'empower123');
+        curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'P12');
+       // curl_setopt($ch, CURLOPT_URL, 'https://apiuat.cibilhawk.com/acquire/credit-assessment/v1/consumer-cir-cv');
+        curl_setopt($ch, CURLOPT_URL, 'https://uatportal.cibilhawk.com/publish/apis/details/d7269df3-c72a-474e-bd19-e431cb7e98e0/url');
+        $response = curl_exec($ch);
+        if ($response === false) {
+            return curl_error($ch);
+        }
+        // echo $response;
+        print_r(json_decode($response));
+
+    }
+
 }
