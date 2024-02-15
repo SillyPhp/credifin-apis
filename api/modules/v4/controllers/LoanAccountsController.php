@@ -187,6 +187,9 @@ class LoanAccountsController extends ApiBaseController
             $data = LoanAccounts::find()
                 ->alias('a')
                 ->select([
+                    'a.sales_target_date',
+                    'a.telecaller_target_date',
+                    'a.collection_target_date',
                     'a.loan_account_enc_id',
                     'a.sales_target_date',
                     'a.telecaller_target_date',
