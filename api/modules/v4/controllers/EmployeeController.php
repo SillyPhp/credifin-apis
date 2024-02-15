@@ -229,19 +229,31 @@ class EmployeeController extends ApiBaseController
                     'a.user_enc_id',
                     "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
                     "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
-                    "(CASE WHEN ANY_VALUE(b2.image) IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',ANY_VALUE(b2.image_location), '/', ANY_VALUE(b2.image)) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)), '&size=200&rounded=true&background=', REPLACE(ANY_VALUE(b2.initials_color), '#', ''), '&color=ffffff') END) reporting_image",
+                    "(CASE WHEN b2.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b2.image_location, '/', b2.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b2.first_name,' ',b2.last_name), '&size=200&rounded=true&background=', REPLACE(b2.initials_color, '#', ''), '&color=ffffff') END) reporting_image",
                     'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
                     'gd.designation designation',
-                    "CONCAT(ANY_VALUE(b2.first_name),' ',ANY_VALUE(b2.last_name)) reporting_person",
+                    "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
-                    'SUM(ec.amount) as total_emi_amount',
-                    "SUM(CASE WHEN ec.emi_payment_status = 'pending' THEN ec.amount ELSE 0 END) as pending_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'partial' THEN ec.amount ELSE 0 END) as partial_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'paid' THEN ec.amount ELSE 0 END) as paid_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'failed' THEN ec.amount ELSE 0 END) as failed_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'rejected' THEN ec.amount ELSE 0 END) as rejected_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'pipeline' THEN ec.amount ELSE 0 END) as pipeline_amount",
-                    "SUM(CASE WHEN ec.emi_payment_status = 'collected' THEN ec.amount ELSE 0 END) as collected_amount",
+
+                    'target_cases_sma_0' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-0' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.25) ELSE 0 END)",
+                    'collected_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+
+                    'target_cases_sma_1' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-1' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END)",
+                    'collected_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+
+                    'target_cases_sma_2' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-2' THEN lac.loan_account_enc_id END)",
+                    'target_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END )",
+                    'collected_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+
+                    'target_cases_npa' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'NPA' THEN lac.loan_account_enc_id END)",
+                    'target_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 2) ELSE 0 END )",
+                    'collected_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+
+                    'target_cases_ontime' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'OnTime' THEN lac.loan_account_enc_id END)",
+                    'target_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount ELSE 0 END)",
+                    'collected_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -250,11 +262,16 @@ class EmployeeController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['emiCollections ec'],false)
+                ->joinWith(['assignedLoanAccounts0 ala'=>function($asla){
+                    $asla->joinWith(['loanAccountEnc lac'=>function($lac){
+                        $lac->joinWith(['emiCollections ec']);
+                    }]);
+                }],false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
-                ->groupBy(['a.user_enc_id', 'b.employee_code','gd.designation','b3.location_name','b3.location_enc_id']);
+                ->groupBy(['a.user_enc_id','b2.image','b2.image_location','b2.initials_color', 'b.employee_code','b2.first_name','b2.last_name','gd.designation','b3.location_name','b3.location_enc_id']);
+
             if (!empty($params['loan_type'])) {
                 $list->andWhere(['IN','ec.loan_type',$params['loan_type']]);
             }
@@ -272,7 +289,7 @@ class EmployeeController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            $list->andWhere(['IN', 'ec.branch_enc_id', $value]);
+                            $list->andWhere(['IN', 'b3.location_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
