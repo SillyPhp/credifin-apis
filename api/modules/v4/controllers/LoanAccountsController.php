@@ -1279,7 +1279,8 @@ class LoanAccountsController extends ApiBaseController
                 throw new Exception('Loan account not found');
             }
 
-            $priority_types = ['telecaller_priority', 'collection_priority', 'sales_priority'];
+            $priority_types = ['telecaller_priority', 'collection_priority', 'sales_priority',
+                'sales_target_date', 'telecaller_target_date', 'collection_target_date'];
 
             foreach ($priority_types as $type) {
                 if (isset($params[$type])) {
