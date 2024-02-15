@@ -2281,7 +2281,7 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['notice_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing parameter "notice_enc_id"']);
         }
-        $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id'], 'created_by' => $user->user_enc_id]);
+        $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id']]);
         if (!$notice) {
             return $this->response(404, ['status' => 404, 'message' => 'Notice not Found']);
         }
