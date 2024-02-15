@@ -1059,9 +1059,9 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 "c.ptp_enc_id", "c.emi_collection_enc_id", "c.proposed_payment_method", "c.proposed_date",
                 "c.proposed_amount", "c.status", "c.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
-                "b.loan_account_number", "a.total_installments", "a.financed_amount", "a.stock", "a.last_emi_received_date",
+                "b.loan_account_number", "a.stock", "a.last_emi_received_date",
                 "a.last_emi_date", "(CASE WHEN a.name IS NOT NULL THEN a.name ELSE b.customer_name END) AS name",
-                "a.emi_amount", "a.overdue_amount", "a.ledger_amount",
+                "a.emi_amount", "a.overdue_amount",
                 "(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE b.loan_type END) AS loan_type",
                 "a.emi_date", "a.last_emi_received_amount", "a.advance_interest", "a.bucket",
                 "(CASE WHEN a.branch_enc_id IS NOT NULL THEN a.branch_enc_id ELSE b.branch_enc_id END) AS branch_enc_id",
@@ -1128,6 +1128,8 @@ class LoanAccountsController extends ApiBaseController
                         $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'pos') {
+                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
                     }
                 }
             }
