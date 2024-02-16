@@ -251,12 +251,12 @@ class EmployeeController extends ApiBaseController
                 $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
                 $CollectedCasesNumber = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status = 'collected' THEN 1 END) collected_cases_count_{$key},";
                 if ($key == 'OnTime'):
-                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN lac.emi_amount ELSE 0 END) target_amount_{$key},";
+                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
                 else:
                     $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
                     endif;
-                $collectedVerifiedAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status = 'paid' THEN ec.amount END) collected_verified_amount_{$key},";
-                $collectedUnVerifiedAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed') THEN ec.amount END) collected_unverified_amount_{$key},";
+                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) collected_verified_amount_{$key},";
+                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed') THEN COALESCE(ec.amount, 0) END),0) collected_unverified_amount_{$key},";
 
                 $queryResult .= "$totalCasesNumber $CollectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
             }
@@ -332,7 +332,7 @@ class EmployeeController extends ApiBaseController
                 ->asArray()
                 ->all();
             if ($list):
-            $list = ArrayProcessJson::Parse($list);
+           return $list = ArrayProcessJson::Parse($list);
             endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
