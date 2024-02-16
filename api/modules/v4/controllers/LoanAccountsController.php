@@ -1305,36 +1305,32 @@ class LoanAccountsController extends ApiBaseController
         }
 
         $params = Yii::$app->request->post();
+        $loan_account_enc_id = $params['loan_account_enc_id'];
 
-        if (empty($params['loan_account_enc_id'])) {
+        if (empty($loan_account_enc_id)) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information "loan_account_enc_id"']);
         }
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+
+        foreach ($loan_account_enc_id as $loan_account_enc_ids) {
+            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loan_account_enc_ids]);
             if (!$priority) {
                 throw new Exception('Loan account not found');
             }
+            $priority->sales_priority = !empty($params['sales_priority']) ? $params['sales_priority'] : $priority->sales_priority;
+            $priority->collection_priority = !empty($params['collection_priority']) ? $params['collection_priority'] : $priority->collection_priority;
+            $priority->telecaller_priority = !empty($params['telecaller_priority']) ? $params['telecaller_priority'] : $priority->telecaller_priority;
+            $priority->sales_target_date = !empty($params['sales_target_date']) ? $params['sales_target_date'] : $priority->sales_target_date;
+            $priority->collection_target_date = !empty($params['collection_target_date']) ? $params['collection_target_date'] : $priority->collection_target_date;
+            $priority->telecaller_target_date = !empty($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $priority->telecaller_target_date;
 
-            $priority->sales_priority = isset($params['sales_priority']) ? $params['sales_priority'] : $priority->sales_priority;
-            $priority->collection_priority = isset($params['collection_priority']) ? $params['collection_priority'] : $priority->collection_priority;
-            $priority->telecaller_priority = isset($params['telecaller_priority']) ? $params['telecaller_priority'] : $priority->telecaller_priority;
-            $priority->sales_target_date = isset($params['sales_target_date']) ? $params['sales_target_date'] : $priority->sales_target_date;
-            $priority->collection_target_date = isset($params['collection_target_date']) ? $params['collection_target_date'] : $priority->collection_target_date;
-            $priority->telecaller_target_date = isset($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $priority->telecaller_target_date;
             $priority->updated_by = $user->user_enc_id;
             $priority->updated_on = date('Y-m-d H:i:s');
-
-            if (!$priority->save()) {
+            if (!$priority->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $priority->getErrors()]);
             }
-
-            $transaction->commit();
-            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
-        } catch (\Exception $exception) {
-            $transaction->rollBack();
-            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 
     public function actionHardRecovery()
@@ -1704,7 +1700,7 @@ class LoanAccountsController extends ApiBaseController
             $branch->updated_by = $user->user_enc_id;
             $branch->updated_on = date('Y-m-d H:i:s');
 
-            if (!$branch->save()) {
+            if (!$branch->update()) {
                 throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
             }
 
@@ -1739,7 +1735,7 @@ class LoanAccountsController extends ApiBaseController
             $branch->updated_by = $user->user_enc_id;
             $branch->updated_on = date('Y-m-d H:i:s');
 
-            if (!$branch->save()) {
+            if (!$branch->update()) {
                 throw new Exception(implode(" ", array_column($branch->getErrors(), '0')));
             }
 
@@ -1817,7 +1813,7 @@ class LoanAccountsController extends ApiBaseController
             $target_date->updated_by = $user->user_enc_id;
             $target_date->updated_on = date('Y-m-d H:i:s');
 
-            if (!$target_date->save()) {
+            if (!$target_date->update()) {
                 throw new Exception(implode(" ", array_column($target_date->getErrors(), '0')));
             }
 
