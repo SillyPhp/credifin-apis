@@ -179,50 +179,75 @@ class LoanAccountsController extends ApiBaseController
     {
         $this->isAuth();
         $params = $this->post;
-        if (empty($params['loan_account_enc_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        if (empty($params['loan_account_enc_id']) && empty($params['loan_account_number'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id" or "loan_account_number"']);
         }
-        $loan_ids = $params['loan_account_enc_id'];
-        if (!empty($loan_ids)) {
-            $data = (new \yii\db\Query())
+        $loan_id = $params['loan_account_enc_id'];
+        if (!empty($loan_id)) {
+            $data = LoanAccounts::find()
+                ->alias('a')
                 ->select([
-                    "(CASE WHEN a.loan_account_number IS NOT NULL THEN a.loan_account_number ELSE a1.loan_account_number END) AS loan_account_number",
-                    "COUNT(a1.loan_account_number) as total_emis", 'a.loan_account_enc_id', 'a.sales_target_date', 'a.telecaller_target_date', 'a.collection_target_date',
-                    '(CASE WHEN a.name IS NOT NULL THEN a.name ELSE a1.customer_name END) as name',
-                    '(CASE WHEN a.phone IS NOT NULL THEN a.phone ELSE a1.phone END) as phone',
-                    '(CASE WHEN a.emi_amount IS NOT NULL THEN a.emi_amount ELSE a1.amount END) as emi_amount',
-                    'a.overdue_amount', 'a.ledger_amount', 'a.sales_priority', 'telecaller_priority', 'a.collection_priority', 'a.bucket',
-                    '(CASE WHEN a.loan_type IS NOT NULL THEN a.loan_type ELSE a1.loan_type END) AS loan_type',
-                    'a.emi_date', 'a.created_on', 'a.last_emi_received_amount', 'a.last_emi_received_date',
+                    'a.sales_target_date',
+                    'a.telecaller_target_date',
+                    'a.collection_target_date',
+                    'a.loan_account_enc_id',
+                    'a.sales_target_date',
+                    'a.telecaller_target_date',
+                    'a.collection_target_date',
+                    'a.overdue_amount',
+                    'a.ledger_amount',
+                    'a.sales_priority',
+                    'a.telecaller_priority',
+                    'a.collection_priority',
+                    'a.bucket',
+                    'a.emi_date',
+                    'a.created_on',
+                    'a.last_emi_received_amount',
+                    'a.last_emi_received_date',
+                    "COUNT(a1.loan_account_number) as total_emis",
+                    "COALESCE(a.phone, a1.phone) AS phone",
+                    "COALESCE(a.name, a1.customer_name) AS name",
+                    "COALESCE(a.loan_type, a1.loan_type) AS loan_type",
+                    "COALESCE(a.emi_amount, a1.amount) AS emi_amount",
+                    "COALESCE(a.loan_account_number, a1.loan_account_number) AS loan_account_number",
                     'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
                 ])
-                ->from(['a' => LoanAccounts::tableName()],)
-                ->join('LEFT JOIN', ['a1' => EmiCollection::tableName()], 'a1.loan_account_enc_id = a.loan_account_enc_id')
-                ->where(['a.loan_account_enc_id' => $loan_ids])
-                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
+                ->joinWith(['emiCollections AS a1' => function ($b) {
+                    $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone']);
+                }])
+                ->where(['a.loan_account_enc_id' => $loan_id])
+                ->groupBy(['a.loan_account_enc_id','a1.emi_collection_enc_id'])
+                ->limit(1)
                 ->one();
+            if ($data) {
+                $phones = $data['emiCollections'];
+                array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
+                $data['phone'] = array_unique(array_column($phones, 'phone'));
+            }
         } else {
-            $data = (new \yii\db\Query())
+            $query = (new \yii\db\Query())
                 ->select([
-                    "a1.loan_account_number",
-                    "COUNT(a1.loan_account_number) as total_emis", 'a1.customer_name as name',
-                    'a1.phone',
-                    'a1.amount as emi_amount',
-                    'a1.loan_type',
+                    'a.loan_account_number',
+                    'a.customer_name as name',
+                    'a.phone',
+                    'a.amount as emi_amount',
+                    'a.loan_type',
+                    "COUNT(*) OVER(PARTITION BY a.loan_account_number) as total_emis",
                 ])
-                ->from(['a1' => EmiCollection::tableName()],)
-                ->where(['a1.loan_account_number' => $loan_ids])
-                ->groupBy(['a1.loan_type', 'a1.customer_name', 'a1.phone', 'a1.amount', 'a1.loan_account_number'])
-                ->one();
-        };
-
-        if ($loan_ids) {
-            $lac = LoanAccounts::findOne(['loan_account_enc_id' => $loan_ids]);
-        } else {
-            $lac = EmiCollection::findOne(['loan_account_number' => $params['loan_account_number']]);
-        };
-        $model = $this->_emiAccData($lac)['data'];
-        if ($data || $model) {
+                ->from(['a' => EmiCollection::tableName()])
+                ->where(['a.loan_account_number' => $params['loan_account_number'], 'a.is_deleted' => 0])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->limit(1)
+                ->all();
+            if ($query) {
+                $phones = array_unique(array_column($query, 'phone'));
+                $data = reset($query);
+                $data['phone'] = $phones;
+            }
+        }
+        if (!empty($data)) {
+            $lac = $data['loan_account_number'];
+            $model = $this->_emiAccData($lac)['data'];
             return $this->response(200, ['status' => 200, 'data' => $data, 'display_data' => $model]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
@@ -277,7 +302,7 @@ class LoanAccountsController extends ApiBaseController
             ->joinWith(['assignedLoanPayments d' => function ($d) {
                 $d->joinWith(['loanPaymentsEnc d1'], false);
             }], false)
-            ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac['loan_account_number']]);
+            ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac]);
         $count = $model->count();
         $model = $model
             ->limit($limit)
@@ -288,20 +313,20 @@ class LoanAccountsController extends ApiBaseController
 
         $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        foreach ($model as $key => $value) {
-            $model[$key]['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
-            $model[$key]['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+        foreach ($model as &$value) {
+            $value['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $value['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
             if ($value['other_doc_image']) {
-                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
-                $model[$key]['other_doc_image'] = $proof;
+                $proof = $my_space->signedURL($value['other_doc_image']);
+                $value['other_doc_image'] = $proof;
             }
             if ($value['borrower_image']) {
-                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
-                $model[$key]['borrower_image'] = $proof;
+                $proof = $my_space->signedURL($value['borrower_image']);
+                $value['borrower_image'] = $proof;
             }
             if ($value['pr_receipt_image']) {
-                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
-                $model[$key]['pr_receipt_image'] = $proof;
+                $proof = $my_space->signedURL($value['pr_receipt_image']);
+                $value['pr_receipt_image'] = $proof;
             }
         }
         return ['data' => $model, 'count' => $count];
@@ -1503,7 +1528,6 @@ class LoanAccountsController extends ApiBaseController
                     $where = ["AND"];
                     if (!empty($loan_account_number)) {
                         $where[] = ["loan_account_number" => $loan_account_number];
-
                     } else {
                         $company_id = $data[array_search('CompanyID', $headers)];
                         $where[] = ["case_no" => $case_no];
@@ -1807,5 +1831,4 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
-
 }

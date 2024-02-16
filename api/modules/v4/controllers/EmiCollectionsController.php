@@ -1027,6 +1027,7 @@ class EmiCollectionsController extends ApiBaseController
             ->select([
                 'a.company_id', 'a.case_no', 'a.updated_on', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, '')) updated_by",
                 'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
+                'a.sales_target_date', 'a.telecaller_target_date', 'a.collection_target_date',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
@@ -1306,7 +1307,7 @@ class EmiCollectionsController extends ApiBaseController
         }
 
         try {
-            $loan_account = LoanAccounts::findOne(["loan_account_enc_id" => $params['value']]);
+            $loan_account = LoanAccounts::findOne(["loan_account_number" => $params['value']]);
             if (empty($loan_account)) {
                 throw new Exception("Loan Account not found.");
             }
@@ -1315,7 +1316,7 @@ class EmiCollectionsController extends ApiBaseController
             if (empty($update)) {
                 throw new Exception("Emi Account not found.");
             }
-            $update->loan_account_enc_id = $params['value'];
+            $update->loan_account_enc_id = $loan_account->loan_account_enc_id;
             $update->loan_account_number = $loan_account->loan_account_number;
             $update->customer_name = $loan_account->name;
             $update->updated_by = $user->user_enc_id;
