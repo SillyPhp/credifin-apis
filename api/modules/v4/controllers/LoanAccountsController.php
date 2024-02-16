@@ -213,7 +213,7 @@ class LoanAccountsController extends ApiBaseController
                     $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone']);
                 }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
-                ->groupBy(['a.loan_account_enc_id','a1.emi_collection_enc_id'])
+                ->groupBy(['a.loan_account_enc_id', 'a1.emi_collection_enc_id'])
                 ->limit(1)
                 ->one();
             if ($data) {
@@ -1305,36 +1305,36 @@ class LoanAccountsController extends ApiBaseController
         }
 
         $params = Yii::$app->request->post();
-        $loan_account_enc_id = $params['loan_account_enc_id'];
 
-        if (empty($loan_account_enc_id)) {
+        if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information "loan_account_enc_id"']);
         }
-
-        foreach ($loan_account_enc_id as $loan_account_enc_ids) {
-            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $loan_account_enc_ids]);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $priority = LoanAccountsExtended::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
             if (!$priority) {
                 throw new Exception('Loan account not found');
             }
 
-            $priority_types = ['telecaller_priority', 'collection_priority', 'sales_priority',
-                'sales_target_date', 'telecaller_target_date', 'collection_target_date'];
-
-            foreach ($priority_types as $type) {
-                if (isset($params[$type])) {
-                    $priority->$type = $params[$type];
-                }
-            }
-
+            $priority->sales_priority = isset($params['sales_priority']) ? $params['sales_priority'] : $priority->sales_priority;
+            $priority->collection_priority = isset($params['collection_priority']) ? $params['collection_priority'] : $priority->collection_priority;
+            $priority->telecaller_priority = isset($params['telecaller_priority']) ? $params['telecaller_priority'] : $priority->telecaller_priority;
+            $priority->sales_target_date = isset($params['sales_target_date']) ? $params['sales_target_date'] : $priority->sales_target_date;
+            $priority->collection_target_date = isset($params['collection_target_date']) ? $params['collection_target_date'] : $priority->collection_target_date;
+            $priority->telecaller_target_date = isset($params['telecaller_target_date']) ? $params['telecaller_target_date'] : $priority->telecaller_target_date;
             $priority->updated_by = $user->user_enc_id;
             $priority->updated_on = date('Y-m-d H:i:s');
 
             if (!$priority->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $priority->getErrors()]);
             }
-        }
 
-        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
     }
 
     public function actionHardRecovery()
