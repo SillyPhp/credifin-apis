@@ -332,7 +332,7 @@ class EmployeeController extends ApiBaseController
                 ->asArray()
                 ->all();
             if ($list):
-           return $list = ArrayProcessJson::Parse($list);
+            $list = ArrayProcessJson::Parse($list);
             endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
