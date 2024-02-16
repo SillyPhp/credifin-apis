@@ -2537,6 +2537,9 @@ class OrganizationsController extends ApiBaseController
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
+                'a.sales_target_date',
+                'a.telecaller_target_date',
+                'a.collection_target_date',
                 "a.loan_account_enc_id", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
