@@ -204,45 +204,68 @@ class LoanAccountsController extends ApiBaseController
                     'a.created_on',
                     'a.last_emi_received_amount',
                     'a.last_emi_received_date',
-                    "COUNT(a1.loan_account_number) as total_emis",
-                    "COALESCE(a.phone, a1.phone) AS phone",
-                    "COALESCE(a.name, a1.customer_name) AS name",
-                    "COALESCE(a.loan_type, a1.loan_type) AS loan_type",
-                    "COALESCE(a.emi_amount, a1.amount) AS emi_amount",
-                    "COALESCE(a.loan_account_number, a1.loan_account_number) AS loan_account_number",
-                    'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
+                    "COUNT(a1.id) AS total_emis",
+                    "a.name",
+                    "a.loan_type",
+                    "a.emi_amount",
+                    "a.loan_account_number",
+                    '(a.ledger_amount + a.overdue_amount) AS total_pending_amount',
                 ])
                 ->joinWith(['emiCollections AS a1' => function ($b) {
-                    $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone']);
+                    $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone', 'a1.address', 'a1.latitude', 'a1.longitude', 'a1.created_on', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by"]);
+                    $b->joinWith(['createdBy cr'], false);
+                    $b->andOnCondition(['a1.is_deleted' => 0]);
                 }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
-                ->groupBy(['a.loan_account_enc_id','a1.emi_collection_enc_id'])
-                ->limit(1)
+                ->groupBy(['a.loan_account_enc_id'])
+                ->asArray()
                 ->one();
             if ($data) {
                 $phones = $data['emiCollections'];
                 array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
                 $data['phone'] = array_unique(array_column($phones, 'phone'));
+                foreach ($phones as $loc) {
+                    $data['location'][] = [
+                        'address' =>    $loc['address'],
+                        'latitude' => $loc['latitude'],
+                        'longitude' => $loc['longitude'],
+                        'created_on' => $loc['created_on'],
+                        'created_by' => $loc['created_by']
+                    ];
+                }
+                unset($data['emiCollections']);
             }
         } else {
-            $query = (new \yii\db\Query())
+            $query = EmiCollection::find()
+                ->alias('a')
                 ->select([
                     'a.loan_account_number',
                     'a.customer_name as name',
                     'a.phone',
                     'a.amount as emi_amount',
                     'a.loan_type',
-                    "COUNT(*) OVER(PARTITION BY a.loan_account_number) as total_emis",
+                    "COUNT(*) OVER(PARTITION BY a.loan_account_number) AS total_emis", 'a.address', 'a.longitude', 'a.latitude', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by", 'a.created_on',
                 ])
-                ->from(['a' => EmiCollection::tableName()])
                 ->where(['a.loan_account_number' => $params['loan_account_number'], 'a.is_deleted' => 0])
+                ->joinWith(['createdBy cr'])
                 ->orderBy(['a.id' => SORT_DESC])
-                ->limit(1)
+                ->asArray()
                 ->all();
             if ($query) {
                 $phones = array_unique(array_column($query, 'phone'));
                 $data = reset($query);
                 $data['phone'] = $phones;
+
+                foreach ($query as $loc) {
+                    $data['location'][] = [
+                        'address' =>    $loc['address'],
+                        'latitude' => $loc['latitude'],
+                        'longitude' => $loc['longitude'],
+                        'created_on' => $loc['created_on'],
+                        'created_by' => $loc['created_by']
+                    ];
+                }
+                unset($data['emiCollections']);
             }
         }
         if (!empty($data)) {
