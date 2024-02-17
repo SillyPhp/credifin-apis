@@ -1117,6 +1117,8 @@ class LoanAccountsController extends ApiBaseController
                         $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
                     } elseif ($key == 'pos') {
                         $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
+                    } elseif ($key == 'emi_date') {
+                        $ptpcases->andWhere(['DAY(c.emi_date)' => $value]);
                     } elseif ($key == 'sharedTo') {
                         $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } elseif ($key == 'proposed_date') {
