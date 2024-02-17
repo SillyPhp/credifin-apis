@@ -256,34 +256,34 @@ class TestCacheController extends Controller
                 "names" => [
                     [
                         "index" => "N01",
-                        "firstName" => "KATHIR",
-                        "middleName" => "ESAN",
-                        "lastName" => "MARIAM",
-                        "birthDate" => "04071989",
+                        "firstName" => "Lav Shaw",
+                        "middleName" => "",
+                        "lastName" => "",
+                        "birthDate" => "15121993",
                         "gender" => "2"
                     ]
                 ],
                 "ids" => [
                     [
                         "index" => "I01",
-                        "idNumber" => "PHAPAXXXXX",
-                        "idType" => "03"
+                        "idNumber" => "EHEPS6295G",
+                        "idType" => "01"
                     ]
                 ],
                 "telephones" => [
                     [
                         "index" => "T01",
-                        "telephoneNumber" => "98934XXXXX",
+                        "telephoneNumber" => "9748597169",
                         "telephoneType" => "01"
                     ]
                 ],
                 "addresses" => [
                     [
                         "index" => "A01",
-                        "line1" => "NO 843",
-                        "line2" => "KONGU VIBROSTREET TNAGAR",
-                        "stateCode" => "33",
-                        "pinCode" => "600054",
+                        "line1" => "ORIAPARA ROAD GARULIA Garulia",
+                        "line2" => "",
+                        "stateCode" => "27",
+                        "pinCode" => "424001",
                         "addressCategory" => "01",
                         "residenceCode" => "01"
                     ]
@@ -310,14 +310,15 @@ class TestCacheController extends Controller
         curl_setopt($ch, CURLOPT_SSLCERT, $certificate_path);
         curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'empower123');
         curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'P12');
-       // curl_setopt($ch, CURLOPT_URL, 'https://apiuat.cibilhawk.com/acquire/credit-assessment/v1/consumer-cir-cv');
-        curl_setopt($ch, CURLOPT_URL, 'https://uatportal.cibilhawk.com/publish/apis/details/d7269df3-c72a-474e-bd19-e431cb7e98e0/url');
+        curl_setopt($ch, CURLOPT_URL, 'https://apiuat.cibilhawk.com/acquire/credit-assessment/v1/consumer-cir-cv');
+        //curl_setopt($ch, CURLOPT_URL, 'https://uatportal.cibilhawk.com/publish/apis/details/d7269df3-c72a-474e-bd19-e431cb7e98e0/url');
         $response = curl_exec($ch);
         if ($response === false) {
             return curl_error($ch);
         }
-        // echo $response;
-        print_r(json_decode($response));
+         return $response;
+        die();
+        //print_r(json_decode($response));
 
     }
 

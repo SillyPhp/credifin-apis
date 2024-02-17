@@ -2,8 +2,6 @@
 
 namespace api\modules\v4\models;
 
-use api\modules\v4\controllers\DealersController;
-use api\modules\v4\controllers\DealsController;
 use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
 use common\models\AssignedDealerVehicleTypes;
@@ -11,7 +9,6 @@ use common\models\AssignedFinancerDealers;
 use common\models\AssignedSupervisor;
 use common\models\BankDetails;
 use common\models\EmailLogs;
-use common\models\FinancerVehicleTypes;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -141,8 +138,6 @@ class SignupForm extends Model
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if (!$user->save()) {
-                print_r($user);
-                exit();
                 $transaction->rollback();
                 throw new \Exception(json_encode($user->getErrors()));
             }

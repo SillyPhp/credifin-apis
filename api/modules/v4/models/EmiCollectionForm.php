@@ -135,8 +135,6 @@ class EmiCollectionForm extends Model
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
         if (!empty($loan_account)) {
             $model->loan_account_enc_id = $loan_account;
-        }
-        if ($loan_account) {
             $model->company_id = $company_id;
             $model->case_no = $case_no;
         }
