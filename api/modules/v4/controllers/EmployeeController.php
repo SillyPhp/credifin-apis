@@ -222,8 +222,6 @@ class EmployeeController extends ApiBaseController
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 $org_id = $user_roles->organization_enc_id;
             }
-            $startDate = $params['start_date'];
-            $endDate = $params['end_date'];
             $valuesSma = [
                 'SMA0'=>[
                     'name'=>'SMA-0',
@@ -287,7 +285,7 @@ class EmployeeController extends ApiBaseController
                     }]);
                 }],false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
+                ->orWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
                 ->groupBy(['a.user_enc_id','b2.image','b2.image_location','b2.initials_color', 'b.employee_code','b2.first_name','b2.last_name','gd.designation','b3.location_name','b3.location_enc_id']);
 

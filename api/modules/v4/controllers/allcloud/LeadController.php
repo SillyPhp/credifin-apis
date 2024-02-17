@@ -17,6 +17,8 @@ class LeadController extends ApiBaseController
                 'add-new-loan',
                 'add-customer',
                 'add-documents',
+                'generate-token',
+                'add-new-collection',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -27,6 +29,7 @@ class LeadController extends ApiBaseController
                 'add-new-loan' => ['POST', 'OPTIONS'],
                 'add-customer' => ['POST', 'OPTIONS'],
                 'add-documents' => ['POST', 'OPTIONS'],
+                'add-new-collection' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -49,6 +52,60 @@ class LeadController extends ApiBaseController
         return $behaviors;
     }
 
+    public function actionGenerateToken(){
+        $payload = Yii::$app->request->post();
+        $options = [];
+        $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
+        $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
+        $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
+        $options['requestHttpMethod'] = 'POST';
+        $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/LeadDetail/AddLeadDetail';
+        $payload = json_encode($payload);
+       return $res = Auth::generateToken($options,$payload);
+    }
+
+    public function actionAddNewCollection(){
+        try {
+            if ($user = $this->isAuthorized()){
+                $payload = Yii::$app->request->post();
+                $options = [];
+                $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
+                $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
+                $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
+                $options['requestHttpMethod'] = 'POST';
+                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Payment/SaveRepayment';
+                $payload = json_encode($payload);
+                $res = Auth::generateToken($options,$payload);
+                if ($res['status']){
+                    $auth = $res['token']['data']['Authorization'];
+                    $ch = curl_init($options['Request_URL']);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+                    curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload); // Set the POST data
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Content-Type: application/json", // You can adjust the content type as needed
+                        "Authorization: $auth",
+                    ]);
+                    return   $response = curl_exec($ch);
+                    if (curl_errno($ch)) {
+                        return  $this->response(422, ['message'=>'Error','Error'=>'cURL Error: ' . curl_error($ch)]);
+                    }else{
+                        $decodeResponse = json_decode($response,true);
+                        if (isset($decodeResponse['LeadDetailId'])&&!empty($decodeResponse['LeadDetailId'])){
+                            return $this->response(200, ['message'=>'Success','data'=>$decodeResponse]);
+                        }else{
+                            return  $this->response(422, ['message'=>'Error','Error'=>$decodeResponse]);
+                        }
+                    }
+                }
+
+            } else{
+                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+            }
+        }catch (\Exception $exception){
+            return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
+        }
+    }
     public function actionAddNewLead(){
         try {
             if ($user = $this->isAuthorized()){
