@@ -1129,11 +1129,11 @@ class LoanAccountsController extends ApiBaseController
                         $ptpcases->andWhere(['OR',
                             ['AND',
                                 ['IS NOT', 'c.name', null],
-                                ['LIKE', 'c.name', "$value%", false]
+                                ['LIKE', 'c.name', "%$value%", false]
                             ],
                             ['AND',
                                 ['IS', 'c.name', null],
-                                ['LIKE', 'b.customer_name', "$value%", false]
+                                ['LIKE', 'b.customer_name', "%$value%", false]
                             ]
                         ]);
                     } else {
