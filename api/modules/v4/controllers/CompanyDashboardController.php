@@ -750,7 +750,7 @@ class CompanyDashboardController extends ApiBaseController
                     $val['disbursement_approved'] = $provider['disbursement_approved'];
                     $val['insurance_charges'] = $provider['insurance_charges'];
                     $val['branch_id'] = $provider['branch_enc_id'];
-                    $val['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
+                    $val['branch'] = $provider['location_name'];
                 }
             }
         }
