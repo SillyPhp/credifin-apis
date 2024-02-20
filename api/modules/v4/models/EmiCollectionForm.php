@@ -133,11 +133,17 @@ class EmiCollectionForm extends Model
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
+
         if (!empty($loan_account)) {
             $model->loan_account_enc_id = $loan_account;
             $model->company_id = $company_id;
             $model->case_no = $case_no;
+        } elseif ($this->loan_type == 'Loan Against Property' || $this->loan_type == 'MSME') {
+            $model->company_id = '01';
+        } elseif ($this->loan_type == 'E-Rickshaw') {
+            $model->company_id = '25';
         }
+
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
         if ($this->payment_mode != 1) {
