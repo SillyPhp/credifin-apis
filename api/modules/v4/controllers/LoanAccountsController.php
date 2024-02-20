@@ -1072,7 +1072,7 @@ class LoanAccountsController extends ApiBaseController
                 "a.created_by"
             ])
             ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
-                $b->innerJoinWith(['loanAccountEnc c' => function ($cc) {
+                $b->joinWith(['loanAccountEnc c' => function ($cc) {
                     $cc->joinWith(['assignedLoanAccounts ala' => function ($ala) {
                         $ala->joinWith(['sharedTo d1']);
                         $ala->andOnCondition(['ala.is_deleted' => 0]);
@@ -1125,6 +1125,19 @@ class LoanAccountsController extends ApiBaseController
                         $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'name') {
+                        $ptpcases->andWhere(['OR',
+                            ['AND',
+                                ['IS NOT', 'c.name', null],
+                                ['LIKE', 'c.name', "%$value%", false]
+                            ],
+                            ['AND',
+                                ['IS', 'c.name', null],
+                                ['LIKE', 'b.customer_name', "%$value%", false]
+                            ]
+                        ]);
+                    } else {
+                        $ptpcases->andWhere(['like', $key, $value]);
                     }
                 }
             }

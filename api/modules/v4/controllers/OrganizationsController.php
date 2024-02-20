@@ -2622,11 +2622,11 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'bucket') {
                         $query->andWhere(['IN', 'a.bucket', $value]);
                     } elseif ($key == 'sales_priority') {
-                        $query->andWhere(['=', 'a.sales_priority', $value]);
+                        $query->andWhere(['IN', 'a.sales_priority', $value]);
                     } elseif ($key == 'collection_priority') {
-                        $query->andWhere(['=', 'a.collection_priority', $value]);
+                        $query->andWhere(['IN', 'a.collection_priority', $value]);
                     } elseif ($key == 'telecaller_priority') {
-                        $query->andWhere(['=', 'a.telecaller_priority', $value]);
+                        $query->andWhere(['IN', 'a.telecaller_priority', $value]);
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'proposed_start_date') {
