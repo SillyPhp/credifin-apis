@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\Employee;
+use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
@@ -221,8 +222,43 @@ class EmployeeController extends ApiBaseController
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 $org_id = $user_roles->organization_enc_id;
             }
-            $startDate = $params['start_date'];
-            $endDate = $params['end_date'];
+            $valuesSma = [
+                'SMA0'=>[
+                    'name'=>'SMA-0',
+                    'value'=>1.25
+                ],
+                'SMA1'=>[
+                    'name'=>'SMA-1',
+                    'value'=>1.5
+                ],
+                'SMA2'=>[
+                    'name'=>'SMA-2',
+                    'value'=>1.5
+                ],
+                'NPA'=>[
+                    'name'=>'NPA',
+                    'value'=>1
+                ],
+                'OnTime'=>[
+                    'name'=>'OnTime',
+                    'value'=>null
+                ],
+            ];
+            $queryResult = "";
+            foreach ($valuesSma as $key => $value){
+                $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
+                $CollectedCasesNumber = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+                if ($key == 'OnTime'):
+                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+                else:
+                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+                    endif;
+                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) collected_verified_amount_{$key},";
+                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(ec.amount, 0) END),0) collected_unverified_amount_{$key},";
+
+                $queryResult .= "$totalCasesNumber $CollectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
+            }
+            $queryResult = rtrim($queryResult, ',');
             $list  = Users::find()
                 ->alias('a')
                 ->select([
@@ -234,26 +270,7 @@ class EmployeeController extends ApiBaseController
                     'gd.designation designation',
                     "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
-
-                    'target_cases_sma_0' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-0' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.25) ELSE 0 END)",
-                    'collected_amount_sma_0' => "SUM(CASE WHEN lac.bucket = 'SMA-0' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
-
-                    'target_cases_sma_1' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-1' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END)",
-                    'collected_amount_sma_1' => "SUM(CASE WHEN lac.bucket = 'SMA-1' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
-
-                    'target_cases_sma_2' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'SMA-2' THEN lac.loan_account_enc_id END)",
-                    'target_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 1.5) ELSE 0 END )",
-                    'collected_amount_sma_2' => "SUM(CASE WHEN lac.bucket = 'SMA-2' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
-
-                    'target_cases_npa' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'NPA' THEN lac.loan_account_enc_id END)",
-                    'target_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * 2) ELSE 0 END )",
-                    'collected_amount_npa' => "SUM(CASE WHEN lac.bucket = 'NPA' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
-
-                    'target_cases_ontime' => "COUNT(DISTINCT CASE WHEN lac.bucket = 'OnTime' THEN lac.loan_account_enc_id END)",
-                    'target_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount ELSE 0 END)",
-                    'collected_amount_ontime' => "SUM(CASE WHEN lac.bucket = 'OnTime' AND ec.emi_payment_status = 'collected' THEN ec.amount END)",
+                    $queryResult
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -268,7 +285,8 @@ class EmployeeController extends ApiBaseController
                     }]);
                 }],false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
+                //date between condition need to be set after shalya beta test and scenerio
+                ->orWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
                 ->groupBy(['a.user_enc_id','b2.image','b2.image_location','b2.initials_color', 'b.employee_code','b2.first_name','b2.last_name','gd.designation','b3.location_name','b3.location_enc_id']);
 
@@ -312,6 +330,9 @@ class EmployeeController extends ApiBaseController
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
+            if ($list):
+            $list = ArrayProcessJson::Parse($list);
+            endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

@@ -2281,7 +2281,7 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['notice_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing parameter "notice_enc_id"']);
         }
-        $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id'], 'created_by' => $user->user_enc_id]);
+        $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id']]);
         if (!$notice) {
             return $this->response(404, ['status' => 404, 'message' => 'Notice not Found']);
         }
@@ -2551,14 +2551,14 @@ class OrganizationsController extends ApiBaseController
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
-                "CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                            WHEN a.bucket = 'onTime' THEN 1
-                            WHEN a.bucket = 'sma-0' THEN 1.25
-                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                            WHEN a.bucket = 'npa' THEN 2
-                            ELSE 1
-                        END)  
-                        THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
                         ELSE emi_amount * 
                             (CASE 
                                 WHEN a.bucket = 'sma-0' THEN 1.25
@@ -2566,6 +2566,7 @@ class OrganizationsController extends ApiBaseController
                                 WHEN a.bucket = 'npa' THEN 2
                                 ELSE 1
                         END) 
+                    END) 
                 END target_collection_amount"
 
             ])
@@ -2585,6 +2586,9 @@ class OrganizationsController extends ApiBaseController
                 ]);
                 $d->joinWith(['sharedTo d1'], false);
             }])
+            ->joinWith(['emiCollections ems' => function ($ems) {
+                $ems->joinWith(['loanAccountPtps lap'], false);
+            }], false)
             ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
                 $emi->from(['emi' => $sub_query1]);
                 $emi->andOnCondition(['emi.rnk' => 1]);
@@ -2617,21 +2621,38 @@ class OrganizationsController extends ApiBaseController
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'bucket') {
                         $query->andWhere(['IN', 'a.bucket', $value]);
-                    } elseif ($key == 'priority') {
-                        $query->andWhere([
-                            'or',
-                            ['and', ['d.user_type' => 1], ['like', 'a.sales_priority', $value]],
-                            ['and', ['d.user_type' => 2], ['like', 'a.collection_priority', $value]],
-                            ['and', ['d.user_type' => 3], ['like', 'a.telecaller_priority', $value]]
-                        ]);
+                    } elseif ($key == 'sales_priority') {
+                        $query->andWhere(['IN', 'a.sales_priority', $value]);
+                    } elseif ($key == 'collection_priority') {
+                        $query->andWhere(['IN', 'a.collection_priority', $value]);
+                    } elseif ($key == 'telecaller_priority') {
+                        $query->andWhere(['IN', 'a.telecaller_priority', $value]);
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
+                    } elseif ($key == 'proposed_start_date') {
+                        $query->andWhere(['>=', 'lap.proposed_date', $value]);
+                    } elseif ($key == 'proposed_end_date') {
+                        $query->andWhere(['<=', 'lap.proposed_date', $value]);
+                    } elseif ($key == 'sales_target_start_date') {
+                        $query->andWhere(['>=', 'a.sales_target_date', $value]);
+                    } elseif ($key == 'sales_target_end_date') {
+                        $query->andWhere(['<=', 'a.sales_target_date', $value]);
+                    } elseif ($key == 'collection_target_start_date') {
+                        $query->andWhere(['>=', 'a.collection_target_date', $value]);
+                    } elseif ($key == 'collection_target_end_date') {
+                        $query->andWhere(['<=', 'a.collection_target_date', $value]);
+                    } elseif ($key == 'telecaller_target_start_date') {
+                        $query->andWhere(['>=', 'a.telecaller_target_date', $value]);
+                    } elseif ($key == 'telecaller_target_end_date') {
+                        $query->andWhere(['<=', 'a.telecaller_target_date', $value]);
                     } elseif ($key == 'branch') {
                         $query->andWhere(['IN', 'b.location_enc_id', $value]);
                     } elseif ($key == 'total_pending_amount') {
                         $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'emi_date') {
+                        $query->andWhere(['DAY(a.emi_date)' => $value]);
                     } elseif ($key == 'sharedTo') {
                         $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
                     } else {
@@ -2642,14 +2663,13 @@ class OrganizationsController extends ApiBaseController
         }
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $query->andWhere([
-                "OR",
+            $query->andWhere(["OR",
                 ["IN", "a.assigned_caller", $juniors],
                 ["IN", "a.collection_manager", $juniors],
                 ["IN", "a.created_by", $juniors],
-                ["IN", "d.shared_to", $juniors],
-            ]);
+                ["IN", "d.shared_to", $juniors],]);
         }
+
         if (!empty($params["bucket"])) {
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }

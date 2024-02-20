@@ -3,11 +3,10 @@
 namespace api\modules\v4\controllers;
 
 use common\models\EmployeeIncentivePoints;
-use common\models\UserRoles;
-use yii\filters\VerbFilter;
+use common\models\Utilities;
 use Yii;
 use yii\filters\Cors;
-use common\models\Utilities;
+use yii\filters\VerbFilter;
 
 class EmployeeIncentivePointsController extends ApiBaseController
 {
@@ -131,6 +130,7 @@ class EmployeeIncentivePointsController extends ApiBaseController
         if ($incentivePoints) {
             $incentivePoints->is_deleted = 1;
             $incentivePoints->updated_by = $user->user_enc_id;
+            $incentivePoints->updated_on = date('Y-m-d h:i:s');
             if (!$incentivePoints->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving', 'error' => $incentivePoints->getErrors()]);
             }
@@ -155,6 +155,7 @@ class EmployeeIncentivePointsController extends ApiBaseController
         $incentivePoints->points = $params['points_type'] === 'others' ? $params['points_type_others'] : $params['points_type'];
         $incentivePoints->points_value = $params['points_value'];
         $incentivePoints->updated_by = $user->user_enc_id;
+        $incentivePoints->updated_on = date('Y-m-d h:i:s');
         if (!$incentivePoints->update()) {
             return $this->response(500, ['status' => 500, 'message' => 'An error occurred while updating', 'error' => $incentivePoints->getErrors()]);
         }
