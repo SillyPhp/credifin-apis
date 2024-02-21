@@ -73,7 +73,7 @@ class LeadController extends ApiBaseController
                 $options['USER_TOKEN'] = Yii::$app->params->allcloud->phf->dev->USER_TOKEN;
                 $options['USER_SECRET'] =  Yii::$app->params->allcloud->phf->dev->USER_SECRET;
                 $options['requestHttpMethod'] = 'POST';
-                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Payment/SaveRepayment';
+                $options['Request_URL'] = Yii::$app->params->allcloud->phf->dev->UrlPrefix.'apiv2phfleasing/api/Repayment/SaveRepayment';
                 $payload = json_encode($payload);
                 $res = Auth::generateToken($options,$payload);
                 if ($res['status']){
