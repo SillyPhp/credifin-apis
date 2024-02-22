@@ -910,10 +910,13 @@ class LoanAccountsController extends ApiBaseController
             $fields_search = $params['fields_search'];
             foreach ($fields_search as $key => $value) {
                 if (!empty($value)) {
-
                     switch ($key) {
                         case 'branch':
-                            $where['a.branch_enc_id'] = $value;
+                            if ($value == 'unassigned') {
+                                $where['a.branch_enc_id'] = null;
+                            } else {
+                                $where['a.branch_enc_id'] = $value;
+                            }
                             break;
                         case 'loan_type':
                             $where['a.loan_type'] = $value;
@@ -1060,7 +1063,7 @@ class LoanAccountsController extends ApiBaseController
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
                 "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
-                "c.last_emi_date", "(CASE WHEN c.name IS NOT NULL THEN c.name ELSE b.customer_name END) AS name",
+                "c.last_emi_date", "COALESCE(c.name, b.customer_name) AS name",
                 "c.emi_amount", "c.overdue_amount", "c.ledger_amount",
                 "(CASE WHEN c.loan_type IS NOT NULL THEN c.loan_type ELSE b.loan_type END) AS loan_type",
                 "c.emi_date", "c.last_emi_received_amount", "c.advance_interest", "c.bucket",
@@ -1838,5 +1841,37 @@ class LoanAccountsController extends ApiBaseController
             $transaction->rollBack();
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
+    }
+
+    public function actionUpdatePtpStatus()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $ptp_enc_id = $params['ptp_enc_id'];
+
+        if (empty($ptp_enc_id)) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information "ptp_enc_id"']);
+        }
+        if (!isset($params['status'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "status"']);
+        }
+
+        foreach ($ptp_enc_id as $ptp_enc_ids) {
+            $status = LoanAccountPtps::findOne(['ptp_enc_id' => $ptp_enc_ids]);
+            if (!$status) {
+                throw new Exception('ptp_enc_id not found');
+            }
+            $status->status = !empty($params['status']) ? $params['status'] : $status->status;
+            $status->updated_by = $user->user_enc_id;
+            $status->updated_on = date('Y-m-d H:i:s');
+            if (!$status->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $status->getErrors()]);
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 }
