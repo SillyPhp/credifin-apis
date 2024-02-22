@@ -122,22 +122,17 @@ class EmiCollectionForm extends Model
         $condition = "LOWER(REGEXP_REPLACE(loan_account_number, '[^a-zA-Z0-9]', '')) = '$loan_num_temp'";
         $loan_find = LoanAccounts::find()->select(['loan_account_enc_id', 'company_id', 'case_no', 'loan_account_number'])->where($condition)->asArray()->one();
         $loan_account_number = $this->loan_account_number;
-        if ($loan_find) {
-            $loan_account = $loan_find['loan_account_enc_id'];
-            $company_id = $loan_find['company_id'];
-            $case_no = $loan_find['case_no'];
-            $loan_account_number = $loan_find['loan_account_number'];
-        }
 
         $model = new EmiCollectionExtended();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
 
-        if (!empty($loan_account)) {
-            $model->loan_account_enc_id = $loan_account;
-            $model->company_id = $company_id;
-            $model->case_no = $case_no;
+        if ($loan_find) {
+            $loan_account_number = $loan_find['loan_account_number'];
+            $model->loan_account_enc_id = $loan_find['loan_account_enc_id'];
+            $model->company_id = $loan_find['company_id'];
+            $model->case_no = $loan_find['case_no'];
         } elseif ($this->loan_type == 'Loan Against Property' || $this->loan_type == 'MSME') {
             $model->company_id = '01';
         } elseif ($this->loan_type == 'E-Rickshaw') {
