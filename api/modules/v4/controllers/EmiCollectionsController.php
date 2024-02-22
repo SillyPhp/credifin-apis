@@ -1057,6 +1057,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(['assignedLoanPayments d' => function ($d) {
                 $d->joinWith(['loanPaymentsEnc d1'], false);
             }], false)
+            ->groupBy(['a.emi_collection_enc_id', 'b1a.designation', 'b.user_enc_id', 'd1.payment_short_url'])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->andWhere(['a.is_deleted' => 0]);
 

@@ -2622,45 +2622,116 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'bucket') {
                         $query->andWhere(['IN', 'a.bucket', $value]);
                     } elseif ($key == 'sales_priority') {
-                        $query->andWhere(['IN', 'a.sales_priority', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['sales_priority' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.sales_priority', $value]);
+                        }
                     } elseif ($key == 'collection_priority') {
-                        $query->andWhere(['IN', 'a.collection_priority', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['collection_priority' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.collection_priority', $value]);
+                        }
                     } elseif ($key == 'telecaller_priority') {
-                        $query->andWhere(['IN', 'a.telecaller_priority', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['telecaller_priority' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.telecaller_priority', $value]);
+                        }
+                    } elseif ($key == 'proposed_amount') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['lap.proposed_amount' . $key => null]);
+                        } else {
+                            $query->andWhere(['like', 'lap.proposed_amount', "$value%", false]);
+                        }
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
                     } elseif ($key == 'proposed_start_date') {
-                        $query->andWhere(['>=', 'lap.proposed_date', $value]);
-                    } elseif ($key == 'proposed_end_date') {
-                        $query->andWhere(['<=', 'lap.proposed_date', $value]);
-                    } elseif ($key == 'sales_target_start_date') {
-                        $query->andWhere(['>=', 'a.sales_target_date', $value]);
-                    } elseif ($key == 'sales_target_end_date') {
-                        $query->andWhere(['<=', 'a.sales_target_date', $value]);
-                    } elseif ($key == 'collection_target_start_date') {
-                        $query->andWhere(['>=', 'a.collection_target_date', $value]);
-                    } elseif ($key == 'collection_target_end_date') {
-                        $query->andWhere(['<=', 'a.collection_target_date', $value]);
-                    } elseif ($key == 'telecaller_target_start_date') {
-                        $query->andWhere(['>=', 'a.telecaller_target_date', $value]);
-                    } elseif ($key == 'telecaller_target_end_date') {
-                        $query->andWhere(['<=', 'a.telecaller_target_date', $value]);
-                    } elseif ($key == 'branch') {
-                        $query->andWhere(['IN', 'b.location_enc_id', $value]);
-                    } elseif ($key == 'total_pending_amount') {
-                        $query->having(['=', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', $value]);
-                    } elseif ($key == 'collection_manager') {
-                        $query->andWhere(["like", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['lap.proposed_date' => null]);
+                        } else {
+                            $query->andWhere(['>=', 'lap.proposed_date', $value]);
+                        }
                     } elseif ($key == 'emi_date') {
                         $query->andWhere(['DAY(a.emi_date)' => $value]);
-                    } elseif ($key == 'sharedTo') {
-                        $query->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
+                    } elseif ($key == 'proposed_end_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['lap.proposed_date' => null]);
+                        } else {
+                            $query->andWhere(['<=', 'lap.proposed_date', $value]);
+                        }
+                    } elseif ($key == 'sales_target_start_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.sales_target_date' => null]);
+                        } else {
+                            $query->andWhere(['>=', 'a.sales_target_date', $value]);
+                        }
+                    } elseif ($key == 'sales_target_end_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.sales_target_date' => null]);
+                        } else {
+                            $query->andWhere(['<=', 'a.sales_target_date', $value]);
+                        }
+                    } elseif ($key == 'collection_target_start_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.collection_target_date' => null]);
+                        } else {
+                            $query->andWhere(['>=', 'a.collection_target_date', $value]);
+                        }
+                    } elseif ($key == 'collection_target_end_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.collection_target_date' => null]);
+                        } else {
+                            $query->andWhere(['<=', 'a.collection_target_date', $value]);
+                        }
+                    } elseif ($key == 'telecaller_target_start_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.telecaller_target_date' => null]);
+                        } else {
+                            $query->andWhere(['>=', 'a.telecaller_target_date', $value]);
+                        }
+                    } elseif ($key == 'telecaller_target_end_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.telecaller_target_date' => null]);
+                        } else {
+                            $query->andWhere(['<=', 'a.telecaller_target_date', $value]);
+                        }
+                    } elseif ($key == 'last_emi_received_date') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere('COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) IS NULL');
+                        } else {
+                            $query->andWhere(['=', 'COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date)', $value]);
+                        }
+                    } elseif ($key == 'branch') {
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['b.location_enc_id' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'b.location_enc_id', $value]);
+                        }
+                    } elseif ($key == 'total_pending_amount') {
+                        $query->having(['like', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', "$value%", false]);
+                    } elseif ($key == 'financer') {
+                        $query->andWhere(['like', 'af.name', "%$value%", false]);
+                    } elseif ($key == 'target_collection_amount') {
+                        $query->having(['like', 'target_collection_amount', "$value%", false]);
+                    } elseif ($key == 'collection_manager') {
+                        $query->andWhere(['d.user_type' => 2])
+                            ->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'assigned_bdo') {
+                        $query->andWhere(['d.user_type' => 1])
+                            ->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } else {
-                        $query->andWhere(["like", 'a.' . $key, "$value%", false]);
+                        if ($value == "unassigned") {
+                            $query->andWhere(['a.' . $key => null]);
+                        } else {
+                            $query->andWhere(["like", 'a.' . $key, "$value%", false]);
+                        }
                     }
                 }
             }
         }
+
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $query->andWhere(["OR",
