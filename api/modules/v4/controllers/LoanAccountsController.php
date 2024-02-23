@@ -1968,4 +1968,93 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
+    public function actionLinksPaymentList()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select([
+                'a.loan_account_enc_id',
+                'a.emi_collection_enc_id',
+                'a.loan_payments_enc_id',
+                'b.name',
+                'b.loan_account_number',
+                'b.bucket',
+                'b.bucket_status_date',
+                'c.payment_amount',
+                'c.payment_status',
+                'a.created_on AS transaction_initiated_date',
+                'd.collection_date',
+                'b.phone',
+                'b1.location_name',
+                'b.loan_type',
+            ])
+            ->innerJoinWith(['loanAccountEnc AS b' => function ($b) {
+                $b->joinWith(['branchEnc AS b1'], false);
+            }], false)
+            ->innerJoinWith(['loanPaymentsEnc AS c'], false)
+            ->joinWith(['emiCollectionEnc AS d'], false);
+        if (!empty($params['start_date']) && !empty($params['end_date'])) {
+            $data->andWhere(['BETWEEN', 'a.created_on', $params['start_date'], $params['end_date']]);
+        }
+        $search = [
+            'loan_account_number',
+            'customer_name',
+            'bucket',
+            'phone',
+            'loan_type',
+            'collection_start_date',
+            'collection_end_date',
+            'emi_payment_status',
+            'transaction_start_date',
+            'transaction_end_date'
+        ];
+        foreach ($params['fields_search'] as $key => $val) {
+            if ((!empty($val) || $val == '0') && in_array($key, $search)) {
+                switch ($key) {
+                    case 'collection_start_date':
+                        $data->andWhere(['>=', 'd.collection_date', $val]);
+                        break;
+                    case 'collection_end_date':
+                        $data->andWhere(['<=', 'd.collection_date', $val]);
+                        break;
+                    case 'emi_payment_status':
+                        $data->andWhere(['c.payment_status' => $val]);
+                        break;
+                    case 'transaction_start_date':
+                        $data->andWhere(['>=', 'a.created_on', $val]);
+                        break;
+                    case 'transaction_end_date':
+                        $data->andWhere(['<=', 'a.created_on', $val]);
+                        break;
+                    case 'loan_account_number':
+                        $data->andWhere(['LIKE', 'b.loan_account_number', $val]);
+                        break;
+                    case 'customer_name':
+                        $data->andWhere(['LIKE', 'b.name', $val]);
+                        break;
+                    case 'phone':
+                        $data->andWhere(['LIKE', 'b.phone', "$val%", false]);
+                        break;
+                    default:
+                        // default is only for b alias name so set accordingly
+                        $data->andWhere(["b.$key" => $val]);
+                        break;
+                }
+            }
+        }
+        $count = $data->count();
+        $data = $data->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        if (!empty($data)) {
+            return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['message' => 'data not found']);
+    }
 }
