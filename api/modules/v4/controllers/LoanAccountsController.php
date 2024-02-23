@@ -6,6 +6,7 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
+use common\models\AssignedLoanPayments;
 use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -22,6 +23,7 @@ use common\models\Utilities;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
+use Razorpay\Api\Api;
 use Yii;
 use yii\db\Exception;
 use yii\db\Query;
@@ -226,7 +228,7 @@ class LoanAccountsController extends ApiBaseController
                 $data['phone'] = array_unique(array_column($phones, 'phone'));
                 foreach ($phones as $loc) {
                     $data['location'][] = [
-                        'address' =>    $loc['address'],
+                        'address' => $loc['address'],
                         'latitude' => $loc['latitude'],
                         'longitude' => $loc['longitude'],
                         'created_on' => $loc['created_on'],
@@ -258,7 +260,7 @@ class LoanAccountsController extends ApiBaseController
 
                 foreach ($query as $loc) {
                     $data['location'][] = [
-                        'address' =>    $loc['address'],
+                        'address' => $loc['address'],
                         'latitude' => $loc['latitude'],
                         'longitude' => $loc['longitude'],
                         'created_on' => $loc['created_on'],
@@ -1862,6 +1864,107 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
         } catch (\Exception $exception) {
             $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionSendPaymentLinks()
+    {
+        $user = $this->isAuth();
+        $params = $this->post;
+        if (empty($params['loan_account_enc_ids'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_ids"']);
+        }
+        $loan_account_enc_ids = $params['loan_account_enc_ids'];
+        $loan_accounts = LoanAccounts::find()
+            ->alias('a')
+            ->select(['a.loan_account_enc_id', 'a.name', 'a.phone', 'a.loan_type',
+                "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(a.ledger_amount, 0) + COALESCE(a.overdue_amount, 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(a.ledger_amount, 0) + COALESCE(a.overdue_amount, 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) AS emi_amount"])
+            ->where(["AND", ['IN', 'a.loan_account_enc_id', $loan_account_enc_ids], ['a.is_deleted' => 0]])
+            ->indexBy(['loan_account_enc_id'])
+            ->asArray()
+            ->all();
+        if (!$loan_accounts) {
+            return $this->response(404, ['message' => 'An error occurred.', 'error' => 'Loan accounts not found']);
+        }
+        $enc_amount = array_column($loan_accounts, 'emi_amount', 'loan_account_enc_id');
+        $where = ['OR'];
+        foreach ($enc_amount as $key => $value) {
+            $where[] = ['a.loan_account_enc_id' => $key, 'b.payment_amount' => $value];
+        }
+        $check_existing = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select(['a.loan_account_enc_id', 'a.loan_payments_enc_id'])
+            ->innerJoinWith(['loanPaymentsEnc AS b' => function ($b) {
+                $b->andOnCondition([
+                        'AND',
+                        ['b.payment_link_type' => '0'],
+                        ['>=', 'b.close_by', date('Y-m-d H:i:s')],
+                        ['b.payment_mode_status' => 'active'],
+                        ['b.payment_status' => 'pending']]
+                );
+            }], false)
+            ->where(
+                $where
+            )
+            ->asArray()->all();
+
+        $data = array_diff($loan_account_enc_ids, array_column($check_existing, 'loan_account_enc_id'));
+        try {
+            if (!$org = $user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                if (!$org = $findOrg['organization_enc_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+                }
+            }
+            $options['org_id'] = $org;
+            $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+            if (!$keys) {
+                throw new \Exception('an error occurred while fetching razorpay credentials');
+            }
+            $api_key = $keys['api_key'];
+            $api_secret = $keys['api_secret'];
+            $api = new Api($api_key, $api_secret);
+            foreach ($data as $value) {
+                $loan_account = $loan_accounts[$value];
+                if ($loan_account['emi_amount'] < 0) {
+                    continue;
+                }
+                $options = [];
+                $options['loan_account_enc_id'] = $loan_account['loan_account_enc_id'];
+                $options['user_id'] = $user->user_enc_id;
+                $options['amount'] = $loan_account['emi_amount'];
+                $options['description'] = 'Emi collection for ' . $loan_account['loan_type'];
+                $options['name'] = $loan_account['name'];
+                $options['contact'] = $loan_account['phone'];
+                $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
+                $options['brand'] = 'Testing';
+                $options['purpose'] = $loan_account['loan_type'];
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
+                $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
+                $create = \common\models\payments\Payments::createLink($api, $options);
+                if (!$create) {
+                    throw new Exception('An error occurred.');
+                }
+            }
+            return $this->response(200, ['message' => 'Success']);
+        } catch (\Exception $exception) {
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
