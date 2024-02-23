@@ -2620,7 +2620,11 @@ class OrganizationsController extends ApiBaseController
                     if ($key == 'assigned_caller') {
                         $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'bucket') {
-                        $query->andWhere(['IN', 'a.bucket', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['a.bucket' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.bucket', $value]);
+                        }
                     } elseif ($key == 'sales_priority') {
                         if (in_array("unassigned", $value)) {
                             $query->andWhere(['sales_priority' => null]);
@@ -2697,12 +2701,12 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['<=', 'a.telecaller_target_date', $value]);
                         }
-                    } elseif ($key == 'last_emi_received_date') {
-                        if ($value == 'unassigned') {
-                            $query->andWhere('COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) IS NULL');
-                        } else {
-                            $query->andWhere(['=', 'COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date)', $value]);
-                        }
+
+                    } elseif ($key == 'last_emi_received_start_date') {
+                        $query->andWhere(['>=', 'COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date)', $value]);
+                    } elseif ($key == 'last_emi_received_end_date') {
+                        $query->andWhere(['<=', 'COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date)', $value]);
+
                     } elseif ($key == 'branch') {
                         if (in_array("unassigned", $value)) {
                             $query->andWhere(['b.location_enc_id' => null]);
