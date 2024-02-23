@@ -170,7 +170,7 @@ class EmiCollectionForm extends Model
         $model->latitude = $this->latitude;
         $model->longitude = $this->longitude;
         $model->created_by = $model->updated_by = $user_id;
-        $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
+        $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
         if ($this->ptp_amount && $this->ptp_date) {
             $model->ptp_amount = $this->ptp_amount;
             $model->ptp_date = $this->ptp_date;
@@ -232,7 +232,7 @@ class EmiCollectionForm extends Model
             $ptp_model->proposed_payment_method = $this->ptp_payment_method;
             $ptp_model->collection_manager = $this->ptp_collection_manager;
             $ptp_model->created_by = $user_id;
-            $ptp_model->created_on = date('Y-m-d h:i:s');
+            $ptp_model->created_on = date('Y-m-d H:i:s');
 
             if (!$ptp_model->save()) {
                 throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($ptp_model->errors, 0, false)));
