@@ -2027,7 +2027,7 @@ class LoansController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading image']);
         }
         $query->created_by = $query->updated_by = $user->user_enc_id;
-        $query->created_on = $query->updated_on = date('Y-m-d h:i:s');
+        $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
         if (!$query->save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query->getErrors()]);
         }
