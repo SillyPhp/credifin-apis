@@ -1669,6 +1669,9 @@ class CompanyDashboardController extends ApiBaseController
                     }
                     $assigning_ids = array_merge(array_fill_keys(array_column($update_data['sharedLoanApplications'], 'shared_to'), 1), array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
                     foreach ($assigning_ids as $id => $type) {
+                        if (empty($id)) {
+                            continue;
+                        }
                         $bdo = new AssignedLoanAccountsExtended();
                         $utilitiesModel->variables["string"] = time() . rand(100, 100000000);
                         $bdo->assigned_enc_id = $utilitiesModel->encrypt();
