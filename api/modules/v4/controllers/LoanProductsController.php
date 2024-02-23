@@ -276,7 +276,7 @@ class LoanProductsController extends ApiBaseController
                     $model->loan_app_enc_id = $params['loan_id'];
                     $model->amount = $charge['amount'];
                     $model->created_by = $model->updated_by = $user->user_enc_id;
-                    $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
+                    $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         $transaction->rollBack();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);

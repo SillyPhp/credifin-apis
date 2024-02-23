@@ -52,7 +52,7 @@ class Payments
             $model->payment_short_url = $options['surl'];
         }
         if (!empty($options['close_by'])) {
-            $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
+            $model->close_by = date('Y-m-d H:i:s', $options['close_by']);
         }
         if (!empty($options['remarks'])) {
             $model->remarks = $options['remarks'];
@@ -78,7 +78,7 @@ class Payments
             }
         }
         $model->created_by = $model->updated_by = $options['user_id'];
-        $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
+        $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
         if (!$model->save()) {
             return false;
         }
@@ -94,7 +94,7 @@ class Payments
             $assign->loan_app_enc_id = $options['loan_app_enc_id'];
         }
         $assign->created_by = $assign->updated_by = $options['user_id'];
-        $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
+        $assign->created_on = $assign->updated_on = date('Y-m-d H:i:s');
         if (!$assign->save()) {
             return false;
         }
@@ -113,7 +113,7 @@ class Payments
                 $detail->no_dues_name = $id['name'];
                 $detail->no_dues_amount = $id['amount'];
                 $detail->created_by = $options['user_id'];
-                $detail->created_on = date('Y-m-d h:i:s');
+                $detail->created_on = date('Y-m-d H:i:s');
                 if (!$detail->save()) {
                     return false;
                 }
