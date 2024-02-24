@@ -223,43 +223,43 @@ class EmployeeController extends ApiBaseController
                 $org_id = $user_roles->organization_enc_id;
             }
             $valuesSma = [
-                'SMA0'=>[
-                    'name'=>'SMA-0',
-                    'value'=>1.25
+                'SMA0' => [
+                    'name' => 'SMA-0',
+                    'value' => 1.25
                 ],
-                'SMA1'=>[
-                    'name'=>'SMA-1',
-                    'value'=>1.5
+                'SMA1' => [
+                    'name' => 'SMA-1',
+                    'value' => 1.5
                 ],
-                'SMA2'=>[
-                    'name'=>'SMA-2',
-                    'value'=>1.5
+                'SMA2' => [
+                    'name' => 'SMA-2',
+                    'value' => 1.5
                 ],
-                'NPA'=>[
-                    'name'=>'NPA',
-                    'value'=>1
+                'NPA' => [
+                    'name' => 'NPA',
+                    'value' => 1
                 ],
-                'OnTime'=>[
-                    'name'=>'OnTime',
-                    'value'=>null
+                'OnTime' => [
+                    'name' => 'OnTime',
+                    'value' => null
                 ],
             ];
             $queryResult = "";
-            foreach ($valuesSma as $key => $value){
+            foreach ($valuesSma as $key => $value) {
                 $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
                 $CollectedCasesNumber = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
                 if ($key == 'OnTime'):
                     $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
                 else:
                     $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
-                    endif;
+                endif;
                 $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) collected_verified_amount_{$key},";
                 $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(ec.amount, 0) END),0) collected_unverified_amount_{$key},";
 
                 $queryResult .= "$totalCasesNumber $CollectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
             }
             $queryResult = rtrim($queryResult, ',');
-            $list  = Users::find()
+            $list = Users::find()
                 ->alias('a')
                 ->select([
                     'a.user_enc_id',
@@ -279,19 +279,19 @@ class EmployeeController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['assignedLoanAccounts0 ala'=>function($asla){
-                    $asla->joinWith(['loanAccountEnc lac'=>function($lac){
+                ->joinWith(['assignedLoanAccounts0 ala' => function ($asla) {
+                    $asla->joinWith(['loanAccountEnc lac' => function ($lac) {
                         $lac->joinWith(['emiCollections ec']);
                     }]);
-                }],false)
+                }], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 //date between condition need to be set after shalya beta test and scenerio
                 ->orWhere(['between', 'ec.collection_date', $params['start_date'], $params['end_date']])
-                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0,'b.organization_enc_id'=>$org_id])
-                ->groupBy(['a.user_enc_id','b2.image','b2.image_location','b2.initials_color', 'b.employee_code','b2.first_name','b2.last_name','gd.designation','b3.location_name','b3.location_enc_id']);
+                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
+                ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
 
             if (!empty($params['loan_type'])) {
-                $list->andWhere(['IN','ec.loan_type',$params['loan_type']]);
+                $list->andWhere(['IN', 'ec.loan_type', $params['loan_type']]);
             }
             if (!empty($params['fields_search'])) {
                 foreach ($params['fields_search'] as $key => $value) {
@@ -331,7 +331,7 @@ class EmployeeController extends ApiBaseController
                 ->asArray()
                 ->all();
             if ($list):
-            $list = ArrayProcessJson::Parse($list);
+                $list = ArrayProcessJson::Parse($list);
             endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
@@ -356,7 +356,7 @@ class EmployeeController extends ApiBaseController
                 $d->joinWith(['branchEnc b3' => function ($f) {
                 }], false);
             }], false)
-            ->andWhere(['a.username' => $params['username'], 'a.is_deleted' => 0])
+            ->andWhere(['a.username' => $params['username'], 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
