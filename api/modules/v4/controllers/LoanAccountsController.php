@@ -6,6 +6,7 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
+use common\models\AssignedLoanPayments;
 use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -22,6 +23,7 @@ use common\models\Utilities;
 use common\models\VehicleRepoComments;
 use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
+use Razorpay\Api\Api;
 use Yii;
 use yii\db\Exception;
 use yii\db\Query;
@@ -201,45 +203,68 @@ class LoanAccountsController extends ApiBaseController
                     'a.created_on',
                     'a.last_emi_received_amount',
                     'a.last_emi_received_date',
-                    "COUNT(a1.loan_account_number) as total_emis",
-                    "COALESCE(a.phone, a1.phone) AS phone",
-                    "COALESCE(a.name, a1.customer_name) AS name",
-                    "COALESCE(a.loan_type, a1.loan_type) AS loan_type",
-                    "COALESCE(a.emi_amount, a1.amount) AS emi_amount",
-                    "COALESCE(a.loan_account_number, a1.loan_account_number) AS loan_account_number",
-                    'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount',
+                    "COUNT(a1.id) AS total_emis",
+                    "a.name",
+                    "a.loan_type",
+                    "a.emi_amount",
+                    "a.loan_account_number",
+                    '(a.ledger_amount + a.overdue_amount) AS total_pending_amount',
                 ])
                 ->joinWith(['emiCollections AS a1' => function ($b) {
-                    $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone']);
+                    $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone', 'a1.address', 'a1.latitude', 'a1.longitude', 'a1.created_on', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by"]);
+                    $b->joinWith(['createdBy cr'], false);
+                    $b->andOnCondition(['a1.is_deleted' => 0]);
                 }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
-                ->groupBy(['a.loan_account_enc_id', 'a1.emi_collection_enc_id'])
-                ->limit(1)
+                ->groupBy(['a.loan_account_enc_id'])
+                ->asArray()
                 ->one();
             if ($data) {
                 $phones = $data['emiCollections'];
                 array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
                 $data['phone'] = array_unique(array_column($phones, 'phone'));
+                foreach ($phones as $loc) {
+                    $data['location'][] = [
+                        'address' => $loc['address'],
+                        'latitude' => $loc['latitude'],
+                        'longitude' => $loc['longitude'],
+                        'created_on' => $loc['created_on'],
+                        'created_by' => $loc['created_by']
+                    ];
+                }
+                unset($data['emiCollections']);
             }
         } else {
-            $query = (new \yii\db\Query())
+            $query = EmiCollection::find()
+                ->alias('a')
                 ->select([
                     'a.loan_account_number',
                     'a.customer_name as name',
                     'a.phone',
                     'a.amount as emi_amount',
                     'a.loan_type',
-                    "COUNT(*) OVER(PARTITION BY a.loan_account_number) as total_emis",
+                    "COUNT(*) OVER(PARTITION BY a.loan_account_number) AS total_emis", 'a.address', 'a.longitude', 'a.latitude', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by", 'a.created_on',
                 ])
-                ->from(['a' => EmiCollection::tableName()])
                 ->where(['a.loan_account_number' => $params['loan_account_number'], 'a.is_deleted' => 0])
+                ->joinWith(['createdBy cr'])
                 ->orderBy(['a.id' => SORT_DESC])
-                ->limit(1)
+                ->asArray()
                 ->all();
             if ($query) {
                 $phones = array_unique(array_column($query, 'phone'));
                 $data = reset($query);
                 $data['phone'] = $phones;
+
+                foreach ($query as $loc) {
+                    $data['location'][] = [
+                        'address' => $loc['address'],
+                        'latitude' => $loc['latitude'],
+                        'longitude' => $loc['longitude'],
+                        'created_on' => $loc['created_on'],
+                        'created_by' => $loc['created_by']
+                    ];
+                }
+                unset($data['emiCollections']);
             }
         }
         if (!empty($data)) {
@@ -1586,14 +1611,14 @@ class LoanAccountsController extends ApiBaseController
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                         $loan->lms_loan_account_number = $lms_loan_account_number;
                         $loan->case_no = $case_no;
-                        $loan->loan_account_number = $loan_account_number;
-                        $loan->created_on = date('Y-m-d h:i:s');
+                        $loan->loan_account_number = $loan_account_number ?? $case_no;
+                        $loan->created_on = date('Y-m-d H:i:s');
                         $loan->created_by = $user->user_enc_id;
                         $new_cases++;
                     } else {
                         $old_cases++;
                     }
-                    $loan->updated_on = date('Y-m-d h:i:s');
+                    $loan->updated_on = date('Y-m-d H:i:s');
                     $loan->updated_by = $user->user_enc_id;
 
                     if (in_array('LoanType', $headers)) {
@@ -1899,5 +1924,195 @@ class LoanAccountsController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+    }
+
+    public function actionSendPaymentLinks()
+    {
+        $user = $this->isAuth();
+        $params = $this->post;
+        if (empty($params['loan_account_enc_ids'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_ids"']);
+        }
+        $loan_account_enc_ids = $params['loan_account_enc_ids'];
+        $loan_accounts = LoanAccounts::find()
+            ->alias('a')
+            ->select(['a.loan_account_enc_id', 'a.name', 'a.phone', 'a.loan_type',
+                "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(a.ledger_amount, 0) + COALESCE(a.overdue_amount, 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(a.ledger_amount, 0) + COALESCE(a.overdue_amount, 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) AS emi_amount"])
+            ->where(["AND", ['IN', 'a.loan_account_enc_id', $loan_account_enc_ids], ['a.is_deleted' => 0]])
+            ->indexBy(['loan_account_enc_id'])
+            ->asArray()
+            ->all();
+        if (!$loan_accounts) {
+            return $this->response(404, ['message' => 'An error occurred.', 'error' => 'Loan accounts not found']);
+        }
+        $enc_amount = array_column($loan_accounts, 'emi_amount', 'loan_account_enc_id');
+        $where = ['OR'];
+        foreach ($enc_amount as $key => $value) {
+            $where[] = ['a.loan_account_enc_id' => $key, 'b.payment_amount' => $value];
+        }
+        $check_existing = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select(['a.loan_account_enc_id', 'a.loan_payments_enc_id'])
+            ->innerJoinWith(['loanPaymentsEnc AS b' => function ($b) {
+                $b->andOnCondition([
+                        'AND',
+                        ['b.payment_link_type' => '0'],
+                        ['>=', 'b.close_by', date('Y-m-d H:i:s')],
+                        ['b.payment_mode_status' => 'active'],
+                        ['b.payment_status' => 'pending']]
+                );
+            }], false)
+            ->where(
+                $where
+            )
+            ->asArray()->all();
+
+        $data = array_diff($loan_account_enc_ids, array_column($check_existing, 'loan_account_enc_id'));
+        try {
+            if (!$org = $user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                if (!$org = $findOrg['organization_enc_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+                }
+            }
+            $options['org_id'] = $org;
+            $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+            if (!$keys) {
+                throw new \Exception('an error occurred while fetching razorpay credentials');
+            }
+            $api_key = $keys['api_key'];
+            $api_secret = $keys['api_secret'];
+            $api = new Api($api_key, $api_secret);
+            foreach ($data as $value) {
+                $loan_account = $loan_accounts[$value];
+                if ($loan_account['emi_amount'] < 0 || empty($loan_account['phone']) || strlen($loan_account['phone']) != 10) {
+                    continue;
+                }
+                $options = [];
+                $options['loan_account_enc_id'] = $loan_account['loan_account_enc_id'];
+                $options['user_id'] = $user->user_enc_id;
+                $options['amount'] = $loan_account['emi_amount'];
+                $options['description'] = 'Emi collection for ' . $loan_account['loan_type'];
+                $options['name'] = $loan_account['name'];
+                $options['contact'] = $loan_account['phone'];
+                $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
+                $options['brand'] = 'Testing';
+                $options['purpose'] = $loan_account['loan_type'];
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
+                $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
+                $create = \common\models\payments\Payments::createLink($api, $options);
+                if (!$create) {
+                    throw new Exception('An error occurred.');
+                }
+            }
+            return $this->response(200, ['message' => 'Success']);
+        } catch (\Exception $exception) {
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
+    public function actionLinksPaymentList()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $limit = !empty($params['limit']) ? $params['limit'] : 25;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $data = AssignedLoanPayments::find()
+            ->alias('a')
+            ->select([
+                'a.loan_account_enc_id',
+                'a.emi_collection_enc_id',
+                'a.loan_payments_enc_id',
+                'b.name',
+                'b.loan_account_number',
+                'b.bucket',
+                'b.bucket_status_date',
+                'c.payment_amount',
+                'c.payment_status',
+                'a.created_on AS transaction_initiated_date',
+                'd.collection_date',
+                'b.phone',
+                'b1.location_name',
+                'b.loan_type',
+            ])
+            ->innerJoinWith(['loanAccountEnc AS b' => function ($b) {
+                $b->joinWith(['branchEnc AS b1'], false);
+            }], false)
+            ->innerJoinWith(['loanPaymentsEnc AS c'], false)
+            ->joinWith(['emiCollectionEnc AS d'], false);
+        if (!empty($params['start_date']) && !empty($params['end_date'])) {
+            $data->andWhere(['BETWEEN', 'a.created_on', $params['start_date'], $params['end_date']]);
+        }
+        $search = [
+            'loan_account_number',
+            'customer_name',
+            'bucket',
+            'phone',
+            'loan_type',
+            'collection_start_date',
+            'collection_end_date',
+            'emi_payment_status',
+            'transaction_start_date',
+            'transaction_end_date'
+        ];
+        foreach ($params['fields_search'] as $key => $val) {
+            if ((!empty($val) || $val == '0') && in_array($key, $search)) {
+                switch ($key) {
+                    case 'collection_start_date':
+                        $data->andWhere(['>=', 'd.collection_date', $val]);
+                        break;
+                    case 'collection_end_date':
+                        $data->andWhere(['<=', 'd.collection_date', $val]);
+                        break;
+                    case 'emi_payment_status':
+                        $data->andWhere(['c.payment_status' => $val]);
+                        break;
+                    case 'transaction_start_date':
+                        $data->andWhere(['>=', 'a.created_on', $val]);
+                        break;
+                    case 'transaction_end_date':
+                        $data->andWhere(['<=', 'a.created_on', $val]);
+                        break;
+                    case 'loan_account_number':
+                        $data->andWhere(['LIKE', 'b.loan_account_number', $val]);
+                        break;
+                    case 'customer_name':
+                        $data->andWhere(['LIKE', 'b.name', $val]);
+                        break;
+                    case 'phone':
+                        $data->andWhere(['LIKE', 'b.phone', "$val%", false]);
+                        break;
+                    default:
+                        // default is only for b alias name so set accordingly
+                        $data->andWhere(["b.$key" => $val]);
+                        break;
+                }
+            }
+        }
+        $count = $data->count();
+        $data = $data->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        if (!empty($data)) {
+            return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
+        }
+        return $this->response(404, ['message' => 'data not found']);
     }
 }

@@ -1711,7 +1711,7 @@ class OrganizationsController extends ApiBaseController
                         }
                     }
                     $model->updated_by = $user->user_enc_id;
-                    $model->updated_on = date('Y-m-d h:i:s');
+                    $model->updated_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         throw new \yii\db\Exception(implode(' ', array_column($model->errors, 0)));
                     }

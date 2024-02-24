@@ -4,17 +4,18 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\PaymentModel;
-use common\models\EmiCollection;
 use common\models\AssignedLoanPayments;
+use common\models\EmiCollection;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EmiCollectionExtended;
-use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
 use common\models\UserRoles;
+use common\models\Utilities;
 use common\models\WebhookTest;
 use Razorpay\Api\Api;
 use Yii;
@@ -182,11 +183,62 @@ class PaymentsController extends ApiBaseController
                     if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
                         $this->updateEmi($ref_id);
+                        $this->createEmi($model);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
+        }
+    }
+
+    private function createEmi($loan_payment)
+    {
+        $id = $loan_payment->loan_payments_enc_id;
+        $loan_account = LoanAccounts::find()
+            ->alias('a')
+            ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) use ($id) {
+                $b->andOnCondition(['b.loan_payments_enc_id' => $id]);
+            }], false)
+            ->asArray()
+            ->one();
+        $loan_id = $loan_account['loan_account_enc_id'];
+        $emi = EmiCollection::findOne([
+            'loan_account_enc_id' => $loan_id,
+            'amount' => $loan_payment->payment_amount,
+            'created_on' => $loan_payment->created_on,
+            'emi_payment_method' => 2,
+            'is_deleted' => 0
+        ]);
+
+        if ($loan_account && empty($emi)) {
+            $emi = new EmiCollectionExtended();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $emi->emi_collection_enc_id = $utilitiesModel->encrypt();
+            $emi->loan_account_enc_id = $loan_id;
+            $emi->branch_enc_id = $loan_account['branch_enc_id'];
+            $emi->customer_name = $loan_account['name'];
+            $emi->company_id = $loan_account['company_id'];
+            $emi->case_no = $loan_account['case_no'];
+            $emi->collection_date = date('Y-m-d');
+            $emi->loan_account_number = $loan_account['loan_account_number'];
+            $emi->phone = $loan_account['phone'];
+            $emi->amount = $loan_payment->payment_amount;
+            $emi->loan_type = $loan_account['loan_type'];
+            $emi->transaction_initiated_date = date('Y-m-d', strtotime($loan_payment->created_on));
+            $emi->emi_payment_method = 2;
+            $emi->emi_payment_mode = 1;
+            $emi->emi_payment_status = 'paid';
+            $emi->created_on = $loan_payment->created_on;
+            $emi->updated_on = date('Y-m-d H:i:s');
+            $emi->created_by = $emi->updated_by = $loan_payment->created_by;
+            $emi->save();
+            $assigned_loan_payment = AssignedLoanPayments::findOne(['loan_payments_enc_id' => $id]);
+            if ($assigned_loan_payment) {
+                $assigned_loan_payment->emi_collection_enc_id = $emi->emi_collection_enc_id;
+                $assigned_loan_payment->save();
             }
         }
     }
