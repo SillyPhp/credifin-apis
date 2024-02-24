@@ -2547,7 +2547,6 @@ class OrganizationsController extends ApiBaseController
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
@@ -2618,7 +2617,11 @@ class OrganizationsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
-                        $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
+                        } else {
+                            $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $query->andWhere(['a.bucket' => null]);
@@ -2735,6 +2738,112 @@ class OrganizationsController extends ApiBaseController
                 }
             }
         }
+
+        if (!empty($params['fields_sort'])) {
+            $a = ['loan_type', 'overdue_amount', 'pos', 'name', 'loan_account_number', 'emi_amount'];
+            $c = ['financer'];
+            $d = ['collection_manager', 'assigned_bdo'];
+            $e = ['sales_priority', 'telecaller_priority', 'collection_priority'];
+            $f = ['proposed_amount'];
+            $g = ['branch'];
+
+            foreach ($params['fields_sort'] as $key => $val) {
+                if (!empty($val)) {
+                    if ($val == 1) {
+                        $val = SORT_ASC;
+                    } else if ($val == 2) {
+                        $val = SORT_DESC;
+                    }
+
+                    if (in_array($key, $a)) {
+                        if ($key == 'loan_type') {
+                            $query->orderBy(['a.loan_type' => $val]);
+                        } elseif ($key == 'loan_account_number') {
+                            $query->orderBy([
+                                'ISNULL(a.loan_account_number)' => SORT_ASC,
+                                "CASE WHEN TRIM(a.loan_account_number) = '' THEN 1 ELSE 0 END" => SORT_ASC,
+                                'a.loan_account_number' => $val
+                            ]);
+                        } else {
+                            $query->orderBy(['a.' . $key => $val]);
+                        }
+                    }
+
+                    if (in_array($key, $f)) {
+                        if ($key == 'proposed_amount') {
+                            $query->orderBy(['ISNULL(ANY_VALUE(lap.proposed_amount))' => SORT_ASC, 'ANY_VALUE(lap.proposed_amount)' => $val]);
+//                            $query->orderBy(['ANY_VALUE(lap.proposed_amount)' => $val]);
+                        }
+                    }
+
+                    if (in_array($key, $c)) {
+                        if ($key == 'financer') {
+                            $query->orderBy(['ISNULL(af.name)' => SORT_ASC, 'af.name' => $val]);
+                        }
+                    }
+                    if (in_array($key, $g)) {
+                        if ($key == 'branch') {
+                            $query->orderBy(['ISNULL(branch)' => SORT_DESC, 'branch' => $val]);
+                        }
+                    }
+
+                    if ($key == 'target_collection_amount') {
+                        $query->orderBy(['target_collection_amount' => $val]);
+                    }
+                    if ($key == 'bucket') {
+                        $query->orderBy(['ISNULL(bucket)' => SORT_DESC, 'bucket' => $val]);
+                    }
+
+                    if ($key == 'assigned_caller') {
+                        $query->orderBy(['ISNULL(assigned_caller)' => SORT_ASC, 'assigned_caller' => $val]);
+                    }
+
+                    if ($key == 'last_emi_received_amount') {
+                        $query->orderBy(['last_emi_received_amount' => $val]);
+                    }
+                    if ($key == 'emi_date') {
+                        $query->orderBy(['DAY(a.emi_date)' => $val]);
+                    }
+                    if ($key == 'last_emi_received_date') {
+                        $query->orderBy(['ISNULL(last_emi_received_date)' => SORT_ASC, 'last_emi_received_date' => $val]);
+                    }
+                    if ($key == 'telecaller_target_date') {
+                        $query->orderBy(['ISNULL(telecaller_target_date)' => SORT_ASC, 'telecaller_target_date' => $val]);
+                    }
+                    if ($key == 'sales_target_date') {
+                        $query->orderBy(['ISNULL(sales_target_date)' => SORT_ASC, 'sales_target_date' => $val]);
+                    }
+                    if ($key == 'collection_target_date') {
+                        $query->orderBy(['ISNULL(collection_target_date)' => SORT_ASC, 'collection_target_date' => $val]);
+                    }
+
+                    if ($key == 'total_pending_amount') {
+                        $query->orderBy(['total_pending_amount' => $val]);
+                    }
+
+                    if (in_array($key, $e)) {
+                        if ($key == 'sales_priority') {
+                            $query->orderBy(['ISNULL(sales_priority)' => SORT_ASC, 'sales_priority' => $val]);
+                        } elseif ($key == 'collection_priority') {
+                            $query->orderBy(['ISNULL(collection_priority)' => SORT_ASC, 'collection_priority' => $val]);
+                        } elseif ($key == 'telecaller_priority') {
+                            $query->orderBy(['ISNULL(telecaller_priority)' => SORT_ASC, 'telecaller_priority' => $val]);
+                        }
+                    }
+
+                    if (in_array($key, $d)) {
+                        if ($key == 'collection_manager') {
+                            $query->andWhere(['d.user_type' => 2]);
+                            $query->orderBy(["ANY_VALUE(CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')))" => $val]);
+                        } elseif ($key == 'assigned_bdo') {
+                            $query->andWhere(['d.user_type' => 1]);
+                            $query->orderBy(["ANY_VALUE(CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')))" => $val]);
+                        }
+                    }
+                }
+            }
+        }
+
 
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
