@@ -2048,8 +2048,8 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
         }
 
-        if (empty($params['loan_account_number'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_number"']);
+        if (!isset($params['company_id']) && !isset($params['case_no'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "company_id" or "case_no"']);
         }
 
         $transaction = Yii::$app->db->beginTransaction();
@@ -2060,7 +2060,8 @@ class LoanAccountsController extends ApiBaseController
             if (empty($case)) {
                 throw new Exception("Loan Account not found.");
             }
-            $case->loan_account_number = $params['loan_account_number'];
+            $case->company_id = $params['company_id'];
+            $case->case_no = $params['case_no'];
             $case->updated_by = $user->user_enc_id;
             $case->updated_on = date('Y-m-d H:i:s');
             if (!$case->save()) {
