@@ -1975,7 +1975,7 @@ class LoanAccountsController extends ApiBaseController
             $api = new Api($api_key, $api_secret);
             foreach ($data as $value) {
                 $loan_account = $loan_accounts[$value];
-                if ($loan_account['emi_amount'] < 0) {
+                if ($loan_account['emi_amount'] < 0 || empty($loan_account['phone']) || strlen($loan_account['phone']) != 10) {
                     continue;
                 }
                 $options = [];
