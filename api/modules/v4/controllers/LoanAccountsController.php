@@ -1695,6 +1695,9 @@ class LoanAccountsController extends ApiBaseController
                                     'Ledger A/c',
                                     'OverDue'
                                 ])) {
+                                    if ($header == 'Ledger A/c' && in_array($loan_type, ['Loan Against Property', 'MSME']) && $value < 0) {
+                                        $value = 0;
+                                    }
                                     $loan->$def = $value;
                                 } else {
                                     if (empty($loan->$def)) {
