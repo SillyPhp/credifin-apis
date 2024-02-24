@@ -405,19 +405,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -1618,15 +1618,19 @@ class EmiCollectionsController extends ApiBaseController
 
         try {
             $case = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
-            if (!$case) {
-                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id not found']);
+            $cases = EmiCollection::findAll(["loan_account_number" => $case->loan_account_number, "loan_account_enc_id" => null, 'is_deleted' => 0]);
+            if (empty($cases)) {
+                $cases[] = $case;
             }
 
-            $case->company_id = $params['company_id'];
-            $case->case_no = $params['case_no'];
-
-            if (!$case->save()) {
-                throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
+            foreach ($cases as $case) {
+                $case->company_id = $params['company_id'];
+                $case->case_no = $params['case_no'];
+                $case->updated_by = $user->user_enc_id;
+                $case->updated_on = date('Y-m-d H:i:s');
+                if (!$case->save()) {
+                    throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
+                }
             }
 
             $transaction->commit();

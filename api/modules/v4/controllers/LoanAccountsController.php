@@ -1128,15 +1128,27 @@ class LoanAccountsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'assigned_caller') {
-                        $ptpcases->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "%$value%", false]);
+                        if ($value == 'unassigned') {
+                            $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
+                        } else {
+                            $ptpcases->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "%$value%", false]);
+                        }
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'bucket') {
-                        $ptpcases->andWhere(['IN', 'c.bucket', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $ptpcases->andWhere(['c.bucket' => null]);
+                        } else {
+                            $ptpcases->andWhere(['IN', 'c.bucket', $value]);
+                        }
                     } elseif ($key == 'loan_type') {
                         $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
                     } elseif ($key == 'branch') {
-                        $ptpcases->andWhere(['IN', 'bb.location_enc_id', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $ptpcases->andWhere(['bb.location_enc_id' => null]);
+                        } else {
+                            $ptpcases->andWhere(['IN', 'bb.location_enc_id', $value]);
+                        }
                     } elseif ($key == 'total_pending_amount') {
                         $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
                     } elseif ($key == 'collection_manager') {
@@ -1148,9 +1160,23 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'emi_date') {
                         $ptpcases->andWhere(['DAY(c.emi_date)' => $value]);
                     } elseif ($key == 'sharedTo') {
-                        $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
-                    } elseif ($key == 'proposed_date') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, $value]);
+                        if ($value == 'unassigned') {
+                            $ptpcases->andWhere(['CONCAT(d1.first_name, \' \', COALESCE(d1.last_name, \'\'))' => null]);
+                        } else {
+                            $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
+                        }
+                    } elseif ($key == 'proposed_start_date') {
+                        if ($value == 'unassigned') {
+                            $ptpcases->andWhere(['a.proposed_date' => null]);
+                        } else {
+                            $ptpcases->andWhere(['>=', 'a.proposed_date', $value]);
+                        }
+                    } elseif ($key == 'proposed_end_date') {
+                        if ($value == 'unassigned') {
+                            $ptpcases->andWhere(['a.proposed_date' => null]);
+                        } else {
+                            $ptpcases->andWhere(['<=', 'a.proposed_date', $value]);
+                        }
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
                     } elseif ($key == 'name') {
