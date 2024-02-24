@@ -1611,7 +1611,7 @@ class LoanAccountsController extends ApiBaseController
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
                         $loan->lms_loan_account_number = $lms_loan_account_number;
                         $loan->case_no = $case_no;
-                        $loan->loan_account_number = $loan_account_number ?? $case_no;
+                        $loan->loan_account_number = !empty($loan_account_number) ? $loan_account_number : $case_no;
                         $loan->created_on = date('Y-m-d H:i:s');
                         $loan->created_by = $user->user_enc_id;
                         $new_cases++;
