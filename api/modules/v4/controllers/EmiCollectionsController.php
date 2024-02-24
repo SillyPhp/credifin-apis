@@ -405,19 +405,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                            //                        case 'reporting_person':
-                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                            //                            break;
+                        //                        case 'reporting_person':
+                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                        //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                            //                        case 'branch':
-                            //                            $branch = "('" . implode("','", $value) . "')";
-                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                            //                            break;
+                        //                        case 'branch':
+                        //                            $branch = "('" . implode("','", $value) . "')";
+                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                        //                            break;
                     }
                 }
             }
@@ -1316,9 +1316,9 @@ class EmiCollectionsController extends ApiBaseController
             $fetch = EmiCollection::findOne(["emi_collection_enc_id" => $params['id']]);
             $updates = EmiCollectionExtended::findAll(["loan_account_number" => $fetch->loan_account_number, "loan_account_enc_id" => null, "is_deleted" => 0]);
             if (empty($updates)) {
-                throw new Exception("Emi Account not found.");
+                $updates[] = $fetch;
             }
-
+            
             foreach ($updates as $update) {
                 $update->loan_account_enc_id = $loan_account->loan_account_enc_id;
                 $update->loan_account_number = $loan_account->loan_account_number;
