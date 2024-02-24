@@ -1318,7 +1318,7 @@ class EmiCollectionsController extends ApiBaseController
             if (empty($updates)) {
                 $updates[] = $fetch;
             }
-            
+
             foreach ($updates as $update) {
                 $update->loan_account_enc_id = $loan_account->loan_account_enc_id;
                 $update->loan_account_number = $loan_account->loan_account_number;
@@ -1622,8 +1622,8 @@ class EmiCollectionsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id not found']);
             }
 
-            $case->company_id = isset($params['company_id']) ? $params['company_id'] : $case->company_id;
-            $case->case_no = isset($params['case_no']) ? $params['case_no'] : $case->case_no;
+            $case->company_id = $params['company_id'];
+            $case->case_no = $params['case_no'];
 
             if (!$case->save()) {
                 throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
