@@ -2786,6 +2786,29 @@ class OrganizationsController extends ApiBaseController
                         $val = SORT_DESC;
                     }
 
+                    if ($key == 'priority') {
+                        $query->orderBy([
+                            'ISNULL(CASE 
+                        WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                        WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+                        WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                        ELSE NULL END)' => $val,
+                            'priority' => $val == SORT_ASC ? SORT_ASC : SORT_DESC
+                        ]);
+                    }
+
+                    if ($key == 'target_date') {
+                        $query->orderBy([
+                            'ISNULL(CASE 
+                                WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+                                WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+                                WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+                                ELSE NULL 
+                             END)' => $val,
+                            'target_date' => $val == SORT_ASC ? SORT_ASC : SORT_DESC
+                        ]);
+                    }
+
                     if (in_array($key, $a)) {
                         if ($key == 'loan_type') {
                             $query->orderBy(['a.loan_type' => $val]);
