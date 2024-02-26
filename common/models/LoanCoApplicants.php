@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -10,7 +12,7 @@ namespace common\models;
  * @property string $loan_app_enc_id organization_enc_id
  * @property string $name
  * @property string $email
- * @property int $cibil_score cibil score
+ * @property int $cibil_score cibil score 
  * @property int $equifax_score
  * @property int $crif_score
  * @property string $phone
@@ -29,6 +31,7 @@ namespace common\models;
  * @property string $pan_number co borrower pan card number
  * @property string $voter_card_number
  * @property string $aadhaar_number
+ * @property string $passport_number
  * @property string $driving_license_number Driving License Number
  * @property string $marital_status Marital Status
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
@@ -70,7 +73,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'father_name', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number'], 'string', 'max' => 20],
+            [['voter_card_number', 'passport_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['driving_license_number'], 'string', 'max' => 30],
             [['loan_co_app_enc_id'], 'unique'],
