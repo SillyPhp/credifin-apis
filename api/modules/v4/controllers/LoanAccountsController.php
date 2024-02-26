@@ -2063,8 +2063,6 @@ class LoanAccountsController extends ApiBaseController
             }
             $case->company_id = $params['company_id'];
             $case->case_no = $params['case_no'];
-            $case->updated_by = $user->user_enc_id;
-            $case->updated_on = date('Y-m-d H:i:s');
             if (!$case->save()) {
                 throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
             }
@@ -2161,7 +2159,7 @@ class LoanAccountsController extends ApiBaseController
             ->asArray()
             ->all();
         if (!empty($data)) {
-        return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
+            return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
         }
         return $this->response(404, ['message' => 'data not found']);
     }

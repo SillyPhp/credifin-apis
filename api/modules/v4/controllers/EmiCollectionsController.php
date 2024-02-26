@@ -1626,8 +1626,6 @@ class EmiCollectionsController extends ApiBaseController
             foreach ($cases as $case) {
                 $case->company_id = $params['company_id'];
                 $case->case_no = $params['case_no'];
-                $case->updated_by = $user->user_enc_id;
-                $case->updated_on = date('Y-m-d H:i:s');
                 if (!$case->save()) {
                     throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
                 }
