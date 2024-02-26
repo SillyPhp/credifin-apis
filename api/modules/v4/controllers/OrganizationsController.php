@@ -2504,12 +2504,21 @@ class OrganizationsController extends ApiBaseController
 
         if ($this->isSpecial(1)) {
             $selectQuery =
-                ["a.sales_priority", "a.collection_priority", "a.telecaller_priority"];
+                ["a.sales_priority", "a.collection_priority", "a.telecaller_priority", "a.sales_target_date",
+                    "a.telecaller_target_date",
+                    "a.collection_target_date"];
         } else {
-            $selectQuery = "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+            $selectQuery = [
+                "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
             WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
             WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
-            ELSE NULL END) AS priority";
+            ELSE NULL END) AS priority",
+
+                "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+            ELSE NULL END) AS target_date"
+            ];
         }
 
         $sub_query = (new \yii\db\Query())
@@ -2541,9 +2550,6 @@ class OrganizationsController extends ApiBaseController
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.hard_recovery", 'a.assigned_financer_enc_id',
-                'a.sales_target_date',
-                'a.telecaller_target_date',
-                'a.collection_target_date',
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
@@ -2628,6 +2634,28 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.bucket', $value]);
                         }
+                    } elseif ($key == 'priority') {
+                        $query->andWhere(['IN', "(CASE 
+                                    WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                                    WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+                                    WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                                    ELSE NULL 
+                                 END)", $value]);
+
+                    } elseif ($key == 'target_start_date') {
+                        $query->andWhere(['>=', "(CASE 
+                                WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+                                WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+                                WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+                                ELSE NULL 
+                             END)", $value]);
+                    } elseif ($key == 'target_end_date') {
+                        $query->andWhere(['<=', "(CASE 
+                                WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+                                WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+                                WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+                                ELSE NULL 
+                             END)", $value]);
                     } elseif ($key == 'sales_priority') {
                         if (in_array("unassigned", $value)) {
                             $query->andWhere(['sales_priority' => null]);
