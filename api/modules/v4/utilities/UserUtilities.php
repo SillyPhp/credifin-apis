@@ -279,7 +279,9 @@ class UserUtilities
         foreach ($userIds as $key => $val) {
             $ids[] = $val['shared_to'];
         }
-        $ids[] = $financerId['user_enc_id'];
+        if (!empty($financerId['user_enc_id'])) {
+            $ids[] = $financerId['user_enc_id'];
+        }
 
         return $ids;
     }
