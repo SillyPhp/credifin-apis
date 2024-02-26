@@ -1280,7 +1280,7 @@ class CompanyDashboardController extends ApiBaseController
                     'd.loan_co_app_enc_id', 'd.father_name', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                     'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation',
                     'ANY_VALUE(d1.address) address', 'ANY_VALUE(d2.name) city', 'ANY_VALUE(d3.name) state', 'ANY_VALUE(d3.abbreviation) state_abbreviation', 'ANY_VALUE(d1.postal_code) postal_code', 'ANY_VALUE(d3.state_code) state_code',
-                    'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
+                    'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score', 'd.passport_number',
                     "CASE WHEN d.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',d.image_location, d.image) ELSE NULL END image",
                 ]);
                 $d->groupBy(['d.loan_co_app_enc_id']);

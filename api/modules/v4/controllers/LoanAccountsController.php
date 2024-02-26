@@ -1180,12 +1180,15 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'proposed_payment_method') {
                         $ptpcases->andWhere(['a.' . $key => $value]);
                     } elseif ($key == 'name') {
-                        $ptpcases->andWhere(['OR',
-                            ['AND',
+                        $ptpcases->andWhere([
+                            'OR',
+                            [
+                                'AND',
                                 ['IS NOT', 'c.name', null],
                                 ['LIKE', 'c.name', "%$value%", false]
                             ],
-                            ['AND',
+                            [
+                                'AND',
                                 ['IS', 'c.name', null],
                                 ['LIKE', 'b.customer_name', "%$value%", false]
                             ]
@@ -1939,7 +1942,8 @@ class LoanAccountsController extends ApiBaseController
         $loan_account_enc_ids = $params['loan_account_enc_ids'];
         $loan_accounts = LoanAccounts::find()
             ->alias('a')
-            ->select(['a.loan_account_enc_id', 'a.name', 'a.phone', 'a.loan_type',
+            ->select([
+                'a.loan_account_enc_id', 'a.name', 'a.phone', 'a.loan_type',
                 "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
                     (CASE WHEN COALESCE(a.ledger_amount, 0) + COALESCE(a.overdue_amount, 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
@@ -1956,7 +1960,8 @@ class LoanAccountsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                END) AS emi_amount"])
+                END) AS emi_amount"
+            ])
             ->where(["AND", ['IN', 'a.loan_account_enc_id', $loan_account_enc_ids], ['a.is_deleted' => 0]])
             ->indexBy(['loan_account_enc_id'])
             ->asArray()
@@ -1973,12 +1978,14 @@ class LoanAccountsController extends ApiBaseController
             ->alias('a')
             ->select(['a.loan_account_enc_id', 'a.loan_payments_enc_id'])
             ->innerJoinWith(['loanPaymentsEnc AS b' => function ($b) {
-                $b->andOnCondition([
+                $b->andOnCondition(
+                    [
                         'AND',
                         ['b.payment_link_type' => '0'],
                         ['>=', 'b.close_by', date('Y-m-d H:i:s')],
                         ['b.payment_mode_status' => 'active'],
-                        ['b.payment_status' => 'pending']]
+                        ['b.payment_status' => 'pending']
+                    ]
                 );
             }], false)
             ->where(
@@ -2030,6 +2037,46 @@ class LoanAccountsController extends ApiBaseController
         }
     }
 
+    public function actionUpdateLoanAccount()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        if ($user->username != 'KKB') {
+            return $this->response(404, ['status' => 404, 'message' => 'Page Not Found']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
+        }
+
+        if (!isset($params['company_id']) && !isset($params['case_no'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "company_id" or "case_no"']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $case = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+
+            if (empty($case)) {
+                throw new Exception("Loan Account not found.");
+            }
+            $case->company_id = $params['company_id'];
+            $case->case_no = $params['case_no'];
+            if (!$case->save()) {
+                throw new \yii\db\Exception(implode(" ", array_column($case->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Added Successfully']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
     public function actionLinksPaymentList()
     {
         $this->isAuth();
@@ -2070,7 +2117,7 @@ class LoanAccountsController extends ApiBaseController
             'loan_type',
             'collection_start_date',
             'collection_end_date',
-            'emi_payment_status',
+            'emi_payment_statuses',
             'transaction_start_date',
             'transaction_end_date'
         ];
@@ -2083,7 +2130,7 @@ class LoanAccountsController extends ApiBaseController
                     case 'collection_end_date':
                         $data->andWhere(['<=', 'd.collection_date', $val]);
                         break;
-                    case 'emi_payment_status':
+                    case 'emi_payment_statuses':
                         $data->andWhere(['c.payment_status' => $val]);
                         break;
                     case 'transaction_start_date':
@@ -2093,7 +2140,7 @@ class LoanAccountsController extends ApiBaseController
                         $data->andWhere(['<=', 'a.created_on', $val]);
                         break;
                     case 'loan_account_number':
-                        $data->andWhere(['LIKE', 'b.loan_account_number', $val]);
+                        $data->andWhere(['LIKE', 'b.loan_account_number', "$val%", false]);
                         break;
                     case 'customer_name':
                         $data->andWhere(['LIKE', 'b.name', $val]);
