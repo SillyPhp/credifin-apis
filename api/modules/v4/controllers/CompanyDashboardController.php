@@ -1533,8 +1533,6 @@ class CompanyDashboardController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ["status" => 401, "message" => "unauthorized"]);
         }
-        // getting provider id
-        $provider_id = $this->getFinancerId($user);
 
         $params = Yii::$app->request->post();
 
@@ -1545,8 +1543,15 @@ class CompanyDashboardController extends ApiBaseController
         if ($params['status'] !== "0" && empty($params['status'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
         }
+        $where = ['loan_application_enc_id' => $params['loan_id'], 'is_deleted' => 0];
+        $authorizedUsers = ["kavi123", "alpna", "Sharan07"];
+        if (!in_array($user->username, $authorizedUsers)) {
+            // getting provider id
+            $provider_id = $this->getFinancerId($user);
+            $where['provider_enc_id'] = $provider_id;
+        }
         // getting object to update
-        $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
+        $provider = AssignedLoanProviderExtended::findOne($where);
         // if provider not found to update status
         if (!$provider) {
             return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
