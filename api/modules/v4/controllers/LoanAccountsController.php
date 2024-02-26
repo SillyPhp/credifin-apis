@@ -2043,8 +2043,10 @@ class LoanAccountsController extends ApiBaseController
         if (!$user) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+        if ($user->username != 'KKB') {
+            return $this->response(404, ['status' => 404, 'message' => 'Page Not Found']);
+        }
         $params = Yii::$app->request->post();
-
         if (empty($params['loan_account_enc_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id"']);
         }
