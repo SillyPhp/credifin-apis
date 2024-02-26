@@ -2036,6 +2036,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
     public function actionUpdateLoanAccount()
     {
         $user = $this->isAuthorized();
@@ -2075,6 +2076,7 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
     public function actionLinksPaymentList()
     {
         $this->isAuth();
@@ -2115,7 +2117,7 @@ class LoanAccountsController extends ApiBaseController
             'loan_type',
             'collection_start_date',
             'collection_end_date',
-            'emi_payment_status',
+            'emi_payment_statuses',
             'transaction_start_date',
             'transaction_end_date'
         ];
@@ -2128,7 +2130,7 @@ class LoanAccountsController extends ApiBaseController
                     case 'collection_end_date':
                         $data->andWhere(['<=', 'd.collection_date', $val]);
                         break;
-                    case 'emi_payment_status':
+                    case 'emi_payment_statuses':
                         $data->andWhere(['c.payment_status' => $val]);
                         break;
                     case 'transaction_start_date':
@@ -2138,7 +2140,7 @@ class LoanAccountsController extends ApiBaseController
                         $data->andWhere(['<=', 'a.created_on', $val]);
                         break;
                     case 'loan_account_number':
-                        $data->andWhere(['LIKE', 'b.loan_account_number', $val]);
+                        $data->andWhere(['LIKE', 'b.loan_account_number', "$val%", false]);
                         break;
                     case 'customer_name':
                         $data->andWhere(['LIKE', 'b.name', $val]);
@@ -2159,7 +2161,7 @@ class LoanAccountsController extends ApiBaseController
             ->asArray()
             ->all();
         if (!empty($data)) {
-            return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
+        return $this->response(200, ['message' => 'Success', 'data' => $data, 'count' => $count]);
         }
         return $this->response(404, ['message' => 'data not found']);
     }
