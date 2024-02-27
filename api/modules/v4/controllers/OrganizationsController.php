@@ -2787,26 +2787,30 @@ class OrganizationsController extends ApiBaseController
                     }
 
                     if ($key == 'priority') {
-                        $query->orderBy([
-                            'ISNULL(CASE 
-                        WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
-                        WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
-                        WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
-                        ELSE NULL END)' => $val,
-                            'priority' => $val == SORT_ASC ? SORT_ASC : SORT_DESC
-                        ]);
+                        $priority = 'ISNULL(CASE 
+                            WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+                            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                            ELSE NULL 
+                        END)';
+                        $query->orderBy([$priority => $val == SORT_ASC ? SORT_ASC : SORT_DESC, 'priority' => $val == SORT_ASC ? SORT_ASC : SORT_DESC]);
+                        if ($val == SORT_DESC) {
+                            $query->addOrderBy($priority, 'ASC');
+                        }
                     }
 
+
                     if ($key == 'target_date') {
-                        $query->orderBy([
-                            'ISNULL(CASE 
-                                WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
-                                WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
-                                WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
-                                ELSE NULL 
-                             END)' => $val,
-                            'target_date' => $val == SORT_ASC ? SORT_ASC : SORT_DESC
-                        ]);
+                        $target = 'ISNULL(CASE 
+                            WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+                            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+                            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+                            ELSE NULL 
+                         END)';
+                        $query->orderBy([$target => $val, 'target_date' => $val == SORT_ASC ? SORT_ASC : SORT_DESC]);
+                        if ($val == SORT_DESC) {
+                            $query->addOrderBy($target, 'ASC');
+                        }
                     }
 
                     if (in_array($key, $a)) {
@@ -2826,7 +2830,7 @@ class OrganizationsController extends ApiBaseController
                     if (in_array($key, $f)) {
                         if ($key == 'proposed_amount') {
                             $query->orderBy(['ISNULL(ANY_VALUE(lap.proposed_amount))' => SORT_ASC, 'ANY_VALUE(lap.proposed_amount)' => $val]);
-                            //                            $query->orderBy(['ANY_VALUE(lap.proposed_amount)' => $val]);
+                            // $query->orderBy(['ANY_VALUE(lap.proposed_amount)' => $val]);
                         }
                     }
 
