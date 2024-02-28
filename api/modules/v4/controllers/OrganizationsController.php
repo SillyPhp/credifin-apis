@@ -2771,7 +2771,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         if (!empty($params['fields_sort'])) {
-            $a = ['loan_type', 'overdue_amount', 'pos', 'name', 'loan_account_number', 'emi_amount'];
+            $a = ['loan_accounts', 'overdue_amount', 'pos', 'name', 'loan_account_number', 'emi_amount', 'bucket'];
             $c = ['financer'];
             $d = ['collection_manager', 'assigned_bdo'];
             $e = ['sales_priority', 'telecaller_priority', 'collection_priority'];
@@ -2814,7 +2814,7 @@ class OrganizationsController extends ApiBaseController
                     }
 
                     if (in_array($key, $a)) {
-                        if ($key == 'loan_type') {
+                        if ($key == 'loan_accounts') {
                             $query->orderBy(['a.loan_type' => $val]);
                         } elseif ($key == 'loan_account_number') {
                             $query->orderBy([
@@ -2841,15 +2841,17 @@ class OrganizationsController extends ApiBaseController
                     }
                     if (in_array($key, $g)) {
                         if ($key == 'branch') {
-                            $query->orderBy(['ISNULL(branch)' => SORT_DESC, 'branch' => $val]);
+                            $query->orderBy(['ISNULL(b.location_name)' => SORT_ASC, 'b.location_name' => $val]);
                         }
                     }
 
                     if ($key == 'target_collection_amount') {
                         $query->orderBy(['target_collection_amount' => $val]);
                     }
-                    if ($key == 'bucket') {
-                        $query->orderBy(['ISNULL(bucket)' => SORT_DESC, 'bucket' => $val]);
+                    if (in_array($key, $a)) {
+                        if ($key == 'bucket') {
+                            $query->orderBy(['ISNULL(bucket)' => SORT_ASC, 'bucket' => $val]);
+                        }
                     }
 
                     if ($key == 'assigned_caller') {
