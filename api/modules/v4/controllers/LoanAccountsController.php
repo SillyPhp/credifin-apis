@@ -1112,9 +1112,9 @@ class LoanAccountsController extends ApiBaseController
             }])
             ->joinWith(['collectionManager cm'], false);
         if (isset($params['type']) && $params['type'] == 'dashboad') {
-            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+            $ptpcases->andWhere(['BETWEEN', 'a.proposed_date', date('Y-m-d'), date('Y-m-d', strtotime('+3 days'))]);
         } else {
-            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+            $ptpcases->andwhere(['>=', 'a.proposed_date', date('Y-m-d')]);
         }
         $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
