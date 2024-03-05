@@ -2918,14 +2918,18 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($partner)) {
                 return $this->response(409, ['status' => 409, ['conflict already added']]);
             }
-
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
             // adding loan partner
             $partner = new LoanApplicationPartnersExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $partner->loan_application_partner_enc_id = $utilitiesModel->encrypt();
             $partner->loan_app_enc_id = $params['loan_id'];
-            $partner->provider_enc_id = $user->organization_enc_id;
+            $partner->provider_enc_id = $org_id;
             $partner->partner_enc_id = $params['partner_id'];
             $partner->type = $params['type'];
             $partner->created_by = $user->user_enc_id;
