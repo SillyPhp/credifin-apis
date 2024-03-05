@@ -2771,7 +2771,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         if (!empty($params['fields_sort'])) {
-            $a = ['loan_type', 'overdue_amount', 'pos', 'name', 'loan_account_number', 'emi_amount'];
+            $a = ['loan_accounts', 'overdue_amount', 'pos', 'name', 'loan_account_number', 'emi_amount', 'bucket'];
             $c = ['financer'];
             $d = ['collection_manager', 'assigned_bdo'];
             $e = ['sales_priority', 'telecaller_priority', 'collection_priority'];
@@ -2786,8 +2786,35 @@ class OrganizationsController extends ApiBaseController
                         $val = SORT_DESC;
                     }
 
+                    if ($key == 'priority') {
+                        $priority = 'ISNULL(CASE 
+                            WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
+                            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority 
+                            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
+                            ELSE NULL 
+                        END)';
+                        $query->orderBy([$priority => $val == SORT_ASC ? SORT_ASC : SORT_DESC, 'priority' => $val == SORT_ASC ? SORT_ASC : SORT_DESC]);
+                        if ($val == SORT_DESC) {
+                            $query->addOrderBy($priority, 'ASC');
+                        }
+                    }
+
+
+                    if ($key == 'target_date') {
+                        $target = 'ISNULL(CASE 
+                            WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
+                            WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_target_date 
+                            WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_target_date
+                            ELSE NULL 
+                         END)';
+                        $query->orderBy([$target => $val, 'target_date' => $val == SORT_ASC ? SORT_ASC : SORT_DESC]);
+                        if ($val == SORT_DESC) {
+                            $query->addOrderBy($target, 'ASC');
+                        }
+                    }
+
                     if (in_array($key, $a)) {
-                        if ($key == 'loan_type') {
+                        if ($key == 'loan_accounts') {
                             $query->orderBy(['a.loan_type' => $val]);
                         } elseif ($key == 'loan_account_number') {
                             $query->orderBy([
@@ -2803,7 +2830,7 @@ class OrganizationsController extends ApiBaseController
                     if (in_array($key, $f)) {
                         if ($key == 'proposed_amount') {
                             $query->orderBy(['ISNULL(ANY_VALUE(lap.proposed_amount))' => SORT_ASC, 'ANY_VALUE(lap.proposed_amount)' => $val]);
-                            //                            $query->orderBy(['ANY_VALUE(lap.proposed_amount)' => $val]);
+                            // $query->orderBy(['ANY_VALUE(lap.proposed_amount)' => $val]);
                         }
                     }
 
@@ -2814,15 +2841,17 @@ class OrganizationsController extends ApiBaseController
                     }
                     if (in_array($key, $g)) {
                         if ($key == 'branch') {
-                            $query->orderBy(['ISNULL(branch)' => SORT_DESC, 'branch' => $val]);
+                            $query->orderBy(['ISNULL(b.location_name)' => SORT_ASC, 'b.location_name' => $val]);
                         }
                     }
 
                     if ($key == 'target_collection_amount') {
                         $query->orderBy(['target_collection_amount' => $val]);
                     }
-                    if ($key == 'bucket') {
-                        $query->orderBy(['ISNULL(bucket)' => SORT_DESC, 'bucket' => $val]);
+                    if (in_array($key, $a)) {
+                        if ($key == 'bucket') {
+                            $query->orderBy(['ISNULL(bucket)' => SORT_ASC, 'bucket' => $val]);
+                        }
                     }
 
                     if ($key == 'assigned_caller') {
