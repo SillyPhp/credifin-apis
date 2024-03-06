@@ -364,12 +364,12 @@ class LoanAccountsController extends ApiBaseController
         }
         $subquery = (new Query())
             ->select([
-                'loan_account_enc_id',
-                "SUM(CASE WHEN a.emi_payment_status = 'paid' THEN a.amount END) AS collected_amount",
-                "SUM(CASE WHEN a.emi_payment_status = 'pending' THEN a.amount END) AS pending_amount",
+                'z.loan_account_enc_id',
+                "SUM(CASE WHEN z.emi_payment_status = 'paid' THEN z.amount END) AS collected_amount",
+                "SUM(CASE WHEN z.emi_payment_status = 'pending' THEN z.amount END) AS pending_amount",
             ])
-            ->from(["a" => EmiCollection::tableName()])
-            ->groupBy(["a.loan_account_enc_id"]);
+            ->from(["z" => EmiCollection::tableName()])
+            ->groupBy(["z.loan_account_enc_id"]);
 
         $detail = LoanAccounts::find()
             ->alias('a')
