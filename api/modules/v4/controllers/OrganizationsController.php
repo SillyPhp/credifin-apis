@@ -2501,8 +2501,9 @@ class OrganizationsController extends ApiBaseController
         $user = $this->user;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
+        $special = $this->isSpecial(1);
 
-        if ($this->isSpecial(1)) {
+        if ($special || $user->username == "phf986") {
             $selectQuery =
                 ["a.sales_priority", "a.collection_priority", "a.telecaller_priority", "a.sales_target_date",
                     "a.telecaller_target_date",
@@ -2547,6 +2548,7 @@ class OrganizationsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_enc_id", "a.stock",
+                "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.hard_recovery", 'a.assigned_financer_enc_id',
@@ -2905,7 +2907,7 @@ class OrganizationsController extends ApiBaseController
         }
 
 
-        if (!$this->isSpecial(1)) {
+        if (!$special) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $query->andWhere([
                 "OR",
