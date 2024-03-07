@@ -69,6 +69,7 @@ namespace common\models;
  * @property Users $collectionManager
  * @property LoanApplications $loanAppEnc
  * @property Organizations $assignedFinancerEnc
+ * @property LoanCoApplicants $loanAppEnc0
  * @property LoanActionRequests[] $loanActionRequests
  * @property VehicleRepossession[] $vehicleRepossessions
  */
@@ -96,7 +97,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
             [['coborrower_phone', 'phone'], 'string', 'max' => 15],
             [['bucket', 'vehicle_type', 'vehicle_model'], 'string', 'max' => 50],
             [['vehicle_engine_no', 'vehicle_chassis_no', 'rc_number'], 'string', 'max' => 30],
-            [['loan_account_enc_id'], 'unique'],
+            [['loan_account_enc_id', 'loan_app_enc_id'], 'unique'],
             [['assigned_caller'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_caller' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -200,6 +201,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getAssignedFinancerEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_financer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAppEnc0()
+    {
+        return $this->hasMany(LoanCoApplicants::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
