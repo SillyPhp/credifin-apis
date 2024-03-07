@@ -110,7 +110,8 @@ class EmiCollectionsController extends ApiBaseController
                 "(CASE WHEN b.company_id IS NOT NULL THEN b.company_id ELSE a.company_id END) AS company_id",
                 "b.phone",
                 "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name,'')) collected_by",
-                "br.location_name as branch"
+                "br.location_name as branch",
+                "a.updated_on AS approved_on"
             ])
             ->innerJoinWith(["createdBy cb"], false)
             ->innerJoinWith(["branchEnc br"], false)
@@ -122,7 +123,7 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
-            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.collection_date)", $start_date, $end_date])
+            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.updated_on)", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
