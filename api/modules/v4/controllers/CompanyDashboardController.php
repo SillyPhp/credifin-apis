@@ -694,11 +694,11 @@ class CompanyDashboardController extends ApiBaseController
             } else if ($leadsAccessOnly == 'both') {
                 $where = ["OR"];
                 $where[] = ["lp.name" => $this->vehicleList];
-                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
-                $where[] = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m']];
+                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
+                $where[] = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
             } else {
-                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25'
-                $where = ['a.loan_products_enc_id' => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m']];
+                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
+                $where = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
             }
             $loans->andWhere($where);
         }
@@ -826,7 +826,8 @@ class CompanyDashboardController extends ApiBaseController
                 $lpp->andOnCondition(['lpp.is_deleted' => 0]);
             }])
             ->innerJoinWith(['loanApplicationPartners lap' => function ($lap) use ($org_id) {
-                $lap->andOnCondition(['partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.is_deleted' => 0]);
             }], false)
             ->joinWith(['leadBy lb'], false)
             ->joinWith(['createdBy cb' => function ($cr) {
