@@ -1450,7 +1450,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting loan application partners
-            $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+            $loan['loan_partners'] = $this->__applicationPartners($provider_id, $loan['loan_app_enc_id']);
 
             if (!empty($loan['loan_products_enc_id'])) {
                 $product = FinancerLoanProducts::find()
@@ -1516,13 +1516,13 @@ class CompanyDashboardController extends ApiBaseController
     }
 
     // getting partnered applications
-    private function __applicationPartners($user, $loan_id)
+    private function __applicationPartners($organization_id, $loan_id)
     {
         return LoanApplicationPartnersExtended::find()
             ->alias('a')
             ->select(['a.loan_application_partner_enc_id', 'a.loan_app_enc_id', 'a.type', 'a.ltv', 'a.partner_enc_id', 'b.name'])
             ->joinWith(['partnerEnc b'], false)
-            ->where(['a.is_deleted' => 0, 'a.provider_enc_id' => $user->organization_enc_id, 'a.loan_app_enc_id' => $loan_id])
+            ->where(['a.is_deleted' => 0, 'a.provider_enc_id' => $organization_id, 'a.loan_app_enc_id' => $loan_id])
             ->asArray()
             ->all();
     }
