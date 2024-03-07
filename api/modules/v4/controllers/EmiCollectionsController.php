@@ -405,19 +405,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                            //                        case 'reporting_person':
-                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                            //                            break;
+                        //                        case 'reporting_person':
+                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                        //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                            //                        case 'branch':
-                            //                            $branch = "('" . implode("','", $value) . "')";
-                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                            //                            break;
+                        //                        case 'branch':
+                        //                            $branch = "('" . implode("','", $value) . "')";
+                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                        //                            break;
                     }
                 }
             }
@@ -945,7 +945,7 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
         $lac = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
-        $model = $this->_emiData($lac, 1, '', $user)['data'];
+        $model = $this->_emiDataSideBar($lac, 1, '', $user)['data'];
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
@@ -975,6 +975,220 @@ class EmiCollectionsController extends ApiBaseController
             ->asArray()
             ->one();
         return $this->response(200, ['status' => 200, 'display_data' => $display_data, 'data' => $model]);
+    }
+
+    public static function _emiDataSideBar($data, $id_type, $search = '', $user = null)
+    {
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
+        function payment_mode_add($data)
+        {
+            if (in_array(1, $data)) {
+                $data[] = 21;
+            }
+            if (in_array(2, $data)) {
+                $data[] = 22;
+            }
+            if (in_array(3, $data)) {
+                $data[] = 23;
+            }
+            if (in_array(4, $data)) {
+                $data[] = 24;
+            }
+            return $data;
+        }
+
+        // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
+        if ($id_type == 1) {
+            $lac = $data;
+        }
+        if ($id_type == 0) {
+            $org_id = $data;
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $payment_methods = EmiCollectionForm::$payment_methods;
+        $payment_modes = EmiCollectionForm::$payment_modes;
+        $model = EmiCollectionExtended::find()
+            ->alias('a')
+            ->select([
+                'a.emi_collection_enc_id', 'a.collection_date', 'a.created_on',
+                'a.phone', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
+                'a.ptp_amount', 'a.ptp_date', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
+                "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
+                "CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) ELSE NULL END as borrower_image",
+                "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
+                "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
+                "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
+                "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
+                'a.emi_payment_status', 'd1.payment_short_url'
+            ])
+            ->joinWith(['updatedBy ub'], false)
+            ->joinWith(['loanAccountEnc lc'], false)
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userRoles0 b1' => function ($b1) {
+                    $b1->joinWith(['designation b1a'], false);
+                }], false);
+            }], false)
+            ->joinWith(['branchEnc c' => function ($c) {
+                $c->joinWith(['cityEnc c1'], false);
+            }], false)
+            ->joinWith(['assignedLoanPayments d' => function ($d) {
+                $d->joinWith(['loanPaymentsEnc d1'], false);
+            }], false)
+            ->groupBy(['a.emi_collection_enc_id', 'b1a.designation', 'b.user_enc_id', 'd1.payment_short_url'])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->andWhere(['a.is_deleted' => 0]);
+
+        if (isset($org_id)) {
+            $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+        }
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $model->andWhere(['IN', 'a.created_by', $juniors]);
+        }
+        if (isset($lac)) {
+            $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
+        if (!empty($params['ptpstatus'])) {
+            $model->andWhere(["NOT", "a.ptp_date", NULL]);
+        }
+        if (!empty($params['custom_method'])) {
+            $model->andWhere(['a.emi_payment_method' => payment_method_add($params['custom_method'])]);
+        }
+        if (!empty($params['custom_status'])) {
+            $model->andWhere(['IN', 'a.emi_payment_status', $params['custom_status']]);
+        }
+        if (!empty($params['discrepancy_list'])) {
+            $model->andWhere(['a.loan_account_enc_id' => null]);
+            $model->andWhere("IF(a.emi_payment_mode = 1, a.emi_payment_status != 'pending', TRUE)");
+        }
+        if (!empty($search)) {
+            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date'];
+            foreach ($search as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    if (in_array($key, $a)) {
+
+                        switch ($key) {
+                            case 'collection_start_date':
+                                $model->andWhere(['>=', 'a.collection_date', $value]);
+                                break;
+                            case 'loan_account_number':
+                                $model->andWhere(['like', 'a.loan_account_number', $value . '%', false]);
+                                break;
+                            case 'company_id':
+                                $model->andWhere(['like', 'a.company_id', $value . '%', false]);
+                                break;
+                            case 'case_no':
+                                $model->andWhere(['like', 'a.case_no', $value . '%', false]);
+                                break;
+                            case 'dealer_name':
+                                $model->andWhere(['like', 'a.dealer_name', $value . '%', false]);
+                                break;
+                            case 'reference_number':
+                                $model->andWhere(['like', 'a.reference_number', $value . '%', false]);
+                                break;
+                            case 'collection_end_date':
+                                $model->andWhere(['<=', 'a.collection_date', $value]);
+                                break;
+                            case 'loan_type':
+                                $model->andWhere(['a.loan_type' => $value]);
+                                break;
+                            case 'customer_name':
+                                $model->andWhere(['like', 'a.customer_name', $value . '%', false]);
+                                break;
+                            case 'emi_payment_status':
+                                $model->andWhere(['IN', 'a.emi_payment_status', $value]);
+                                break;
+                            case 'delay_reason':
+                                $where = ["OR"];
+                                foreach ($value as $item) {
+                                    $where[] = ["LIKE", "a.delay_reason", $item];
+                                    $where[] = ["LIKE", "a.other_delay_reason", $item];
+                                }
+                                $model->andWhere($where);
+                                break;
+                            case 'amount':
+                                $model->andWhere(['like', 'a.amount', $value . '%', false]);
+                                break;
+                            case 'address':
+                                $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
+                                break;
+                            case 'ptp_amount':
+                                $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
+                                break;
+                            case 'start_date':
+                                $model->andWhere(['>=', 'a.ptp_date', $value]);
+                                break;
+                            case 'end_date':
+                                $model->andWhere(['<=', 'a.ptp_date', $value]);
+                                break;
+                            case 'emi_payment_mode':
+                                $model->andWhere(['IN', 'a.' . $key, payment_mode_add($value)]);
+                                break;
+                            case 'emi_payment_method':
+                                $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
+                        }
+                    }
+                    if (in_array($key, $others)) {
+                        if ($key == 'collected_by') {
+                            $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
+                        } elseif ($key == 'branch') {
+                            $model->andWhere(['c.location_enc_id' => $value]);
+                        } elseif ($key == 'designation') {
+                            $model->andWhere(['like', 'b1a.' . $key, $value]);
+                        } elseif ($key == 'ptp_status') {
+                            $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
+                        } elseif ($key == 'updated_by') {
+                            $model->andWhere(['like', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, ''))", $value]);
+                        } elseif ($key == 'updated_on_start_date') {
+                            $model->andWhere(['>=', 'a.updated_on', $value]);
+                        } elseif ($key == 'updated_on_end_date') {
+                            $model->andWhere(['<=', 'a.updated_on', $value]);
+                        }
+                    }
+                }
+            }
+        }
+        $count = $model->count();
+
+        $model = $model
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($model as &$value) {
+            $value['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
+            $value['emi_payment_mode'] = $payment_modes[$value['emi_payment_mode']];
+            if ($value['other_doc_image']) {
+                $value['other_doc_image'] = $my_space->signedURL($value['other_doc_image']);
+            }
+            if ($value['borrower_image']) {
+                $value['borrower_image'] = $my_space->signedURL($value['borrower_image']);
+            }
+            if ($value['pr_receipt_image']) {
+                $value['pr_receipt_image'] = $my_space->signedURL($value['pr_receipt_image']);
+            }
+        }
+        return ['data' => $model, 'count' => $count];
     }
 
     public static function _emiData($data, $id_type, $search = '', $user = null)
@@ -1027,17 +1241,15 @@ class EmiCollectionsController extends ApiBaseController
             ->select([
                 'a.company_id', 'a.case_no', 'a.updated_on', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, '')) updated_by",
                 'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
-                'lc.sales_target_date', 'lc.telecaller_target_date', 'lc.collection_target_date',
-                'a.loan_account_number', 'a.loan_account_enc_id', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.emi_payment_method', 'a.emi_payment_mode',
+                'a.loan_account_number', 'a.loan_account_enc_id', 'a.amount', 'a.loan_type', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
                 "CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) ELSE NULL END as borrower_image",
                 "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
-                "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
                 "b.user_enc_id as collected_by_id",
-                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
+                'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc' => function ($lc) {
