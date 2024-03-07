@@ -826,7 +826,8 @@ class CompanyDashboardController extends ApiBaseController
                 $lpp->andOnCondition(['lpp.is_deleted' => 0]);
             }])
             ->innerJoinWith(['loanApplicationPartners lap' => function ($lap) use ($org_id) {
-                $lap->andOnCondition(['partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.is_deleted' => 0]);
             }], false)
             ->joinWith(['leadBy lb'], false)
             ->joinWith(['createdBy cb' => function ($cr) {
