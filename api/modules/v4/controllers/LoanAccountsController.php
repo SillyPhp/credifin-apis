@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
+use app\models\LoanAccountOtherDetails;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanPayments;
 use common\models\EmiCollection;
@@ -2220,4 +2221,46 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(404, ['message' => 'data not found']);
     }
+
+    public function actionUpdateBasicDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_account_enc_id']) || empty($params['value']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id", "type", and "value" are required']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+//            $other_details = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+//            if (!$other_details) {
+//                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+//            }v
+
+            $update = new \common\models\LoanAccountOtherDetails();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $update->detail_enc_id = $utilitiesModel->encrypt();
+            $update->loan_account_enc_id = $params['loan_account_enc_id'];
+            $update->type = $params['type'];
+            $update->value = $params['value'];
+            $update->created_by = $update->updated_by = $user->user_enc_id;
+            $update->created_on = $update->updated_on = date('Y-m-d H:i:s');
+
+            if (!$update->save()) {
+                throw new Exception(implode(" ", array_column($update->getErrors(), '0')));
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
 }

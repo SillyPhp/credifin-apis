@@ -2550,7 +2550,7 @@ class OrganizationsController extends ApiBaseController
                 "a.loan_account_enc_id", "a.stock",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
-                "a.hard_recovery", 'a.assigned_financer_enc_id',
+                'a.assigned_financer_enc_id',
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.company_id", "a.case_no",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
