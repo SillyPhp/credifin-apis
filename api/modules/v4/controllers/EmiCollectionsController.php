@@ -194,4 +194,93 @@ class EmiCollectionsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 404, 'message' => 'no data found']);
     }
+
+    public function actionBranches()
+    {
+        $valuesSma = [
+            'SMA0' => [
+                'name' => 'SMA-0',
+                'value' => 1.25
+            ],
+            'SMA1' => [
+                'name' => 'SMA-1',
+                'value' => 1.5
+            ],
+            'SMA2' => [
+                'name' => 'SMA-2',
+                'value' => 1.5
+            ],
+            'NPA' => [
+                'name' => 'NPA',
+                'value' => 1
+            ],
+            'OnTime' => [
+                'name' => 'OnTime',
+                'value' => null
+            ],
+        ];
+
+        $data = EmiCollection::find()
+            ->alias('a')
+            ->addSelect(['b1.location_name', $this->buildQueryColumns($valuesSma)])
+            ->joinWith(['loanAccountEnc b' => function ($b) {
+                $b->joinWith(['branchEnc b1'], false);
+            }], false)
+            ->where(['a.is_deleted' => 0])
+            ->andWhere(['not', ['b1.location_name' => null]])
+            ->andWhere(['not', ['b.bucket' => null]])
+            ->groupBy('b1.location_name')
+            ->asArray()
+            ->all();
+
+        return [
+            'status' => 200,
+            'data' => $this->formatData($data, $valuesSma)
+        ];
+    }
+
+    private function buildQueryColumns($valuesSma)
+    {
+        $queryResult = '';
+
+        foreach ($valuesSma as $key => $value) {
+            $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
+            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+            if ($key == 'OnTime') {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+            } else {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+            }
+            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+
+            $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
+        }
+
+        return rtrim($queryResult, ',');
+    }
+
+    private function formatData($data, $valuesSma)
+    {
+        $formattedData = [];
+
+        foreach ($data as $item) {
+            $location = $item['location_name'];
+            unset($item['location_name']);
+
+            $formattedData[$location] = [];
+
+            foreach ($valuesSma as $key => $value) {
+                $formattedData[$location][$key] = [
+                    'total_cases_count' => $item["total_cases_count_$key"],
+                    'collected_cases_count' => $item["collected_cases_count_$key"],
+                    'target_amount' => $item["target_amount_$key"],
+                    'collected_verified_amount' => $item["collected_verified_amount_$key"],
+                    'collected_unverified_amount' => $item["collected_unverified_amount_$key"]
+                ];
+            }
+        }
+
+        return $formattedData;
+    }
 }
