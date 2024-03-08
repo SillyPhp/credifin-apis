@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
@@ -1852,8 +1853,20 @@ class EmiCollectionsController extends ApiBaseController
         }
     }
 
-    public function actionBranches()
+    public function actionCollectionReportBranches()
     {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
         $valuesSma = [
             'SMA0' => [
                 'name' => 'SMA-0',
@@ -1876,30 +1889,57 @@ class EmiCollectionsController extends ApiBaseController
                 'value' => null
             ],
         ];
-
-        $data = EmiCollection::find()
+        $list = EmiCollection::find()
             ->alias('a')
-            ->addSelect(['b1.location_name', $this->buildQueryColumns($valuesSma)])
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
             ->joinWith(['loanAccountEnc b' => function ($b) {
-                $b->joinWith(['branchEnc b1'], false);
+                $b->joinWith(['branchEnc b1' => function ($b1) {
+                    $b1->joinWith(['cityEnc b2'], false);
+                }], false);
             }], false)
-            ->where(['a.is_deleted' => 0])
-            ->andWhere(['not', ['b1.location_name' => null]])
-            ->andWhere(['not', ['b.bucket' => null]])
-            ->groupBy('b1.location_name')
+            ->where(['a.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
+            ->orWhere(['between', 'a.collection_date', $params['start_date'], $params['end_date']])
+            ->andWhere(['NOT', ['b.branch_enc_id' => null]])
+            ->andWhere(['NOT', ['b.bucket' => null]])
+            ->groupBy(['b1.location_name', 'b2.name']);
+
+        if (!empty($params['loan_type'])) {
+            $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+        }
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'branch') {
+                        $list->andWhere(['IN', 'b1.location_enc_id', $value]);
+                    } else {
+                        $list->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $list->andWhere(['b.created_by' => $juniors]);
+        }
+        $count = $list->count();
+        $list = $list
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
-        return [
-            'status' => 200,
-            'data' => $this->formatData($data, $valuesSma)
-        ];
+        if ($list) {
+            $list = ArrayProcessJson::Parse($list);
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
     }
 
-    private function buildQueryColumns($valuesSma)
+
+    private function data($valuesSma)
     {
         $queryResult = '';
-
         foreach ($valuesSma as $key => $value) {
             $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
             $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
@@ -1917,27 +1957,4 @@ class EmiCollectionsController extends ApiBaseController
         return rtrim($queryResult, ',');
     }
 
-    private function formatData($data, $valuesSma)
-    {
-        $formattedData = [];
-
-        foreach ($data as $item) {
-            $location = $item['location_name'];
-            unset($item['location_name']);
-
-            $formattedData[$location] = [];
-
-            foreach ($valuesSma as $key => $value) {
-                $formattedData[$location][$key] = [
-                    'total_cases_count' => $item["total_cases_count_$key"],
-                    'collected_cases_count' => $item["collected_cases_count_$key"],
-                    'target_amount' => $item["target_amount_$key"],
-                    'collected_verified_amount' => $item["collected_verified_amount_$key"],
-                    'collected_unverified_amount' => $item["collected_unverified_amount_$key"]
-                ];
-            }
-        }
-
-        return $formattedData;
-    }
 }
