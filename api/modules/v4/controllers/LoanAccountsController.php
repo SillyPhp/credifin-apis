@@ -226,7 +226,9 @@ class LoanAccountsController extends ApiBaseController
                 $phones = $data['emiCollections'];
                 array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
                 $data['phone'] = array_values(array_unique(array_column($phones, 'phone')));
-                $data['phone'][] = $ph;
+                if (!empty($ph)) {
+                    $data['phone'][] = $ph;
+                }
 
                 foreach ($phones as $loc) {
                     $data['location'][] = [

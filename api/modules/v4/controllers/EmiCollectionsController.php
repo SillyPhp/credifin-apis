@@ -822,7 +822,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
-                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"
+                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from", "a.created_on"
             ])
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
