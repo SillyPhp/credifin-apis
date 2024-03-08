@@ -704,6 +704,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
                 $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
+                $c->andOnCondition(['c.is_deleted'=> 0]);
             }])
             ->andWhere($where)
             ->asArray()
@@ -1037,7 +1038,7 @@ class EmiCollectionsController extends ApiBaseController
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
                 "b.user_enc_id as collected_by_id",
-                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url'
+                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket'
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc' => function ($lc) {
@@ -1087,7 +1088,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1151,23 +1152,35 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
                             case 'emi_payment_method':
                                 $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
+                                break;
                         }
                     }
                     if (in_array($key, $others)) {
-                        if ($key == 'collected_by') {
-                            $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
-                        } elseif ($key == 'branch') {
-                            $model->andWhere(['c.location_enc_id' => $value]);
-                        } elseif ($key == 'designation') {
-                            $model->andWhere(['like', 'b1a.' . $key, $value]);
-                        } elseif ($key == 'ptp_status') {
-                            $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
-                        } elseif ($key == 'updated_by') {
-                            $model->andWhere(['like', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, ''))", $value]);
-                        } elseif ($key == 'updated_on_start_date') {
-                            $model->andWhere(['>=', 'a.updated_on', $value]);
-                        } elseif ($key == 'updated_on_end_date') {
-                            $model->andWhere(['<=', 'a.updated_on', $value]);
+                        switch ($key) {
+                            case 'collected_by':
+                                $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
+                                break;
+                            case 'branch':
+                                $model->andWhere(['c.location_enc_id' => $value]);
+                                break;
+                            case 'designation':
+                                $model->andWhere(['like', 'b1a.' . $key, $value]);
+                                break;
+                            case 'ptp_status':
+                                $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
+                                break;
+                            case 'updated_by':
+                                $model->andWhere(['like', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, ''))", $value]);
+                                break;
+                            case 'updated_on_start_date':
+                                $model->andWhere(['>=', 'a.updated_on', $value]);
+                                break;
+                            case 'updated_on_end_date':
+                                $model->andWhere(['<=', 'a.updated_on', $value]);
+                                break;
+                            case 'bucket':
+                                $model->andWhere(['lc.bucket', $value]);
+                                break;
                         }
                     }
                 }
