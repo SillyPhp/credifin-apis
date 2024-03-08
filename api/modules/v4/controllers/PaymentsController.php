@@ -2,14 +2,20 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\PaymentModel;
-use common\models\EmiCollection;
 use common\models\AssignedLoanPayments;
+use common\models\EmiCollection;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EmiCollectionExtended;
+use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\LoanAccounts;
+use common\models\LoanApplications;
 use common\models\LoanPayments;
 use common\models\UserRoles;
+use common\models\Utilities;
 use common\models\WebhookTest;
 use Razorpay\Api\Api;
 use Yii;
@@ -68,24 +74,31 @@ class PaymentsController extends ApiBaseController
                 $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
-                if ($key == 0) {
-                    self::updateStatus($mod['loan_payments_enc_id']);
-                }
             }
+            self::updateStatus($model[0]['loan_payments_enc_id']);
         }
     }
+
     public static function updateStatus($id)
     {
         $query = AssignedLoanPayments::find()
             ->alias('a')
-            ->select(['c.assigned_loan_provider_enc_id', 'a.updated_by'])
+            ->select(['c.assigned_loan_provider_enc_id', 'a.loan_app_enc_id', 'a.updated_by'])
             ->joinWith(['loanAppEnc b' => function ($b) {
                 $b->joinWith(['assignedLoanProviders c'], false, 'INNER JOIN');
             }], false, 'INNER JOIN')
-            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<', 'c.status', 4]])
+            ->andWhere(['and', ['a.loan_payments_enc_id' => $id], ['<=', 'c.status', 4]])
             ->asArray()
             ->one();
+
         if ($query) {
+            Yii::$app->db->createCommand()
+                ->update(
+                    LoanApplicationsExtended::tableName(),
+                    ['login_date' => date('Y-m-d H:i:s')],
+                    ['loan_app_enc_id' => $query['loan_app_enc_id']]
+                )
+                ->execute();
             Yii::$app->db->createCommand()
                 ->update(AssignedLoanProviderExtended::tableName(), ['status' => 4, 'loan_status_updated_on' => date('Y-m-d H:i:s'), 'updated_by' => $query['updated_by']], ['assigned_loan_provider_enc_id' => $query['assigned_loan_provider_enc_id']])
                 ->execute();
@@ -94,23 +107,33 @@ class PaymentsController extends ApiBaseController
 
     private function updateEmi($id)
     {
-        $model = EmiCollection::find()
+        $model = EmiCollectionExtended::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id'])
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanPaymentsEnc c'], false);
             }], false)
             ->andWhere(['c.reference_id' => $id])
             ->asArray()
             ->one();
-        if ($model) {
-            Yii::$app->db->createCommand()
-                ->update(
-                    EmiCollection::tableName(),
-                    ['emi_payment_status' => 'paid'],
-                    ['emi_collection_enc_id' => $model['emi_collection_enc_id']]
-                )
-                ->execute();
+
+        if ($model && $model['emi_payment_status'] != 'paid') {
+            $update['collection_date'] = date('Y-m-d');
+            $update['emi_payment_status'] = 'paid';
+            $where = [
+                "AND",
+                ["emi_collection_enc_id" => $model['emi_collection_enc_id']],
+                [
+                    "NOT",
+                    [
+                        "emi_payment_status" => "paid"
+                    ]
+                ]
+            ];
+            $check = Yii::$app->db->createCommand()->update(EmiCollectionExtended::tableName(), $update, $where)->execute();
+            if ($check) {
+                EmiCollectionForm::updateOverdue($model["loan_account_enc_id"], $model['amount']);
+            }
         }
     }
 
@@ -160,11 +183,62 @@ class PaymentsController extends ApiBaseController
                     if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
                         $this->updateEmi($ref_id);
+                        $this->createEmi($model);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
+        }
+    }
+
+    private function createEmi($loan_payment)
+    {
+        $id = $loan_payment->loan_payments_enc_id;
+        $loan_account = LoanAccounts::find()
+            ->alias('a')
+            ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) use ($id) {
+                $b->andOnCondition(['b.loan_payments_enc_id' => $id]);
+            }], false)
+            ->asArray()
+            ->one();
+        $loan_id = $loan_account['loan_account_enc_id'];
+        $emi = EmiCollection::findOne([
+            'loan_account_enc_id' => $loan_id,
+            'amount' => $loan_payment->payment_amount,
+            'created_on' => $loan_payment->created_on,
+            'emi_payment_method' => 2,
+            'is_deleted' => 0
+        ]);
+
+        if ($loan_account && empty($emi)) {
+            $emi = new EmiCollectionExtended();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $emi->emi_collection_enc_id = $utilitiesModel->encrypt();
+            $emi->loan_account_enc_id = $loan_id;
+            $emi->branch_enc_id = $loan_account['branch_enc_id'];
+            $emi->customer_name = $loan_account['name'];
+            $emi->company_id = $loan_account['company_id'];
+            $emi->case_no = $loan_account['case_no'];
+            $emi->collection_date = date('Y-m-d');
+            $emi->loan_account_number = $loan_account['loan_account_number'];
+            $emi->phone = $loan_account['phone'];
+            $emi->amount = $loan_payment->payment_amount;
+            $emi->loan_type = $loan_account['loan_type'];
+            $emi->transaction_initiated_date = date('Y-m-d', strtotime($loan_payment->created_on));
+            $emi->emi_payment_method = 2;
+            $emi->emi_payment_mode = 1;
+            $emi->emi_payment_status = 'paid';
+            $emi->created_on = $loan_payment->created_on;
+            $emi->updated_on = date('Y-m-d H:i:s');
+            $emi->created_by = $emi->updated_by = $loan_payment->created_by;
+            $emi->save();
+            $assigned_loan_payment = AssignedLoanPayments::findOne(['loan_payments_enc_id' => $id]);
+            if ($assigned_loan_payment) {
+                $assigned_loan_payment->emi_collection_enc_id = $emi->emi_collection_enc_id;
+                $assigned_loan_payment->save();
             }
         }
     }
@@ -213,15 +287,21 @@ class PaymentsController extends ApiBaseController
             $options['amount'] = $amount;
             $options['amount_enc_ids'] = $amount_enc_ids;
             $options['description'] = 'Payment for ' . implode(', ', $desc);
-            $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
+            $org_name = Organizations::findOne(['organization_enc_id' => $options['org_id']])['name'];
             $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
             $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
             $res['qr'] = $this->existRazorCheck($options, 1);
+            if ($options['loan_app_enc_id']) {
+                $app_number = LoanApplications::findOne(['loan_app_enc_id' => $options['loan_app_enc_id']])->application_number;
+                if (!empty($app_number) || $app_number == '') {
+                    $options['description'] = $options['description'] . ' Case Number ' . $app_number;
+                }
+            }
             if (!$res['qr']) {
-                $options['close_by'] = time() + 24 * 60 * 60;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $qr = \common\models\payments\Payments::createQr($api, $options);
                 if (!$qr) {
                     $transaction->rollback();
@@ -231,7 +311,7 @@ class PaymentsController extends ApiBaseController
             }
             $res['link'] = $this->existRazorCheck($options);
             if (!$res['link']) {
-                $options['close_by'] = time() + 24 * 60 * 60 * 7;
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
                 $link = \common\models\payments\Payments::createLink($api, $options);
                 if (!$link) {
                     $transaction->rollback();

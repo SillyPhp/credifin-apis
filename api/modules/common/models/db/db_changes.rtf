@@ -1,0 +1,7 @@
+Task Id : 2xbeq4
+ALTER TABLE `lJCWPnNNVy3d95ppLp7M_loan_applicant_residential_info`
+ADD `is_sane_cur_addr` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 as No, 2 as Yes' AFTER `updated_on`;
+ALTER TABLE `lJCWPnNNVy3d95ppLp7M_loan_candidate_education`
+ADD `proof_image` varchar(100) NULL AFTER `obtained_marks`,
+ADD `proof_image_name` varchar(100) NULL AFTER `proof_image`,
+ADD `proof_image_location` varchar(100) NULL AFTER `proof_image_name`;

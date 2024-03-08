@@ -36,6 +36,18 @@ use Yii;
  * @property string $vehicle_brand vehicle brand
  * @property string $vehicle_model vehicle model
  * @property string $vehicle_making_year vehicle making year
+ * @property string $vehicle_color vehicle color
+ * @property string $model_year
+ * @property string $engine_number
+ * @property double $ex_showroom_price
+ * @property double $emi_amount
+ * @property double $on_road_price
+ * @property double $margin_money
+ * @property double $ltv
+ * @property string $policy_number
+ * @property string $valid_till
+ * @property double $payable_value
+ * @property string $field_officer
  * @property string $lead_type lead type
  * @property string $dealer_name dealer name
  * @property string $disbursement_date disbursement date
@@ -70,15 +82,15 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
         return [
             [['option_enc_id', 'loan_app_enc_id'], 'required'],
             [['application_by', 'number_of_loans', 'loan_option_value', 'desired_tenure', 'is_deleted'], 'integer'],
-            [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover'], 'number'],
+            [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover', 'ex_showroom_price', 'emi_amount', 'on_road_price', 'margin_money', 'ltv', 'payable_value'], 'number'],
             [['property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
-            [['follow_up_on', 'disbursement_date', 'created_on', 'last_updated_on'], 'safe'],
-            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['follow_up_on', 'valid_till', 'disbursement_date', 'created_on', 'last_updated_on'], 'safe'],
+            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'engine_number', 'policy_number', 'field_officer', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],
             [['occupation'], 'string', 'max' => 250],
-            [['vehicle_making_year'], 'string', 'max' => 10],
+            [['vehicle_making_year', 'model_year'], 'string', 'max' => 10],
+            [['vehicle_color', 'dealer_name'], 'string', 'max' => 50],
             [['lead_type'], 'string', 'max' => 20],
-            [['dealer_name'], 'string', 'max' => 50],
             [['option_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

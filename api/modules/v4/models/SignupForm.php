@@ -2,8 +2,6 @@
 
 namespace api\modules\v4\models;
 
-use api\modules\v4\controllers\DealersController;
-use api\modules\v4\controllers\DealsController;
 use common\models\AssignedDealerBrands;
 use common\models\AssignedDealerOptions;
 use common\models\AssignedDealerVehicleTypes;
@@ -11,7 +9,6 @@ use common\models\AssignedFinancerDealers;
 use common\models\AssignedSupervisor;
 use common\models\BankDetails;
 use common\models\EmailLogs;
-use common\models\FinancerVehicleTypes;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -66,7 +63,7 @@ class SignupForm extends Model
     {
         return [
             [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
-            [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
+            [['organization_name', 'organization_phone'], 'required', 'on' => 'Financer'],
             [['employee_code'], 'required', 'when' => function () {
                 return $this->user_type == 'Employee';
             }],
@@ -268,8 +265,8 @@ class SignupForm extends Model
             }
         }
 
-
-        if ($this->dealer_type == 'vehicle' && is_array($this->brands)) {
+        $this->brands = explode(',', $this->brands);
+        if ($this->dealer_type == 'vehicle' && !empty($this->brands)) {
             foreach ($this->brands as $value) {
                 $brand = new AssignedDealerBrands();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -320,7 +317,7 @@ class SignupForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
         $organizationsModel->name = $this->organization_name;
-        $organizationsModel->email = !empty($this->organization_email) ? strtolower($this->organization_email) : strtolower($user->email);
+        $organizationsModel->email = !empty($this->organization_email) ? strtolower($this->organization_email) : null;
         $organizationsModel->phone = !empty($this->organization_phone) ? $this->organization_phone : $user->phone;
         $organizationsModel->website = $this->organization_website;
         $organizationsModel->initials_color = RandomColors::one();

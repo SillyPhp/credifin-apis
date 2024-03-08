@@ -4,25 +4,27 @@ namespace api\modules\v4\utilities;
 
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\extended\EmiCollectionExtended;
+use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanAuditTrail;
 use common\models\Notifications;
 use common\models\NotificationTokens;
 use common\models\Organizations;
-use common\models\PushNotifications;
 use common\models\Referral;
-use common\models\SharedLoanApplications;
-use common\models\UserRoles;
-use yii\helpers\Url;
-use Yii;
 use common\models\SelectedServices;
+use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use yii\db\Command;
+use Yii;
+use yii\db\Exception;
 
 // this class is used to get user related data
 class UserUtilities
 {
-    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager'];
+    public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head', 'HO Credit Manager'];
 
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
@@ -33,16 +35,20 @@ class UserUtilities
                 ->alias('a')
                 ->select([
                     'a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.initials_color', 'a.phone', 'a.email', 'a.organization_enc_id',
-                    'b.name organization_name', 'b.slug organization_slug', 'f.location_enc_id branch_id', 'f.location_name branch_name', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
+                    'b.name organization_name', 'b.slug organization_slug', 'f.location_enc_id branch_id', 'f.location_name branch_name', 'b.slug organization_username', 'b.email organization_email', 'b.phone organization_phone',
                     '(CASE
                     WHEN c.code IS NOT NULL THEN c.code
                     WHEN b1.code IS NOT NULL THEN b1.code
                     ELSE NULL
                     END) as referral_code',
-                    'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
-                    'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
                     'd1.designation',
-                    'd.employee_code', 'd.grade', 'CONCAT(g1.first_name," ",g1.last_name) reporting_person', 'f.location_name branch_name', 'CONCAT(f.location_name , ", ", f1.name) as branch_location'
+                    'd.employee_code', 'd.grade', 'f.location_name branch_name'
+                ])
+                ->addSelect([
+                    "CONCAT(g1.first_name, ' ', g1.last_name) AS reporting_person",
+                    "CONCAT(f.location_name , ', ', f1.name) as branch_location",
+                    "CASE WHEN b.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',b.logo_location, '/', b.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b.name, '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END logo",
+                    "CASE WHEN a.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name,' ',a.last_name), '&size=200&rounded=true&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END image"
                 ])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['referrals b1']);
@@ -167,9 +173,11 @@ class UserUtilities
     {
         return Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'b.username organization_username', 'a.email organization_email', 'a.phone organization_phone',
-                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logoOrg',
-                'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END imageOrg',
+            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'a.slug organization_username', 'a.email organization_email', 'a.phone organization_phone',
+            ])
+            ->addSelect([
+                "CASE WHEN a.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',a.logo_location, '/', a.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', a.name, '&size=200&rounded=true&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END logoOrg",
+                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END imageOrg",
             ])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles b1'], false);
@@ -261,7 +269,7 @@ class UserUtilities
             ->alias('a')
             ->select(['c.user_enc_id'])
             ->joinWith(['providerEnc b' => function ($b) {
-                $b->joinWith(['userEncs0 c'], false);
+                $b->joinWith(['userEncs c'], false);
             }], false)
             ->where(['a.loan_application_enc_id' => $loan_id])
             ->asArray()
@@ -271,9 +279,24 @@ class UserUtilities
         foreach ($userIds as $key => $val) {
             $ids[] = $val['shared_to'];
         }
-        $ids[] = $financerId['user_enc_id'];
+        if (!empty($financerId['user_enc_id'])) {
+            $ids[] = $financerId['user_enc_id'];
+        }
 
         return $ids;
+    }
+
+    public static function getDesignation($user_id)
+    {
+        $role = UserRoles::find()
+            ->alias('a')
+            ->select(["ANY_VALUE(b.designation) AS designation"])
+            ->andWhere(['a.is_deleted' => 0])
+            ->joinWith(['designation b'], false)
+            ->where(['user_enc_id' => $user_id])
+            ->asArray()
+            ->one();
+        return $role['designation'];
     }
 
     public function saveNotification($allNotifications)
@@ -332,7 +355,7 @@ class UserUtilities
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         //Send the request
         $response = curl_exec($ch);
         //Close request
@@ -343,5 +366,73 @@ class UserUtilities
         curl_close($ch);
         return true;
 
+    }
+
+    public static function getting_reporting_ids($user_id, $type = 0)
+    {
+        if (!$type) {
+            $sql = "CALL GetHierarchyUpward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+        } else {
+            $sql = "CALL GetHierarchyDownward('$user_id')";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+            $data[]['user_enc_id'] = $user_id;
+        }
+        return array_column($data, 'user_enc_id');
+    }
+
+    public static function updating($table_name, $primary_key, $where, $updates)
+    {
+        $query = self::tableGetter($table_name, "find")
+            ->select(["$primary_key"])
+            ->andWhere($where)
+            ->asArray()
+            ->all();
+        foreach ($query as $item) {
+            $where = ["$primary_key" => $item[$primary_key]];
+            $change = self::tableGetter($table_name, "findOne", $where);
+            foreach ($updates as $key => $value) {
+                $change->$key = $value;
+            }
+            if (!$change->save()) {
+                throw new Exception("error while updating");
+            }
+        }
+        return true;
+    }
+
+    public static function tableGetter($table_name, $find, $where = null)
+    {
+        // adding $where in every find because in case of findOne we need to pass where condition inside the brackets
+        switch ($table_name) {
+            case "emi":
+                $res = EmiCollectionExtended::$find($where);
+                break;
+            case "cash":
+                $res = EmployeesCashReportExtended::$find($where);
+                break;
+            case 'loan':
+                $res = LoanApplicationsExtended::$find($where);
+            default:
+                throw new Exception("unknown table name");
+        }
+        return $res;
+    }
+
+    public static function CustomLoanAudit($id, $enc_id, $action, $model, $field, $new_value, $user_id = '', $old_value = ''): void
+    {
+        $audit = new LoanAuditTrail();
+        $audit->old_value = $old_value;
+        $audit->new_value = $new_value;
+        $audit->action = $action;
+        $audit->model = $model;
+        $audit->field = $field;
+        $audit->stamp = date('Y-m-d H:i:s');
+        $audit->user_id = (string)($user_id);
+        $audit->model_id = (string)$id;
+        $audit->foreign_id = $enc_id;
+        if (!$audit->save()) {
+            throw new Exception(implode(',', array_column($audit->errors, "0")));
+        }
     }
 }

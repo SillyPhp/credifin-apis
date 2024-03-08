@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
 use api\modules\v4\models\CoApplicantForm;
+use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\LoanPaymentsForm;
 use api\modules\v4\utilities\UserUtilities;
@@ -14,7 +15,9 @@ use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\DocUpload;
 use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPaymentsExtends;
@@ -37,6 +40,7 @@ use common\models\Users;
 use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
+use yii\db\Exception;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -74,6 +78,7 @@ class LoansController extends ApiBaseController
                 'check-number' => ['POST', 'OPTIONS'],
                 'loan-update' => ['POST', 'OPTIONS'],
                 'loan-detail-images' => ['POST', 'OPTIONS'],
+                'set-borrower' => ['POST', 'OPTIONS'],
                 'get-assigned-pendencies' => ['POST', 'OPTIONS'],
                 'assign-pendency' => ['POST', 'OPTIONS'],
             ]
@@ -162,6 +167,7 @@ class LoansController extends ApiBaseController
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         }
     }
+
 
     public function actionUpdateLoan()
     {
@@ -292,7 +298,14 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
         $model = LoanPayments::find()
             ->alias('a')
-            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id', 'g.organization_enc_id branch_org_id'])
+            ->select([
+                'd.organization_enc_id org_id',
+                'e.organization_enc_id user_org_id',
+                'g.organization_enc_id branch_org_id',
+                'ANY_VALUE(f.emi_collection_enc_id) emi_collection_enc_id',
+                'ANY_VALUE(f.amount) amount',
+                'ANY_VALUE(f.emi_payment_status) status'
+            ])
             ->where(['payment_token' => $razorpay_payment_link_id])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanAppEnc c' => function ($c) {
@@ -638,7 +651,6 @@ class LoansController extends ApiBaseController
 
 
             $params = Yii::$app->request->post();
-
             // checking loan_id
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
@@ -655,7 +667,9 @@ class LoansController extends ApiBaseController
             }
 
             // getting file instance by name
-            $file = UploadedFile::getInstanceByName('file');
+            $fileModel = new DocUpload();
+            $fileModel->file = UploadedFile::getInstanceByName('file');
+            //$file = UploadedFile::getInstanceByName('file');
 
             // getting certificate type id if an error occurred then send 500
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
@@ -685,25 +699,21 @@ class LoansController extends ApiBaseController
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
             // if extension null or empty then it will be added as .pdf
-            if ($file->extension == null || $file->extension == '') {
+            if ($fileModel->file->extension == null || $fileModel->file->extension == '') {
                 $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
             } else {
                 // else file extension
-                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $file->extension;
+                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $fileModel->file->extension;
             }
-            $type = $file->type;
+            $type = $fileModel->file->type;
             // saving certificate data
             if ($certificate->save()) {
-
-                // creating spaces object
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
-                if ($result) {
+                $result = $fileModel->upload($base_path, $type, $certificate);
+                if ($result['status']) {
                     // if uploaded successfully
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image']);
+                    return $this->response(500, ['status' => 500, 'message' => 'some error occurred while uploading image', 'error' => $result['error']]);
                 }
             } else {
                 // if not saved
@@ -790,19 +800,44 @@ class LoansController extends ApiBaseController
             if (empty($params['id']) || empty($params['value']) || empty($params['parent_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
             }
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
+                $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
 
-            // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
-
-            // updating data
-            $provider->branch_enc_id = $params['value'];
-            $provider->updated_by = $user->user_enc_id;
-            $provider->updated_on = date('Y-m-d H:i:d');
-            if (!$provider->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+                // updating data
+                $provider->branch_enc_id = $params['value'];
+                $provider->updated_by = $user->user_enc_id;
+                $provider->updated_on = date('Y-m-d H:i:d');
+                if (!$provider->update()) {
+                    throw new Exception(implode(" ", array_column($provider->getErrors(), '0')));
+                }
+                $purposes = LoanPurpose::find()
+                    ->select(["financer_loan_purpose_enc_id"])
+                    ->andWhere(["loan_app_enc_id" => $params['id'], "is_deleted" => 0])
+                    ->asArray()
+                    ->all();
+                $purposes = array_column($purposes, "financer_loan_purpose_enc_id");
+                $loan_update = LoanApplicationsExtended::findOne(["loan_app_enc_id" => $params['id']]);
+                if (!$loan_update) {
+                    throw new Exception("Loan Application not found.");
+                }
+                $new_application_number = LoanApplication::generateApplicationNumber($loan_update->loan_products_enc_id, $provider->branch_enc_id, $purposes);
+                if (!$new_application_number) {
+                    throw new Exception("Error occurred while generating new application number.");
+                }
+                $loan_update->application_number = $new_application_number;
+                $loan_update->updated_by = $user->user_enc_id;
+                $loan_update->updated_on = date('Y-m-d H:i:d');
+                if (!$loan_update->save()) {
+                    throw new Exception(implode(" ", array_column($loan_update->getErrors(), '0')));
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
             }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -895,26 +930,55 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            // adding loan verification locations
-            $verification_location = new LoanVerificationLocationsExtended();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
-            $verification_location->loan_app_enc_id = $params['loan_id'];
-            (!empty($params['location_name'])) ? $verification_location->location_name = $params['location_name'] : null;
-            (!empty($params['local_address'])) ? $verification_location->local_address = $params['local_address'] : null;
-            (!empty($params['latitude'])) ? $verification_location->latitude = $params['latitude'] : null;
-            (!empty($params['longitude'])) ? $verification_location->longitude = $params['longitude'] : null;
-            $verification_location->created_by = $user->user_enc_id;
-            $verification_location->created_on = date('Y-m-d H:i:s');
-            if (!$verification_location->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+            if (!empty($params['assigned_borrower_enc_id']) && is_array($params['assigned_borrower_enc_id'])) {
+                foreach ($params['assigned_borrower_enc_id'] as $borrower) {
+                    $verification_location = new LoanVerificationLocationsExtended();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
+                    $verification_location->loan_app_enc_id = $params['loan_id'];
+                    $verification_location->assigned_borrower_enc_id = $borrower;
+
+                    $verification_location->location_name = (!empty($params['location_name'])) ? $params['location_name'] : null;
+                    $verification_location->local_address = (!empty($params['local_address'])) ? $params['local_address'] : null;
+                    $verification_location->latitude = (!empty($params['latitude'])) ? $params['latitude'] : null;
+                    $verification_location->longitude = (!empty($params['longitude'])) ? $params['longitude'] : null;
+
+                    $verification_location->created_by = $user->user_enc_id;
+                    $verification_location->created_on = date('Y-m-d H:i:s');
+
+                    if (!$verification_location->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+                    }
+                }
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    //action to add borrower as main borrower
+    public function actionSetBorrower()
+    {
+        // checking authorization
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_co_app_enc_id']) || empty($params['loan_co_app_enc_id'])) {
+            return $this->response(401, ['status' => 401, 'message' => 'missing parameters']);
+        } else {
+            $model = new CoApplicantForm();
+            $response = $model->setBorrower($params, $user->user_enc_id);
+            if ($response['status'] == 200) {
+                return $this->response(200, ['status' => 200, 'message' => $response['message']]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => $response['message']]);
+            }
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
     // this action is used to add co-applicant
@@ -1108,6 +1172,7 @@ class LoansController extends ApiBaseController
             }])
             ->joinWith(['loanCoAppEnc c'], false)
             ->andWhere(['a.loan_app_enc_id' => $params['loan_app_id']])
+            ->orderBy(['a.created_on' => SORT_ASC])
             ->asArray()
             ->all();
         $check = [
@@ -1138,14 +1203,16 @@ class LoansController extends ApiBaseController
                             if (array_key_exists(0, $array['ScoreSegment'])) {
                                 foreach ($array['ScoreSegment'] as $val) {
                                     if (is_array($val)) {
-                                        $score = ltrim($val['Score'], 0);
-                                        if ($score != '-1') {
+                                        if ($val["ScoreName"] == "CIBILTUSC3") {
+                                            $score = ltrim($val["Score"], 0);
                                             $res[$value['loan_co_app_enc_id']]['cibil_score'] = $score;
+                                            break;
                                         }
                                     }
                                 }
                             } else {
-                                $res[$value['loan_co_app_enc_id']]['cibil_score'] = ltrim($array['ScoreSegment']['Score'], 0);
+                                $score = ltrim($array['ScoreSegment']['Score'], 0);
+                                $res[$value['loan_co_app_enc_id']]['cibil_score'] = $score;
                             }
                         }
                         if (!empty($array['TelephoneSegment'])) {
@@ -1233,8 +1300,8 @@ class LoansController extends ApiBaseController
                         $xpath = new \DOMXPath($doc);
                         $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT';
                         try {
-
-                            $res[$value['loan_co_app_enc_id']]['crif_score'][] = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                            $score = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                            $res[$value['loan_co_app_enc_id']]['crif_score'] = $score;
                         } catch (\Exception $e) {
                         }
                         $endPath = '-VARIATIONS/VARIATION/VALUE';
@@ -1416,10 +1483,10 @@ class LoansController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.old_value', 'a.new_value',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'
+                "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"
             ])
             ->joinWith(['user b'], false)
-            ->where(['a.loan_id' => $params['loan_id']])
+            ->where(['a.foreign_id' => $params['loan_id']])
             ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
             ->andWhere(['not like', 'a.field', '%_enc_id%', false])
             ->andWhere(['not like', 'a.field', '%updated_on%', false])
@@ -1428,7 +1495,7 @@ class LoansController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $groupedAudit = [];
+        $processedAudit = [];
 
         if ($audit) {
             foreach ($audit as $item) {
@@ -1438,7 +1505,7 @@ class LoansController extends ApiBaseController
                 }
                 if ($item['model'] !== 'EducationLoanPayments' && $item['field'] !== 'source' && $item['field'] !== 'related_to' && $item['field'] !== 'candidate_status' && $item['field'] !== 'candidate_status_date') {
                     $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-                    $item['stamp'] = strtotime($item['stamp']);
+                    //                    $item['stamp'] = strtotime($item['stamp']);
 
                     if ($item['field'] === 'gender') {
                         if ($item['new_value'] == 1) {
@@ -1462,19 +1529,19 @@ class LoansController extends ApiBaseController
                         $item['new_value'] = $formatted_amount;
                     }
 
-                    $groupedAudit[$item['model']][] = $item;
+                    $processedAudit[] = $item;
                 }
             }
 
-            foreach ($groupedAudit as $g => $item) {
-                array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
-                foreach ($item as $key => $i) {
-                    $i['stamp'] = date('Y-m-d H:i:s', $i['stamp']);
-                    $groupedAudit[$g][$key] = $i;
-                }
+            usort($processedAudit, function ($a, $b) {
+                return strtotime($b['stamp']) - strtotime($a['stamp']);
+            });
+
+            foreach ($processedAudit as &$item) {
+                $item['stamp'] = date('Y-m-d H:i:s', strtotime($item['stamp']));
             }
 
-            return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
+            return $this->response(200, ['status' => 200, 'audit_list' => $processedAudit]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
@@ -1482,41 +1549,70 @@ class LoansController extends ApiBaseController
 
     public function actionLoanUpdate()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "type or id or value"']);
-        }
-        if (in_array($params['type'], ['invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number', 'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number', 'purposes'])) {
-            $type = $params['type'];
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
 
-            // if type is 'purposes' then calling a private function to update purposes
-            if ($params['type'] == 'purposes') {
-                if (!is_array($params['value'])) {
-                    return $this->response(500, ['status' => 500, 'message' => 'values must be in array']);
-                }
+        if (empty($params['type']) || empty($params['id']) || ($params['type'] != 'pf' && (empty($params["value"]) || (is_numeric($params["value"]) && (int)$params["value"] === 0)))) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information "type or id or value"']);
+        }
+        $type = $params['type'];
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if ($type == 'purposes' && is_array($params['value'])) {
                 $purposes = self::updatePurposes($params['id'], $user->user_enc_id, $params['value']);
                 if (!$purposes) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating purposes']);
+                    throw new Exception('an error occurred while updating purposes');
                 }
-            } else {
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+            } elseif (in_array($type, [
+                'invoice_number', 'assigned_dealer', 'invoice_date', 'rc_number',
+                'chassis_number', 'pf', 'roi', 'number_of_emis', 'emi_collection_date', 'battery_number'
+            ])) {
                 $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {
-                    return $this->response(404, ['status' => 404, 'message' => 'loan not found']);
+                    throw new Exception('Loan application not found');
                 }
                 $model->$type = $params['value'];
                 $model->updated_by = $user->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
-                if (!$model->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            } elseif (in_array($type, [
+                'model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
+                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'vehicle_color', 'field_officer'
+            ])) {
+                $model = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+                if (!$model) {
+                    $model = new LoanApplicationOptionsExtended();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->option_enc_id = $utilitiesModel->encrypt();
+                    $model->loan_app_enc_id = $params['id'];
+                    $model->$type = $params['value'];
+                    $model->created_by = $user->user_enc_id;
+                    $model->created_on = date('Y-m-d H:i:s');
+                } else {
+                    $model->$type = $params['value'];
+                    $model->last_updated_by = $user->user_enc_id;
+                    $model->last_updated_on = date('Y-m-d H:i:s');
                 }
+            } else {
+                throw new Exception('Error occurred or invalid field');
             }
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            if (!$model->save()) {
+                throw new \Exception(implode("<br/>", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
-        return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
+
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
     }
+
 
     private function updatePurposes($loan_id, $user_id, $purposes)
     {
@@ -1652,8 +1748,8 @@ class LoansController extends ApiBaseController
                     $b->select([
                         'b.certificate_enc_id', 'b.loan_app_enc_id', 'b.short_description', 'b.certificate_type_enc_id',
                         'b.number', 'c1.name', 'b.created_on',
-                        'CONCAT(c2.first_name," ",COALESCE(c2.last_name, "")) created_by',
-                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",b.proof_image_location, "/", b.proof_image) image'
+                        "CONCAT(c2.first_name,' ',COALESCE(c2.last_name, '')) created_by",
+                        "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',b.proof_image_location, '/', b.proof_image) image"
                     ]);
                     $b->joinWith(['certificateTypeEnc c1'], false);
                     $b->joinWith(['createdBy c2'], false);
@@ -1664,8 +1760,8 @@ class LoansController extends ApiBaseController
                 $loan->joinWith(['loanApplicationImages b' => function ($b) {
                     $b->select([
                         'b.loan_application_image_enc_id', 'b.loan_app_enc_id', 'b.name',
-                        'b.created_on', 'CONCAT(b1.first_name," ",COALESCE(b1.last_name, "")) created_by',
-                        'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . '",b.image_location, "/", b.image) image'
+                        'b.created_on', "CONCAT(b1.first_name,' ',COALESCE(b1.last_name, '')) created_by",
+                        "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . "',b.image_location, '/', b.image) image"
 
                     ]);
                     $b->joinWith(['createdBy b1'], false);
@@ -1858,12 +1954,12 @@ class LoansController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.pendencies_enc_id', 'a.financer_loan_product_enc_id', 'a.name', 'a.type',
-                '(CASE WHEN a.type != 1 AND b.loan_pendency_enc_id IS NOT NULL THEN b.loan_pendency_enc_id END) as assigned_id',
+                '(CASE WHEN a.type != 1 AND ANY_VALUE(b.loan_pendency_enc_id) IS NOT NULL THEN ANY_VALUE(b.loan_pendency_enc_id) END) as assigned_id',
                 '(CASE WHEN b.pendencies_enc_id IS NOT NULL THEN true ELSE false END) AS checked',
-                '(CASE WHEN a.type != 1 AND b2.loan_pendency_enc_id IS NOT NULL THEN true ELSE false END) as is_uploaded'
+                '(CASE WHEN a.type != 1 AND ANY_VALUE(b2.loan_pendency_enc_id) IS NOT NULL THEN true ELSE false END) as is_uploaded'
             ])
             ->joinWith(['loanApplicationPendencies b' => function ($b) use ($params) {
-                $b->select(['b.loan_pendency_enc_id', 'b.pendencies_enc_id', 'b.loan_co_app_enc_id value', 'b1.name label', '(CASE WHEN b2.loan_pendency_enc_id IS NOT NULL THEN TRUE ELSE FALSE END) AS is_uploaded']);
+                $b->select(['ANY_VALUE(b.loan_pendency_enc_id) loan_pendency_enc_id', 'b.pendencies_enc_id', 'b.loan_co_app_enc_id value', 'b1.name label', '(CASE WHEN ANY_VALUE(b2.loan_pendency_enc_id) IS NOT NULL THEN TRUE ELSE FALSE END) AS is_uploaded']);
                 $b->onCondition(['b.is_deleted' => 0, 'b.loan_app_enc_id' => $params['loan_id']]);
                 $b->joinWith(['loanCoAppEnc b1'], false);
                 $b->joinWith(['loanApplicationPendencyDocuments b2'], false);
@@ -1931,7 +2027,7 @@ class LoansController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading image']);
         }
         $query->created_by = $query->updated_by = $user->user_enc_id;
-        $query->created_on = $query->updated_on = date('Y-m-d h:i:s');
+        $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
         if (!$query->save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $query->getErrors()]);
         }
@@ -1950,8 +2046,8 @@ class LoansController extends ApiBaseController
         $query = LoanApplicationPendencyDocuments::find()
             ->alias('a')
             ->select([
-                'a.pendency_documents_enc_id', 'a.loan_pendency_enc_id', 'a.name', 'a.created_on', 'CONCAT(c.first_name, " ", COALESCE(c.last_name,"")) created_by', 'b.pendencies_enc_id', 'b1.name applicant_name',
-                'CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . '",a.image_location, "/", a.image) image'
+                'a.pendency_documents_enc_id', 'a.loan_pendency_enc_id', 'a.name', 'a.created_on', "CONCAT(c.first_name, ' ', COALESCE(c.last_name,'')) created_by", 'b.pendencies_enc_id', 'b1.name applicant_name',
+                "CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pendency_images->image . "',a.image_location, '/', a.image) image"
             ])
             ->joinWith(['loanPendencyEnc b' => function ($b) {
                 $b->joinWith(['loanCoAppEnc b1'], false);

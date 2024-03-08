@@ -76,7 +76,7 @@ class FinancerRewardsController extends ApiBaseController
 
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($icon_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['contentType' => $icon_image]]);
+            $result = $my_space->uploadFileSources($icon_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['ContentType' => $icon_image]]);
 
             return $this->response(200, ['status' => 200, 'icon'    => $icon, 'icon_location' => $icon_location]);
         } else {

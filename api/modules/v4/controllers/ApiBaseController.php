@@ -19,6 +19,9 @@ use common\models\UserAccessTokens;
 class ApiBaseController extends Controller
 {
 
+    public $user;
+    public $post;
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -35,6 +38,8 @@ class ApiBaseController extends Controller
     // this method is used to return data from api's
     public function response($code, $data = '')
     {
+        !empty($data) && empty($data['status']) ? ($data['status'] = $code) : '';
+
         // if data not empty then returning data in response else setting only status code in response
         $response = !empty($data) ? ['response' => $data] : ['response' => ['status' => $code]];
 
@@ -102,7 +107,10 @@ class ApiBaseController extends Controller
         }
 
         // getting token detail from DB
-        $access_token = UserAccessTokens::find()->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])->one();
+        $access_token = UserAccessTokens::find()
+            ->select(['user_enc_id', 'access_token_expiration'])
+            ->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])
+            ->one();
 
         // check if token exists in token detail and source == token detail source
         if (!empty($access_token)) {
@@ -110,40 +118,44 @@ class ApiBaseController extends Controller
             // it checks if the access token is still valid.
             if (strtotime($access_token->access_token_expiration) > strtotime("now")) {
 
-                // If the access token is valid, it refreshes the access and refresh token expiration times.
-                $time_now = date('Y-m-d H:i:s');
-                $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
-                $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
-
                 // after token validation getting user data object
-                $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
+                $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id, 'is_deleted' => 0, 'status' => 'Active']);
 
-                if ($user['status'] != 'Active' || $user['is_deleted'] == 1) {
-                    return false;
+                if ($user) {
+
+                    // identity login
+                    Yii::$app->user->login($user);
+
+                    $this->post = Yii::$app->request->post();
+                    $this->user = $user;
+
+                    // returning user object
+                    return $user;
                 }
-
-                // identity login
-                Yii::$app->user->login($user);
-
-                // returning user object
-                return $user;
             }
-
-            return false;
         }
-
         return false;
     }
 
-    public function isSpecialUser($type = false)
+    public function isAuth($type = false)
     {
-        if(!$user = $this->isAuthorized()){
-            return false;
+        if (!($this->isAuthorized() && $this->isSpecial($type))) {
+            $this->response(401, ["message" => "unauthorized"]);
         }
-        if ($type) {
-            return self::specialCheck($user->user_enc_id) ? $user : false;
+        return $this->user;
+    }
+
+    public function isSpecial($type): bool
+    {
+        $res = !$type;
+        if ($type == 1) {
+            $res = (UserUtilities::getUserType($this->user->user_enc_id) == 'Financer' || self::specialCheck($this->user->user_enc_id));
+        } elseif ($type == 2) {
+            $res = UserUtilities::getUserType($this->user->user_enc_id) == 'Financer';
+        } elseif ($type == 3) {
+            $res = self::specialCheck($this->user->user_enc_id);
         }
-        return UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id) ? $user : false;
+        return $res;
     }
 
     public static function specialCheck($user_id)

@@ -2,12 +2,15 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
  * @property int $id
  * @property string $loan_app_enc_id
  * @property string $application_number loan application number
+ * @property string $old_application_number
  * @property string $parent_application_enc_id loan parent application enc id
  * @property int $had_taken_addmission 1 for yes 0 for no
  * @property string $current_scheme_id
@@ -30,6 +33,7 @@ namespace common\models;
  * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
  * @property string $candidate_status_date Status Date
  * @property int $cibil_score cibil score
+ * @property string $login_date
  * @property int $equifax_score Equifax Score
  * @property int $crif_score CRIF Score
  * @property int $gender 1 for Male, 2 for Female,3 other
@@ -86,12 +90,14 @@ namespace common\models;
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
+ * @property AssignedDisbursementCharges[] $assignedDisbursementCharges
  * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property BillDetails[] $billDetails
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property EmiPaymentIssues[] $emiPaymentIssues
+ * @property EmployeeIncentivePoints[] $employeeIncentivePoints
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
@@ -114,6 +120,7 @@ namespace common\models;
  * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $capitalRoiUpdatedBy
  * @property Users $registryStatusUpdatedBy
+ * @property Organizations $assignedDealer
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $collegeEnc
@@ -122,10 +129,8 @@ namespace common\models;
  * @property Users $leadBy
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
- * @property Organizations $assignedDealer
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
  * @property LoanApplicationsReferences[] $loanApplicationsReferences
- * @property LoanAuditTrail[] $loanAuditTrails
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
@@ -158,10 +163,10 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'equifax_score', 'crif_score', 'gender', 'ask_guarantor_info', 'number_of_emis', 'status', 'loan_status', 'registry_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
+            [['applicant_dob', 'candidate_status_date', 'login_date', 'invoice_date', 'deadline', 'capital_roi_updated_on', 'emi_collection_date', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on', 'registry_status_updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi', 'roi'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'assigned_dealer', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id', 'registry_status_updated_by'], 'string', 'max' => 100],
-            [['application_number'], 'string', 'max' => 50],
+            [['application_number', 'old_application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['voter_card_number'], 'string', 'max' => 20],
@@ -174,6 +179,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
             [['capital_roi_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['capital_roi_updated_by' => 'user_enc_id']],
             [['registry_status_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['registry_status_updated_by' => 'user_enc_id']],
+            [['assigned_dealer'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_dealer' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
@@ -181,8 +187,16 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
-            [['assigned_dealer'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['assigned_dealer' => 'organization_enc_id']],
         ];
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDisbursementCharges()
+    {
+        return $this->hasMany(AssignedDisbursementCharges::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -231,6 +245,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getEmiPaymentIssues()
     {
         return $this->hasMany(EmiPaymentIssues::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployeeIncentivePoints()
+    {
+        return $this->hasMany(EmployeeIncentivePoints::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -412,6 +434,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAssignedDealer()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_dealer']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
@@ -476,14 +506,6 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedDealer()
-    {
-        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_dealer']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getLoanApplicationsCollegePreferences()
     {
         return $this->hasMany(LoanApplicationsCollegePreference::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
@@ -495,14 +517,6 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplicationsReferences()
     {
         return $this->hasMany(LoanApplicationsReferences::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanAuditTrails()
-    {
-        return $this->hasMany(LoanAuditTrail::className(), ['loan_id' => 'loan_app_enc_id']);
     }
 
     /**

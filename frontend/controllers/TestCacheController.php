@@ -1,334 +1,325 @@
 <?php
 
 namespace frontend\controllers;
-use common\models\Categories;
-use common\models\CreditLoanApplicationReports;
-use common\models\LoanApplicantResidentialInfo;
-use common\models\LoanCoApplicants;
-use common\models\OpenTitles;
-use common\models\User;
-use common\models\Usernames;
-use common\models\UserTypes;
-use frontend\models\applications\Careerjet_API;
-use common\models\AppliedApplications;
-use common\models\Auth;
-use common\models\EducationLoanPayments;
+use common\models\FinancerLoanProductPurpose;
+use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
-use common\models\Posts;
-use common\models\SkillsUpPostAssignedBlogs;
-use common\models\Users;
-use common\models\EmiCollection;
-use common\models\RandomColors;
-use common\models\Utilities;
-use yii\helpers\Url;
+use common\models\OrganizationLocations;
+use common\models\spaces\Spaces;
+use common\models\TestData;
+use Razorpay\Api\Api;
+use yii\db\Expression;
 use yii\web\Controller;
 use Yii;
-use yii\web\Response;
-
 class TestCacheController extends Controller
 {
-    public function actionTest()
-    {
+    public function actionTokenTest(){
+        $x = $this->generateAllCloudAuthHeader('GET','https://staging.allcloud.in/apiv2phfleasing/api/Customer/GetCustomerByCIFIdAsync/92','');
+        print_r($x);
+    }
+
+    private  function generateAllCloudAuthHeader($requestHttpMethod, $Request_URL, $payload){
         try {
-            $model = new Auth();
-            $model->user_id = 12;
-            if (!$model->save()) //model errors
-            {
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-            }
+            $returnArr = [];
 
-            //some kind of err
-        } catch (\Exception $exception) {
-            return $exception->getMessage(); //final messege for user
-        }
-    }
+            $AppId = '4d53bce03ec34c0a911182d4c228ee6c';
+            $USER_TOKEN = '786df557-a7ed-4368-a491-e931ba349aba';
+            $USER_SECRET = 'b621f322-e85e-47ff-b965-e731a26e5872';
 
-        public function actionBulkEmail($start=0,$end=0){
-            $user_type = UserTypes::findOne([
-                'user_type' => 'Individual',
-            ]);
-            $query = LoanApplications::find()
-                ->alias('a')
-                ->select(['a.loan_app_enc_id','a.applicant_name','a.email','a.phone'])
-                ->joinWith(['educationLoanPayments b'],false)
-                ->where(['a.created_by'=>null])
-//                ->andWhere(['b.payment_status'=>'captured'])
-                ->asArray()
-                ->all();
-            for ($i=$start;$i<$end;$i++){
-                    $username = $this->generate_username($query[$i]['applicant_name'], 10000);
-                    $array_name = explode(' ',$query[$i]['applicant_name']);
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['password'] = $query[$i]['phone'];
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $transaction = Yii::$app->db->beginTransaction();
-                    try {
-                        $user = new Users([
-                            'username' => $username,
-                            'user_enc_id' => Yii::$app->security->generateRandomString(32),
-                            'first_name' =>$array_name[0],
-                            'last_name' => $array_name[1].(($array_name[2])?$array_name[2]:null),
-                            'email' => $query['email'],
-                            'phone' => $query['phone'],
-                            'password' => $utilitiesModel->encrypt_pass(),
-                            'auth_key' => Yii::$app->security->generateRandomString(8),
-                            'user_type_enc_id' => $user_type->user_type_enc_id,
-                            'status' => 'Active',
-                            'initials_color' => RandomColors::one(),
-                            'is_credential_change' => 1,
-                        ]);
-                        if ($user->save()) {
-                            $usernamesModel = new Usernames();
-                            $usernamesModel->username = $username;
-                            $usernamesModel->assigned_to = 1;
-                            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
-                                $transaction->rollBack();
-                                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usernamesModel->errors, 0, false)));
-                            }
-                            $loan = LoanApplications::findOne(['loan_app_enc_id'=>$query['loan_app_enc_id']]);
-                            $loan->created_by = $user->user_enc_id;
-                            if (!$loan->save){
-                                $transaction->rollBack();
-                                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan->errors, 0, false)));
-                            }else{
-                                $params = [];
-                                $params['username'] = $username;
-                                $params['password'] = $query['phone'];
-                                $params['email'] = $query['email'];
-                                $params['name'] = $query['applicant_name'];
-                                echo $this->educationLoanRegister($params);
-                            }
-                        }else{
-                            $transaction->rollBack();
-                            //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($user->errors, 0, false)));
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                        //return $e;
-                    }
-            }
-        }
+            if(isset($requestHttpMethod) && isset($Request_URL)){
 
-    private function generate_username($string_name=null, $rand_no = 200){
-        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
-        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+                // Get Request URI
+                $Request_URI = strtolower(urlencode($Request_URL));
 
-        $part1 = (!empty($username_parts[0]))?substr($username_parts[0], 0,8):""; //cut first name to 8 letters
-        $part2 = (!empty($username_parts[1]))?substr($username_parts[1], 0,5):""; //cut second name to 5 letters
-        $part3 = ($rand_no)?rand(0, $rand_no):"";
+                // Get Request Time Stamp
+                $epochStart = date("Y")."-01-01 00:00:00";
+                $currentDateTime = date('Y-m-d H:i:s');
+                $epochStartDate = new \DateTime($epochStart);
+                $currentDate = new \DateTime($currentDateTime);
+                $requestTimeStamp = $currentDate->getTimestamp() - $epochStartDate->getTimestamp();
 
-        $username = $part1. str_shuffle($part2). $part3; //str_shuffle to randomly shuffle all characters
-        return $username;
-    }
+                // Get Nonce - It should be a new Global unique identifier which is converted to Numeric format
+                $nonce = self::GenerateUniqueId(32);
 
-    public function actionApplicationStatusEmail(){
-        $params = AppliedApplications::find()
-            ->alias('a')
-            ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
-            ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
-            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
-            ->asArray()
-            ->all();
-        $k = 0;
-        foreach ($params as $param){
-            Yii::$app->mailer->htmlLayout = 'layouts/email';
-            $mail = Yii::$app->mailer->compose(
-                ['html' => 'job-process-status'],['data'=>$param]
-            )
-                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                ->setTo([$param['email'] => $param['name']])
-                ->setSubject('Your Job Application Has Been Accepted');
-            if ($mail->send()) {
-                $k++;
-            }
-        }
-        echo $k;
-    }
-    public function actionMoveTitles($limit=50, $offset=0){
-        $_flag = false;
-        $model = OpenTitles::find()
-            ->select(['title_enc_id','name'])
-            ->where(['is_deleted' => 0])
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy(['created_on' => SORT_DESC])
-            ->all();
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if($model) {
-            foreach ($model as $m) {
-                $category = Categories::find()
-                    ->where(['name' => $m->name])
-                    ->asArray()
-                    ->one();
-                if (empty($category)) {
-                    $category = new Categories();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $category->category_enc_id = $m->title_enc_id;
-                    $category->name = $m->name;
-                    $utilitiesModel->variables['name'] = $category->name;
-                    $utilitiesModel->variables['table_name'] = Categories::tableName();
-                    $utilitiesModel->variables['field_name'] = 'slug';
-                    $category->slug = $utilitiesModel->create_slug();
-                    $category->source = 1;
-                    $category->created_on = date('Y-m-d H:i:s');
-                    $category->created_by = Yii::$app->user->identity->user_enc_id;
-                    if ($category->save()) {
-                        $_flag = true;
-                    } else {
-                        $_flag = false;
-                    }
+                if($requestHttpMethod!='GET'){
+                    $requestContentHash = md5($payload,true);
+                    $requestContentBase64String = base64_encode($requestContentHash);
+                }else{
+                    $requestContentBase64String='';
                 }
-                $titleModel = OpenTitles::findOne(['title_enc_id' => $m->title_enc_id]);
-                $titleModel->is_deleted = 1;
-                $titleModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
-                $titleModel->last_updated_on = date('Y-m-d H:i:s');
-                if($titleModel->save()){
-                    $_flag = true;
-                } else {
-                    $_flag = false;
-                }
-            }
-            if($_flag){
-                return [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Data Move Successfully'
+
+                // Generate below data for encryption and Generating the Authorization
+                $signatureRawData = $AppId.$requestHttpMethod.$Request_URI.$requestTimeStamp.$nonce.$requestContentBase64String;
+
+                $secretKeyByteArray = $USER_SECRET;
+
+                $signatureBytes = hash_hmac("sha256", $signatureRawData, $secretKeyByteArray, true);
+
+                $requestSignatureBase64String = base64_encode($signatureBytes);
+
+                // Setting the values in the Authorization header using custom scheme (amx)
+                $AllCloudAuthorizationHeader = "amx ".$AppId.":".$requestSignatureBase64String.":".$nonce.":".$requestTimeStamp.":".$USER_TOKEN;
+
+                // Response Array
+                $returnArr = [
+                    'status' => true,'message' => 'Sucess','data' => ['Authorization' => $AllCloudAuthorizationHeader]
                 ];
+
+
             } else {
-                return [
-                    'status' => 201,
-                    'title' => 'Oops!!',
-                    'message' => 'Something went wrong...'
-                ];
+                $returnArr = ['status'=>false, "message" => "Invalid Parameters. Please provide all required parameters to this API."];
             }
-        } else {
-            return [
-                'status' => 201,
-                'title' => 'Oops!!',
-                'message' => 'Data Not Found'
-            ];
+
+            return $returnArr;
+        } catch (\Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
-    public function actionMoveToBorrower($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
-        try {
-            $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray()->all();
+    private static function GenerateUniqueId($n){
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
 
-            $transaction = Yii::$app->db->beginTransaction();
-            $count = 0;
-            foreach ($model as $mod) {
-                $dataModel = new LoanCoApplicants();
-                $dataModel->loan_co_app_enc_id = $mod['loan_app_enc_id'];
-                $dataModel->loan_app_enc_id = $mod['loan_app_enc_id'];
-                $dataModel->name = $mod['applicant_name'];
-                $dataModel->email = $mod['email'];
-                $dataModel->cibil_score = $mod['cibil_score'];
-                $dataModel->equifax_score = $mod['equifax_score'];
-                $dataModel->crif_score = $mod['crif_score'];
-                $dataModel->phone = $mod['phone'];
-                $dataModel->relation = Null;
-                $dataModel->borrower_type = 'Borrower';
-                $dataModel->employment_type = Null;
-                $dataModel->gender = $mod['gender'];
-                $dataModel->annual_income = $mod['yearly_income'];
-                $dataModel->co_applicant_dob = $mod['applicant_dob'];
-                $dataModel->image = $mod['image'];
-                $dataModel->image_location = $mod['image_location'];
-                $dataModel->pan_number = $mod['pan_number'];
-                $dataModel->aadhaar_number = $mod['aadhaar_number'];
-                $dataModel->voter_card_number = $mod['voter_card_number'];
-                $dataModel->driving_license_number = Null;
-                $dataModel->aadhaar_link_phone_number = $mod['aadhaar_link_phone_number'];
-                $dataModel->created_by = $mod['created_by'];
-                $dataModel->created_on = $mod['created_on'];
-                $dataModel->updated_on = $mod['updated_on'];
-                $dataModel->updated_by = $mod['updated_by'];
-                $dataModel->is_deleted = $mod['is_deleted'];
-                if (!$dataModel->save()) {
-                    $transaction->rollBack();
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($dataModel->errors, 0, false)));
-                }
-                $count++;
-            }
-            echo $count.' entry moved to database';
-            $transaction->commit();
-        }catch (\Exception $exception){
-            return $exception->getMessage();
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
         }
-    }
-    public function actionMoveResidence($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
-        try {
-            $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray()->all();
-            $transaction = Yii::$app->db->beginTransaction();
-            $count = 0;
-            foreach ($model as $mod) {
-                $datamodel = LoanApplicantResidentialInfo::find()
-                    ->where(['loan_app_enc_id'=>$mod['loan_app_enc_id']])
-                    ->andWhere([
-                        'or',
-                        ['loan_co_app_enc_id'=>null],
-                        ['loan_co_app_enc_id'=>''],
-                        ['loan_co_app_enc_id'=>Null],
-                    ])->one();
-                if ($datamodel){
-                    $datamodel->loan_co_app_enc_id = $datamodel->loan_app_enc_id;
-                    if (!$datamodel->save()) {
-                        $transaction->rollBack();
-                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($datamodel->errors, 0, false)));
-                    }
-                    $count++;
-                }
-            }
-            echo $count.' entry moved to database';
-            $transaction->commit();
-        }catch (\Exception $exception){
-            return $exception->getMessage();
-        }
+
+        return $randomString;
     }
 
-    public function actionMoveCredits($page=1,$limit=100,$start='2023-08-01',$end='2023-09-01'){
-        try {
-            $offset = ($page - 1) * $limit;
-            $model = LoanApplications::find()
-                ->where(['between','created_on',$start,$end])
-                ->limit($limit)
-                ->offset($offset)
-                ->asArray()->all();
-            $transaction = Yii::$app->db->beginTransaction();
-            $count = 0;
-            foreach ($model as $mod) {
-                $datamodel = CreditLoanApplicationReports::find()
-                    ->where(['loan_app_enc_id'=>$mod['loan_app_enc_id']])
-                    ->andWhere([
-                        'or',
-                        ['loan_co_app_enc_id'=>null],
-                        ['loan_co_app_enc_id'=>''],
-                        ['loan_co_app_enc_id'=>Null],
-                    ])->one();
-                if ($datamodel){
-                    $datamodel->loan_co_app_enc_id = $datamodel->loan_app_enc_id;
-                    if (!$datamodel->save()) {
-                        $transaction->rollBack();
-                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($datamodel->errors, 0, false)));
-                    }
-                    $count++;
-                }
-            }
-            echo $count.' entry moved to database';
-            $transaction->commit();
-        }catch (\Exception $exception){
-            return $exception->getMessage();
+    public function actionCurlSaveCustomer(){
+        // Data to send in the POST request (key-value pairs)
+        $data = '{
+        "FirstName": "Sneh",
+        "LastName": "Kant",
+        "DOB": "1993-06-08",
+        "ContactNumber":9597868802,
+        "PrimaryAddressLine1":"xyz",
+        "PrimaryArea": "HSR Layout",
+        "PrimaryTown": "Bangalore",
+        "PrimaryPostcode": "560006",
+        "PrimaryStateId": 12,
+        "PrimaryStateName": "Karnataka",
+        }';
+        // API endpoint URL
+        $url = 'https://staging.allcloud.in/apiv2phfleasing/api/Customer/SaveCustomerData';
+
+        $token =  $this->generateAllCloudAuthHeader('POST',$url,$data);
+        $auth = $token['data']['Authorization'];
+        // Custom headers
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "Authorization: $auth", // Add any authorization headers here
+        ];
+
+// Initialize cURL session
+        $ch = curl_init($url);
+
+// Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+
+// Execute cURL session and store the response in $response
+        return  $response = curl_exec($ch);
+
+// Check for cURL errors
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
         }
+
+// Close cURL session
+        curl_close($ch);
+
+// Display the response from the server
+        echo $response;
+
+        echo '<br>';
+        echo 'url hit on: '.$url;
     }
+
+    public function actionCurlSaveLead(){
+        // Data to send in the POST request (key-value pairs)
+        $data = '{
+  "LeadDetailId": 0,
+  "ProductTypeId": 1,
+  "CentreName": "Default Centre",
+  "CompanyRoleId": "198",
+  "LoanCategoryId": 0,
+  "LoanAmount": 200000,
+  "LoanTenure": 24,
+  "SubmitLead": true,
+  "IsLms": true,
+  "LeadSourceId": 2,
+  "DealerId": 3,
+  "LeadSourceDetailId": 3,
+  "PurposeofLoan": "1",
+  "SchemeId": 6,
+  "DownPayment": 0,
+  "LoanSegmentId": 1,
+  "LoanTypeId": 9,
+  "LstLeadCustomers": [
+    {
+      "BorrowerId": 93,
+      "BorrowerTypeId": 0,
+      "OrderTypeId": 0,
+      "RelationToBorrower": 1,
+      "GuarantorTypeId": null
+    }
+  ],
+  "LstTaggingDto": null,
+  "ObjVlVehicleDto": {
+    "MfgYear": 2021,
+    "VehicleTypeId": 1,
+    "VehicleClassId": 1,
+    "VehicleMakeId": 2,
+    "VehicleClassVariantId": 1,
+    "RegistrationNo": "CFDGKd",
+    "InvoiceAmount": 20000,
+    "ResidualValue": 20000,
+    "UploadDocumentDTOCollection": null
+  },
+  "ObjPlSalaryBorrowerDto": null,
+  "ObjPlOrganizationBorrowerDto": null,
+  "IsProgramType": false
+}';
+        // API endpoint URL
+        //$url = 'https://staging.allcloud.in/apiv2phfleasing/api/Loan/SaveNewLoanByLeadDetail';
+        $url = 'https://staging.allcloud.in/apiv2phfleasing/api/LeadDetail/AddLeadDetail';
+
+        $token =  $this->generateAllCloudAuthHeader('POST',$url,$data);
+        $auth = $token['data']['Authorization'];
+        // Custom headers
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "Authorization: $auth", // Add any authorization headers here
+        ];
+
+// Initialize cURL session
+        $ch = curl_init($url);
+
+// Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+
+// Execute cURL session and store the response in $response
+          $response = curl_exec($ch);
+        print_r(json_decode($response,true));
+        die();
+
+// Check for cURL errors
+        if (curl_errno($ch)) {
+            echo 'cURL Error: ' . curl_error($ch);
+        }
+
+// Close cURL session
+        curl_close($ch);
+
+// Display the response from the server
+       print_r(json_decode($response,true));
+
+        echo '<br>';
+        echo 'url hit on: '.$url;
+    }
+
+    public function actionCurl(){
+        $headers = [
+            "Content-Type: application/json", // You can adjust the content type as needed
+            "apikey: l74634c7fd20294499b9abe7b8640c792e",
+            "member-ref-id: NB4117",
+            "cust-ref-id: 669123887322"
+        ];
+
+        $jayParsedAry = [
+            "serviceCode" => "CAS10001",
+            "monitoringDate" => "08102024",
+            "consumerInputSubject" => [
+                "tuefHeader" => [
+                    "headerType" => "TUEF",
+                    "version" => "12",
+                    "memberRefNo" => "NB4117",
+                    "gstStateCode" => "01",
+                    "enquiryMemberUserId" => "NB41178888_UATC2CNPE",
+                    "enquiryPassword" => "xdoyuywjbfDc@vw1krijctlzik",
+                    "enquiryPurpose" => "10",
+                    "enquiryAmount" => "000049500",
+                    "scoreType" => "08",
+                    "outputFormat" => "03",
+                    "responseSize" => "1",
+                    "ioMedia" => "CC",
+                    "authenticationMethod" => "L"
+                ],
+                "names" => [
+                    [
+                        "index" => "N01",
+                        "firstName" => "Lav Shaw",
+                        "middleName" => "",
+                        "lastName" => "",
+                        "birthDate" => "15121993",
+                        "gender" => "2"
+                    ]
+                ],
+                "ids" => [
+                    [
+                        "index" => "I01",
+                        "idNumber" => "EHEPS6295G",
+                        "idType" => "01"
+                    ]
+                ],
+                "telephones" => [
+                    [
+                        "index" => "T01",
+                        "telephoneNumber" => "9748597169",
+                        "telephoneType" => "01"
+                    ]
+                ],
+                "addresses" => [
+                    [
+                        "index" => "A01",
+                        "line1" => "ORIAPARA ROAD GARULIA Garulia",
+                        "line2" => "",
+                        "stateCode" => "27",
+                        "pinCode" => "424001",
+                        "addressCategory" => "01",
+                        "residenceCode" => "01"
+                    ]
+                ],
+                "enquiryAccounts" => [
+                    [
+                        "index" => "I01",
+                        "accountNumber" => ""
+                    ]
+                ]
+            ]
+        ];
+        $certificate_path = dirname(__DIR__, 2) . "/bin/p12WePayIndia_.p12";
+        $file = fopen($certificate_path, 'r');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+        curl_setopt($ch, CURLOPT_POST, true); // Set the request type to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($jayParsedAry)); // Set the POST data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); // Set custom headers
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        //curl_setopt($ch, CURLOPT_INFILE, $file);
+        curl_setopt($ch, CURLOPT_SSLCERT, $certificate_path);
+        curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'empower123');
+        curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'P12');
+        curl_setopt($ch, CURLOPT_URL, 'https://apiuat.cibilhawk.com/acquire/credit-assessment/v1/consumer-cir-cv');
+        //curl_setopt($ch, CURLOPT_URL, 'https://uatportal.cibilhawk.com/publish/apis/details/d7269df3-c72a-474e-bd19-e431cb7e98e0/url');
+        $response = curl_exec($ch);
+        if ($response === false) {
+            return curl_error($ch);
+        }
+         return $response;
+        die();
+        //print_r(json_decode($response));
+
+    }
+
 }

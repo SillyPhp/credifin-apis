@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -10,9 +12,12 @@ namespace common\models;
  * @property string $loan_app_enc_id organization_enc_id
  * @property string $name
  * @property string $email
- * @property int $cibil_score cibil score
+ * @property int $cibil_score cibil score 
+ * @property int $equifax_score
+ * @property int $crif_score
  * @property string $phone
  * @property string $relation
+ * @property string $father_name
  * @property string $borrower_type borrower type
  * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
  * @property int $employment_type  1 as Salaried, 2 as Self Employed, 3 as Non Working
@@ -26,6 +31,7 @@ namespace common\models;
  * @property string $pan_number co borrower pan card number
  * @property string $voter_card_number
  * @property string $aadhaar_number
+ * @property string $passport_number
  * @property string $driving_license_number Driving License Number
  * @property string $marital_status Marital Status
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
@@ -37,10 +43,12 @@ namespace common\models;
  *
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
+ * @property LoanApplicationPendencies[] $loanApplicationPendencies
  * @property LoanCertificates[] $loanCertificates
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property LoanVerificationLocations[] $loanVerificationLocations
  */
 class LoanCoApplicants extends \yii\db\ActiveRecord
 {
@@ -59,14 +67,15 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     {
         return [
             [['loan_co_app_enc_id', 'loan_app_enc_id'], 'required'],
-            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
+            [['cibil_score', 'equifax_score', 'crif_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
             [['relation', 'borrower_type', 'marital_status'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'father_name', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number', 'driving_license_number'], 'string', 'max' => 20],
+            [['voter_card_number', 'passport_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
+            [['driving_license_number'], 'string', 'max' => 30],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -88,6 +97,14 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getLoanApplicantResidentialInfos()
     {
         return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationPendencies()
+    {
+        return $this->hasMany(LoanApplicationPendencies::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 
     /**
@@ -120,5 +137,13 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanVerificationLocations()
+    {
+        return $this->hasMany(LoanVerificationLocations::className(), ['assigned_borrower_enc_id' => 'loan_co_app_enc_id']);
     }
 }

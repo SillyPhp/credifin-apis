@@ -9,6 +9,7 @@ use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\auth\JwtAuth;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
@@ -45,7 +46,9 @@ class AuthController extends ApiBaseController
                 'verify-phone',
                 'referral-logo',
                 'reset-old-password',
-                'update-profile'
+                'update-profile',
+                'get-token',
+                'varify-token'
 
             ],
             'class' => HttpBearerAuth::className()
@@ -68,6 +71,8 @@ class AuthController extends ApiBaseController
                 'referral-logo' => ['POST', 'OPTIONS'],
                 'reset-old-password' => ['POST', 'OPTIONS'],
                 'update-profile' => ['POST', 'OPTIONS'],
+                'get-token' => ['POST', 'OPTIONS'],
+                'varify-token' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -80,6 +85,43 @@ class AuthController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionGetToken()
+    {
+        if ($user = $this->isAuthorized()) {
+            $bearer_token = Yii::$app->request->headers->get('Authorization');
+            $token = explode(" ", $bearer_token)[1];
+            $payload = [
+                'authToken' => $token
+            ];
+            if ($gettoken = JwtAuth::generateToken($payload)) {
+                return $this->response(200, ['message' => 'Success', 'tokenValue' => $gettoken]);
+            } else {
+                return $this->response(503, ['message' => 'Error']);
+            }
+        } else {
+            return $this->response(401, ['message' => 'Error', 'Error' => 'Your Are Not Allowed To Perform This Action']);
+        }
+    }
+
+    public function actionVarifyToken()
+    {
+        try {
+            if ($user = $this->isAuthorized()) {
+                $param = Yii::$app->request->post();
+                if ($response = JwtAuth::auth($param['tokenValue'])) {
+                    return $this->response(200, ['message' => 'Success', 'tokenValue' => $response]);
+                } else {
+                    return $this->response(401, ['message' => 'Token Expired or Invalid Token']);
+                }
+
+            } else {
+                return $this->response(401, ['message' => 'Error', 'Error' => 'Your Are Not Allowed To Perform This Action']);
+            }
+        } catch (\Exception $e) {
+            return $this->response(401, ['message' => 'Error', 'Error' => $e]);
+        }
     }
 
     // this action is used for signup
@@ -150,7 +192,8 @@ class AuthController extends ApiBaseController
     private function _genUserPass($data)
     {
         while (true) {
-            $username = str_replace([' ', '.', '@'], '', $data['organization_name']) . rand(100, 1000);
+            $username = str_replace(['.', '@'], '', $data['organization_name']);
+            $username = substr(implode('', array_slice(explode(' ', $username), 0, 2)), 0, 12) . rand(100, 1000);
             $checkUsers = Users::findOne(['username' => $username]);
             if (!$checkUsers) {
                 $data['username'] = $username;
@@ -229,7 +272,7 @@ class AuthController extends ApiBaseController
             // if there is no data in request then error 400 bad request
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         } catch (\Exception $exception) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception, true)]);
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
@@ -644,25 +687,25 @@ class AuthController extends ApiBaseController
     public function actionReferralLogo()
     {
         $params = Yii::$app->request->post();
-        if (empty($params['code'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "code"']);
+        if (empty($params["code"])) {
+            return $this->response(422, ["status" => 422, "message" => "missing information 'code'"]);
         }
         $ref = \common\models\Referral::find()
-            ->alias('a')
+            ->alias("a")
             ->select([
-                'a.referral_enc_id', 'b.name', 'b.slug',
-                'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
+                "a.referral_enc_id", "b.name", "b.slug",
+                "CASE WHEN b.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',b.logo_location, '/', b.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b.name, '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END logo"
             ])
-            ->joinWith(['organizationEnc b'])
-            ->where(['a.code' => $params['code']])
-            ->andWhere(['<>', 'a.organization_enc_id', 'null'])
+            ->joinWith(["organizationEnc b"])
+            ->where(["a.code" => $params["code"]])
+            ->andWhere(["<>", "a.organization_enc_id", "null"])
             ->asArray()
             ->one();
 
         if ($ref) {
-            return $this->response(200, ['status' => 200, 'data' => $ref]);
+            return $this->response(200, ["status" => 200, "data" => $ref]);
         }
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        return $this->response(404, ["status" => 404, "message" => "not found"]);
     }
 
     public function actionChangePassword()
@@ -697,31 +740,19 @@ class AuthController extends ApiBaseController
 
     public function actionResetOldPassword()
     {
-        if ($user = $this->isAuthorized()) {
-            $model = new ChangePassword();
-            if ($model->load(Yii::$app->request->post(), '')) {
-                if ($model->validate()) {
-                    if ($res = $model->changePassword($user->user_enc_id)) {
-                        if ($res === 402) {
-                            return $this->response(402, ['status' => 402, 'message' => 'New And Old Password Should not be Same']);
-                        }
-                        if ($res === 403) {
-                            return $this->response(403, ['status' => 403, 'message' => 'Old Password Is Wrong']);
-                        }
-
-                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
-
-                    } else {
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                    }
-                } else {
-                    return $this->response(409, ['status' => 409, $model->getErrors()]);
-                }
-            } else {
-                return $this->response(422, ['status' => 422, 'message' => 'data not found']);
+        $this->isAuth();
+        $user = $this->user;
+        $params = $this->post;
+        $model = new ChangePassword();
+        $model->user_id = $user->user_enc_id;
+        try {
+            if ($model->load($params) && !$model->validate()) {
+                return $this->response(422, ["message" => implode(" , ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false))]);
             }
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            $model->changePassword();
+            return $this->response(200, ["message" => "Successfully updated"]);
+        } catch (\Exception $exception) {
+            return $this->response(500, ["error" => $exception->getMessage()]);
         }
     }
 

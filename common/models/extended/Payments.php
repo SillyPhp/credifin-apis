@@ -93,6 +93,9 @@ class Payments
         if (!empty($options['loan_app_enc_id'])) {
             $assign->loan_app_enc_id = $options['loan_app_enc_id'];
         }
+        if (!empty($options['loan_account_enc_id'])) {
+            $assign->loan_account_enc_id = $options['loan_account_enc_id'];
+        }
         $assign->created_by = $assign->updated_by = $options['user_id'];
         $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
         if (!$assign->save()) {
