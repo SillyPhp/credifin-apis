@@ -2236,10 +2236,10 @@ class LoanAccountsController extends ApiBaseController
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-//            $other_details = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
-//            if (!$other_details) {
-//                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
-//            }v
+            $other_details = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+            if (!$other_details) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
 
             $update = new \common\models\LoanAccountOtherDetails();
             $utilitiesModel = new \common\models\Utilities();
@@ -2262,5 +2262,6 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
 
 }
