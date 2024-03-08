@@ -199,6 +199,7 @@ class LoanAccountsController extends ApiBaseController
                     'a.telecaller_priority',
                     'a.collection_priority',
                     'a.bucket',
+                    "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
                     'a.emi_date',
                     'a.created_on',
                     'a.last_emi_received_amount',
@@ -353,7 +354,61 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
+    public function actionGetBasicDetail()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+        $subquery = (new Query())
+            ->select([
+                'z.loan_account_enc_id',
+                "SUM(CASE WHEN z.emi_payment_status = 'paid' THEN z.amount END) AS collected_amount",
+                "SUM(CASE WHEN z.emi_payment_status = 'pending' THEN z.amount END) AS pending_amount",
+            ])
+            ->from(["z" => EmiCollection::tableName()])
+            ->groupBy(["z.loan_account_enc_id"]);
 
+        $detail = LoanAccounts::find()
+            ->alias('a')
+            ->select([
+                'a.loan_account_enc_id',
+                'la.amount as loan_amount', 'a.loan_app_enc_id',
+                'a.emi_date as collection_date',
+                'COALESCE(ANY_VALUE(subquery.collected_amount), 0) collected_amount',
+                'COALESCE(ANY_VALUE(subquery.pending_amount), 0) pending_amount',
+                'br.location_name as branch',
+                'a.branch_enc_id',
+                'a.total_installments as number_of_emis',
+            ])
+            ->joinWith(['branchEnc br'], false)
+            ->joinWith(["emiCollections c" => function ($c) use ($subquery) {
+                $c->from(["subquery" => $subquery]);
+            }], false)
+            ->joinWith(['loanAppEnc0 d' => function ($d) {
+                $d->select([
+                    'd.loan_co_app_enc_id', 'd.father_name', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
+                    'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation',
+                    'ANY_VALUE(d1.address) address', 'ANY_VALUE(d2.name) city', 'ANY_VALUE(d3.name) state', 'ANY_VALUE(d3.abbreviation) state_abbreviation', 'ANY_VALUE(d1.postal_code) postal_code', 'ANY_VALUE(d3.state_code) state_code',
+                    'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score', 'd.passport_number',
+                    "CASE WHEN d.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',d.image_location, d.image) ELSE NULL END image",
+                ]);
+                $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
+                    $d1->joinWith(['cityEnc d2'], false);
+                    $d1->joinWith(['stateEnc d3'], false);
+                }], false);
+            }])
+            ->joinWith(['loanAppEnc la'], false)
+            ->where(['a.loan_account_enc_id' => $params['loan_account_enc_id']])
+            ->groupBy(['a.loan_account_enc_id'])
+            ->asArray()
+            ->one();
+
+        return $this->response(200, ['status' => 200, 'data' => $detail]);
+    }
     public function actionVehicleRepossession()
     {
         if (!$user = $this->isAuthorized()) {
@@ -1112,9 +1167,9 @@ class LoanAccountsController extends ApiBaseController
             }])
             ->joinWith(['collectionManager cm'], false);
         if (isset($params['type']) && $params['type'] == 'dashboad') {
-            $ptpcases->andWhere(['between', 'a.proposed_date', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 days'))]);
+            $ptpcases->andWhere(['BETWEEN', 'a.proposed_date', date('Y-m-d'), date('Y-m-d', strtotime('+3 days'))]);
         } else {
-            $ptpcases->where(['>=', 'a.proposed_date', date('Y-m-d H:i:s')]);
+            $ptpcases->andwhere(['>=', 'a.proposed_date', date('Y-m-d')]);
         }
         $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
