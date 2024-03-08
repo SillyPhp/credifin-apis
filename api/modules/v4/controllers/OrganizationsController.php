@@ -2906,7 +2906,7 @@ class OrganizationsController extends ApiBaseController
         }
 
 
-        if (!$special) {
+        if (!$special && $user->username != "phf986") {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $query->andWhere([
                 "OR",
