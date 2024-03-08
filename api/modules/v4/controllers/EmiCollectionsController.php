@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
@@ -1864,4 +1865,109 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
+    public function actionCollectionReportBranches()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+        $valuesSma = [
+            'SMA0' => [
+                'name' => 'SMA-0',
+                'value' => 1.25
+            ],
+            'SMA1' => [
+                'name' => 'SMA-1',
+                'value' => 1.5
+            ],
+            'SMA2' => [
+                'name' => 'SMA-2',
+                'value' => 1.5
+            ],
+            'NPA' => [
+                'name' => 'NPA',
+                'value' => 1
+            ],
+            'OnTime' => [
+                'name' => 'OnTime',
+                'value' => null
+            ],
+        ];
+        $list = EmiCollection::find()
+            ->alias('a')
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
+            ->joinWith(['loanAccountEnc b' => function ($b) {
+                $b->joinWith(['branchEnc b1' => function ($b1) {
+                    $b1->joinWith(['cityEnc b2'], false);
+                }], false);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
+            ->orWhere(['between', 'a.collection_date', $params['start_date'], $params['end_date']])
+            ->andWhere(['NOT', ['b.branch_enc_id' => null]])
+            ->andWhere(['NOT', ['b.bucket' => null]])
+            ->groupBy(['b1.location_name', 'b2.name']);
+
+        if (!empty($params['loan_type'])) {
+            $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+        }
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'branch') {
+                        $list->andWhere(['IN', 'b1.location_enc_id', $value]);
+                    } else {
+                        $list->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $list->andWhere(['b.created_by' => $juniors]);
+        }
+        $count = $list->count();
+        $list = $list
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($list) {
+            $list = ArrayProcessJson::Parse($list);
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
+    }
+
+
+    private function data($valuesSma)
+    {
+        $queryResult = '';
+        foreach ($valuesSma as $key => $value) {
+            $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
+            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+            if ($key == 'OnTime') {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+            } else {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+            }
+            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+
+            $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
+        }
+
+        return rtrim($queryResult, ',');
+    }
+
 }
