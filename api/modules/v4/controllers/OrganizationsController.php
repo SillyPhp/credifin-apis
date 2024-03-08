@@ -2488,7 +2488,6 @@ class OrganizationsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_enc_id", "a.stock",
-                "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
                 "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 "a.hard_recovery", 'a.assigned_financer_enc_id',
@@ -2846,7 +2845,7 @@ class OrganizationsController extends ApiBaseController
         }
 
 
-        if (!$special) {
+        if (!$special && $user->username != "phf986") {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $query->andWhere([
                 "OR",
