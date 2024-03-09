@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
@@ -406,19 +407,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -705,6 +706,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
                 $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
+                $c->andOnCondition(['c.is_deleted' => 0]);
             }])
             ->andWhere($where)
             ->asArray()
@@ -820,7 +822,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.remaining_amount", "a.emi_collection_enc_id", "a.cash_report_enc_id",
-                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from"
+                "CONCAT(c.first_name, ' ', COALESCE(c.last_name, '')) AS received_from", "a.created_on"
             ])
             ->joinWith(["emiCollectionEnc b" => function ($b) {
                 $b->select([
@@ -1249,8 +1251,8 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
-                "b.user_enc_id as collected_by_id",
-                'a.emi_payment_status', 'a.reference_number', 'a.dealer_name'
+                "b.user_enc_id as collected_by_id", 'c2.name as state_name',
+                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket'
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc' => function ($lc) {
@@ -1265,7 +1267,9 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->joinWith(['branchEnc c' => function ($c) {
-                $c->joinWith(['cityEnc c1'], false);
+                $c->joinWith(['cityEnc c1' => function ($c1) {
+                    $c1->joinWith(['stateEnc c2'], false);
+                }], false);
             }], false)
             ->joinWith(['assignedLoanPayments d' => function ($d) {
                 $d->joinWith(['loanPaymentsEnc d1'], false);
@@ -1300,7 +1304,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_name', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1364,23 +1368,38 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
                             case 'emi_payment_method':
                                 $model->andWhere(['IN', 'a.' . $key, payment_method_add($value)]);
+                                break;
                         }
                     }
                     if (in_array($key, $others)) {
-                        if ($key == 'collected_by') {
-                            $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
-                        } elseif ($key == 'branch') {
-                            $model->andWhere(['c.location_enc_id' => $value]);
-                        } elseif ($key == 'designation') {
-                            $model->andWhere(['like', 'b1a.' . $key, $value]);
-                        } elseif ($key == 'ptp_status') {
-                            $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
-                        } elseif ($key == 'updated_by') {
-                            $model->andWhere(['like', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, ''))", $value]);
-                        } elseif ($key == 'updated_on_start_date') {
-                            $model->andWhere(['>=', 'a.updated_on', $value]);
-                        } elseif ($key == 'updated_on_end_date') {
-                            $model->andWhere(['<=', 'a.updated_on', $value]);
+                        switch ($key) {
+                            case 'collected_by':
+                                $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
+                                break;
+                            case 'branch':
+                                $model->andWhere(['c.location_enc_id' => $value]);
+                                break;
+                            case 'state_name':
+                                $model->andWhere(['like', "c2.name", $value]);
+                                break;
+                            case 'designation':
+                                $model->andWhere(['like', 'b1a.' . $key, $value]);
+                                break;
+                            case 'ptp_status':
+                                $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
+                                break;
+                            case 'updated_by':
+                                $model->andWhere(['like', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, ''))", $value]);
+                                break;
+                            case 'updated_on_start_date':
+                                $model->andWhere(['>=', 'a.updated_on', $value]);
+                                break;
+                            case 'updated_on_end_date':
+                                $model->andWhere(['<=', 'a.updated_on', $value]);
+                                break;
+                            case 'bucket':
+                                $model->andWhere(['lc.bucket' => $value]);
+                                break;
                         }
                     }
                 }
@@ -1851,4 +1870,109 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+
+    public function actionCollectionReportBranches()
+    {
+        $user = $this->isAuthorized();
+        if (!$user) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+        $valuesSma = [
+            'SMA0' => [
+                'name' => 'SMA-0',
+                'value' => 1.25
+            ],
+            'SMA1' => [
+                'name' => 'SMA-1',
+                'value' => 1.5
+            ],
+            'SMA2' => [
+                'name' => 'SMA-2',
+                'value' => 1.5
+            ],
+            'NPA' => [
+                'name' => 'NPA',
+                'value' => 1
+            ],
+            'OnTime' => [
+                'name' => 'OnTime',
+                'value' => null
+            ],
+        ];
+        $list = EmiCollection::find()
+            ->alias('a')
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
+            ->joinWith(['loanAccountEnc b' => function ($b) {
+                $b->joinWith(['branchEnc b1' => function ($b1) {
+                    $b1->joinWith(['cityEnc b2'], false);
+                }], false);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
+            ->orWhere(['between', 'a.collection_date', $params['start_date'], $params['end_date']])
+            ->andWhere(['NOT', ['b.branch_enc_id' => null]])
+            ->andWhere(['NOT', ['b.bucket' => null]])
+            ->groupBy(['b1.location_name', 'b2.name']);
+
+        if (!empty($params['loan_type'])) {
+            $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+        }
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    if ($key == 'branch') {
+                        $list->andWhere(['IN', 'b1.location_enc_id', $value]);
+                    } else {
+                        $list->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+
+        if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $list->andWhere(['b.created_by' => $juniors]);
+        }
+        $count = $list->count();
+        $list = $list
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($list) {
+            $list = ArrayProcessJson::Parse($list);
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
+    }
+
+
+    private function data($valuesSma)
+    {
+        $queryResult = '';
+        foreach ($valuesSma as $key => $value) {
+            $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
+            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+            if ($key == 'OnTime') {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+            } else {
+                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+            }
+            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+
+            $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
+        }
+
+        return rtrim($queryResult, ',');
+    }
+
 }

@@ -1660,86 +1660,6 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    // delete actionEmiCollection if you are watching this message after 15 Feb
-    public function actionEmiCollection()
-    {
-        $this->isAuth();
-        $user = $this->user;
-        if (!$org = $user->organization_enc_id) {
-            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-            if (!$org = $findOrg['organization_enc_id']) {
-                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
-            }
-        }
-        $params = Yii::$app->request->post();
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $update_overdue = false;
-            if (!empty($params['emi_collection_enc_id']) && !empty($params['status'])) {
-                $emi_id = $params['emi_collection_enc_id'];
-                $model = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $emi_id]);
-                if ($model) {
-                    $status = $params['status'];
-                    if ($status === 'paid') {
-                        $update_overdue = true;
-                    }
-                    $model->emi_payment_status = $status;
-                    UserUtilities::CustomLoanAudit($model->id, $model->emi_collection_enc_id, "SET", "EmiCollection", "remarks", $params['remarks'], $user->id);
-                    if ($status === 'rejected') {
-                        $cash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $emi_id, "is_deleted" => 0]);
-                        if ($cash) {
-                            if (!empty($cash->parent_cash_report_enc_id)) {
-                                $cash2 = EmployeesCashReportExtended::findOne([
-                                    'cash_report_enc_id' => $cash->parent_cash_report_enc_id,
-                                    "is_deleted" => 0,
-                                    'type' => 1,
-                                    'status' => 2
-                                ]);
-                                if (!$cash2) {
-                                    throw new Exception('We can not update this emi.');
-                                }
-                                $cash2->amount -= $cash->amount;
-                                $cash2->remaining_amount -= $cash->amount;
-                                if (!$cash2->save()) {
-                                    throw new \yii\db\Exception(implode(' ', array_column($cash2->errors, 0)));
-                                }
-                            }
-                            $cash->status = 3;
-                            if (!$cash->save()) {
-                                throw new \yii\db\Exception(implode(' ', array_column($cash->errors, 0)));
-                            }
-                        }
-                    }
-                    $model->updated_by = $user->user_enc_id;
-                    $model->updated_on = date('Y-m-d H:i:s');
-                    if (!$model->save()) {
-                        throw new \yii\db\Exception(implode(' ', array_column($model->errors, 0)));
-                    }
-                    if ($update_overdue) {
-                        EmiCollectionForm::updateOverdue($model['loan_account_enc_id'], $model['amount'], $user->user_enc_id);
-                    }
-                    $transaction->commit();
-                    return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-                }
-            } else {
-                $model = new EmiCollectionForm();
-                $model->org_id = $org;
-                if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
-                    throw new Exception(implode(' ', array_column($model->errors, 0)));
-                }
-                $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
-                $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
-                $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
-                $save = $model->save($user->user_enc_id);
-                $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
-                return $this->response($save['status'], $save);
-            }
-        } catch (\Exception $exception) {
-            $transaction->rollBack();
-            return $this->response(500, ['status' => 500, 'message' => $exception->getMessage()]);
-        }
-    }
-
     public function actionEmiStats()
     {
         $this->isAuth();
@@ -2156,7 +2076,26 @@ class OrganizationsController extends ApiBaseController
 
             $removeCash = EmployeesCashReportExtended::findOne(['emi_collection_enc_id' => $removeEmi->emi_collection_enc_id]);
             if (!empty($removeCash->parent_cash_report_enc_id)) {
-                throw new Exception("Emi in pipeline status can not be deleted.");
+                // deducting amount from parent cash entry
+                $parent = EmployeesCashReportExtended::find()->alias('a')
+                    ->where(
+                        [
+                            'a.cash_report_enc_id' => $removeCash->parent_cash_report_enc_id,
+                            'a.is_deleted' => 0,
+                            'a.status' => [0, 2]
+                        ]
+                    )
+                    ->one();
+                if (!$parent) {
+                    throw new Exception("Emi can not be updated.");
+                } else if (!empty($parent->parent_cash_report_enc_id)) {
+                    throw new Exception("Emi in pipeline status can not be deleted.");
+                }
+                $parent->amount -= $removeCash->amount;
+                $parent->remaining_amount -= $removeCash->amount;
+                if (!$parent->save()) {
+                    throw new \yii\db\Exception(implode(' ', array_column($parent->errors, 0)));
+                }
             }
             $removeCash->is_deleted = 1;
             $removeCash->updated_by = $user->user_enc_id;
@@ -2505,9 +2444,10 @@ class OrganizationsController extends ApiBaseController
 
         if ($special || $user->username == "phf986") {
             $selectQuery =
-                ["a.sales_priority", "a.collection_priority", "a.telecaller_priority", "a.sales_target_date",
-                    "a.telecaller_target_date",
-                    "a.collection_target_date"];
+                [
+                    "a.sales_priority", "a.collection_priority", "a.telecaller_priority",
+                    "a.sales_target_date", "a.telecaller_target_date", "a.collection_target_date"
+                ];
         } else {
             $selectQuery = [
                 "(CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -2553,11 +2493,13 @@ class OrganizationsController extends ApiBaseController
                 'a.assigned_financer_enc_id',
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.company_id", "a.case_no",
+                "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
+                'c2.name as state_name',
                 "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
@@ -2578,7 +2520,11 @@ class OrganizationsController extends ApiBaseController
 
             ])
             ->addSelect($selectQuery)
-            ->joinWith(["branchEnc b"], false)
+            ->joinWith(["branchEnc b" => function ($b) {
+                $b->joinWith(['cityEnc c1' => function ($c1) {
+                    $c1->joinWith(['stateEnc c2'], false);
+                }], false);
+            }], false)
             ->joinWith(["assignedFinancerEnc af" => function ($af) {
                 $af->select(['af.organization_enc_id', 'af.name']);
             }])
@@ -2636,6 +2582,14 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.bucket', $value]);
                         }
+                    } elseif ($key == 'nach_approved') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.nach_approved' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.nach_approved', $value]);
+                        }
+                    } elseif ($key == 'state_name') {
+                        $query->andWhere(['like', 'c2.name', "$value%", false]);
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
                                     WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -2643,7 +2597,6 @@ class OrganizationsController extends ApiBaseController
                                     WHEN ANY_VALUE(d.user_type) = 3 THEN a.telecaller_priority
                                     ELSE NULL 
                                  END)", $value]);
-
                     } elseif ($key == 'target_start_date') {
                         $query->andWhere(['>=', "(CASE 
                                 WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_target_date
@@ -2800,6 +2753,9 @@ class OrganizationsController extends ApiBaseController
                         }
                     }
 
+                    if ($key == 'nach_approved') {
+                        $query->orderBy(['nach_approved' => $val]);
+                    }
 
                     if ($key == 'target_date') {
                         $target = 'ISNULL(CASE 

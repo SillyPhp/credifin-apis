@@ -200,12 +200,13 @@ class LoanAccountsController extends ApiBaseController
                     'a.telecaller_priority',
                     'a.collection_priority',
                     'a.bucket',
-                    "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
+                    "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                     'a.emi_date',
                     'a.created_on',
                     'a.last_emi_received_amount',
                     'a.last_emi_received_date',
                     "COUNT(a1.id) AS total_emis",
+                    'a.phone',
                     "a.name",
                     "a.loan_type",
                     "a.emi_amount",
@@ -222,9 +223,14 @@ class LoanAccountsController extends ApiBaseController
                 ->asArray()
                 ->one();
             if ($data) {
+                $ph = $data['phone'];
                 $phones = $data['emiCollections'];
                 array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
-                $data['phone'] = array_unique(array_column($phones, 'phone'));
+                $data['phone'] = array_values(array_unique(array_column($phones, 'phone')));
+                if (!empty($ph)) {
+                    $data['phone'][] = $ph;
+                }
+
                 foreach ($phones as $loc) {
                     $data['location'][] = [
                         'address' => $loc['address'],
@@ -248,7 +254,7 @@ class LoanAccountsController extends ApiBaseController
                     "COUNT(*) OVER(PARTITION BY a.loan_account_number) AS total_emis", 'a.address', 'a.longitude', 'a.latitude', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by", 'a.created_on',
                 ])
                 ->where(['a.loan_account_number' => $params['loan_account_number'], 'a.is_deleted' => 0])
-                ->joinWith(['createdBy cr'])
+                ->joinWith(['createdBy cr'], false)
                 ->orderBy(['a.id' => SORT_DESC])
                 ->asArray()
                 ->all();
