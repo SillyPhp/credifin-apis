@@ -407,19 +407,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -706,7 +706,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
                 $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
-                $c->andOnCondition(['c.is_deleted'=> 0]);
+                $c->andOnCondition(['c.is_deleted' => 0]);
             }])
             ->andWhere($where)
             ->asArray()
@@ -1251,7 +1251,7 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
-                "b.user_enc_id as collected_by_id",
+                "b.user_enc_id as collected_by_id", 'c2.name as state_name',
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket'
             ])
             ->joinWith(['updatedBy ub'], false)
@@ -1267,7 +1267,9 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->joinWith(['branchEnc c' => function ($c) {
-                $c->joinWith(['cityEnc c1'], false);
+                $c->joinWith(['cityEnc c1' => function ($c1) {
+                    $c1->joinWith(['stateEnc c2'], false);
+                }], false);
             }], false)
             ->joinWith(['assignedLoanPayments d' => function ($d) {
                 $d->joinWith(['loanPaymentsEnc d1'], false);
@@ -1302,7 +1304,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_name', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1377,6 +1379,9 @@ class EmiCollectionsController extends ApiBaseController
                             case 'branch':
                                 $model->andWhere(['c.location_enc_id' => $value]);
                                 break;
+                            case 'state_name':
+                                $model->andWhere(['like', "c2.name", $value]);
+                                break;
                             case 'designation':
                                 $model->andWhere(['like', 'b1a.' . $key, $value]);
                                 break;
@@ -1393,7 +1398,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['<=', 'a.updated_on', $value]);
                                 break;
                             case 'bucket':
-                                $model->andWhere(['lc.bucket', $value]);
+                                $model->andWhere(['lc.bucket' => $value]);
                                 break;
                         }
                     }
