@@ -2553,7 +2553,7 @@ class OrganizationsController extends ApiBaseController
                 "a.hard_recovery", 'a.assigned_financer_enc_id',
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
                 "a.company_id", "a.case_no",
-                "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
+                "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
@@ -2636,6 +2636,12 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(['a.bucket' => null]);
                         } else {
                             $query->andWhere(['IN', 'a.bucket', $value]);
+                        }
+                    } if ($key == 'nach_approved') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['a.nach_approved' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'a.nach_approved', $value]);
                         }
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
@@ -2801,6 +2807,9 @@ class OrganizationsController extends ApiBaseController
                         }
                     }
 
+                    if ($key == 'nach_approved') {
+                        $query->orderBy(['nach_approved' => $val]);
+                    }
 
                     if ($key == 'target_date') {
                         $target = 'ISNULL(CASE 
