@@ -3135,4 +3135,28 @@ class OrganizationsController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()];
         }
     }
+
+    public function actionGetStates()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $org_id = $user->organization_enc_id;
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
+        $states = OrganizationLocations::find()
+            ->alias('a')
+            ->select(['b1.name'])
+            ->joinWith(['cityEnc b' => function ($b) {
+                $b->joinWith(['stateEnc b1'], false);
+            }], false)
+            ->andWhere(['a.organization_enc_id' => $org_id])
+            ->groupBy(['b1.name'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $states]);
+
+    }
 }

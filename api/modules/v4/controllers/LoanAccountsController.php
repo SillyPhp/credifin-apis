@@ -5,13 +5,13 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
-use app\models\LoanAccountOtherDetails;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanPayments;
 use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
+use common\models\LoanAccountOtherDetails;
 use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
@@ -2240,8 +2240,7 @@ class LoanAccountsController extends ApiBaseController
             if (!$other_details) {
                 return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
             }
-
-            $update = new \common\models\LoanAccountOtherDetails();
+            $update = new LoanAccountOtherDetails();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $update->detail_enc_id = $utilitiesModel->encrypt();
@@ -2254,7 +2253,6 @@ class LoanAccountsController extends ApiBaseController
             if (!$update->save()) {
                 throw new Exception(implode(" ", array_column($update->getErrors(), '0')));
             }
-
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
         } catch (\Exception $exception) {
@@ -2262,6 +2260,5 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
-
 
 }
