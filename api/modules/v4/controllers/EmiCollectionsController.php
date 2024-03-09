@@ -406,19 +406,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -705,7 +705,7 @@ class EmiCollectionsController extends ApiBaseController
                     "c.loan_type", "c.emi_collection_enc_id", "c.amount", "c.pr_receipt_image", "c.pr_receipt_image_location", "c.collection_date"
                 ]);
                 $c->andOnCondition(['!=', 'c.emi_payment_status', 'rejected']);
-                $c->andOnCondition(['c.is_deleted'=> 0]);
+                $c->andOnCondition(['c.is_deleted' => 0]);
             }])
             ->andWhere($where)
             ->asArray()
@@ -1392,7 +1392,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['<=', 'a.updated_on', $value]);
                                 break;
                             case 'bucket':
-                                $model->andWhere(['lc.bucket', $value]);
+                                $model->andWhere(['lc.bucket' => $value]);
                                 break;
                         }
                     }
