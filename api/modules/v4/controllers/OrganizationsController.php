@@ -2499,6 +2499,7 @@ class OrganizationsController extends ApiBaseController
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
+                'c2.name as state_name',
                 "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
@@ -2519,7 +2520,11 @@ class OrganizationsController extends ApiBaseController
 
             ])
             ->addSelect($selectQuery)
-            ->joinWith(["branchEnc b"], false)
+            ->joinWith(["branchEnc b" => function ($b) {
+                $b->joinWith(['cityEnc c1' => function ($c1) {
+                    $c1->joinWith(['stateEnc c2'], false);
+                }], false);
+            }], false)
             ->joinWith(["assignedFinancerEnc af" => function ($af) {
                 $af->select(['af.organization_enc_id', 'af.name']);
             }])
@@ -2577,12 +2582,14 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.bucket', $value]);
                         }
-                    } if ($key == 'nach_approved') {
+                    } elseif ($key == 'nach_approved') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['a.nach_approved' => null]);
                         } else {
                             $query->andWhere(['IN', 'a.nach_approved', $value]);
                         }
+                    } elseif ($key == 'state_name') {
+                        $query->andWhere(['like', 'c2.name', "$value%", false]);
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
                                     WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
