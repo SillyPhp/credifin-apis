@@ -1159,7 +1159,7 @@ class LoanAccountsController extends ApiBaseController
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount",
-                "a.created_by"
+                "a.created_by", 'c2.name as state_name', 'c2.state_enc_id',
             ])
             ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
@@ -1167,7 +1167,11 @@ class LoanAccountsController extends ApiBaseController
                         $ala->joinWith(['sharedTo d1']);
                         $ala->andOnCondition(['ala.is_deleted' => 0]);
                     }]);
-                    $cc->joinWith(['branchEnc d'], false);
+                    $cc->joinWith(['branchEnc d' => function ($d) {
+                        $d->joinWith(['cityEnc c1' => function ($c1) {
+                            $c1->joinWith(['stateEnc c2'], false);
+                        }], false);
+                    }], false);
                     $cc->joinWith(["assignedCaller ac"], false);
                 }]);
                 $b->joinWith(['branchEnc bb'], false);
@@ -1197,6 +1201,8 @@ class LoanAccountsController extends ApiBaseController
                         }
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'state_enc_id') {
+                        $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);

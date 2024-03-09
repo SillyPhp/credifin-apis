@@ -10,6 +10,7 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
+use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -2499,7 +2500,7 @@ class OrganizationsController extends ApiBaseController
                 "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
-                'c2.name as state_name',
+                'c2.name as state_name', 'c2.state_enc_id',
                 "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
@@ -2588,8 +2589,8 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.nach_approved', $value]);
                         }
-                    } elseif ($key == 'state_name') {
-                        $query->andWhere(['like', 'c2.name', "$value%", false]);
+                    } elseif ($key == 'state_enc_id') {
+                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
                                     WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -3097,19 +3098,16 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
-        $org_id = $user->organization_enc_id;
-        if (!$user->organization_enc_id) {
-            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-            $org_id = $findOrg->organization_enc_id;
-        }
-        $states = OrganizationLocations::find()
+        $states = EmiCollection::find()
             ->alias('a')
-            ->select(['b1.name'])
-            ->joinWith(['cityEnc b' => function ($b) {
-                $b->joinWith(['stateEnc b1'], false);
+            ->select(['c2.name', 'c2.state_enc_id'])
+            ->joinWith(['branchEnc c' => function ($c) {
+                $c->joinWith(['cityEnc c1' => function ($c1) {
+                    $c1->joinWith(['stateEnc c2'], false);
+                }], false);
             }], false)
-            ->andWhere(['a.organization_enc_id' => $org_id])
-            ->groupBy(['b1.name'])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['c2.state_enc_id'])
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'data' => $states]);
