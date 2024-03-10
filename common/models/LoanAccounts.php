@@ -62,6 +62,7 @@ namespace common\models;
  * @property EmiCollection[] $emiCollections
  * @property EmiPaymentIssues[] $emiPaymentIssues
  * @property LoanAccountComments[] $loanAccountComments
+ * @property LoanAccountOtherDetails[] $loanAccountOtherDetails
  * @property Users $assignedCaller
  * @property Users $updatedBy
  * @property Users $createdBy
@@ -217,6 +218,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     public function getLoanActionRequests()
     {
         return $this->hasMany(LoanActionRequests::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAccountOtherDetails()
+    {
+        return $this->hasMany(LoanAccountOtherDetails::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
 
     /**
