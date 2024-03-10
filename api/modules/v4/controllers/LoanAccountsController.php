@@ -218,19 +218,28 @@ class LoanAccountsController extends ApiBaseController
                     $b->joinWith(['createdBy cr'], false);
                     $b->andOnCondition(['a1.is_deleted' => 0]);
                 }])
+                ->joinWith(['loanAccountOtherDetails ld' => function ($ld) {
+                    $ld->andOnCondition(['ld.type' => 'phone']);
+                }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
                 ->groupBy(['a.loan_account_enc_id'])
                 ->asArray()
                 ->one();
+            $data['phone'] = [];
             if ($data) {
-                $ph = $data['phone'];
                 $phones = $data['emiCollections'];
-                array_multisort(array_column($phones, 'id'), SORT_DESC, $phones);
-                $data['phone'] = array_values(array_unique(array_column($phones, 'phone')));
-                if (!empty($ph)) {
-                    $data['phone'][] = $ph;
-                }
-
+                $phones1 = $data['loanAccountOtherDetails'];
+                $p1 = array_map(function ($phone) {
+                    return ['phone' => $phone['phone'], 'created_on' => strtotime($phone['created_on'])];
+                }, $phones);
+                $p2 = array_map(function ($phone) {
+                    return ['phone' => $phone['value'], 'created_on' => strtotime($phone['created_on'])];
+                }, $phones1);
+                $merge = array_merge($p1, $p2);
+                usort($merge, function ($a, $b) {
+                    return $b['created_on'] - $a['created_on'];
+                });
+                $data['phone'] = array_values(array_unique(array_column($merge, 'phone')));
                 foreach ($phones as $loc) {
                     $data['location'][] = [
                         'address' => $loc['address'],
@@ -241,7 +250,9 @@ class LoanAccountsController extends ApiBaseController
                     ];
                 }
                 unset($data['emiCollections']);
+                unset($data['loanAccountOtherDetails']);
             }
+//            return $data;
         } else {
             $query = EmiCollection::find()
                 ->alias('a')
@@ -262,7 +273,6 @@ class LoanAccountsController extends ApiBaseController
                 $phones = array_unique(array_column($query, 'phone'));
                 $data = reset($query);
                 $data['phone'] = $phones;
-
                 foreach ($query as $loc) {
                     $data['location'][] = [
                         'address' => $loc['address'],
@@ -1177,11 +1187,13 @@ class LoanAccountsController extends ApiBaseController
                 $b->joinWith(['branchEnc bb'], false);
             }])
             ->joinWith(['collectionManager cm'], false);
-        if (isset($params['type']) && $params['type'] == 'dashboad') {
+
+        if (isset($params['type']) && $params['type'] == 'dashboard') {
             $ptpcases->andWhere(['BETWEEN', 'a.proposed_date', date('Y-m-d'), date('Y-m-d', strtotime('+3 days'))]);
         } else {
             $ptpcases->andwhere(['>=', 'a.proposed_date', date('Y-m-d')]);
         }
+
         $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
             ->orderBy(['a.proposed_date' => SORT_ASC]);
