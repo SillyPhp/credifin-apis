@@ -2877,6 +2877,10 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params["bucket"])) {
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
+
+        if (!empty($params['type']) && $params['type'] == 'dashboard') {
+            $query->andWhere('DAY(a.emi_date) = DAY(NOW()) AND a.emi_date < NOW()');
+        }
         $count = $query->count();
         $query = $query
             ->limit($limit)
