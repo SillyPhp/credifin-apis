@@ -1659,6 +1659,9 @@ class LoanAccountsController extends ApiBaseController
                         $count = false;
                         continue;
                     }
+                    if (empty($headers)) {
+                        throw new \Exception("Headers error.");
+                    }
 
                     $data = array_map(function ($key, $item) use ($headers) {
                         $item = trim($item);
@@ -1684,15 +1687,29 @@ class LoanAccountsController extends ApiBaseController
                         $name = explode(' ', $name)[0];
                         $where[] = ['LIKE', 'name', "$name%", false];
                     }
-                    $loan = LoanAccounts::find()->where($where);
-                    $raw = $loan->createCommand()->getRawSql();
-                    $loan = $loan->one();
+                    $model = LoanAccounts::find();
+                    $loan = $model->where($where)->one();
+
+                    if (!$loan && !empty($loan_account_number)) {
+                        $where = [
+                            'AND',
+                            [
+                                'OR',
+                                ['a.loan_account_number' => $loan_account_number],
+                                ['a.lms_loan_account_number' => $loan_account_number]
+                            ],
+                            ['IS', 'loan_app_enc_id', null]
+                        ];
+                        $loan = $model->where($where)->one();
+                    }
                     if (!$loan) {
                         $new = true;
                         $loan = new LoanAccounts();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                        $loan->lms_loan_account_number = $lms_loan_account_number;
+                        if (!empty($lms_loan_account_number)) {
+                            $loan->lms_loan_account_number = $lms_loan_account_number;
+                        }
                         $loan->case_no = $case_no;
                         $loan->loan_account_number = !empty($loan_account_number) ? $loan_account_number : $case_no;
                         $loan->created_on = date('Y-m-d H:i:s');
