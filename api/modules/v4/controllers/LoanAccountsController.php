@@ -11,6 +11,7 @@ use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\LoanAccountComments;
+use common\models\LoanAccountOtherDetails;
 use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionComments;
@@ -1158,7 +1159,7 @@ class LoanAccountsController extends ApiBaseController
                 "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0) AS total_pending_amount",
-                "a.created_by"
+                "a.created_by", 'c2.name as state_name', 'c2.state_enc_id',
             ])
             ->innerJoinWith(['emiCollectionEnc b' => function ($b) {
                 $b->joinWith(['loanAccountEnc c' => function ($cc) {
@@ -1166,7 +1167,11 @@ class LoanAccountsController extends ApiBaseController
                         $ala->joinWith(['sharedTo d1']);
                         $ala->andOnCondition(['ala.is_deleted' => 0]);
                     }]);
-                    $cc->joinWith(['branchEnc d'], false);
+                    $cc->joinWith(['branchEnc d' => function ($d) {
+                        $d->joinWith(['cityEnc c1' => function ($c1) {
+                            $c1->joinWith(['stateEnc c2'], false);
+                        }], false);
+                    }], false);
                     $cc->joinWith(["assignedCaller ac"], false);
                 }]);
                 $b->joinWith(['branchEnc bb'], false);
@@ -1196,6 +1201,8 @@ class LoanAccountsController extends ApiBaseController
                         }
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'state_enc_id') {
+                        $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);
@@ -1640,6 +1647,9 @@ class LoanAccountsController extends ApiBaseController
                         $count = false;
                         continue;
                     }
+                    if (empty($headers)) {
+                        throw new \Exception("Headers error.");
+                    }
 
                     $data = array_map(function ($key, $item) use ($headers) {
                         $item = trim($item);
@@ -1665,15 +1675,29 @@ class LoanAccountsController extends ApiBaseController
                         $name = explode(' ', $name)[0];
                         $where[] = ['LIKE', 'name', "$name%", false];
                     }
-                    $loan = LoanAccounts::find()->where($where);
-                    $raw = $loan->createCommand()->getRawSql();
-                    $loan = $loan->one();
+                    $model = LoanAccounts::find();
+                    $loan = $model->where($where)->one();
+
+                    if (!$loan && !empty($loan_account_number)) {
+                        $where = [
+                            'AND',
+                            [
+                                'OR',
+                                ['a.loan_account_number' => $loan_account_number],
+                                ['a.lms_loan_account_number' => $loan_account_number]
+                            ],
+                            ['IS', 'loan_app_enc_id', null]
+                        ];
+                        $loan = $model->where($where)->one();
+                    }
                     if (!$loan) {
                         $new = true;
                         $loan = new LoanAccounts();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
-                        $loan->lms_loan_account_number = $lms_loan_account_number;
+                        if (!empty($lms_loan_account_number)) {
+                            $loan->lms_loan_account_number = $lms_loan_account_number;
+                        }
                         $loan->case_no = $case_no;
                         $loan->loan_account_number = !empty($loan_account_number) ? $loan_account_number : $case_no;
                         $loan->created_on = date('Y-m-d H:i:s');
@@ -2226,4 +2250,44 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(404, ['message' => 'data not found']);
     }
+
+    public function actionUpdateBasicDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_account_enc_id']) || empty($params['value']) || empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_account_enc_id", "type", and "value" are required']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $other_details = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_account_enc_id']]);
+            if (!$other_details) {
+                return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
+            }
+            $update = new LoanAccountOtherDetails();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $update->detail_enc_id = $utilitiesModel->encrypt();
+            $update->loan_account_enc_id = $params['loan_account_enc_id'];
+            $update->type = $params['type'];
+            $update->value = $params['value'];
+            $update->created_by = $update->updated_by = $user->user_enc_id;
+            $update->created_on = $update->updated_on = date('Y-m-d H:i:s');
+
+            if (!$update->save()) {
+                throw new Exception(implode(" ", array_column($update->getErrors(), '0')));
+            }
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
 }

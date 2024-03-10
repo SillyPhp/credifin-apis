@@ -1243,7 +1243,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.company_id', 'a.case_no', 'a.updated_on', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, '')) updated_by",
-                'a.emi_collection_enc_id', "CONCAT(c.location_name , ', ', COALESCE(c1.name, '')) as branch_name", 'a.customer_name', 'a.collection_date', 'a.created_on',
+                'a.emi_collection_enc_id', 'c.location_name as branch_name', 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.amount', 'a.loan_type', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', 'b1a.designation', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",
@@ -1251,7 +1251,7 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . "',a.pr_receipt_image_location, '/', a.pr_receipt_image) ELSE NULL END as pr_receipt_image",
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
-                "b.user_enc_id as collected_by_id", 'c2.name as state_name',
+                "b.user_enc_id as collected_by_id", 'c2.name as state_name', 'c2.state_enc_id',
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket'
             ])
             ->joinWith(['updatedBy ub'], false)
@@ -1304,7 +1304,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_name', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1379,8 +1379,8 @@ class EmiCollectionsController extends ApiBaseController
                             case 'branch':
                                 $model->andWhere(['c.location_enc_id' => $value]);
                                 break;
-                            case 'state_name':
-                                $model->andWhere(['like', "c2.name", $value]);
+                            case 'state_enc_id':
+                                $model->andWhere(['IN', "c2.state_enc_id", $value]);
                                 break;
                             case 'designation':
                                 $model->andWhere(['like', 'b1a.' . $key, $value]);
