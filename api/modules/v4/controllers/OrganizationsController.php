@@ -2879,8 +2879,17 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
 
-        if (!empty($params['type']) && $params['type'] == 'dashboard') {
-            $query->andWhere('DAY(a.emi_date) = DAY(NOW()) AND a.emi_date < NOW()');
+        if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming'])) {
+            $where = [];
+            $start_date = $end_date = date('Y-m-d');
+            if ($params['type'] == 'upcoming') {
+                $where[] = 'a.nach_approved = 1';
+                $end_date = date('Y-m-d', strtotime('+3 day', strtotime($end_date)));
+            }
+            $where[] = "(DAY(a.emi_date) BETWEEN DAY('$start_date') AND DAY('$end_date'))";
+            $where[] = "a.emi_date < '$end_date'";
+            $where = implode(' AND ', $where);
+            $query->andWhere($where);
         }
         $count = $query->count();
         $query = $query
@@ -3103,11 +3112,11 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
-//        $org_id = $user->organization_enc_id;
-//        if (!$user->organization_enc_id) {
-//            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-//            $org_id = $findOrg->organization_enc_id;
-//        }
+        //        $org_id = $user->organization_enc_id;
+        //        if (!$user->organization_enc_id) {
+        //            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+        //            $org_id = $findOrg->organization_enc_id;
+        //        }
 
         $states_query = OrganizationLocations::find()
             ->alias('a')
