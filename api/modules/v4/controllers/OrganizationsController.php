@@ -10,7 +10,6 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
-use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -3104,18 +3103,37 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
-        $states = EmiCollection::find()
+//        $org_id = $user->organization_enc_id;
+//        if (!$user->organization_enc_id) {
+//            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+//            $org_id = $findOrg->organization_enc_id;
+//        }
+
+        $states_query = OrganizationLocations::find()
             ->alias('a')
-            ->select(['c2.name', 'c2.state_enc_id'])
-            ->joinWith(['branchEnc c' => function ($c) {
-                $c->joinWith(['cityEnc c1' => function ($c1) {
-                    $c1->joinWith(['stateEnc c2'], false);
+            ->select(['b1.name', 'b1.state_enc_id'])
+            ->joinWith(['cityEnc b' => function ($b) {
+                $b->joinWith(['stateEnc b1'], false);
+            }], false)
+            ->joinWith(['emiCollections d' => function ($b) {
+                $b->joinWith(['createdBy c' => function ($c) {
+                    $c->joinWith(['userRoles0 c1'], false);
                 }], false);
             }], false)
-            ->andWhere(['a.is_deleted' => 0])
-            ->groupBy(['c2.state_enc_id'])
-            ->asArray()
-            ->all();
+            ->andWhere(['d.is_deleted' => 0])
+            ->groupBy(['b1.state_enc_id']);
+
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $states_query->andWhere(['IN', 'd.created_by', $juniors]);
+        }
+
+        $states = $states_query->asArray()->all();
+
+        if (empty($states)) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data Not Found']);
+        }
+
         return $this->response(200, ['status' => 200, 'data' => $states]);
     }
 }

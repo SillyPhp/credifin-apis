@@ -200,7 +200,7 @@ class LoanAccountsController extends ApiBaseController
                     'a.telecaller_priority',
                     'a.collection_priority',
                     'a.bucket',
-                    "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' ELSE 'Active' END) AS nach_approved",
+                    "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                     'a.emi_date',
                     'a.created_on',
                     'a.last_emi_received_amount',
