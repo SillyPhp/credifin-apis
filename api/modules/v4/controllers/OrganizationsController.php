@@ -2575,7 +2575,7 @@ class OrganizationsController extends ApiBaseController
                         if ($value == 'unassigned') {
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                         } else {
-                            $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
+                            $query->andWhere(["LIKE", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                         }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
@@ -2634,7 +2634,7 @@ class OrganizationsController extends ApiBaseController
                         if ($value == 'unassigned') {
                             $query->andWhere(['lap.proposed_amount' . $key => null]);
                         } else {
-                            $query->andWhere(['like', 'lap.proposed_amount', "$value%", false]);
+                            $query->andWhere(['LIKE', 'lap.proposed_amount', "$value%", false]);
                         }
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
@@ -2699,26 +2699,28 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(['IN', 'b.location_enc_id', $value]);
                         }
                     } elseif ($key == 'total_pending_amount') {
-                        $query->having(['like', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', "$value%", false]);
+                        $query->having(['LIKE', 'COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)', "$value%", false]);
                     } elseif ($key == 'financer') {
-                        $query->andWhere(['like', 'af.name', "%$value%", false]);
+                        $query->andWhere(['LIKE', 'af.name', "%$value%", false]);
                     } elseif ($key == 'target_collection_amount') {
-                        $query->having(['like', 'target_collection_amount', "$value%", false]);
+                        $query->having(['LIKE', 'target_collection_amount', "$value%", false]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(['d.user_type' => 2])
-                            ->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'assigned_bdo') {
                         $query->andWhere(['d.user_type' => 1])
-                            ->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'company_id') {
-                        $query->andWhere(['like', "a.company_id", "$value%", false]);
+                        $query->andWhere(['LIKE', "a.company_id", "$value%", false]);
                     } elseif ($key == 'case_no') {
-                        $query->andWhere(['like', "a.case_no", "$value%", false]);
+                        $query->andWhere(['LIKE', "a.case_no", "$value%", false]);
+                    } elseif ($key == 'loan_account_number') {
+                        $query->andWhere(['LIKE', "a.loan_account_number", $value]);
                     } else {
                         if ($value == "unassigned") {
                             $query->andWhere(['a.' . $key => null]);
                         } else {
-                            $query->andWhere(["like", 'a.' . $key, "$value%", false]);
+                            $query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
                         }
                     }
                 }
@@ -3115,6 +3117,5 @@ class OrganizationsController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'data' => $states]);
-
     }
 }
