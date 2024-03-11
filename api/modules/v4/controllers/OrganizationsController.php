@@ -2883,13 +2883,15 @@ class OrganizationsController extends ApiBaseController
             $where = [];
             $start_date = $end_date = date('Y-m-d');
             if ($params['type'] == 'upcoming') {
-                $where[] = 'a.nach_approved = 1';
                 $end_date = date('Y-m-d', strtotime('+3 day', strtotime($end_date)));
             }
             $where[] = "(DAY(a.emi_date) BETWEEN DAY('$start_date') AND DAY('$end_date'))";
             $where[] = "a.emi_date < '$end_date'";
             $where = implode(' AND ', $where);
             $query->andWhere($where);
+        }
+        if (!empty($params['nach'])) {
+            $query->andWhere(['a.nach_approved' => 1]);
         }
         $count = $query->count();
         $query = $query
