@@ -1056,6 +1056,10 @@ class EmiCollectionsController extends ApiBaseController
             ->orderBy(['a.created_on' => SORT_DESC])
             ->andWhere(['a.is_deleted' => 0]);
 
+        if (isset($org_id)) {
+            $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+        }
+
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
         }
