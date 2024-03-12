@@ -3114,11 +3114,11 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
-        //        $org_id = $user->organization_enc_id;
-        //        if (!$user->organization_enc_id) {
-        //            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-        //            $org_id = $findOrg->organization_enc_id;
-        //        }
+        $org_id = $user->organization_enc_id;
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
 
         $states_query = OrganizationLocations::find()
             ->alias('a')
@@ -3126,18 +3126,8 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['cityEnc b' => function ($b) {
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
-            ->joinWith(['emiCollections d' => function ($b) {
-                $b->joinWith(['createdBy c' => function ($c) {
-                    $c->joinWith(['userRoles0 c1'], false);
-                }], false);
-            }], false)
-            ->andWhere(['d.is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['b1.state_enc_id']);
-
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
-            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $states_query->andWhere(['IN', 'd.created_by', $juniors]);
-        }
 
         $states = $states_query->asArray()->all();
 
