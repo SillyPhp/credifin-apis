@@ -28,11 +28,9 @@ use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
-use phpDocumentor\Reflection\Types\Null_;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
-use yii\db\Exception;
 
 class LoanApplication extends Model
 {
@@ -180,8 +178,9 @@ class LoanApplication extends Model
             }
 
             if (!empty($model->lead_by)) {
-                $this->share_leads($user_id, $model->loan_app_enc_id);
+                $this->share_leads($user_id, $model->loan_app_enc_id, $this->loan_product_id);
             }
+
 
             // if not empty loan purpose then saving it
             if (!empty($this->loan_purpose)) {
@@ -846,11 +845,19 @@ class LoanApplication extends Model
         return $data;
     }
 
-    private function share_leads($user_id, $loan_id)
+    private function share_leads($user_id, $loan_id, $product_id = null)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
         $shared = Users::findOne(['user_enc_id' => $user_id]);
         $shared_by = $shared->first_name . " " . $shared->last_name;
+
+        // Amrit Home loan, Amrit LAP, BHN HL, BHN LAP
+        $partner_products = ['N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO'];
+
+        //product id comes && partner product validated && vipin not existed in reporting persons array
+        if ($product_id && in_array($product_id, $partner_products) && !in_array('jKbDalL5YRxZVmWwVBYadGqgwrkA06', $reporting_persons_ids)) {
+            array_push($reporting_persons_ids, 'jKbDalL5YRxZVmWwVBYadGqgwrkA06'); //vipin199
+        }
         if (!empty($reporting_persons_ids)) {
             $all_notifications = [];
             foreach ($reporting_persons_ids as $value) {
