@@ -2423,9 +2423,18 @@ class OrganizationsController extends ApiBaseController
                         END) 
                     END) 
                 END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(["assignedCaller ac"], false)
+                ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                    $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                    $d->select([
+                        'd.loan_account_enc_id', "d.assigned_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                        "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                        "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                    ]);
+                    $d->joinWith(['sharedTo d1'], false);
+                }])
                 ->where(['a.is_deleted' => 0])
                 ->andWhere([
                     'OR',
