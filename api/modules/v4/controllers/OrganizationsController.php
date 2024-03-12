@@ -37,7 +37,6 @@ use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
-use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
@@ -192,20 +191,13 @@ class OrganizationsController extends ApiBaseController
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
-            // default org of user
-            $org = $user->organization_enc_id;
-            if (!$org) {
-                $org = UserRoles::findOne(["user_enc_id" => $user->user_enc_id])["organization_enc_id"];
+
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $user_roles->organization_enc_id;
             }
-            $user_type = UserTypes::findOne(["user_type_enc_id" => $user->user_type_enc_id]);
-            if ($user_type["user_type"] && $user_type["user_type"] == "Dealer") {
-                $user_role = UserRoles::findOne(["user_enc_id" => $user->user_enc_id]);
-                if (!empty($user_role["organization_enc_id"])) {
-                    // if user_type = dealer, then org id is from UserRoles
-                    $org = $user_role["organization_enc_id"];
-                }
-            }
-            if (empty($org)) {
+            if (empty($org_id)) {
                 return $this->response(404, ["status" => 404, "message" => "not found"]);
             }
 
@@ -214,7 +206,7 @@ class OrganizationsController extends ApiBaseController
                 ->select(["a.location_enc_id", "a.location_enc_id as id", "b.city_code", "a.organization_code", "a.location_name", "a.location_for", "a.address", "b.name city", "b.city_enc_id", "a.status"])
                 ->addSelect(["CONCAT(a.location_name , ', ', b.name) as value"])
                 ->joinWith(["cityEnc b"], false)
-                ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org])
+                ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
                 ->asArray()
                 ->all();
 
