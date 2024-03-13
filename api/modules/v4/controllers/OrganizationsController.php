@@ -2925,7 +2925,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
         }
 
-        return $this->response(404, ["status" => 404, "message" => "data not found"]);
+        return $this->response(200, ["status" => 200, "data" => [], "count" => 0]);
     }
 
 
