@@ -252,7 +252,7 @@ class LoanAccountsController extends ApiBaseController
                 unset($data['emiCollections']);
                 unset($data['loanAccountOtherDetails']);
             }
-//            return $data;
+            //            return $data;
         } else {
             $query = EmiCollection::find()
                 ->alias('a')
@@ -2029,6 +2029,26 @@ class LoanAccountsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 
+    public function actionPtpProductStats()
+    {
+        $user = $this->isAuth();
+        $query = LoanAccountPtps::find()
+            ->alias('a')
+            ->select([
+                'la.loan_type',
+                "SUM(a.proposed_amount) amount",
+                "COUNT(a.proposed_date) AS count",
+            ])
+            ->joinWith(['emiCollectionEnc ec' => function ($ec) {
+                $ec->joinWith(['loanAccountEnc la']);
+            }], false)
+            ->where(['IS NOT', 'la.loan_type', null])
+            ->andwhere(['>=', 'a.proposed_date', date('Y-m-d')])
+            ->groupBy(['la.loan_type'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ["status" => 200, "data" => $query]);
+    }
     public function actionSendPaymentLinks()
     {
         $user = $this->isAuth();
@@ -2301,5 +2321,4 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
-
 }
