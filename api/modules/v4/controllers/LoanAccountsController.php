@@ -1310,10 +1310,10 @@ class LoanAccountsController extends ApiBaseController
         }
 
         if ($ptpcases) {
-            return $this->response(200, ['status' => 200, 'count' => $count, 'ptpcases' => $ptpcases]);
+            return $this->response(200, ['status' => 200, 'count' => $count, 'data' => $ptpcases]);
         }
 
-        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not Found']);
     }
 
     public function actionGetLoanAccount()
