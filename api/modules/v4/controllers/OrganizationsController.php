@@ -1710,7 +1710,7 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Not Collected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
