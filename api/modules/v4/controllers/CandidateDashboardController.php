@@ -6,13 +6,15 @@ use common\models\AssignedDeals;
 use common\models\AssignedLoanProvider;
 use common\models\ClaimedDeals;
 use common\models\EducationLoanPayments;
+use common\models\LoanAccounts;
 use common\models\LoanApplications;
+use common\models\LoanPayments;
 use common\models\LoanSanctionReports;
-use common\models\Utilities;
-use yii\filters\VerbFilter;
+use Exception;
+use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
+use yii\filters\VerbFilter;
 
 class CandidateDashboardController extends ApiBaseController
 {
@@ -44,8 +46,75 @@ class CandidateDashboardController extends ApiBaseController
         return $behaviors;
     }
 
+    public function actionCreatePaymentLink()
+    {
+        Yii::$app->cache->flush();
+        $user = $this->isAuth();
+        $params = $this->post;
+        if (!isset($params['pay_by'])) {
+            return $this->response(500, ['message' => 'missing information "pay_by"']);
+        }
+        try {
+            $type = $params['pay_by'];
+            $loan_payments = LoanPayments::find()
+                ->alias('a')
+                ->select(['a.payment_short_url AS link'])
+                ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) use ($params) {
+                    $b->andOnCondition(['b.loan_app_enc_id' => $params['loan_app_enc_id']]);
+                }], false)
+                ->andWhere([
+                    'AND',
+                    ['a.payment_link_type' => $type],
+                    ['>=', 'a.close_by', date('Y-m-d H:i:s')],
+                    ['a.payment_mode_status' => 'active'],
+                    ['a.payment_status' => 'pending']
+                ])
+                ->asArray()
+                ->one();
+            if ($loan_payments) {
+                $link = $loan_payments['link'];
+            }
+            if (empty($link)) {
+                $options = [];
+                $options['loan_app_enc_id'] = $params['loan_app_enc_id'];
+                $options['user_id'] = $user->user_enc_id;
+                $options['org_id'] = $params['org_id'];
+                $options['amount'] = $params['emi_amount'];
+                $options['description'] = 'Emi collection for ' . $params['loan_type'];
+                $options['name'] = $params['name'];
+                $options['contact'] = $params['phone'];
+                $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
+                // $options['brand'] = $paramsbrand;
+                $options['purpose'] = $params['loan_type'];
+
+                $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+                if (!$keys) {
+                    throw new \Exception('an error occurred while fetching razorpay credentials');
+                }
+                $api_key = $keys['api_key'];
+                $api_secret = $keys['api_secret'];
+                $api = new Api($api_key, $api_secret);
+                $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
+
+                $options['close_by'] = time() + 24 * 60 * 60 * 30;
+                if ($type == 0) {
+                    $link = \common\models\payments\Payments::createLink($api, $options);
+                }
+                if ($type == 1) {
+                    $link = \common\models\payments\Payments::createQr($api, $options);
+                }
+            }
+            if (!$link) {
+                throw new \Exception("Unable to generate.");
+            }
+            return $this->response(200, ['message' => 'success', 'type' => $type, 'link' => $link]);
+        } catch (Exception $exception) {
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
+
     // this action is called for loan details
-    public function actionLoanDetails()
+    public function actionLoanDetails2()
     {
         // checking user authorization
         if ($user = $this->isAuthorized()) {
@@ -111,6 +180,114 @@ class CandidateDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionLoanDetails()
+    {
+        $user = $this->isAuth();
+        $params = $this->post;
+
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id', 'a.applicant_name', 'a.loan_products_enc_id', 'a.invoice_number', 'a.invoice_date', 'a.phone',
+                'f.vehicle_color', 'a.battery_number', 'a.rc_number', 'a.chassis_number',
+                'f.model_year', 'f.emi_amount',
+                'c3.loan_status', 'c.status', 'c.provider_enc_id',
+                'a.amount AS loan_amount',
+                'a.application_number', 'b.name AS loan_type', 'ANY_VALUE(c1.location_name) AS branch_name',
+                'ANY_VALUE(c2.name) AS loan_provider', 'a.created_on AS applied_date',
+                "GROUP_CONCAT(DISTINCT d1.purpose) AS purposes"
+            ])
+            ->joinWith(['loanProductsEnc AS b'], false)
+            ->joinWith(['assignedLoanProviders AS c' => function ($c) {
+                $c->joinWith(['status0 c3'], false);
+                $c->joinWith(['branchEnc AS c1'], false);
+                $c->joinWith(['providerEnc AS c2'], false);
+            }], false)
+            ->joinWith(['loanPurposes AS d' => function ($d) {
+                $d->joinWith(['financerLoanPurposeEnc AS d1'], false);
+            }], false)
+            ->joinWith(['loanCoApplicants e' => function ($e) {
+                $e->select([
+                    'e.loan_co_app_enc_id', 'e.loan_app_enc_id', 'e.father_name', 'e.name', 'e.email', 'e.phone', 'e.borrower_type',
+                    'e.relation', 'e.employment_type', 'e.annual_income', 'e.co_applicant_dob', 'e.occupation',
+                    'ANY_VALUE(e1.address) address', 'ANY_VALUE(e2.name) city', 'ANY_VALUE(e3.name) state', 'ANY_VALUE(e3.abbreviation) state_abbreviation', 'ANY_VALUE(e1.postal_code) postal_code', 'ANY_VALUE(e3.state_code) state_code',
+                    'e.voter_card_number', 'e.aadhaar_number', 'e.pan_number',
+                    "(CASE WHEN e.gender = 1 THEN 'Male' WHEN e.gender = 2 THEN 'Female' WHEN e.gender = 3 THEN 'Others' ELSE null END) gender",
+                    'e.marital_status', 'e.driving_license_number', 'e.cibil_score', 'e.passport_number',
+                    "CASE WHEN e.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',e.image_location, e.image) ELSE NULL END image",
+                ]);
+                $e->joinWith(['loanApplicantResidentialInfos e1' => function ($e1) {
+                    $e1->joinWith(['cityEnc e2'], false);
+                    $e1->joinWith(['stateEnc e3'], false);
+                }], false);
+            }]);
+
+        if (!empty($params) && $params['loan_app_enc_id']) {
+            $query->andWhere(['a.loan_app_enc_id' => $params['loan_app_enc_id']]);
+        }
+
+        $query = $query
+            ->joinWith(['loanApplicationOptions f'], false)
+            ->andWhere(['a.is_deleted' => 0, 'a.phone' => $user->phone])
+            ->groupBy(['a.loan_app_enc_id', 'c.status', 'f.model_year', 'f.vehicle_color', 'f.emi_amount', 'c.provider_enc_id'])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->limit(10)
+            ->asArray()
+            ->all();
+
+        if (!$query) {
+            return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
+        }
+
+        return $this->response(200, ['status' => 200, 'loan_applications' => $query]);
+    }
+
+    public function actionGetEmiDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = $this->post;
+        if (empty($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_app_enc_id"']);
+        }
+
+        $emi = LoanAccounts::find()
+            ->alias('a')
+            ->select([
+                'a.id', 'a.emi_date', 'c1.number_of_emis',
+                'c.customer_name', 'c.loan_account_number', 'c.loan_account_enc_id',
+                "a.sales_priority",
+                "a.collection_priority",
+                "a.telecaller_priority",
+                'a.sales_target_date', 'a.telecaller_target_date', 'a.collection_target_date',
+                "a.bucket AS bucket_value", 'a.loan_app_enc_id',
+                'c.loan_type', 'c.phone', 'c1.loan_app_enc_id',
+                'SUM(c.amount) OVER(PARTITION BY loan_account_number) total_amount',
+                'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
+                "CONCAT(b.location_name, ', ', COALESCE(b1.name, '')) AS branch_name",
+                "SUM(CASE WHEN c.emi_payment_status NOT IN ('pending','failed','rejected') AND MONTH(collection_date) = MONTH(CURRENT_DATE()) THEN c.amount ELSE 0 END) OVER(PARTITION BY loan_account_number) AS collected_amount",
+                "SUM(CASE WHEN c.emi_payment_status = 'pending' THEN c.amount END) OVER(PARTITION BY loan_account_number) AS pending_amount",
+                "SUM(CASE WHEN c.emi_payment_status NOT IN ('pending','failed','rejected') THEN c.amount END) OVER(PARTITION BY loan_account_number) AS paid_amount",
+            ])
+            ->joinWith(['emiCollections c' => function ($c) {
+                $c->joinWith(['branchEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc b1'], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanAppEnc c1'], false)
+            ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $params['loan_app_enc_id']])
+            ->orderBY(['a.id' => SORT_DESC])
+            ->limit(1)
+            ->asArray()
+            ->one();
+
+        if (!$emi) {
+            return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $emi]);
     }
 
     // getting loan sanction reports
