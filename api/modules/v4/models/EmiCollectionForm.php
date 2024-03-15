@@ -49,6 +49,8 @@ class EmiCollectionForm extends Model
     public $reference_number;
     public $loan_account_enc_id;
     public $collection_date;
+    public $customer_interaction;
+    public $customer_visit;
     public static $payment_methods = [
         'total' => 'Total',
         '1' => 'QR',
@@ -111,7 +113,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'customer_interaction', 'customer_visit', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -141,6 +143,8 @@ class EmiCollectionForm extends Model
             $model->company_id = '25';
         }
 
+        $model->customer_interaction = $this->customer_interaction;
+        $model->customer_visit = $this->customer_visit;
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
         if (!in_array($this->payment_mode, [0, 1])) {
