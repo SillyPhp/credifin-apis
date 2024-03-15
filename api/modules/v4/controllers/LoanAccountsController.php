@@ -2029,6 +2029,46 @@ class LoanAccountsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 
+    public function actionUpcomingPtpStats()
+    {
+        $user = $this->isAuth();
+        $sub_query = (new Query())
+            ->from(['a' => LoanAccountPtps::tableName()])
+            ->select(['a.proposed_date', 'COUNT(id) count', 'SUM(proposed_amount) AS sum'])
+            ->groupBy(['proposed_date']);
+
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $sub_query->andWhere(['IN', 'a.created_by', $juniors]);
+        }
+
+        $from = "(SELECT
+            CURDATE() AS proposed_date
+        UNION ALL
+        SELECT
+            DATE_ADD(
+            CURDATE(),
+            INTERVAL 1 DAY
+            )
+        UNION ALL
+        SELECT
+            DATE_ADD(
+            CURDATE(),
+            INTERVAL 2 DAY
+            )
+        )";
+        $data = (new Query())
+            ->select([
+                'a.proposed_date',
+                'COALESCE(b.sum, 0) sum',
+                'COALESCE(b.count) AS count',
+            ])
+            ->from(['a' => $from])
+            ->leftJoin(['b' => $sub_query], 'a.proposed_date = b.proposed_date')
+            ->all();
+        return $data;
+    }
+
     public function actionPtpProductStats()
     {
         $user = $this->isAuth();
