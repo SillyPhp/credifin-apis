@@ -371,6 +371,35 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
+    public function actionUpdateNach()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+        if (empty($params['status'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+        }
+        $update = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_id']]);
+        if (empty($update)) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        if ($params['status'] == 'Active') {
+            $update->nach_approved = 1;
+        }
+        if ($params['status'] == 'Inactive') {
+            $update->nach_approved = 0;
+        }
+        $update->updated_by = $user->user_enc_id;
+        $update->updated_on = date('Y-m-d H:i:s');
+        if (!$update->update()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $update->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+    }
     public function actionGetBasicDetail()
     {
         if (!$user = $this->isAuthorized()) {
