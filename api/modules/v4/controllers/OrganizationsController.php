@@ -1710,7 +1710,7 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Not Collected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
@@ -2900,19 +2900,19 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
 
-        if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming'])) {
+        if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
             $start_date = $end_date = date('Y-m-d');
-            if ($params['type'] == 'upcoming') {
+            if (in_array($params['type'], ['nach', 'upcoming'])) {
                 $end_date = date('Y-m-d', strtotime('+3 day', strtotime($end_date)));
+                if ($params['type'] == 'nach') {
+                    $where[] = 'a.nach_approved = 1';
+                }
             }
             $where[] = "(DAY(a.emi_date) BETWEEN DAY('$start_date') AND DAY('$end_date'))";
             $where[] = "a.emi_date < '$end_date'";
             $where = implode(' AND ', $where);
             $query->andWhere($where);
-        }
-        if (!empty($params['nach'])) {
-            $query->andWhere(['a.nach_approved' => 1]);
         }
         $count = $query->count();
         $query = $query
