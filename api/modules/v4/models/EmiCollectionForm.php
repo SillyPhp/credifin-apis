@@ -49,6 +49,8 @@ class EmiCollectionForm extends Model
     public $reference_number;
     public $loan_account_enc_id;
     public $collection_date;
+    public $customer_interaction;
+    public $customer_visit;
     public static $payment_methods = [
         'total' => 'Total',
         '1' => 'QR',
@@ -66,6 +68,7 @@ class EmiCollectionForm extends Model
         '10' => 'Digital Transfer',
         '11' => 'Paid To Dealer',
         'paid' => 'Paid',
+        '0' => 'Not Collected',
         'pending' => 'Pending',
         'collected' => 'Collected',
         'pipeline' => 'Pipeline',
@@ -73,6 +76,7 @@ class EmiCollectionForm extends Model
         'failed' => 'Failed',
     ];
     public static $payment_modes = [
+        '0' => 'Not Collected',
         '1' => 'Pay Now',
         '2' => 'Manual Collection',
         '3' => 'Pay By EOD',
@@ -104,12 +108,12 @@ class EmiCollectionForm extends Model
                 return $model->payment_mode == 1;
             }],
             [['reference_number'], 'required', 'when' => function ($model) {
-                return $model->payment_mode != 1;
+                return !in_array($model->payment_mode, [0, 1]);
             }],
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'customer_interaction', 'customer_visit', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -139,9 +143,11 @@ class EmiCollectionForm extends Model
             $model->company_id = '25';
         }
 
+        $model->customer_interaction = $this->customer_interaction;
+        $model->customer_visit = $this->customer_visit;
         $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
-        if ($this->payment_mode != 1) {
+        if (!in_array($this->payment_mode, [0, 1])) {
             $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
         }
         $model->transaction_initiated_date = date('Y-m-d');
@@ -187,7 +193,7 @@ class EmiCollectionForm extends Model
         }
         $model->emi_payment_mode = $this->payment_mode;
         $model->emi_payment_method = $this->payment_method;
-        $model->emi_payment_status = in_array($this->payment_method, [5, 9, 10, 81, 82, 83, 84]) ? 'pipeline' : ($this->payment_method == 4 ? 'collected' : 'pending');
+        $model->emi_payment_status = in_array($this->payment_method, [5, 9, 10, 81, 82, 83, 84]) ? 'pipeline' : ($this->payment_method == 4 ? 'collected' : ($this->amount == 0 ? 'not paid' : 'pending'));
         $model->dealer_name = $this->dealer_name ?? '';
         $model->reference_number = $this->reference_number ?? '';
         if ($this->other_doc_image) {
@@ -206,7 +212,7 @@ class EmiCollectionForm extends Model
             $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location, $path);
         }
 
-        if (!in_array($this->payment_method, ["1", "2", "6", "7"]) && !$this->pr_receipt_image) {
+        if (!in_array($this->payment_method, ["0", "1", "2", "6", "7"]) && !$this->pr_receipt_image) {
             throw new \Exception('pr receipt is required');
         }
         if ($this->pr_receipt_image) {

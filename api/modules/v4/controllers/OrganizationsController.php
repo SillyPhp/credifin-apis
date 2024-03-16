@@ -37,7 +37,6 @@ use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
-use common\models\UserTypes;
 use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
@@ -192,20 +191,13 @@ class OrganizationsController extends ApiBaseController
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
-            // default org of user
-            $org = $user->organization_enc_id;
-            if (!$org) {
-                $org = UserRoles::findOne(["user_enc_id" => $user->user_enc_id])["organization_enc_id"];
+
+            $org_id = $user->organization_enc_id;
+            if (!$org_id) {
+                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $user_roles->organization_enc_id;
             }
-            $user_type = UserTypes::findOne(["user_type_enc_id" => $user->user_type_enc_id]);
-            if ($user_type["user_type"] && $user_type["user_type"] == "Dealer") {
-                $user_role = UserRoles::findOne(["user_enc_id" => $user->user_enc_id]);
-                if (!empty($user_role["organization_enc_id"])) {
-                    // if user_type = dealer, then org id is from UserRoles
-                    $org = $user_role["organization_enc_id"];
-                }
-            }
-            if (empty($org)) {
+            if (empty($org_id)) {
                 return $this->response(404, ["status" => 404, "message" => "not found"]);
             }
 
@@ -214,7 +206,7 @@ class OrganizationsController extends ApiBaseController
                 ->select(["a.location_enc_id", "a.location_enc_id as id", "b.city_code", "a.organization_code", "a.location_name", "a.location_for", "a.address", "b.name city", "b.city_enc_id", "a.status"])
                 ->addSelect(["CONCAT(a.location_name , ', ', b.name) as value"])
                 ->joinWith(["cityEnc b"], false)
-                ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org])
+                ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
                 ->asArray()
                 ->all();
 
@@ -1718,7 +1710,7 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Not Collected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
@@ -2412,9 +2404,37 @@ class OrganizationsController extends ApiBaseController
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
-                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    'a.loan_account_enc_id', "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                    'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
+                    "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
+                ->joinWith(["assignedCaller ac"], false)
+                ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                    $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                    $d->select([
+                        'd.loan_account_enc_id', "d.assigned_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                        "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                        "CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END image"
+                    ]);
+                    $d->joinWith(['sharedTo d1'], false);
+                }])
                 ->where(['a.is_deleted' => 0])
                 ->andWhere([
                     'OR',
@@ -2423,6 +2443,7 @@ class OrganizationsController extends ApiBaseController
                     ['LIKE', 'a.phone', $params['loan_number']],
                     ['LIKE', 'a.lms_loan_account_number', $params['loan_number']],
                 ])
+                ->groupBy(['a.loan_account_enc_id'])
                 ->limit(20)
                 ->asArray()
                 ->all();
@@ -2904,7 +2925,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ["status" => 200, "data" => $query, "count" => $count]);
         }
 
-        return $this->response(404, ["status" => 404, "message" => "data not found"]);
+        return $this->response(200, ["status" => 200, "data" => [], "count" => 0]);
     }
 
 
@@ -3114,11 +3135,11 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
-        //        $org_id = $user->organization_enc_id;
-        //        if (!$user->organization_enc_id) {
-        //            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-        //            $org_id = $findOrg->organization_enc_id;
-        //        }
+        $org_id = $user->organization_enc_id;
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
 
         $states_query = OrganizationLocations::find()
             ->alias('a')
@@ -3126,18 +3147,8 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['cityEnc b' => function ($b) {
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
-            ->joinWith(['emiCollections d' => function ($b) {
-                $b->joinWith(['createdBy c' => function ($c) {
-                    $c->joinWith(['userRoles0 c1'], false);
-                }], false);
-            }], false)
-            ->andWhere(['d.is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['b1.state_enc_id']);
-
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey', 'Rachyita', 'phf403', 'phf110', 'ghuman'])) {
-            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-            $states_query->andWhere(['IN', 'd.created_by', $juniors]);
-        }
 
         $states = $states_query->asArray()->all();
 

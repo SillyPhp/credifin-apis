@@ -252,7 +252,7 @@ class LoanAccountsController extends ApiBaseController
                 unset($data['emiCollections']);
                 unset($data['loanAccountOtherDetails']);
             }
-//            return $data;
+            //            return $data;
         } else {
             $query = EmiCollection::find()
                 ->alias('a')
@@ -370,6 +370,35 @@ class LoanAccountsController extends ApiBaseController
             }
         }
         return ['data' => $model, 'count' => $count];
+    }
+    public function actionUpdateNach()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+        if (empty($params['status'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+        }
+        $update = LoanAccounts::findOne(['loan_account_enc_id' => $params['loan_id']]);
+        if (empty($update)) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        if ($params['status'] == 'Active') {
+            $update->nach_approved = 1;
+        }
+        if ($params['status'] == 'Inactive') {
+            $update->nach_approved = 0;
+        }
+        $update->updated_by = $user->user_enc_id;
+        $update->updated_on = date('Y-m-d H:i:s');
+        if (!$update->update()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $update->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
     }
     public function actionGetBasicDetail()
     {
@@ -2029,6 +2058,66 @@ class LoanAccountsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
     }
 
+    public function actionUpcomingPtpStats()
+    {
+        $user = $this->isAuth();
+        $sub_query = (new Query())
+            ->from(['a' => LoanAccountPtps::tableName()])
+            ->select(['a.proposed_date', 'COUNT(id) count', 'SUM(proposed_amount) AS sum'])
+            ->groupBy(['proposed_date']);
+
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $sub_query->andWhere(['IN', 'a.created_by', $juniors]);
+        }
+
+        $from = "(SELECT
+            CURDATE() AS proposed_date
+        UNION ALL
+        SELECT
+            DATE_ADD(
+            CURDATE(),
+            INTERVAL 1 DAY
+            )
+        UNION ALL
+        SELECT
+            DATE_ADD(
+            CURDATE(),
+            INTERVAL 2 DAY
+            )
+        )";
+        $data = (new Query())
+            ->select([
+                'a.proposed_date',
+                'COALESCE(b.sum, 0) sum',
+                'COALESCE(b.count) AS count',
+            ])
+            ->from(['a' => $from])
+            ->leftJoin(['b' => $sub_query], 'a.proposed_date = b.proposed_date')
+            ->all();
+        return $data;
+    }
+
+    public function actionPtpProductStats()
+    {
+        $user = $this->isAuth();
+        $query = LoanAccountPtps::find()
+            ->alias('a')
+            ->select([
+                'la.loan_type',
+                "SUM(a.proposed_amount) amount",
+                "COUNT(a.proposed_date) AS count",
+            ])
+            ->joinWith(['emiCollectionEnc ec' => function ($ec) {
+                $ec->joinWith(['loanAccountEnc la']);
+            }], false)
+            ->where(['IS NOT', 'la.loan_type', null])
+            ->andwhere(['>=', 'a.proposed_date', date('Y-m-d')])
+            ->groupBy(['la.loan_type'])
+            ->asArray()
+            ->all();
+        return $this->response(200, ["status" => 200, "data" => $query]);
+    }
     public function actionSendPaymentLinks()
     {
         $user = $this->isAuth();
@@ -2301,5 +2390,4 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
-
 }
