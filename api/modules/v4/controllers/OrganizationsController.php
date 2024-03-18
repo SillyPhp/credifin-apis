@@ -399,7 +399,7 @@ class OrganizationsController extends ApiBaseController
                         }
 
                         $loan_documents = new FinancerLoanDocuments();
-                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                         $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
                         $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -434,7 +434,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         $certificate = new CertificateTypes();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
         $certificate->name = $certificateName;
@@ -546,7 +546,7 @@ class OrganizationsController extends ApiBaseController
                                 }
 
                                 $loan_document = new FinancerLoanDocuments();
-                                $utilitiesModel = new \common\models\Utilities();
+                                $utilitiesModel = new Utilities();
                                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                                 $loan_document->financer_loan_document_enc_id = $utilitiesModel->encrypt();
                                 $loan_document->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -616,7 +616,7 @@ class OrganizationsController extends ApiBaseController
             try {
                 foreach ($params['loan_purpose'] as $key => $val) {
                     $purpose = new FinancerLoanPurpose();
-                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                     $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
                     $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -726,7 +726,7 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             if (!empty($val['purpose'])) {
                                 $purpose = new FinancerLoanPurpose();
-                                $utilitiesModel = new \common\models\Utilities();
+                                $utilitiesModel = new Utilities();
                                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                                 $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
                                 $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -814,7 +814,7 @@ class OrganizationsController extends ApiBaseController
             try {
                 foreach ($params['loan_status'] as $key => $val) {
                     $loan_status = new FinancerLoanStatus();
-                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                     $loan_status->financer_loan_status_enc_id = $utilitiesModel->encrypt();
                     $loan_status->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -978,7 +978,7 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             if (!empty($val['loan_status_enc_id'])) {
                                 $loan_status = new FinancerLoanStatus();
-                                $utilitiesModel = new \common\models\Utilities();
+                                $utilitiesModel = new Utilities();
                                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                                 $loan_status->financer_loan_status_enc_id = $utilitiesModel->encrypt();
                                 $loan_status->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
@@ -1030,7 +1030,7 @@ class OrganizationsController extends ApiBaseController
             $save = 'update';
         } else {
             $product = new FinancerLoanProducts();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
             //            $product->product_code = $params['product_code'];
@@ -1582,7 +1582,7 @@ class OrganizationsController extends ApiBaseController
     private function __createStatus($data)
     {
         $loan_status = new FinancerLoanProductStatus();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $loan_status->financer_loan_product_status_enc_id = $utilitiesModel->encrypt();
         $loan_status->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
@@ -1599,7 +1599,7 @@ class OrganizationsController extends ApiBaseController
     private function __createDocument($data)
     {
         $loan_document = new FinancerLoanProductDocuments();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $loan_document->financer_loan_product_document_enc_id = $utilitiesModel->encrypt();
         $loan_document->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
@@ -1617,7 +1617,7 @@ class OrganizationsController extends ApiBaseController
     private function __createPurpose($data)
     {
         $purpose = new FinancerLoanProductPurpose();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $purpose->financer_loan_product_purpose_enc_id = $utilitiesModel->encrypt();
         $purpose->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
@@ -1636,7 +1636,7 @@ class OrganizationsController extends ApiBaseController
     private function __createProcess($data)
     {
         $process = new FinancerLoanProductProcess();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $process->financer_loan_product_process_enc_id = $utilitiesModel->encrypt();
         $process->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
@@ -2029,7 +2029,7 @@ class OrganizationsController extends ApiBaseController
     private function __createFees($data)
     {
         $fees = new FinancerLoanProductLoginFeeStructure();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $fees->financer_loan_product_login_fee_structure_enc_id = $utilitiesModel->encrypt();
         $fees->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
@@ -2139,7 +2139,7 @@ class OrganizationsController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         $notice = new FinancerNoticeBoard();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         if (isset($params['type'])) {
             if ($params['type'] == '0') {

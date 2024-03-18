@@ -19,7 +19,6 @@ use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
 
 class ProductsController extends ApiBaseController
 {
