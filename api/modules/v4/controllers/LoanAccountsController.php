@@ -21,8 +21,6 @@ use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
-use common\models\VehicleRepoComments;
-use common\models\VehicleRepossession;
 use common\models\VehicleRepossessionImages;
 use Razorpay\Api\Api;
 use Yii;
@@ -351,7 +349,7 @@ class LoanAccountsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($model as &$value) {
             $value['emi_payment_method'] = $payment_methods[$value['emi_payment_method']];
@@ -651,7 +649,7 @@ class LoanAccountsController extends ApiBaseController
 
         try {
             $comment = new LoanActionComments();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $comment->comment_enc_id = $utilitiesModel->encrypt();
             $comment->request_enc_id = $params['request_enc_id'];
@@ -971,7 +969,7 @@ class LoanAccountsController extends ApiBaseController
         }
 
         $comment = new LoanAccountComments();
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables["string"] = time() . rand(100, 100000);
         $comment->comment_enc_id = $utilitiesModel->encrypt();
         $comment->loan_account_enc_id = $params['loan_account_enc_id'];
@@ -2371,7 +2369,7 @@ class LoanAccountsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'Loan Account not found']);
             }
             $update = new LoanAccountOtherDetails();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $update->detail_enc_id = $utilitiesModel->encrypt();
             $update->loan_account_enc_id = $params['loan_account_enc_id'];

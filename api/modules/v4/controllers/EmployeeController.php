@@ -12,6 +12,7 @@ use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\db\Expression;
 
 class EmployeeController extends ApiBaseController
 {
@@ -288,9 +289,9 @@ class EmployeeController extends ApiBaseController
                 }], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 //date between condition need to be set after shalya beta test and scenerio
-                ->andWhere(['between', new \yii\db\Expression('DAY(emi_date)'), new \yii\db\Expression("DAY('$startDate')"), new \yii\db\Expression("DAY('$endDate')")])
-                ->andWhere(['<=', new \yii\db\Expression('YEAR(emi_date)'), new \yii\db\Expression("YEAR('$endDate')")])
-                ->andWhere(['<=', new \yii\db\Expression('MONTH(emi_date)'),new \yii\db\Expression("MONTH('$endDate')")])
+                ->andWhere(['between', new Expression('DAY(emi_date)'), new Expression("DAY('$startDate')"), new Expression("DAY('$endDate')")])
+                ->andWhere(['<=', new Expression('YEAR(emi_date)'), new Expression("YEAR('$endDate')")])
+                ->andWhere(['<=', new Expression('MONTH(emi_date)'),new Expression("MONTH('$endDate')")])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
                 ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
 

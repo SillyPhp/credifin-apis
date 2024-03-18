@@ -3,12 +3,9 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\FinancerRewardsForm;
-use common\models\FinancerRewards;
 use common\models\spaces\Spaces;
-use common\models\FinancerRewardsOptions;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
-use common\models\Utilities;
 use yii\web\UploadedFile;
 use Yii;
 
@@ -85,6 +82,3 @@ class FinancerRewardsController extends ApiBaseController
 
     }
 }
-
-
-?>

@@ -5,8 +5,6 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\TasksForm;
 use common\models\UserTasks;
 use Yii;
-use yii\web\Controller;
-use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
 

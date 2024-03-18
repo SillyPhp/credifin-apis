@@ -5,14 +5,10 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\Notifications;
 use common\models\NotificationTokens;
-use common\models\PushNotifications;
-use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
 use yii\helpers\Url;
-use common\models\Utilities;
 
 // this controller is used for push notifications
 class NotificationsController extends ApiBaseController

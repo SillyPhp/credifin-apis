@@ -1579,7 +1579,7 @@ class EmiCollectionsController extends ApiBaseController
 
         $receipt = UploadedFile::getInstanceByName('pr_receipt_image');
         $pr = EmiCollectionExtended::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
-        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $pr->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $receipt->extension;
         $pr->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
