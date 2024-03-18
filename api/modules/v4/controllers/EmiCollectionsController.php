@@ -407,19 +407,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                            //                        case 'reporting_person':
-                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                            //                            break;
+                        //                        case 'reporting_person':
+                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                        //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                            //                        case 'branch':
-                            //                            $branch = "('" . implode("','", $value) . "')";
-                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                            //                            break;
+                        //                        case 'branch':
+                        //                            $branch = "('" . implode("','", $value) . "')";
+                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                        //                            break;
                     }
                 }
             }
@@ -963,13 +963,15 @@ class EmiCollectionsController extends ApiBaseController
                 "c.bucket AS bucket_value",
                 'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
                 'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
-                "CONCAT(b.location_name, ', ', COALESCE(b1.name, '')) AS branch_name",
+                "CONCAT(b.location_name, ', ', COALESCE(b2.name, '')) AS branch_name",
                 "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') AND MONTH(collection_date) = MONTH(CURRENT_DATE()) THEN amount ELSE 0 END) OVER(PARTITION BY loan_account_number) AS collected_amount",
                 "SUM(CASE WHEN a.emi_payment_status = 'pending' THEN a.amount END) OVER(PARTITION BY loan_account_number) AS pending_amount",
                 "SUM(CASE WHEN a.emi_payment_status NOT IN ('pending','failed','rejected') THEN a.amount END) OVER(PARTITION BY loan_account_number) AS paid_amount",
             ])
             ->joinWith(['branchEnc b' => function ($b) {
-                $b->joinWith(['cityEnc b1'], false);
+                $b->joinWith(['cityEnc b1' => function ($b1) {
+                    $b1->joinWith(['stateEnc b2'], false);
+                }], false);
             }], false)
             ->joinWith(['loanAccountEnc c'], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
