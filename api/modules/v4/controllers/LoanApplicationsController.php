@@ -3,22 +3,15 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\LoanApplication;
-use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanProvider;
-use common\models\AssignedSupervisor;
-use common\models\ClaimedDeals;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanPurposeExtended;
-use common\models\FinancerLoanProductPurpose;
-use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
-use common\models\LoanPurpose;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use common\models\Utilities;
-use common\models\WebhookTest;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;

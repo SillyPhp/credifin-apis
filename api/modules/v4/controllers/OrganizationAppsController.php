@@ -12,13 +12,10 @@ use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use common\models\Utilities;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
-use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
 
 class OrganizationAppsController extends ApiBaseController
 {

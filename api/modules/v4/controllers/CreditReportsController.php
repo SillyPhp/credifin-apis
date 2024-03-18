@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use common\models\CreditLoanApplicationReports;
-use common\models\CreditReportsControllers;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;

@@ -7,10 +7,8 @@ use common\models\ClaimedDeals;
 use common\models\UnclaimedOrganizations;
 use yii\helpers\Url;
 use yii\filters\VerbFilter;
-use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
 use common\models\Utilities;
 use yii\db\Expression;
 
@@ -131,7 +129,7 @@ class DealsController extends ApiBaseController
 
             // saving data
             $claim = new ClaimedDeals();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $claim->claimed_deal_enc_id = $utilitiesModel->encrypt();
             $claim->deal_enc_id = $params['deal_id'];
