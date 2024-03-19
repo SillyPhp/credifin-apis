@@ -1724,8 +1724,8 @@ class LoanAccountsController extends ApiBaseController
                             'AND',
                             [
                                 'OR',
-                                ['a.loan_account_number' => $loan_account_number],
-                                ['a.lms_loan_account_number' => $loan_account_number]
+                                ['loan_account_number' => $loan_account_number],
+                                ['lms_loan_account_number' => $loan_account_number]
                             ],
                             ['IS', 'loan_app_enc_id', null]
                         ];
