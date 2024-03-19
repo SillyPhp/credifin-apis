@@ -1,7 +1,7 @@
 {
-    "name": "empower_youth/webapp",
-    "description": "Career Development Platform",
-    "homepage": "https://www.empoweryouth.com",
+    "name": "credifin/apis",
+    "description": "Loan Origination System",
+    "homepage": "https://www.credif.in",
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
