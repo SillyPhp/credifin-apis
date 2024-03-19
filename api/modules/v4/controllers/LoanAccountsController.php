@@ -1562,6 +1562,8 @@ class LoanAccountsController extends ApiBaseController
         }
         $branches = [
             "JALANDHAR" => "TrqLBkI5SotCQop7U0woMQEutVX4u_js",
+            "PATHANKOT" => "BnE3860mWdn2Ek4ganakdjw9A2K5DJ",
+            "FAZILKA" => "DKLb29kg0o0Ax5zrDVpydPBlampN8J",
             "LUDHIANA" => "gYtsOG242BbiWWN7lKNbz7IWJgWoCCn9",
             "MOGA" => "T4g9Wj8XLoXVwQclQXyGKTg2aj1ivH2u",
             "JAGRAON" => "Y8NKO0tAPYiV3AyXOZegqJZXRS349OnX",

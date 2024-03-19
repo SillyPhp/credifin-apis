@@ -36,6 +36,7 @@ use common\models\FinancerAssignedDesignations;
 use common\models\FinancerLoanProducts;
 use common\models\FinancerVehicleBrand;
 use common\models\LoanAccounts;
+use common\models\LoanApplicationComments;
 use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
@@ -1297,17 +1298,6 @@ class CompanyDashboardController extends ApiBaseController
                 $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', "CONCAT(e1.first_name,' ',e1.last_name) created_by"]);
                 $e->joinWith(['createdBy e1'], false);
                 $e->onCondition(['e.is_deleted' => 0, 'e.source' => 'EL']);
-            }])
-            ->joinWith(['loanApplicationComments f' => function ($f) {
-                $f->select([
-                    'f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', "CONCAT(f1.first_name,' ',f1.last_name) created_by",
-                    "CASE WHEN f1.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',f1.image_location, '/', f1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(f1.first_name,' ',f1.last_name), '&size=200&rounded=true&background=', REPLACE(f1.initials_color, '#', ''), '&color=ffffff') END user_image",
-                    "CASE WHEN f2.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', f2.logo_location, '/', f2.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', f2.name, '&size=200&rounded=false&background=', REPLACE(f2.initials_color, '#', ''), '&color=ffffff') END logo",
-                ]);
-                $f->joinWith(['createdBy f1' => function ($f1) {
-                    $f1->joinWith(['organizations f2']);
-                }], false);
-                $f->onCondition(['f.is_deleted' => 0, 'f.source' => 'EL']);
             }])
             ->joinWith(['loanPurposes g' => function ($g) {
                 $g->select(['g.financer_loan_purpose_enc_id', 'g.financer_loan_purpose_enc_id', 'g.loan_app_enc_id', 'g1.purpose']);
@@ -4400,4 +4390,51 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
         return $this->response(200, ['message' => 'fetched successfully', 'data' => $query]);
     }
+
+    public function actionGetInternalChat()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+        $params = Yii::$app->request->post();
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $query = LoanApplicationComments::find()
+            ->alias('a')
+            ->select([
+                'a.comment_enc_id',
+                'a.comment', 'comment_type',
+                'a.loan_application_enc_id', 'a.created_on', "CONCAT(b.first_name,' ',b.last_name) created_by",
+                "CASE WHEN b.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=true&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END user_image",
+                "CASE WHEN b2.logo IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . "', b2.logo_location, '/', b2.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', b2.name, '&size=200&rounded=false&background=', REPLACE(b2.initials_color, '#', ''), '&color=ffffff') END logo",
+            ])
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userRoles0 b1'], false);
+                $b->joinWith(['organizations b2'], false);
+            }], false);
+
+        if (!empty($params['type']) && $params['type'] == 'external') {
+            $query->andWhere(["a.comment_type" => 2, "a.is_deleted" => 0, "a.loan_application_enc_id" => $params['loan_app_id']]);
+        } else {
+            $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'],
+                'b1.organization_enc_id' => $org_id, 'a.is_deleted' => 0]);
+        }
+
+        $query = $query
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if (!$query) {
+            return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $query]);
+    }
+
 }
