@@ -6,11 +6,9 @@ use common\models\PostCategories;
 use common\models\Posts;
 use yii\helpers\Url;
 use yii\db\Expression;
-use common\models\Utilities;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
 
 class BlogController extends ApiBaseController
 {
