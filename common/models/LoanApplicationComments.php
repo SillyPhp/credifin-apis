@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_application_comments}}".
  *
@@ -11,6 +9,7 @@ use Yii;
  * @property string $comment_enc_id Comment Encrypted ID
  * @property string $loan_application_enc_id loan_application_enc_id
  * @property string $comment Post Comment
+ * @property int $comment_type 1 is internal, 2 is external
  * @property string $reply_to Reply to Comment
  * @property int $is_important 0 false, 1 true
  * @property string $created_on On which date Post Comment information was added to database
@@ -45,7 +44,7 @@ class LoanApplicationComments extends \yii\db\ActiveRecord
         return [
             [['comment_enc_id', 'loan_application_enc_id', 'comment', 'created_by'], 'required'],
             [['comment', 'source'], 'string'],
-            [['is_important', 'status', 'is_deleted'], 'integer'],
+            [['comment_type', 'is_important', 'status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['comment_enc_id', 'loan_application_enc_id', 'reply_to', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['comment_enc_id'], 'unique'],
