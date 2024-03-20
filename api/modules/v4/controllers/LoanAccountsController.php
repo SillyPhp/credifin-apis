@@ -7,6 +7,7 @@ use api\modules\v4\models\VehicleRepoForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanPayments;
+use common\models\Cities;
 use common\models\EmiCollection;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -17,7 +18,9 @@ use common\models\LoanAccounts;
 use common\models\LoanActionComments;
 use common\models\LoanActionRequests;
 use common\models\LoanApplications;
+use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
+use common\models\States;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
@@ -223,8 +226,8 @@ class LoanAccountsController extends ApiBaseController
                 ->groupBy(['a.loan_account_enc_id'])
                 ->asArray()
                 ->one();
-            $data['phone'] = [];
             if ($data) {
+                $ph = $data['phone'];
                 $phones = $data['emiCollections'];
                 $phones1 = $data['loanAccountOtherDetails'];
                 $p1 = array_map(function ($phone) {
@@ -238,6 +241,9 @@ class LoanAccountsController extends ApiBaseController
                     return $b['created_on'] - $a['created_on'];
                 });
                 $data['phone'] = array_values(array_unique(array_column($merge, 'phone')));
+                if (!empty($ph)) {
+                    $data['phone'][] = $ph;
+                }
                 foreach ($phones as $loc) {
                     $data['location'][] = [
                         'address' => $loc['address'],
@@ -250,7 +256,6 @@ class LoanAccountsController extends ApiBaseController
                 unset($data['emiCollections']);
                 unset($data['loanAccountOtherDetails']);
             }
-            //            return $data;
         } else {
             $query = EmiCollection::find()
                 ->alias('a')
@@ -1343,7 +1348,6 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not Found']);
     }
-
     public function actionGetLoanAccount()
     {
         if (!$this->isAuthorized()) {
@@ -2062,9 +2066,19 @@ class LoanAccountsController extends ApiBaseController
     public function actionUpcomingPtpStats()
     {
         $user = $this->isAuth();
+        $params = Yii::$app->request->post();
+
         $sub_query = (new Query())
             ->from(['a' => LoanAccountPtps::tableName()])
-            ->select(['a.proposed_date', 'COUNT(id) count', 'SUM(proposed_amount) AS sum'])
+            ->select(['a.proposed_date', 'COUNT(a.id) count', 'SUM(a.proposed_amount) AS sum', 'ANY_VALUE(c.loan_type)'])
+            ->leftJoin(['b' => EmiCollection::tableName()], 'b.emi_collection_enc_id = a.emi_collection_enc_id')
+            ->leftJoin(['c' => LoanAccounts::tableName()], 'c.loan_account_enc_id = b.loan_account_enc_id')
+            ->leftJoin(['ac' => Users::tableName()], 'ac.user_enc_id = c.assigned_caller')
+            ->leftJoin(['d' => OrganizationLocations::tableName()], 'd.location_enc_id = c.branch_enc_id')
+            ->leftJoin(['c1' => Cities::tableName()], 'c1.city_enc_id = d.city_enc_id')
+            ->leftJoin(['c2' => States::tableName()], 'c2.state_enc_id = c1.state_enc_id')
+            ->leftJoin(['bb' => OrganizationLocations::tableName()], 'bb.location_enc_id = b.branch_enc_id')
+            ->leftJoin(['cm' => Users::tableName()], 'cm.user_enc_id = a.collection_manager')
             ->groupBy(['proposed_date']);
 
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
@@ -2072,20 +2086,13 @@ class LoanAccountsController extends ApiBaseController
             $sub_query->andWhere(['IN', 'a.created_by', $juniors]);
         }
 
-        $from = "(SELECT
-            CURDATE() AS proposed_date
-        UNION ALL
-        SELECT
-            DATE_ADD(
-            CURDATE(),
-            INTERVAL 1 DAY
-            )
-        UNION ALL
-        SELECT
-            DATE_ADD(
-            CURDATE(),
-            INTERVAL 2 DAY
-            )
+        $from = "(SELECT CURDATE() AS proposed_date
+                UNION ALL
+                SELECT  DATE_ADD( CURDATE(), INTERVAL 1 DAY)
+                UNION ALL
+                SELECT  DATE_ADD( CURDATE(), INTERVAL 2 DAY)
+                UNION ALL
+                SELECT  DATE_ADD( CURDATE(), INTERVAL 3 DAY)
         )";
         $data = (new Query())
             ->select([
@@ -2094,9 +2101,138 @@ class LoanAccountsController extends ApiBaseController
                 'COALESCE(b.count) AS count',
             ])
             ->from(['a' => $from])
-            ->leftJoin(['b' => $sub_query], 'a.proposed_date = b.proposed_date')
-            ->all();
-        return $data;
+            ->leftJoin(['b' => $sub_query], 'a.proposed_date = b.proposed_date');
+
+        $query = LoanAccountPtps::find()
+            ->alias('a')
+            ->select([
+                'la.loan_type',
+                "SUM(a.proposed_amount) amount",
+                "COUNT(a.proposed_date) AS count",
+            ])
+            ->joinWith(['emiCollectionEnc ec' => function ($ec) {
+                $ec->joinWith(['loanAccountEnc la' => function ($la) {
+                    $la->joinWith(["assignedCaller ac"], false);
+                    $la->joinWith(['branchEnc d' => function ($d) {
+                        $d->joinWith(['cityEnc c1' => function ($c1) {
+                            $c1->joinWith(['stateEnc c2'], false);
+                        }], false);
+                    }], false);
+                }]);
+                $ec->joinWith(['branchEnc bb'], false);
+            }], false)
+            ->joinWith(['collectionManager cm'], false)
+            ->where(['IS NOT', 'la.loan_type', null])
+            ->andwhere(['>=', 'a.proposed_date', date('Y-m-d')])
+            ->groupBy(['la.loan_type']);
+
+        if (!empty($params["fields_search"])) {
+            foreach ($params["fields_search"] as $key => $value) {
+                if (!empty($value) || $value == "0") {
+                    if ($key == 'assigned_caller') {
+                        if ($value == 'unassigned') {
+                            $sub_query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
+                            $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
+                        } else {
+                            $sub_query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "%$value%", false]);
+                            $query->andWhere(["like", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "%$value%", false]);
+                        }
+                    } elseif ($key == 'loan_account_number') {
+                        $sub_query->andWhere(['b.' . $key => $value]);
+                        $query->andWhere(['ec.' . $key => $value]);
+                    } elseif ($key == 'state_enc_id') {
+                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                    } elseif ($key == 'bucket') {
+                        if (in_array("unassigned", $value)) {
+                            $sub_query->andWhere(['c.bucket' => null]);
+                            $query->andWhere(['la.bucket' => null]);
+                        } else {
+                            $sub_query->andWhere(['IN', 'c.bucket', $value]);
+                            $query->andWhere(['IN', 'la.bucket', $value]);
+                        }
+                    } elseif ($key == 'loan_type') {
+                        $sub_query->andWhere(['IN', 'c.loan_type', $value]);
+                        $query->andWhere(['IN', 'la.loan_type', $value]);
+                    } elseif ($key == 'branch') {
+                        if (in_array("unassigned", $value)) {
+                            $sub_query->andWhere(['bb.location_enc_id' => null]);
+                            $query->andWhere(['bb.location_enc_id' => null]);
+                        } else {
+                            $sub_query->andWhere(['IN', 'bb.location_enc_id', $value]);
+                            $query->andWhere(['IN', 'bb.location_enc_id', $value]);
+                        }
+                    } elseif ($key == 'total_pending_amount') {
+                        $sub_query->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
+                        $query->having(['=', "COALESCE(SUM(la.ledger_amount), 0) + COALESCE(SUM(la.overdue_amount), 0)", $value]);
+                    } elseif ($key == 'collection_manager') {
+                        $sub_query->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                        $query->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'proposed_amount') {
+                        $sub_query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
+                        $query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
+                    } elseif ($key == 'pos') {
+                        $sub_query->andWhere(["LIKE", 'c.' . $key, $value]);
+                        $query->andWhere(["LIKE", 'la.' . $key, $value]);
+                    } elseif ($key == 'emi_date') {
+                        $sub_query->andWhere(['DAY(c.emi_date)' => $value]);
+                        $query->andWhere(['DAY(la.emi_date)' => $value]);
+                    } elseif ($key == 'proposed_start_date') {
+                        if ($value == 'unassigned') {
+                            $sub_query->andWhere(['a.proposed_date' => null]);
+                            $query->andWhere(['a.proposed_date' => null]);
+                        } else {
+                            $sub_query->andWhere(['>=', 'a.proposed_date', $value]);
+                            $query->andWhere(['>=', 'a.proposed_date', $value]);
+                        }
+                    } elseif ($key == 'proposed_end_date') {
+                        if ($value == 'unassigned') {
+                            $sub_query->andWhere(['a.proposed_date' => null]);
+                            $query->andWhere(['a.proposed_date' => null]);
+                        } else {
+                            $sub_query->andWhere(['<=', 'a.proposed_date', $value]);
+                            $query->andWhere(['<=', 'a.proposed_date', $value]);
+                        }
+                    } elseif ($key == 'proposed_payment_method') {
+                        $sub_query->andWhere(['a.' . $key => $value]);
+                        $query->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'name') {
+                        $sub_query->andWhere([
+                            'OR',
+                            [
+                                'AND',
+                                ['IS NOT', 'c.name', null],
+                                ['LIKE', 'c.name', "%$value%", false]
+                            ],
+                            [
+                                'AND',
+                                ['IS', 'c.name', null],
+                                ['LIKE', 'b.customer_name', "%$value%", false]
+                            ]
+                        ]);
+                        $query->andWhere([
+                            'OR',
+                            [
+                                'AND',
+                                ['IS NOT', 'la.name', null],
+                                ['LIKE', 'la.name', "%$value%", false]
+                            ],
+                            [
+                                'AND',
+                                ['IS', 'la.name', null],
+                                ['LIKE', 'ec.customer_name', "%$value%", false]
+                            ]
+                        ]);
+                    } else {
+                        $sub_query->andWhere(['like', $key, $value]);
+                        $query->andWhere(['like', $key, $value]);
+                    }
+                }
+            }
+        }
+        $data = $data->all();
+        $query = $query->asArray()->all();
+        return $this->response(200, ["status" => 200, "date_stats" => $data, "product_stats" => $query]);
     }
 
     public function actionPtpProductStats()
