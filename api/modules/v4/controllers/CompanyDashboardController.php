@@ -1269,6 +1269,8 @@ class CompanyDashboardController extends ApiBaseController
                 'ANY_VALUE(lpo.policy_number) as policy_number', 'ANY_VALUE(lpo.valid_till) as valid_till',
                 'ANY_VALUE(lpo.payable_value) as payable_value', 'ANY_VALUE(lpo.field_officer) as field_officer',
                 'ANY_VALUE(lpo.emi_amount) as emi_amount', 'ANY_VALUE(lpo.vehicle_color) as vehicle_color',
+                "ANY_VALUE(b.provider_enc_id) provider_enc_id"
+
             ])
             ->joinWith(['leadBy cr'], false)
             ->joinWith(['loanApplicationOptions lpo'], false)
@@ -2336,6 +2338,7 @@ class CompanyDashboardController extends ApiBaseController
             $comment->comment_enc_id = $utilitiesModel->encrypt();
             $comment->loan_application_enc_id = $params['loan_id'];
             $comment->comment = $params['comment'];
+            $comment->comment_type = !empty($params['comment_type']) ? $params['comment_type'] : 1;
             if (!empty($params['is_important']) && (int)$params['is_important'] == 1) {
                 $comment->is_important = 1;
             }
@@ -4402,8 +4405,6 @@ class CompanyDashboardController extends ApiBaseController
             $org_id = $user_roles->organization_enc_id;
         }
         $params = Yii::$app->request->post();
-        $page = !empty($params['page']) ? $params['page'] : 1;
-        $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $query = LoanApplicationComments::find()
             ->alias('a')
             ->select([
@@ -4418,23 +4419,21 @@ class CompanyDashboardController extends ApiBaseController
                 $b->joinWith(['organizations b2'], false);
             }], false);
 
-        if (!empty($params['type']) && $params['type'] == 'external') {
-            $query->andWhere(["a.comment_type" => 2, "a.is_deleted" => 0, "a.loan_application_enc_id" => $params['loan_app_id']]);
+        if (!empty($params['comment_type']) && $params['comment_type'] == 2) {
+            $query->andWhere(['a.comment_type' => 2, 'a.is_deleted' => 0, "a.loan_application_enc_id" => $params['loan_app_id']]);
         } else {
             $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'],
                 'b1.organization_enc_id' => $org_id, 'a.is_deleted' => 0]);
         }
 
         $query = $query
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
         if (!$query) {
             return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
         }
-        return $this->response(200, ['status' => 200, 'data' => $query]);
+        return $this->response(200, ['status' => 200, 'data' => $query, 'type' => $params['comment_type']]);
     }
 
 }
