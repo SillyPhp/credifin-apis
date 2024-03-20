@@ -1030,7 +1030,8 @@ class EmiCollectionsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                'a.emi_collection_enc_id', 'a.collection_date', 'a.created_on',
+                'a.emi_collection_enc_id', 'a.collection_date', 'a.created_on', 'a.reference_number',
+                'a.customer_visit', 'a.customer_interaction',
                 'a.phone', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
                 'a.ptp_amount', 'a.ptp_date', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) name",
                 "CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ',',a.other_delay_reason) ELSE a.delay_reason END AS delay_reason",

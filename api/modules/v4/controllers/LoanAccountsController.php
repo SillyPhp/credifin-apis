@@ -302,6 +302,7 @@ class LoanAccountsController extends ApiBaseController
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
+                'a.customer_visit', 'a.customer_interaction',
                 'a.emi_collection_enc_id',
                 'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
                 "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
