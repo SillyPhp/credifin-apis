@@ -2,11 +2,8 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\BusinessLoanApplication;
 use api\modules\v4\models\CoApplicantForm;
-use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\LoanApplication;
-use api\modules\v4\models\LoanPaymentsForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\CertificateTypes;
 use common\models\CreditLoanApplicationReports;
@@ -731,7 +728,7 @@ class LoansController extends ApiBaseController
         // if not exists then saving it
         if (!$exists) {
             $model = new CertificateTypes();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $model->certificate_type_enc_id = $utilitiesModel->encrypt();
             $model->name = $type;
@@ -933,7 +930,7 @@ class LoansController extends ApiBaseController
             if (!empty($params['assigned_borrower_enc_id']) && is_array($params['assigned_borrower_enc_id'])) {
                 foreach ($params['assigned_borrower_enc_id'] as $borrower) {
                     $verification_location = new LoanVerificationLocationsExtended();
-                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                     $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
                     $verification_location->loan_app_enc_id = $params['loan_id'];
@@ -1054,7 +1051,7 @@ class LoansController extends ApiBaseController
 
             // saving data
             $model = new FinancerLoanNegativeLocation();
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->negative_location_enc_id = $utilitiesModel->encrypt();
             $model->financer_enc_id = $lender;
@@ -1737,7 +1734,7 @@ class LoansController extends ApiBaseController
 
     private function loanDetailImages($loan_id, $type)
     {
-        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         $loan = LoanApplications::find()
             ->alias('a')
@@ -2059,7 +2056,7 @@ class LoansController extends ApiBaseController
         if (!$query) {
             return $this->response(404, ['status' => 404, 'message' => 'data not found']);
         }
-        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($query as &$val) {
             $val['image'] = $my_space->signedURL($val['image'], "15 minutes");

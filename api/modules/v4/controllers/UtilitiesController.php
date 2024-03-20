@@ -2,32 +2,17 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\utilities\UserUtilities;
 use common\models\Cities;
 use common\models\Designations;
-use common\models\FinancerLoanDocuments;
-use common\models\FinancerLoanProductDocuments;
-use common\models\FinancerLoanProductPurpose;
-use common\models\FinancerLoanProducts;
-use common\models\FinancerLoanProductStatus;
-use common\models\FinancerLoanPurpose;
-use common\models\FinancerLoanStatus;
-use common\models\LoanApplicationOptions;
-use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCertificatesImages;
 use common\models\OrganizationTypes;
-use common\models\SelectedServices;
 use common\models\spaces\Spaces;
-use common\models\SponsoredCourses;
 use common\models\States;
-use common\models\Users;
-use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
-use yii\filters\ContentNegotiator;
 use common\models\Utilities;
 
 class UtilitiesController extends ApiBaseController
@@ -168,7 +153,7 @@ class UtilitiesController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel = new Utilities();
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 foreach ($query as $oldRow) {
