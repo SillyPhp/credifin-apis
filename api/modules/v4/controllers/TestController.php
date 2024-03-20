@@ -151,7 +151,8 @@ class TestController extends ApiBaseController
             }
             $query = Yii::$app->db->createCommand()->update(
                 LoanCoApplicants::tableName(),
-                $update, [
+                $update,
+                [
                     "loan_co_app_enc_id" => $value["loan_co_app_enc_id"]
                 ]
             )->execute();
@@ -196,6 +197,7 @@ class TestController extends ApiBaseController
             "a.number_of_emis",
             "a.roi",
             "abc.co_applicant_dob applicant_dob",
+            "abc.father_name",
             "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
             "b.disbursement_approved",
             "b.tl_approved_amount",
@@ -247,10 +249,12 @@ class TestController extends ApiBaseController
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
-                $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
+                $d->select([
+                    "d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone", "d.father_name",
                     "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
-                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"
+                ]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
                 $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
@@ -334,6 +338,7 @@ class TestController extends ApiBaseController
                 "a.number_of_emis",
                 "a.roi",
                 "abc.co_applicant_dob applicant_dob",
+                "abc.father_name",
                 "DATE_FORMAT(STR_TO_DATE(a.emi_collection_date, '%Y-%m-%d'), '%d-%m-%Y') as emi_collection_date",
                 "b.disbursement_approved",
                 "b.tl_approved_amount",
@@ -368,10 +373,12 @@ class TestController extends ApiBaseController
                 $abc->andOnCondition(["abc.is_deleted" => 0, "abc.borrower_type" => "Borrower"]);
             }], false)
             ->joinWith(["loanCoApplicants d" => function ($d) {
-                $d->select(["d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone",
+                $d->select([
+                    "d.loan_app_enc_id", "d.name", "d1.address", "d.co_applicant_dob", "d1.postal_code", "d.phone", "d.father_name",
                     "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", "d.relation",
                     "d.borrower_type", "d.loan_co_app_enc_id", "d.aadhaar_number", "d.voter_card_number", "d.pan_number",
-                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"]);
+                    "d.cibil_score", "d.driving_license_number", "d.marital_status", "d2.name city"
+                ]);
                 $d->onCondition(["d.is_deleted" => 0]);
                 $d->andOnCondition(['!=', 'd.borrower_type', 'Borrower']);
                 $d->joinWith(["loanApplicantResidentialInfos d1" => function ($d1) {
@@ -444,7 +451,7 @@ class TestController extends ApiBaseController
             }])
             ->orderBy(['a.id' => SORT_DESC])
             ->where(['not', ['a.emi_payment_status' => 'pipeline']])
-//            ->andWhere(['b.is_deleted' => 0])
+            //            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
             ->limit($limit)
             ->asArray()
@@ -460,7 +467,7 @@ class TestController extends ApiBaseController
                     $updated += 1;
                 }
             } else if (!$this->getCashReportDetail($cash_id['parent_cash_report_enc_id'])) {
-//                $emis[$key]['cs'] = 'pipeline';
+                //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
                     ->update(EmiCollection::tableName(), ['emi_payment_status' => 'pipeline'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
@@ -469,8 +476,8 @@ class TestController extends ApiBaseController
                 }
             }
         }
-//        print_r($emis);
-//        exit();
+        //        print_r($emis);
+        //        exit();
         return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
 
@@ -485,11 +492,11 @@ class TestController extends ApiBaseController
             ->select(['a.emi_collection_enc_id', 'a.loan_account_number'])
             ->innerJoinWith(['employeesCashReports b' => function ($b) {
                 $b->select(["b.parent_cash_report_enc_id", "b.emi_collection_enc_id", "b.status"]);
-//                $b->andOnCondition(["!=", "b.status", 1]);
+                //                $b->andOnCondition(["!=", "b.status", 1]);
             }])
             ->orderBy(['a.id' => SORT_DESC])
             ->where(['a.emi_payment_status' => 'pipeline'])
-//            ->andWhere(['b.is_deleted' => 0])
+            //            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
             ->limit($limit)
             ->asArray()
@@ -506,8 +513,8 @@ class TestController extends ApiBaseController
                 }
             }
         }
-//        print_r($emis);
-//        exit();
+        //        print_r($emis);
+        //        exit();
         return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
 
@@ -526,7 +533,7 @@ class TestController extends ApiBaseController
             }])
             ->orderBy(['a.id' => SORT_DESC])
             ->where(['not', ['a.emi_payment_status' => 'collected']])
-//            ->andWhere(['b.is_deleted' => 0])
+            //            ->andWhere(['b.is_deleted' => 0])
             ->offset(($page - 1) * $limit)
             ->limit($limit)
             ->asArray()
@@ -535,7 +542,7 @@ class TestController extends ApiBaseController
         foreach ($emis as $key => $emi) {
             $cash_id = reset($emi['employeesCashReports']);
             if (empty($cash_id['parent_cash_report_enc_id'])) {
-//                $emis[$key]['cs'] = 'pipeline';
+                //                $emis[$key]['cs'] = 'pipeline';
                 $update = Yii::$app->db->createCommand()
                     ->update(EmiCollection::tableName(), ['emi_payment_status' => 'collected'], ['emi_collection_enc_id' => $emi['emi_collection_enc_id']])
                     ->execute();
@@ -544,8 +551,8 @@ class TestController extends ApiBaseController
                 }
             }
         }
-//        print_r($emis);
-//        exit();
+        //        print_r($emis);
+        //        exit();
         return ['status' => 200, 'found' => count($emis), 'updated' => $updated];
     }
 
@@ -651,23 +658,23 @@ class TestController extends ApiBaseController
 
     public function actionAssignPaymentLoginDate()
     {
-//        if (!$this->isAuthorized()) {
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
+        //        if (!$this->isAuthorized()) {
+        //            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        //        }
         $params = Yii::$app->request->post();
 
         $page = !empty($params['page']) ? $params['page'] : 1;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
 
-//        $login_date = (new \yii\db\Query())
-//            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
-//            ->from(['a' => LoanApplicationsExtended::tableName()])
-//            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
-//            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
-//            ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
-//            ->limit($limit)
-//            ->offset(($page - 1) * $limit)
-//            ->all();
+        //        $login_date = (new \yii\db\Query())
+        //            ->select(['b1.loan_app_enc_id', 'b2.updated_on', 'b2.created_on', 'b2.payment_status'])
+        //            ->from(['a' => LoanApplicationsExtended::tableName()])
+        //            ->innerJoin(['b1' => AssignedLoanPayments::tableName()], 'b1.loan_app_enc_id = a.loan_app_enc_id')
+        //            ->innerJoin(['b2' => LoanPayments::tableName()], 'b2.loan_payments_enc_id = b1.loan_payments_enc_id')
+        //            ->where(['a.is_deleted' => 0, 'a.login_date' => null, 'b2.payment_status' => 'captured'])
+        //            ->limit($limit)
+        //            ->offset(($page - 1) * $limit)
+        //            ->all();
 
         $login_date = LoanApplications::find()
             ->alias('a')
@@ -679,12 +686,12 @@ class TestController extends ApiBaseController
             }], false)
             ->where(['a.is_deleted' => 0])
             ->andWhere(["IS", 'a.login_date', null])
-//        print_r($login_date->createCommand()->getRawSql());exit();
+            //        print_r($login_date->createCommand()->getRawSql());exit();
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
-//        print_r($login_date);exit();
+        //        print_r($login_date);exit();
 
         if (!$login_date) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -702,7 +709,6 @@ class TestController extends ApiBaseController
             }
         }
         return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
-
     }
 
     public function actionLoginDateUpdate($limit = 100, $page = 1, $count = false)
@@ -868,9 +874,9 @@ class TestController extends ApiBaseController
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number', 'COUNT(*) count'])
-//            ->joinWith(['assignedLoanProviders b'=>function($c){
-//                $c->andWhere(['!=','b.status',31]);
-//            }],false,'INNER JOIN')
+            //            ->joinWith(['assignedLoanProviders b'=>function($c){
+            //                $c->andWhere(['!=','b.status',31]);
+            //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
@@ -882,16 +888,16 @@ class TestController extends ApiBaseController
             ->offset($offset)
             ->asArray()
             ->all();
-        if ($data):
+        if ($data) :
             foreach ($data as $app) {
                 $applicationNumber = $app['application_number'];
                 $count = $app['count'];
 
                 $ids = LoanApplications::find()
                     ->select(['loan_app_enc_id'])
-//                    ->joinWith(['assignedLoanProviders b'=>function($c){
-//                        $c->andWhere(['!=','b.status',31]);
-//                    }],false,'INNER JOIN')
+                    //                    ->joinWith(['assignedLoanProviders b'=>function($c){
+                    //                        $c->andWhere(['!=','b.status',31]);
+                    //                    }],false,'INNER JOIN')
                     ->where(['application_number' => $applicationNumber])
                     ->asArray()
                     ->column(); // Fetching IDs directly as an array
@@ -917,7 +923,7 @@ class TestController extends ApiBaseController
                     }
                 }
             }
-        else:
+        else :
             echo 'no results left';
         endif;
     }
@@ -938,9 +944,9 @@ class TestController extends ApiBaseController
         $offset = ($page - 1) * $limit;
         $data = LoanApplications::find()
             ->select(['application_number', 'COUNT(*) count'])
-//            ->joinWith(['assignedLoanProviders b'=>function($c){
-//                $c->andWhere(['!=','b.status',31]);
-//            }],false,'INNER JOIN')
+            //            ->joinWith(['assignedLoanProviders b'=>function($c){
+            //                $c->andWhere(['!=','b.status',31]);
+            //            }],false,'INNER JOIN')
             ->groupBy('application_number')
             ->where([
                 'or',
@@ -953,15 +959,15 @@ class TestController extends ApiBaseController
             ->asArray()
             ->all();
         $updateAll = [];
-        if ($data):
+        if ($data) :
             foreach ($data as $dat) {
                 $loan_array = explode("-", $dat['application_number']);
-                if (count($loan_array) >= 4):
+                if (count($loan_array) >= 4) :
                     $updateAll[] = LoanApplications::updateAll(['old_application_number' => $dat['application_number']], ['application_number' => $dat['application_number']]);
                 endif;
             }
             echo count($updateAll);
-        else:
+        else :
             echo 'no results left';
         endif;
     }
