@@ -2755,6 +2755,7 @@ class OrganizationsController extends ApiBaseController
             $e = ['sales_priority', 'telecaller_priority', 'collection_priority'];
             $f = ['proposed_amount'];
             $g = ['branch'];
+            $i = ['state_enc_id'];
 
             foreach ($params['fields_sort'] as $key => $val) {
                 if (!empty($val)) {
@@ -2774,6 +2775,12 @@ class OrganizationsController extends ApiBaseController
                         $query->orderBy([$priority => $val == SORT_ASC ? SORT_ASC : SORT_DESC, 'priority' => $val == SORT_ASC ? SORT_ASC : SORT_DESC]);
                         if ($val == SORT_DESC) {
                             $query->addOrderBy($priority, 'ASC');
+                        }
+                    }
+
+                    if (in_array($key, $i)) {
+                        if ($key == 'state_enc_id') {
+                            $query->orderBy(['ISNULL(c2.name)' => SORT_ASC, 'c2.name' => $val]);
                         }
                     }
 
