@@ -315,7 +315,8 @@ class EmployeeController extends ApiBaseController
                             $list->andWhere(['IN', 'b3.location_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
-                        } else {
+                        }
+                        else {
                             $list->andWhere(['like', $key, $value]);
                         }
                     }
@@ -328,7 +329,9 @@ class EmployeeController extends ApiBaseController
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
-
+            if (isset($params['report_type'])) {
+                $list->andWhere(['=', 'ala.user_type', $params['report_type']]);
+            }
             $count = $list->count();
             $list = $list
                 ->limit($limit)
