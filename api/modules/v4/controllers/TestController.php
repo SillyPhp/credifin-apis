@@ -10,7 +10,11 @@ use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\LoanAccountComments;
+use common\models\LoanAccountOtherDetails;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
+use common\models\LoanActionRequests;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCoApplicants;
@@ -85,6 +89,9 @@ class TestController extends ApiBaseController
                     $old_acc = $item[1]['loan_account_enc_id'];
                     $new_acc = $item[0]['loan_account_enc_id'];
                     $commands[] = "UPDATE $assigned_l_payments SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanActionRequests::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanAccountOtherDetails::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanAccountComments::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $emi_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $assigned_l_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $loan_table AS a
