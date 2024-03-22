@@ -79,10 +79,12 @@ class TestController extends ApiBaseController
                 $emi_table = EmiCollection::tableName();
                 $assigned_l_table = AssignedLoanAccounts::tableName();
                 $loan_table = LoanAccounts::tableName();
+                $assigned_l_payments = AssignedLoanPayments::tableName();
                 $commands = [];
                 foreach ($data as $item) {
                     $old_acc = $item[1]['loan_account_enc_id'];
                     $new_acc = $item[0]['loan_account_enc_id'];
+                    $commands[] = "UPDATE $assigned_l_payments SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $emi_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $assigned_l_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
                     $commands[] = "UPDATE $loan_table AS a
