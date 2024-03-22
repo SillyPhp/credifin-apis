@@ -2389,6 +2389,58 @@ class LoanAccountsController extends ApiBaseController
         }
     }
 
+    public function actionLoanAssign()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "loan_type"']);
+        }
+        if (empty($params['user_id']) || empty($params['user_type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "user_id" and "user_type"']);
+        }
+
+        $query = LoanAccounts::find()
+            ->alias('a')
+            ->select(['a.loan_account_enc_id'])
+            ->where(['a.loan_type' => $params['loan_type']])
+            ->andWhere([
+                'not exists', (new Query())
+                    ->select('*')
+                    ->from(['b' => AssignedLoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+                    ->andWhere(['b.shared_to' => $params['user_id']])
+                    ->andWhere(['b.user_type' => $params['user_type']])
+            ])
+            ->groupBy(['a.loan_account_enc_id'])
+            ->asArray()
+            ->all();
+
+        if (empty($query)) {
+            return $this->response(404, ['status' => 404, 'message' => 'Loan account not found']);
+        }
+        foreach ($query as $data) {
+            $update = new AssignedLoanAccounts();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $update->assigned_enc_id = $utilitiesModel->encrypt();
+            $update->loan_account_enc_id = $data['loan_account_enc_id'];
+            $update->shared_by = $user->user_enc_id;
+            $update->shared_to = $params['user_id'];
+            $update->access = 'Full Access';
+            $update->user_type = $params['user_type'];
+            $update->status = 'Active';
+            $update->created_by = $user->user_enc_id;
+            $update->created_on = date('Y-m-d H:i:s');
+            $update->updated_by = $user->user_enc_id;
+            $update->updated_on = date('Y-m-d H:i:s');
+            if (!$update->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $update->getErrors()]);
+            }
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
     public function actionUpdateLoanAccount()
     {
         $user = $this->isAuthorized();

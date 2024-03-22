@@ -4,12 +4,17 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanPayments;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\LoanAccountComments;
+use common\models\LoanAccountOtherDetails;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
+use common\models\LoanActionRequests;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCoApplicants;
@@ -48,6 +53,64 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionCorrectingLoanAccounts($limit = 50, $page = 1, $auth = '')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $offset = ($page - 1) * $limit;
+            $loan_table = LoanAccounts::tableName();
+            $query = "SELECT a.loan_account_enc_id, LOWER(REGEXP_REPLACE(a.loan_account_number, '[^a-zA-Z0-9]', '')) AS loan_account_number, a.updated_on
+        FROM $loan_table AS a
+                 INNER JOIN (SELECT REGEXP_REPLACE(loan_account_number, '[^a-zA-Z0-9]', '') AS loan,
+                                    LOWER(SUBSTRING_INDEX(name, ' ', 1))                    AS name
+                             FROM $loan_table
+                             GROUP BY 1, 2
+                             HAVING COUNT(*) = 2) AS b ON b.loan = REGEXP_REPLACE(a.loan_account_number, '[^a-zA-Z0-9]', '') AND
+                                                          b.name = LOWER(SUBSTRING_INDEX(a.name, ' ', 1))
+        ORDER BY REGEXP_REPLACE(a.loan_account_number, '[^a-zA-Z0-9]', ''), 3 DESC LIMIT $limit OFFSET $offset";
+            $query = Yii::$app->db->createCommand($query)->queryAll();
+            $data = [];
+            if (!empty($query)) {
+                foreach ($query as $item) {
+                    $data[$item['loan_account_number']][] = $item;
+                }
+                $emi_table = EmiCollection::tableName();
+                $assigned_l_table = AssignedLoanAccounts::tableName();
+                $loan_table = LoanAccounts::tableName();
+                $assigned_l_payments = AssignedLoanPayments::tableName();
+                $commands = [];
+                foreach ($data as $item) {
+                    $old_acc = $item[1]['loan_account_enc_id'];
+                    $new_acc = $item[0]['loan_account_enc_id'];
+                    $commands[] = "UPDATE $assigned_l_payments SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanActionRequests::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanAccountOtherDetails::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE " . LoanAccountComments::tableName() . " SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE $emi_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE $assigned_l_table SET loan_account_enc_id = '$new_acc' WHERE loan_account_enc_id = '$old_acc'";
+                    $commands[] = "UPDATE $loan_table AS a
+                                INNER JOIN $loan_table AS b
+                                ON b.loan_account_enc_id = '$old_acc' AND a.loan_account_enc_id = '$new_acc'
+                            SET b.is_deleted         = 1,
+                                a.updated_on         = a.updated_on,
+                                a.assigned_caller    = b.assigned_caller";
+                }
+                foreach ($commands as $command) {
+                    Yii::$app->db->createCommand($command)->execute();
+                }
+            }
+            $transaction->commit();
+            return ['status' => 500, 'message' => 'updated successfully', 'found' => count($query)];
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()];
+        }
     }
 
     public function actionUpdateUsersEmi($user_id = '', $auth = '')
