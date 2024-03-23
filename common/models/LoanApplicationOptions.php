@@ -39,6 +39,7 @@ use Yii;
  * @property string $vehicle_color vehicle color
  * @property string $model_year
  * @property string $engine_number
+ * @property string $motor_number Motor Number
  * @property double $ex_showroom_price
  * @property double $emi_amount
  * @property double $on_road_price
@@ -85,7 +86,7 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
             [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover', 'ex_showroom_price', 'emi_amount', 'on_road_price', 'margin_money', 'ltv', 'payable_value'], 'number'],
             [['property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
             [['follow_up_on', 'valid_till', 'disbursement_date', 'created_on', 'last_updated_on'], 'safe'],
-            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'engine_number', 'policy_number', 'field_officer', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'engine_number', 'motor_number', 'policy_number', 'field_officer', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],
             [['occupation'], 'string', 'max' => 250],
             [['vehicle_making_year', 'model_year'], 'string', 'max' => 10],
