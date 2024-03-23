@@ -2409,7 +2409,8 @@ class LoanAccountsController extends ApiBaseController
             ->andWhere([
                 'not exists', (new Query())
                     ->select('*')
-                    ->from(['b' => AssignedLoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+                    ->from(['b' => AssignedLoanAccounts::tableName()])
+                    ->where('b.loan_account_enc_id = a.loan_account_enc_id')
                     ->andWhere(['b.shared_to' => $params['user_id']])
                     ->andWhere(['b.user_type' => $params['user_type']])
             ])
