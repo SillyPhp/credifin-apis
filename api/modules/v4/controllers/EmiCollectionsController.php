@@ -2073,6 +2073,8 @@ class EmiCollectionsController extends ApiBaseController
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
                             $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                        } elseif ($key == 'state_enc_id') {
+                            $list->andWhere(['IN', 'b5.state_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
