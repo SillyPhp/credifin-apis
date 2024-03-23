@@ -1359,11 +1359,40 @@ class LoanAccountsController extends ApiBaseController
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
-                    'a.loan_account_enc_id', 'a.loan_account_number', 'a.name', 'a.phone',
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date'
+                    'a.loan_account_enc_id', "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                    'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
+                    "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
+                ->joinWith(["assignedCaller ac"], false)
+                ->joinWith(["assignedLoanAccounts d" => function ($d) {
+                    $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
+                    $d->select([
+                        'd.loan_account_enc_id', "d.assigned_enc_id", "(CASE WHEN d.user_type = 1 THEN 'bdo' WHEN user_type = 2 THEN 'collection_manager' WHEN user_type = 3 THEN 'telecaller' END) as user_type",
+                        "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, '')) name",
+                        "(CASE WHEN d1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', d1.image_location, '/', d1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(d1.first_name,' ',d1.last_name), '&size=200&rounded=false&background=', REPLACE(d1.initials_color, '#', ''), '&color=ffffff') END) image"
+                    ]);
+                    $d->joinWith(['sharedTo d1'], false);
+                }])
                 ->where(['a.is_deleted' => 0])
                 ->andWhere(['a.loan_account_number' => $loan_number['loan_account_number']])
+                ->groupBy(['a.loan_account_enc_id'])
                 ->asArray()
                 ->all();
             if ($query) {
@@ -2380,7 +2409,8 @@ class LoanAccountsController extends ApiBaseController
             ->andWhere([
                 'not exists', (new Query())
                     ->select('*')
-                    ->from(['b' => AssignedLoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+                    ->from(['b' => AssignedLoanAccounts::tableName()])
+                    ->where('b.loan_account_enc_id = a.loan_account_enc_id')
                     ->andWhere(['b.shared_to' => $params['user_id']])
                     ->andWhere(['b.user_type' => $params['user_type']])
             ])

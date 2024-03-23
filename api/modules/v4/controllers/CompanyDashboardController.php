@@ -1269,7 +1269,8 @@ class CompanyDashboardController extends ApiBaseController
                 'ANY_VALUE(lpo.policy_number) as policy_number', 'ANY_VALUE(lpo.valid_till) as valid_till',
                 'ANY_VALUE(lpo.payable_value) as payable_value', 'ANY_VALUE(lpo.field_officer) as field_officer',
                 'ANY_VALUE(lpo.emi_amount) as emi_amount', 'ANY_VALUE(lpo.vehicle_color) as vehicle_color',
-                "ANY_VALUE(b.provider_enc_id) provider_enc_id"
+                "ANY_VALUE(b.provider_enc_id) provider_enc_id",
+                "ANY_VALUE(lpo.motor_number) AS motor_number",
 
             ])
             ->joinWith(['leadBy cr'], false)
