@@ -203,10 +203,11 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias("a")
-                ->select(["a.location_enc_id", "a.location_enc_id as id", "b.city_code", "a.organization_code", "a.location_name", "a.location_for", "a.address", "b.name city", "b.city_enc_id", "a.status"])
-                ->addSelect(["CONCAT(a.location_name , ', ', b.name) as value"])
-                ->joinWith(["cityEnc b"], false)
+                ->select(["a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
+                    "a.location_name", "a.location_for", "a.address", "a.status"])
+                ->addSelect(["a.location_name as value"])
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
+                ->orderBy(['a.location_name' => SORT_ASC])
                 ->asArray()
                 ->all();
 
