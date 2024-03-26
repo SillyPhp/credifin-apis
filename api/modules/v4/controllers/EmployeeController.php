@@ -9,10 +9,10 @@ use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\Users;
 use Yii;
+use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\db\Expression;
 
 class EmployeeController extends ApiBaseController
 {
@@ -273,13 +273,17 @@ class EmployeeController extends ApiBaseController
                     'gd.designation designation',
                     "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
-                    $queryResult
+                    $queryResult, "ANY_VALUE(ce2.name) as state_name"
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
                         ->joinWith(['designation gd'])
                         ->joinWith(['reportingPerson b2'])
-                        ->joinWith(['branchEnc b3'])
+                        ->joinWith(['branchEnc b3' => function ($b3) {
+                            $b3->joinWith(['cityEnc ce1' => function ($ce1) {
+                                $ce1->joinWith(['stateEnc ce2'], false);
+                            }], false);
+                        }], false)
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['assignedLoanAccounts0 ala' => function ($asla) {
@@ -291,7 +295,7 @@ class EmployeeController extends ApiBaseController
                 //date between condition need to be set after shalya beta test and scenerio
                 ->andWhere(['between', new Expression('DAY(emi_date)'), new Expression("DAY('$startDate')"), new Expression("DAY('$endDate')")])
                 ->andWhere(['<=', new Expression('YEAR(emi_date)'), new Expression("YEAR('$endDate')")])
-                ->andWhere(['<=', new Expression('MONTH(emi_date)'),new Expression("MONTH('$endDate')")])
+                ->andWhere(['<=', new Expression('MONTH(emi_date)'), new Expression("MONTH('$endDate')")])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
                 ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
 
@@ -303,6 +307,8 @@ class EmployeeController extends ApiBaseController
                     if (!empty($value)) {
                         if ($key == 'employee_code') {
                             $list->andWhere(['like', 'b.' . $key, $value]);
+                        } elseif ($key == 'state_enc_id') {
+                            $list->andWhere(['IN', 'ce2.state_enc_id', $value]);
                         } elseif ($key == 'phone') {
                             $list->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'username') {
