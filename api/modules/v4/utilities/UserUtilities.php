@@ -27,7 +27,7 @@ class UserUtilities
     public static $rolesArray = ['Operations Manager', 'Product Manager', 'MIS Manager', 'State Credit Head', 'HO Credit Manager'];
 
     // getting user data to return after signup/login
-    public function userData($user_id, $source = null)
+    public function userData($user_id, $source = null, $access_token = null)
     {
         try {
             // query to get user data
@@ -112,6 +112,8 @@ class UserUtilities
                 $user['refresh_token'] = $token->refresh_token;
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
+            } else {
+                $user['access_token'] = $access_token;
             }
             $refOrg = Referral::findOne(['organization_enc_id' => $user['organization_enc_id']]);
             $user['organization_ref_code'] = $refOrg->code;
@@ -121,7 +123,22 @@ class UserUtilities
             } else {
                 $user['specialAccessRole'] = false;
             }
-            return $user;
+
+            $allowed = array('https://www.empowerloans.in', 'https://staging.empowerloans.in', 'http://localhost:3000');
+            $url = in_array($_SERVER['HTTP_ORIGIN'], $allowed);
+            if ($url && $user['organization_slug'] == "phfleasing" && $user['username'] == "employeetest") {
+                $auto_login_token = UserAccessTokens::findOne(['access_token' => $user['access_token']]);
+                if ($auto_login_token) {
+                    $auto_login_token->source = Yii::$app->getRequest()->getUserIP();
+                    $auto_login_token->auto_login_token = \Yii::$app->security->generateRandomString(32);
+                    if ($auto_login_token->update()) {
+                        return ['status' => 308, 'access_token' => $user['access_token'], 'auto_login_token' => $auto_login_token->auto_login_token];
+                    }
+                    throw new \Exception(json_encode($token->getErrors()));
+                }
+            }
+
+            return ['status' => 200, 'data' => $user];
         } catch (\Exception $exception) {
             throw new \Exception($exception);
         }
