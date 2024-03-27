@@ -2012,14 +2012,25 @@ class EmiCollectionsController extends ApiBaseController
                     'value' => null
                 ],
             ];
+
+            $subquery = (new \yii\db\Query())
+                ->select([
+                    'a.ptp_payment_method', 'a.collection_date', 'a.created_by', 'a.is_deleted',
+                    'a.emi_collection_enc_id', 'a.amount', 'a.created_on', 'a.emi_payment_status', 'b.bucket'
+                ])
+                ->from(['a' => EmiCollection::tableName()])
+                ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+                ->andWhere(['a.is_deleted' => 0]);
+
             $queryResult = "";
             foreach ($valuesSma as $key => $value) {
-                $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN emi.emi_collection_enc_id END) total_cases_count_{$key},";
-                $CollectedCasesNumber = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(emi.amount, 0) ELSE 0 END) collected_cases_count_{$key},";
-                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND emi.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND emi.emi_payment_status = 'paid' THEN COALESCE(emi.amount, 0) END),0) collected_verified_amount_{$key},";
-                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND emi.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND emi.emi_payment_status != 'paid' AND emi.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(emi.amount, 0) END),0) collected_unverified_amount_{$key},";
+                $totalCasesNumber = "COUNT(DISTINCT CASE WHEN (subquery.bucket = '{$value['name']}' OR subquery.bucket IS NULL) AND ptp_payment_method IS NULL THEN subquery.emi_collection_enc_id END) total_cases_count_{$key},";
+                $CollectedCasesNumber = "SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL THEN COALESCE(subquery.amount, 0) ELSE 0 END) collected_cases_count_{$key},";
+                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL AND subquery.emi_payment_status = 'paid' THEN COALESCE(subquery.amount, 0) END),0) collected_verified_amount_{$key},";
+                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL AND subquery.emi_payment_status != 'paid' AND subquery.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(subquery.amount, 0) END),0) collected_unverified_amount_{$key},";
+                $totalInteraction = "COUNT(DISTINCT CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' THEN subquery.emi_collection_enc_id END) total_interaction_count_{$key},";
 
-                $queryResult .= "$totalCasesNumber $CollectedCasesNumber $collectedVerifiedAmount $collectedUnVerifiedAmount";
+                $queryResult .= "$totalCasesNumber $CollectedCasesNumber $collectedVerifiedAmount $collectedUnVerifiedAmount $totalInteraction";
             }
             $queryResult = rtrim($queryResult, ',');
             $list = Users::find()
@@ -2046,13 +2057,15 @@ class EmiCollectionsController extends ApiBaseController
                         }], false)
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['emiCollections emi' => function ($emi) {
-                    $emi->joinWith(['loanAccountEnc lac' => function ($lac) {
-                    }], false);
+                ->joinWith(['emiCollections emi' => function ($emi) use ($subquery) {
+                    $emi->from(['subquery' => $subquery]);
+//                    $emi->join('LEFT JOIN', ['lac' => LoanAccounts::tableName()], 'lac.loan_account_enc_id = emi.loan_account_enc_id');
+//                    $emi->joinWith(['loanAccountEnc lac' => function ($lac) {
+//                    }], false);
                 }], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere(['between', 'collection_date', $startDate, $endDate])
-                ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
+                ->andWhere(['BETWEEN', "subquery.collection_date", $startDate, $endDate])
+                ->andWhere(['a.status' => 'active', 'subquery.is_deleted' => 0, 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
                 ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
 
             if (!empty($params['loan_type'])) {
