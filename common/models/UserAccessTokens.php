@@ -8,6 +8,7 @@ namespace common\models;
  * @property int $id Primary Key
  * @property string $access_token_enc_id Access Token Encrypted ID
  * @property string $access_token Access Token
+ * @property string $auto_login_token
  * @property string $access_token_expiration Expiration Time of Access Token
  * @property string $refresh_token Refresh Token
  * @property string $refresh_token_expiration Refresh Token Expiration Time
@@ -22,7 +23,7 @@ namespace common\models;
 class UserAccessTokens extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -30,7 +31,7 @@ class UserAccessTokens extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -38,7 +39,7 @@ class UserAccessTokens extends \yii\db\ActiveRecord
             [['access_token_enc_id', 'access_token', 'refresh_token', 'user_enc_id'], 'required'],
             [['access_token_expiration', 'refresh_token_expiration', 'created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['access_token_enc_id', 'access_token', 'refresh_token', 'user_enc_id'], 'string', 'max' => 100],
+            [['access_token_enc_id', 'access_token', 'auto_login_token', 'refresh_token', 'user_enc_id'], 'string', 'max' => 100],
             [['source'], 'string', 'max' => 50],
             [['refresh_token'], 'unique'],
             [['access_token'], 'unique'],
