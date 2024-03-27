@@ -51,6 +51,7 @@ class EmiCollectionForm extends Model
     public $collection_date;
     public $customer_interaction;
     public $customer_visit;
+    public $loan_app_enc_id;
     public static $payment_methods = [
         'total' => 'Total',
         '1' => 'QR',
@@ -113,7 +114,7 @@ class EmiCollectionForm extends Model
             [['dealer_name'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 11;
             }],
-            [['ptp_amount', 'ptp_date', 'customer_interaction', 'customer_visit', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'customer_interaction', 'customer_visit', 'collection_date', 'ptp_payment_method', 'ptp_collection_manager', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'payment_method', 'borrower_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code', 'loan_account_enc_id', 'loan_app_enc_id'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -257,6 +258,9 @@ class EmiCollectionForm extends Model
         if ($model->emi_payment_mode == 1) {
             if (in_array($model->emi_payment_method, [1, 2])) {
                 $options = [];
+                if (!empty($this->loan_app_enc_id)) {
+                    $options['loan_app_enc_id'] = $this->loan_app_enc_id;
+                }
                 $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
                 $options['user_id'] = $user_id;
                 $options['org_id'] = $this->org_id;
@@ -288,14 +292,14 @@ class EmiCollectionForm extends Model
         if ($type == 1) {
             $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['qr'] = \common\models\payments\Payments::createQr($api, $options);
-            if (!$link) {
+            if (!$link['qr']) {
                 throw new \Exception('an error occurred while creating qr');
             }
         }
         if ($type == 2) {
             $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['link'] = \common\models\payments\Payments::createLink($api, $options);
-            if (!$link) {
+            if (!$link['link']) {
                 throw new \Exception('an error occurred while creating link');
             }
         }
