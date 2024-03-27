@@ -211,7 +211,7 @@ class OrganizationsController extends ApiBaseController
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
                 ->orderBy(['a.location_name' => SORT_ASC]);
 
-            if (!empty($params) && $params['type'] == 'dashboard') {
+            if (!empty($params) && $params['type'] == 'settings') {
                 $locations->addSelect(["b.name as city"]);
             }
             $locations = $locations->asArray()->all();
