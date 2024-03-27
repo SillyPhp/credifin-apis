@@ -2,7 +2,9 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
 use common\models\AssignedDeals;
+use common\models\AssignedLoanPayments;
 use common\models\AssignedLoanProvider;
 use common\models\ClaimedDeals;
 use common\models\EducationLoanPayments;
@@ -13,6 +15,7 @@ use common\models\LoanSanctionReports;
 use Exception;
 use Razorpay\Api\Api;
 use Yii;
+use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 
@@ -48,137 +51,86 @@ class CandidateDashboardController extends ApiBaseController
 
     public function actionCreatePaymentLink()
     {
-        Yii::$app->cache->flush();
         $user = $this->isAuth();
         $params = $this->post;
-        if (!isset($params['pay_by'])) {
-            return $this->response(500, ['message' => 'missing information "pay_by"']);
-        }
+        $transaction = Yii::$app->db->beginTransaction();
         try {
+            if (empty($params['emi_amount']) || !isset($params['pay_by']) || empty($params['loan_app_enc_id'])) {
+                throw new \Exception("missing information 'loan_app_enc_id' or 'pay_by' or 'emi_amount'");
+            }
             $type = $params['pay_by'];
-            $loan_payments = LoanPayments::find()
+            if (!in_array($type, [0, 1])) {
+                throw new \Exception("Invalid pay_by");
+            }
+            $query = AssignedLoanPayments::find()
                 ->alias('a')
-                ->select(['a.payment_short_url AS link'])
-                ->innerJoinWith(['assignedLoanPayments AS b' => function ($b) use ($params) {
-                    $b->andOnCondition(['b.loan_app_enc_id' => $params['loan_app_enc_id']]);
+                ->select(['b.payment_short_url AS link'])
+                ->innerJoinWith(['loanPaymentsEnc AS b' => function ($b) use ($params) {
+                    $b->andOnCondition([
+                        "AND",
+                        ['b.payment_amount' => $params['emi_amount']],
+                        ['b.payment_link_type' => $params['pay_by']],
+                        ['>=', 'b.close_by', date('Y-m-d H:i:s')],
+                        ['b.payment_mode_status' => 'active'],
+                        ['b.payment_status' => 'pending']
+                    ]);
                 }], false)
-                ->andWhere([
-                    'AND',
-                    ['a.payment_link_type' => $type],
-                    ['>=', 'a.close_by', date('Y-m-d H:i:s')],
-                    ['a.payment_mode_status' => 'active'],
-                    ['a.payment_status' => 'pending']
-                ])
+                ->andWhere(['a.loan_app_enc_id' => $params['loan_app_enc_id']])
                 ->asArray()
                 ->one();
-            if ($loan_payments) {
-                $link = $loan_payments['link'];
-            }
-            if (empty($link)) {
-                $options = [];
-                $options['loan_app_enc_id'] = $params['loan_app_enc_id'];
-                $options['user_id'] = $user->user_enc_id;
-                $options['org_id'] = $params['org_id'];
-                $options['amount'] = $params['emi_amount'];
-                $options['description'] = 'Emi collection for ' . $params['loan_type'];
-                $options['name'] = $params['name'];
-                $options['contact'] = $params['phone'];
-                $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
-                // $options['brand'] = $paramsbrand;
-                $options['purpose'] = $params['loan_type'];
+            $link = !empty($query) ? $query['link'] : '';
+            if (!$link) {
+                $loan = LoanApplications::find()
+                    ->alias('a')
+                    ->select(['a.loan_app_enc_id', 'a.applicant_name', 'a.application_number', 'a.phone', 'b.branch_enc_id', 'c.name loan_type', 'GROUP_CONCAT(DISTINCT d1.purpose) AS purposes', 'b.provider_enc_id AS org_id'])
+                    ->joinWith(['assignedLoanProviders AS b'], false)
+                    ->joinWith(['loanProductsEnc AS c'], false)
+                    ->joinWith(['loanPurposes AS d' => function ($d) {
+                        $d->joinWith(['financerLoanPurposeEnc AS d1'], false);
+                    }], false)
 
-                $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
-                if (!$keys) {
-                    throw new \Exception('an error occurred while fetching razorpay credentials');
+                    ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id']])
+                    ->groupBy(['a.loan_app_enc_id', 'b.assigned_loan_provider_enc_id', 'd.loan_app_enc_id'])
+                    ->asArray()
+                    ->one();
+                if (!$loan) {
+                    throw new \Exception("Loan Application not found");
                 }
-                $api_key = $keys['api_key'];
-                $api_secret = $keys['api_secret'];
-                $api = new Api($api_key, $api_secret);
-                $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
-
-                $options['close_by'] = time() + 24 * 60 * 60 * 30;
-                if ($type == 0) {
-                    $link = \common\models\payments\Payments::createLink($api, $options);
+                $model = new EmiCollectionForm();
+                $model->branch_enc_id = $loan['branch_enc_id'];
+                $model->customer_name = $loan['applicant_name'];
+                $model->loan_account_number = $loan['application_number'];
+                $model->loan_app_enc_id = $loan['loan_app_enc_id'];
+                $model->phone = $loan['phone'];
+                $model->amount = $params['emi_amount'];
+                $model->loan_type = $loan['loan_type'];
+                $model->loan_purpose = $loan['purposes'];
+                $model->payment_mode = 1;
+                $model->payment_method = $type == 0 ? 2 : $type;
+                $model->address = $params['address'];
+                $model->postal_code = $params['pincode'];
+                $model->latitude = $params['latitude'];
+                $model->longitude = $params['longitude'];
+                $model->org_id = $loan['org_id'];
+                $model->brand = 'testing';
+                $save = $model->save($user->user_enc_id);
+                if ($save['status'] != 200) {
+                    throw new Exception('An error occurred.');
                 }
-                if ($type == 1) {
-                    $link = \common\models\payments\Payments::createQr($api, $options);
+                if (!empty($save['links']['link'])) {
+                    $link = $save['links']['link'];
+                } elseif (!empty($save['links']['qr'])) {
+                    $link = $save['links']['qr'];
                 }
             }
             if (!$link) {
-                throw new \Exception("Unable to generate.");
+                throw new \Exception("An error occurred while creating link");
             }
+            $transaction->commit();
             return $this->response(200, ['message' => 'success', 'type' => $type, 'link' => $link]);
         } catch (Exception $exception) {
+            $transaction->rollback();
             return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
-        }
-    }
-
-    // this action is called for loan details
-    public function actionLoanDetails2()
-    {
-        // checking user authorization
-        if ($user = $this->isAuthorized()) {
-
-            // getting details of loan applications of this user
-            $loan_application = LoanApplications::find()
-                ->alias('a')
-                ->select(['a.id', 'a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount', 'a.is_deleted'])
-                ->joinWith(['educationLoanPayments b' => function ($b) {
-                    $b->select(['b.loan_app_enc_id', 'b.payment_status']);
-                    $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
-                }])
-                ->joinWith(['assignedLoanProviders c' => function ($c) {
-                    $c->select(['c.assigned_loan_provider_enc_id', 'c.provider_enc_id', 'c.loan_application_enc_id', 'c.status', 'c1.name', '(CASE
-                WHEN c1.logo IS NULL OR c1.logo = "" THEN
-                CONCAT("https://ui-avatars.com/api/?name=", c1.name, "&size=50&rounded=false&background=", REPLACE(c1.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '", c1.logo_location, "/", c1.logo) END
-                ) organization_logo']);
-                    $c->joinWith(['providerEnc c1'], false);
-                    $c->onCondition(['c.is_deleted' => 0]);
-                }])
-                ->joinWith(['loanApplicationNotifications e' => function ($e) {
-                    $e->select(['e.message', 'e.loan_application_enc_id', 'e.created_on']);
-                }])
-                ->where(['a.created_by' => $user->user_enc_id])
-                ->groupBy(['a.loan_app_enc_id'])
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            // this query is showing applications list in sidebar to get detail
-            $loan_apps = LoanApplications::find()
-                ->select(['loan_app_enc_id', 'applicant_name', 'amount'])
-                ->where(['created_by' => $user->user_enc_id])
-                ->groupBy(['loan_app_enc_id'])
-                ->orderBy(['created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            if ($loan_application) {
-
-                // looping loan_application array to set educationLoanPayments data
-                foreach ($loan_application as $key => $val) {
-
-                    // if educationLoanPayments not empty then getting payment detail and add payment_token and payment_amount
-                    if (!empty($loan_application['educationLoanPayments'])) {
-                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-                        $loan_application[$key]['payment_token'] = $get_amount->payment_token;
-                        $loan_application[$key]['amount'] = $get_amount->payment_amount;
-                    }
-
-                    // getting loanSanctionReports data
-                    $loan_application[$key]['loanSanctionReports'] = [];
-                    if (!empty($val['assignedLoanProviders']) && $val['assignedLoanProviders'][0]['status'] == 5) {
-                        $loan_application[$key]['loanSanctionReports'] = $this->__loanSanctionReports($val['loan_app_enc_id'], $val['assignedLoanProviders'][0]['provider_enc_id']);
-                    }
-                }
-            }
-
-            // returning data
-            return $this->response(200, ['status' => 200, 'loan_applications' => $loan_application, 'loan_apps' => $loan_apps]);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -197,7 +149,25 @@ class CandidateDashboardController extends ApiBaseController
                 'a.amount AS loan_amount',
                 'a.application_number', 'b.name AS loan_type', 'ANY_VALUE(c1.location_name) AS branch_name',
                 'ANY_VALUE(c2.name) AS loan_provider', 'a.created_on AS applied_date',
-                "GROUP_CONCAT(DISTINCT d1.purpose) AS purposes"
+                "GROUP_CONCAT(DISTINCT d1.purpose) AS purposes",
+                "CASE WHEN g.bucket = 'onTime' THEN g.emi_amount ELSE
+                        (CASE WHEN COALESCE(SUM(g.ledger_amount), 0) + COALESCE(SUM(g.overdue_amount), 0) < g.emi_amount * (
+                            CASE 
+                                WHEN g.bucket = 'sma-0' THEN 1.25
+                                WHEN g.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN g.bucket = 'npa' THEN 2
+                                ELSE 1
+                            END)  
+                        THEN COALESCE(SUM(g.ledger_amount), 0) + COALESCE(SUM(g.overdue_amount), 0)  
+                        ELSE g.emi_amount * 
+                                (CASE 
+                                    WHEN g.bucket = 'sma-0' THEN 1.25
+                                    WHEN g.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                    WHEN g.bucket = 'npa' THEN 2
+                                    ELSE 1
+                                END) 
+                        END) 
+                    END target_collection_amount", "g.overdue_amount"
             ])
             ->joinWith(['loanProductsEnc AS b'], false)
             ->joinWith(['assignedLoanProviders AS c' => function ($c) {
@@ -216,11 +186,19 @@ class CandidateDashboardController extends ApiBaseController
                     'e.voter_card_number', 'e.aadhaar_number', 'e.pan_number',
                     "(CASE WHEN e.gender = 1 THEN 'Male' WHEN e.gender = 2 THEN 'Female' WHEN e.gender = 3 THEN 'Others' ELSE null END) gender",
                     'e.marital_status', 'e.driving_license_number', 'e.cibil_score', 'e.passport_number',
-                    "CASE WHEN e.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',e.image_location, e.image) ELSE NULL END image",
+                    "CASE WHEN e.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',e.image_location, e.image) ELSE NULL END image"
                 ]);
                 $e->joinWith(['loanApplicantResidentialInfos e1' => function ($e1) {
                     $e1->joinWith(['cityEnc e2'], false);
                     $e1->joinWith(['stateEnc e3'], false);
+                }], false);
+            }])
+            ->joinWith(['loanApplicationOptions AS f'], false)
+            ->joinWith(['loanAccounts AS g'], false)
+            ->joinWith(['assignedLoanPayments AS h' => function ($h) {
+                $h->select(['h.loan_app_enc_id', 'h1.payment_amount']);
+                $h->joinWith(['loanPaymentsEnc h1' => function ($h1) {
+                    $h1->andOnCondition(['h1.payment_status' => 'captured', "DATE_FORMAT(h1.created_on, '%Y-%m')" =>  new Expression("DATE_FORMAT(NOW(), '%Y-%m')")]);
                 }], false);
             }]);
 
@@ -229,19 +207,21 @@ class CandidateDashboardController extends ApiBaseController
         }
 
         $query = $query
-            ->joinWith(['loanApplicationOptions f'], false)
             ->andWhere(['a.is_deleted' => 0, 'a.phone' => $user->phone])
             ->groupBy(['a.loan_app_enc_id', 'c.status', 'f.model_year', 'f.vehicle_color', 'f.emi_amount', 'c.provider_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->limit(10)
-            ->asArray()
-            ->all();
-
-        if (!$query) {
-            return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
+        ->asArray()
+        ->all();
+        foreach ($query as &$item) {
+            $item["paid"] = false;
+            if (in_array($item['target_collection_amount'], array_column($item['assignedLoanPayments'], 'payment_amount'))) {
+                $item["paid"] = true;
+            }
+            unset($item['assignedLoanPayments']);
         }
 
-        return $this->response(200, ['status' => 200, 'loan_applications' => $query]);
+        return $this->response(200, ['status' => 200, 'loan_applications' => $query ?? []]);
     }
 
     public function actionGetEmiDetails()
@@ -284,10 +264,7 @@ class CandidateDashboardController extends ApiBaseController
             ->asArray()
             ->one();
 
-        if (!$emi) {
-            return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Data not Found']);
-        }
-        return $this->response(200, ['status' => 200, 'data' => $emi]);
+        return $this->response(200, ['status' => 200, 'data' => $emi ?? []]);
     }
 
     // getting loan sanction reports
@@ -318,9 +295,11 @@ class CandidateDashboardController extends ApiBaseController
         // getting provider detail
         $assigned_loan_provider = AssignedLoanProvider::find()
             ->alias('a')
-            ->select(['a.assigned_loan_provider_enc_id', 'a.loan_application_enc_id', 'a.status', 'b.name',
+            ->select([
+                'a.assigned_loan_provider_enc_id', 'a.loan_application_enc_id', 'a.status', 'b.name',
                 '(CASE WHEN b.logo IS NULL OR b.logo = "" THEN CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '", b.logo_location, "/", b.logo) END) organization_logo',
-                'c.loan_type', 'c.amount'])
+                'c.loan_type', 'c.amount'
+            ])
             ->joinWith(['providerEnc b'], false)
             ->joinWith(['loanApplicationEnc c'], false)
             ->where(['a.assigned_loan_provider_enc_id' => $params['loan_provider_id']])
@@ -328,7 +307,6 @@ class CandidateDashboardController extends ApiBaseController
             ->one();
 
         return $this->response(200, ['status' => 200, 'assigned_loan_provider' => $assigned_loan_provider]);
-
     }
 
     // checking application exists for pro benefits
@@ -414,7 +392,6 @@ class CandidateDashboardController extends ApiBaseController
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }

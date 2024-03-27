@@ -81,13 +81,11 @@ class EmiCollectionsController extends ApiBaseController
         if (empty($params["start_date"]) || empty($params["end_date"])) {
             return $this->response(500, ["error" => "'start date' or 'end date' missing"]);
         }
-        $start_date = strtotime($params["start_date"]);
-        $end_date = strtotime($params["end_date"]);
-        if ($start_date === $end_date) {
-            $end_date += (24 * 60 * 60) - 1;
-        } else if ($end_date <= $start_date) {
+        if (strtotime($params["end_date"]) < strtotime($params["start_date"])) {
             return $this->response(500, ["error" => "end date must be greater than start date"]);
         }
+        $start_date = $params["start_date"] . " 00:00:00";
+        $end_date = $params["end_date"] . " 23:59:59";
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
@@ -126,7 +124,7 @@ class EmiCollectionsController extends ApiBaseController
                 }], false);
             }], false)
             ->andWhere(["a.is_deleted" => 0, "a.emi_payment_status" => !empty($params['status']) ? $params['status'] : "paid"])
-            ->andWhere(["BETWEEN", "UNIX_TIMESTAMP(a.updated_on)", $start_date, $end_date])
+            ->andWhere(["BETWEEN", "a.updated_on", $start_date, $end_date])
             ->asArray()
             ->all();
         $payment_methods = EmiCollectionForm::$payment_methods;
@@ -2069,10 +2067,14 @@ class EmiCollectionsController extends ApiBaseController
                             $list->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'employee_name') {
                             $list->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
+                        } elseif ($key == 'state_enc_id') {
+                            $list->andWhere(['IN', "b5.state_enc_id", $value]);
                         } elseif ($key == 'reporting_person') {
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
                             $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                        } elseif ($key == 'state_enc_id') {
+                            $list->andWhere(['IN', 'b5.state_enc_id', $value]);
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
