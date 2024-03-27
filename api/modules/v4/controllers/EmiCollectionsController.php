@@ -1276,7 +1276,8 @@ class EmiCollectionsController extends ApiBaseController
             }], false)
             ->groupBy(['a.emi_collection_enc_id', 'b1a.designation', 'b.user_enc_id', 'd1.payment_short_url'])
             ->orderBy(['a.created_on' => SORT_DESC])
-            ->andWhere(['a.is_deleted' => 0]);
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['>', 'a.amount', 0]);
 
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
