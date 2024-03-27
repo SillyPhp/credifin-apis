@@ -392,7 +392,7 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN a.gender = '2' THEN 'Female'
                     ELSE 'N/A'
                 END) as gender",
-                "a.login_date"
+                "a.login_date", 'ce2.name as state_name'
             ])
             ->joinWith(['loanPurposes lpp' => function ($lpp) {
                 $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
@@ -416,7 +416,11 @@ class CompanyDashboardController extends ApiBaseController
                 if (!empty($roleUnderId) || $roleUnderId != null) {
                     $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                 }
-                $i->joinWith(['branchEnc be']);
+                $i->joinWith(['branchEnc be' => function ($be) {
+                    $be->joinWith(['cityEnc ce1' => function ($ce1) {
+                        $ce1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }]);
             }])
             ->joinWith(['managedBy k'], false)
             ->joinWith(['loanProductsEnc lp'], false)
@@ -516,7 +520,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
+            $a = ['applicant_name', 'login_date', 'state_enc_id', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -538,6 +542,9 @@ class CompanyDashboardController extends ApiBaseController
                         switch ($key) {
                             case 'loan_products_enc_id':
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                                break;
+                            case 'state_enc_id':
+                                $loans->andWhere(['IN', "ce2.state_enc_id", $val]);
                                 break;
                             case 'login_start_date':
                                 $loans->andWhere(['>=', 'a.login_date', $val]);
@@ -3210,13 +3217,18 @@ class CompanyDashboardController extends ApiBaseController
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and (c2.value = '32' or c2.value = '28') AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as rejected",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value = '31' AND c.loan_status_updated_on <= '$endDate' AND c.loan_status_updated_on >= '$startDate' THEN c.loan_app_enc_id END) as disbursed",
                     "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' AND c.form_type = 'others' AND c.login_date IS NOT NULL AND c.login_date <= '$endDate' AND c.login_date >= '$startDate' THEN c.loan_app_enc_id END) as login",
-                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process"
+                    "COUNT(DISTINCT CASE WHEN c.is_deleted = '0' and c.form_type = 'others' and c2.value > '4' and c2.value < '26' AND c.loan_status_updated_on <= '$endDate' THEN c.loan_app_enc_id END) as under_process",
+                    "ANY_VALUE(ce2.name) as state_name"
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
                         ->joinWith(['designation gd'])
                         ->joinWith(['reportingPerson b2'])
-                        ->joinWith(['branchEnc b3'])
+                        ->joinWith(['branchEnc b3' => function ($b3) {
+                            $b3->joinWith(['cityEnc ce1' => function ($ce1) {
+                                $ce1->joinWith(['stateEnc ce2'], false);
+                            }], false);
+                        }])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
@@ -3256,6 +3268,8 @@ class CompanyDashboardController extends ApiBaseController
                             $employeeStats->andWhere(['like', 'b.' . $key, $value]);
                         } elseif ($key == 'phone') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
+                        } elseif ($key == 'state_enc_id') {
+                            $employeeStats->andWhere(['IN', 'ce2.state_enc_id', $value]);
                         } elseif ($key == 'username') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'employee_name') {
@@ -3459,6 +3473,7 @@ class CompanyDashboardController extends ApiBaseController
                 $financerDesignations = FinancerAssignedDesignations::find()
                     ->select(['assigned_designation_enc_id as id', 'designation as value'])
                     ->andWhere(['organization_enc_id' => $org_id, 'is_deleted' => 0])
+                    ->orderBy(['designation' => SORT_ASC])
                     ->asArray()
                     ->all();
                 return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
