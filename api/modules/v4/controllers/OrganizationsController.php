@@ -192,6 +192,7 @@ class OrganizationsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+            $params = Yii::$app->request->post();
             $org_id = $user->organization_enc_id;
             if (!$org_id) {
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
@@ -206,10 +207,14 @@ class OrganizationsController extends ApiBaseController
                 ->select(["a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
                     "a.location_name", "a.location_for", "a.address", "a.status"])
                 ->addSelect(["a.location_name as value"])
+                ->joinWith(["cityEnc b"], false)
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
-                ->orderBy(['a.location_name' => SORT_ASC])
-                ->asArray()
-                ->all();
+                ->orderBy(['a.location_name' => SORT_ASC]);
+
+            if (!empty($params) && $params['type'] == 'dashboard') {
+                $locations->addSelect(["b.name as city"]);
+            }
+            $locations = $locations->asArray()->all();
 
             if ($locations) {
                 return $this->response(200, ["status" => 200, "branches" => $locations]);
@@ -3197,6 +3202,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
+            ->orderBy(['b1.state_enc_id' => SORT_ASC])
             ->groupBy(['b1.state_enc_id']);
 
         $states = $states_query->asArray()->all();
