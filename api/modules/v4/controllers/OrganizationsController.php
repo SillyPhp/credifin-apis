@@ -1668,7 +1668,7 @@ class OrganizationsController extends ApiBaseController
                 'emi_payment_method AS method',
                 'emi_payment_status AS status',
                 'SUM(amount) AS sum',
-                'COUNT(amount) AS count'
+                'COUNT(CASE WHEN amount > 0 OR emi_payment_method = 0 THEN amount END) AS count'
             ])
             ->andWhere(['is_deleted' => 0])
             ->andWhere(['BETWEEN', 'COALESCE(collection_date, created_on)', $params['start_date'], $params['end_date']]);
@@ -1718,6 +1718,9 @@ class OrganizationsController extends ApiBaseController
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
+            if($item['status'] == 'not paid'){
+                $item['status'] = 'not collected';
+            }
             $sum = $item['sum'];
             $count = $item['count'];
             $status = ucwords($item['status']);
