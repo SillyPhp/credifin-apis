@@ -335,7 +335,7 @@ class EmployeeController extends ApiBaseController
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
-            if (isset($params['report_type'])) {
+            if (isset($params['report_type'])&&$params['report_type'] != "") {
                 $list->andWhere(['=', 'ala.user_type', $params['report_type']]);
             }
             $count = $list->count();

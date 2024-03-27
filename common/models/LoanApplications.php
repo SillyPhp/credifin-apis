@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
@@ -98,6 +96,8 @@ use Yii;
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property EmiPaymentIssues[] $emiPaymentIssues
  * @property EmployeeIncentivePoints[] $employeeIncentivePoints
+ * @property LoanAccounts $loanAccounts
+ * @property LoanCoApplicants[] $loanAppEncs
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
@@ -255,6 +255,21 @@ class LoanApplications extends \yii\db\ActiveRecord
         return $this->hasMany(EmployeeIncentivePoints::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAccounts()
+    {
+        return $this->hasOne(LoanAccounts::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanAppEncs()
+    {
+        return $this->hasMany(LoanCoApplicants::className(), ['loan_app_enc_id' => 'loan_app_enc_id'])->viaTable('{{%loan_accounts}}', ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */
