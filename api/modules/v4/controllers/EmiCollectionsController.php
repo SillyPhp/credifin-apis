@@ -10,6 +10,7 @@ use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\UsersExtended;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
@@ -1978,145 +1979,146 @@ class EmiCollectionsController extends ApiBaseController
 
     public function actionCollectionDailyStats()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            $limit = !empty($params['limit']) ? $params['limit'] : 10;
-            $page = !empty($params['page']) ? $params['page'] : 1;
-            $startDate = $params['start_date'];
-            $endDate = $params['end_date'];
-            $org_id = $user->organization_enc_id;
-            if (!$org_id) {
-                $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-                $org_id = $user_roles->organization_enc_id;
-            }
-            $valuesSma = [
-                'SMA0' => [
-                    'name' => 'SMA-0',
-                    'value' => 1.25
-                ],
-                'SMA1' => [
-                    'name' => 'SMA-1',
-                    'value' => 1.5
-                ],
-                'SMA2' => [
-                    'name' => 'SMA-2',
-                    'value' => 1.5
-                ],
-                'NPA' => [
-                    'name' => 'NPA',
-                    'value' => 1
-                ],
-                'OnTime' => [
-                    'name' => 'OnTime',
-                    'value' => null
-                ],
-            ];
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $startDate = $params['start_date'];
+        $endDate = $params['end_date'];
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+        $valuesSma = [
+            'SMA0' => [
+                'name' => 'SMA-0',
+                'value' => 1.25
+            ],
+            'SMA1' => [
+                'name' => 'SMA-1',
+                'value' => 1.5
+            ],
+            'SMA2' => [
+                'name' => 'SMA-2',
+                'value' => 1.5
+            ],
+            'NPA' => [
+                'name' => 'NPA',
+                'value' => 1
+            ],
+            'OnTime' => [
+                'name' => 'OnTime',
+                'value' => null
+            ],
+        ];
+        $select = [
+            "COUNT(a.id) total_cases_count",
+            "SUM(CASE WHEN a.amount > 0 THEN a.amount END) total_collected_cases_sum",
+            "SUM(CASE WHEN a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END) total_collected_verified_amount",
+            "SUM(CASE WHEN a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END) total_collected_unverified_amount",
+            "COUNT(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN a.amount END) total_interaction_count",
+            "SUM(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END) total_interaction_sum",
+        ];
+        foreach ($valuesSma as $key => $value) {
+            $select[] = "COALESCE(COUNT(CASE WHEN (b.bucket = '{$value['name']}') AND a.amount > 0 THEN a.amount END), 0) {$key}_total_cases_count";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_cases_sum";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_verified_amount";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END), 0) {$key}_collected_unverified_amount";
+            $select[] = "COALESCE(COUNT(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN a.amount END), 0) {$key}_total_interaction_count";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END), 0) {$key}_total_interaction_sum";
+        }
 
-            $subquery = (new \yii\db\Query())
-                ->select([
-                    'a.ptp_payment_method', 'a.collection_date', 'a.created_by', 'a.is_deleted',
-                    'a.emi_collection_enc_id', 'a.amount', 'a.created_on', 'a.emi_payment_status', 'b.bucket'
-                ])
-                ->from(['a' => EmiCollection::tableName()])
-                ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
-                ->andWhere(['a.is_deleted' => 0]);
+        $subquery = (new \yii\db\Query())
+            ->select(['a.created_by'])
+            ->addSelect($select)
+            ->from(['a' => EmiCollection::tableName()])
+            ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+            ->join('LEFT JOIN', ['c' => LoanAccountPtps::tableName()], 'c.emi_collection_enc_id = a.emi_collection_enc_id')
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['BETWEEN', "a.collection_date", $startDate, $endDate])
+            ->groupBy(['a.created_by']);
+        if (!empty($params['loan_type'])) {
+            $subquery->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+        }
+        $list = Users::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id',
+                "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
+                "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
+                "(CASE WHEN b2.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b2.image_location, '/', b2.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b2.first_name,' ',b2.last_name), '&size=200&rounded=true&background=', REPLACE(b2.initials_color, '#', ''), '&color=ffffff') END) reporting_image",
+                'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
+                'gd.designation designation',
+                "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
+                'b3.location_name branch_name', 'b3.location_enc_id branch_id', 'b5.name as state_name', 'subquery.*'
+            ])
+            ->joinWith(['userRoles0 b' => function ($b) {
+                $b->joinWith(['designationEnc b1'])
+                    ->joinWith(['designation gd'])
+                    ->joinWith(['reportingPerson b2'])
+                    ->joinWith(['branchEnc b3' => function ($b3) {
+                        $b3->joinWith(['cityEnc b6' => function ($b6) {
+                            $b6->joinWith(['stateEnc b5'], false);
+                        }], false);
+                    }], false)
+                    ->joinWith(['userTypeEnc b4']);
+            }], false)
+            ->innerJoin(['subquery' => $subquery], 'a.user_enc_id = subquery.created_by')
+            ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
+            ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
+            ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
 
-            $queryResult = "";
-            foreach ($valuesSma as $key => $value) {
-                $totalCasesNumber = "COUNT(DISTINCT CASE WHEN (subquery.bucket = '{$value['name']}' OR subquery.bucket IS NULL) AND ptp_payment_method IS NULL THEN subquery.emi_collection_enc_id END) total_cases_count_{$key},";
-                $CollectedCasesNumber = "SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL THEN COALESCE(subquery.amount, 0) ELSE 0 END) collected_cases_count_{$key},";
-                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL AND subquery.emi_payment_status = 'paid' THEN COALESCE(subquery.amount, 0) END),0) collected_verified_amount_{$key},";
-                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' AND ptp_payment_method IS NULL AND subquery.emi_payment_status != 'paid' AND subquery.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(subquery.amount, 0) END),0) collected_unverified_amount_{$key},";
-                $totalInteraction = "COUNT(DISTINCT CASE WHEN subquery.bucket IS NOT NULL AND subquery.bucket = '{$value['name']}' THEN subquery.emi_collection_enc_id END) total_interaction_count_{$key},";
 
-                $queryResult .= "$totalCasesNumber $CollectedCasesNumber $collectedVerifiedAmount $collectedUnVerifiedAmount $totalInteraction";
-            }
-            $queryResult = rtrim($queryResult, ',');
-            $list = Users::find()
-                ->alias('a')
-                ->select([
-                    'a.user_enc_id',
-                    "(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name,' ',a.last_name) ELSE a.first_name END) as employee_name",
-                    "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
-                    "(CASE WHEN b2.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . "',b2.image_location, '/', b2.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b2.first_name,' ',b2.last_name), '&size=200&rounded=true&background=', REPLACE(b2.initials_color, '#', ''), '&color=ffffff') END) reporting_image",
-                    'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code',
-                    'gd.designation designation',
-                    "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
-                    'b3.location_name branch_name', 'b3.location_enc_id branch_id', 'b5.name as state_name',
-                    $queryResult
-                ])
-                ->joinWith(['userRoles0 b' => function ($b) {
-                    $b->joinWith(['designationEnc b1'])
-                        ->joinWith(['designation gd'])
-                        ->joinWith(['reportingPerson b2'])
-                        ->joinWith(['branchEnc b3' => function ($b3) {
-                            $b3->joinWith(['cityEnc b6' => function ($b6) {
-                                $b6->joinWith(['stateEnc b5'], false);
-                            }], false);
-                        }], false)
-                        ->joinWith(['userTypeEnc b4']);
-                }], false)
-                ->joinWith(['emiCollections emi' => function ($emi) use ($subquery) {
-                    $emi->from(['subquery' => $subquery]);
-//                    $emi->join('LEFT JOIN', ['lac' => LoanAccounts::tableName()], 'lac.loan_account_enc_id = emi.loan_account_enc_id');
-//                    $emi->joinWith(['loanAccountEnc lac' => function ($lac) {
-//                    }], false);
-                }], false)
-                ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                ->andWhere(['BETWEEN', "subquery.collection_date", $startDate, $endDate])
-                ->andWhere(['a.status' => 'active', 'subquery.is_deleted' => 0, 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
-                ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
-
-            if (!empty($params['loan_type'])) {
-                $list->andWhere(['IN', 'emi.loan_type', $params['loan_type']]);
-            }
-            if (!empty($params['fields_search'])) {
-                foreach ($params['fields_search'] as $key => $value) {
-                    if (!empty($value)) {
-                        if ($key == 'employee_code') {
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value)) {
+                    switch ($key) {
+                        case 'employee_code':
                             $list->andWhere(['like', 'b.' . $key, $value]);
-                        } elseif ($key == 'phone') {
+                            break;
+                        case 'phone':
+                        case 'username':
                             $list->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'username') {
-                            $list->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'employee_name') {
-                            $list->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
-                        } elseif ($key == 'state_enc_id') {
+                            break;
+                        case 'employee_name':
+                            $list->andWhere(['like', "CONCAT(a.first_name,' ', COALESCE(a.last_name))", $value]);
+                            break;
+                        case 'state_enc_id':
                             $list->andWhere(['IN', "b5.state_enc_id", $value]);
-                        } elseif ($key == 'reporting_person') {
-                            $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
-                        } elseif ($key == 'branch') {
+                            break;
+                        case 'reporting_person':
+                            $list->andWhere(['like', "CONCAT(b2.first_name,' ', COALESCE(b2.last_name))", $value]);
+                            break;
+                        case 'branch':
                             $list->andWhere(['IN', 'b3.location_enc_id', $value]);
-                        } elseif ($key == 'state_enc_id') {
-                            $list->andWhere(['IN', 'b5.state_enc_id', $value]);
-                        } elseif ($key == 'designation_id') {
+                            break;
+                        case 'designation_id':
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
-                        } else {
+                            break;
+                        default:
                             $list->andWhere(['like', $key, $value]);
-                        }
                     }
                 }
             }
+        }
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
                 $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
                 $list->andWhere(['a.user_enc_id' => $juniors]);
             }
-            if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
-                $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
-            }
-            $count = $list->count();
-            $list = $list
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
-            if ($list):
-                $list = ArrayProcessJson::Parse($list);
-            endif;
-            return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        if (!empty($params['field']) && !empty($params['order_by'])) {
+            $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
         }
+        $count = $list->count();
+        $list = $list
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
+
     }
 
 }
