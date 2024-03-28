@@ -48,7 +48,8 @@ class AuthController extends ApiBaseController
                 'reset-old-password',
                 'update-profile',
                 'get-token',
-                'varify-token'
+                'varify-token',
+                'auto-login'
 
             ],
             'class' => HttpBearerAuth::className()
@@ -73,6 +74,7 @@ class AuthController extends ApiBaseController
                 'update-profile' => ['POST', 'OPTIONS'],
                 'get-token' => ['POST', 'OPTIONS'],
                 'varify-token' => ['POST', 'OPTIONS'],
+                'auto-login' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -262,7 +264,7 @@ class AuthController extends ApiBaseController
                     $userData = new UserUtilities();
                     $user_data = $userData->userData($user->user_enc_id, $source);
 
-                    return $this->response(200, ['status' => 200, 'data' => $user_data]);
+                    return $this->response($user_data['status'], $user_data);
                 }
 
                 // if form not validated then return 409 conflict and incorrect username and password
@@ -557,22 +559,22 @@ class AuthController extends ApiBaseController
 
             // creating user utilities model to get user data
             $userData = new UserUtilities();
-            $data = $userData->userData($user->user_enc_id);
+            $data = $userData->userData($user->user_enc_id, null, $token->access_token);
 
             // adding token detail to data
-            $data['access_token'] = $token->access_token;
-            $data['source'] = $token->source;
-            $data['refresh_token'] = $token->refresh_token;
-            $data['access_token_expiry_time'] = $token->access_token_expiration;
-            $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
+            $data['data']['access_token'] = $token->access_token;
+            $data['data']['source'] = $token->source;
+            $data['data']['refresh_token'] = $token->refresh_token;
+            $data['data']['access_token_expiry_time'] = $token->access_token_expiration;
+            $data['data']['refresh_token_expiry_time'] = $token->refresh_token_expiration;
 
             // if password is user phone then it will send weak_password true else false
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['password'] = $user->phone;
             $pass = $utilitiesModel->encrypt_pass();
-            $data['weak_password'] = $pass === $user['password'];
+            $data['data']['weak_password'] = $pass === $user['password'];
 
-            return $this->response(200, ['status' => 200, 'data' => $data]);
+            return $this->response($data["status"], $data);
 
         } catch (\Exception $exception) {
             return $this->response(500, ['status' => 200, 'message' => 'an error occurred', 'error' => json_decode($exception, true)]);
@@ -810,4 +812,37 @@ class AuthController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
     }
+
+    public function actionAutoLogin()
+    {
+        $new_source = Yii::$app->getRequest()->getUserIP();
+        $params = Yii::$app->request->post();
+        $login_token = UserAccessTokens::find()
+            ->alias('a')
+            ->select(['a.is_deleted', 'b.user_enc_id', 'a.access_token'])
+            ->joinWith(['userEnc b'], false)
+            ->andWhere(['a.access_token' => $params['token'], 'a.source' => $new_source, 'a.auto_login_token' => $params['login'], 'a.is_deleted' => 0])
+            ->one();
+
+        if (!$login_token) {
+            return $this->response(404, ['status' => 404, 'message' => 'Login token not found']);
+        }
+
+        $user_id = $login_token['user_enc_id'];
+        $result = Yii::$app->db->createCommand()->update(UserAccessTokens::tableName(), [
+            "is_deleted" => 1,
+        ], [
+            "access_token" => $login_token["access_token"]
+        ])->execute();
+
+        if (!$result) {
+            return $this->response(500, ['status' => 500, 'message' => 'Not Deleted', 'error' => $result]);
+        }
+
+        $user = new UserUtilities();
+        $user_data = $user->userData($user_id, $new_source);
+
+        return $this->response($user_data['status'], $user_data);
+    }
+
 }
