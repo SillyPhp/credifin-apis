@@ -384,6 +384,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return ['data' => $model, 'count' => $count];
     }
+
     public function actionUpdateNach()
     {
         if (!$user = $this->isAuthorized()) {
@@ -413,6 +414,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
     }
+
     public function actionGetBasicDetail()
     {
         if (!$user = $this->isAuthorized()) {
@@ -468,6 +470,7 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'data' => $detail]);
     }
+
     public function actionVehicleRepossession()
     {
         if (!$user = $this->isAuthorized()) {
@@ -1273,19 +1276,22 @@ class LoanAccountsController extends ApiBaseController
                         }
                     } elseif ($key == 'total_pending_amount') {
                         $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
-                    } elseif ($key == 'collection_manager') {
-                        $ptpcases->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'proposed_amount') {
                         $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
                     } elseif ($key == 'pos') {
                         $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
                     } elseif ($key == 'emi_date') {
                         $ptpcases->andWhere(['DAY(c.emi_date)' => $value]);
-                    } elseif ($key == 'sharedTo') {
+                    } elseif ($key == 'collection_manager') {
+                        $ptpcases->andWhere(['ala.user_type' => 2])
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                    } elseif ($key == 'assigned_bdo') {
                         if ($value == 'unassigned') {
-                            $ptpcases->andWhere(['CONCAT(d1.first_name, \' \', COALESCE(d1.last_name, \'\'))' => null]);
+                            $ptpcases->andWhere(['ala.user_type' => 1])
+                                ->andWhere(['CONCAT(d1.first_name, \' \', COALESCE(d1.last_name, \'\'))' => null]);
                         } else {
-                            $ptpcases->andWhere(['like', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", $value]);
+                            $ptpcases->andWhere(['ala.user_type' => 1])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                         }
                     } elseif ($key == 'proposed_start_date') {
                         if ($value == 'unassigned') {
@@ -1357,6 +1363,7 @@ class LoanAccountsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not Found']);
     }
+
     public function actionGetLoanAccount()
     {
         if (!$this->isAuthorized()) {
@@ -2117,6 +2124,8 @@ class LoanAccountsController extends ApiBaseController
             ->leftJoin(['c2' => States::tableName()], 'c2.state_enc_id = c1.state_enc_id')
             ->leftJoin(['bb' => OrganizationLocations::tableName()], 'bb.location_enc_id = b.branch_enc_id')
             ->leftJoin(['cm' => Users::tableName()], 'cm.user_enc_id = a.collection_manager')
+            ->leftJoin(['ala' => AssignedLoanAccounts::tableName()], 'ala.loan_account_enc_id = c.loan_account_enc_id')
+            ->leftJoin(['d1' => Users::tableName()], 'd1.user_enc_id = ala.created_by')
             ->groupBy(['proposed_date']);
 
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
@@ -2136,7 +2145,7 @@ class LoanAccountsController extends ApiBaseController
             ->select([
                 'a.proposed_date',
                 'COALESCE(b.sum, 0) sum',
-                'COALESCE(b.count) AS count',
+                'COALESCE(b.count,0) AS count',
             ])
             ->from(['a' => $from])
             ->leftJoin(['b' => $sub_query], 'a.proposed_date = b.proposed_date');
@@ -2150,6 +2159,10 @@ class LoanAccountsController extends ApiBaseController
             ])
             ->joinWith(['emiCollectionEnc ec' => function ($ec) {
                 $ec->joinWith(['loanAccountEnc la' => function ($la) {
+                    $la->joinWith(["assignedLoanAccounts ala" => function ($ala) {
+                        $ala->andOnCondition(['ala.is_deleted' => 0]);
+                        $ala->joinWith(['sharedTo d1']);
+                    }]);
                     $la->joinWith(["assignedCaller ac"], false);
                     $la->joinWith(['branchEnc d' => function ($d) {
                         $d->joinWith(['cityEnc c1' => function ($c1) {
@@ -2203,9 +2216,16 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'total_pending_amount') {
                         $sub_query->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
                         $query->having(['=', "COALESCE(SUM(la.ledger_amount), 0) + COALESCE(SUM(la.overdue_amount), 0)", $value]);
+                    } elseif ($key == 'assigned_bdo') {
+                        $sub_query->andWhere(['ala.user_type' => 1])
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        $query->andWhere(['ala.user_type' => 1])
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'collection_manager') {
-                        $sub_query->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
-                        $query->andWhere(["LIKE", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, ''))", "$value%", false]);
+                        $sub_query->andWhere(['ala.user_type' => 2])
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        $query->andWhere(['ala.user_type' => 2])
+                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'proposed_amount') {
                         $sub_query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
                         $query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
@@ -2293,6 +2313,7 @@ class LoanAccountsController extends ApiBaseController
             ->all();
         return $this->response(200, ["status" => 200, "data" => $query]);
     }
+
     public function actionSendPaymentLinks()
     {
         $user = $this->isAuth();
@@ -2451,6 +2472,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
+
     public function actionUpdateLoanAccount()
     {
         $user = $this->isAuthorized();
