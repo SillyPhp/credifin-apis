@@ -205,14 +205,14 @@ class OrganizationsController extends ApiBaseController
             $locations = OrganizationLocations::find()
                 ->alias("a")
                 ->select(["a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
-                    "a.location_name", "a.location_for", "a.address", "a.status"])
+                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status"])
                 ->addSelect(["a.location_name as value"])
                 ->joinWith(["cityEnc b"], false)
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
                 ->orderBy(['a.location_name' => SORT_ASC]);
 
             if (!empty($params) && $params['type'] == 'settings') {
-                $locations->addSelect(["b.name as city"]);
+                $locations->addSelect(["b.name as city", 'b.city_code']);
             }
             $locations = $locations->asArray()->all();
 
@@ -1723,7 +1723,7 @@ class OrganizationsController extends ApiBaseController
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
-            if($item['status'] == 'not paid'){
+            if ($item['status'] == 'not paid') {
                 $item['status'] = 'not collected';
             }
             $sum = $item['sum'];
