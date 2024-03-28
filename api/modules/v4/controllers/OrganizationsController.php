@@ -192,6 +192,7 @@ class OrganizationsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+            $params = Yii::$app->request->post();
             $org_id = $user->organization_enc_id;
             if (!$org_id) {
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
@@ -206,10 +207,14 @@ class OrganizationsController extends ApiBaseController
                 ->select(["a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
                     "a.location_name", "a.location_for", "a.address", "a.status"])
                 ->addSelect(["a.location_name as value"])
+                ->joinWith(["cityEnc b"], false)
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
-                ->orderBy(['a.location_name' => SORT_ASC])
-                ->asArray()
-                ->all();
+                ->orderBy(['a.location_name' => SORT_ASC]);
+
+            if (!empty($params) && $params['type'] == 'settings') {
+                $locations->addSelect(["b.name as city"]);
+            }
+            $locations = $locations->asArray()->all();
 
             if ($locations) {
                 return $this->response(200, ["status" => 200, "branches" => $locations]);
@@ -1668,7 +1673,7 @@ class OrganizationsController extends ApiBaseController
                 'emi_payment_method AS method',
                 'emi_payment_status AS status',
                 'SUM(amount) AS sum',
-                'COUNT(amount) AS count'
+                'COUNT(CASE WHEN amount > 0 OR emi_payment_method = 0 THEN amount END) AS count'
             ])
             ->andWhere(['is_deleted' => 0])
             ->andWhere(['BETWEEN', 'COALESCE(collection_date, created_on)', $params['start_date'], $params['end_date']]);
@@ -1718,6 +1723,9 @@ class OrganizationsController extends ApiBaseController
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
+            if($item['status'] == 'not paid'){
+                $item['status'] = 'not collected';
+            }
             $sum = $item['sum'];
             $count = $item['count'];
             $status = ucwords($item['status']);
@@ -3194,6 +3202,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
+            ->orderBy(['b1.state_enc_id' => SORT_ASC])
             ->groupBy(['b1.state_enc_id']);
 
         $states = $states_query->asArray()->all();
