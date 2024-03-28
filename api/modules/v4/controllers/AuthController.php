@@ -401,7 +401,7 @@ class AuthController extends ApiBaseController
                 $userData = new UserUtilities();
                 $user_data = $userData->userData($user->user_enc_id, $source);
 
-                return $this->response(200, ['status' => 200, 'data' => $user_data]);
+                return $this->response($user_data['status'], $user_data);
             }
 
             // if user not found then return 404 not found
