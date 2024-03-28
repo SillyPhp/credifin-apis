@@ -84,8 +84,8 @@ class EmiCollectionsController extends ApiBaseController
         if (strtotime($params["end_date"]) < strtotime($params["start_date"])) {
             return $this->response(500, ["error" => "end date must be greater than start date"]);
         }
-        $start_date = $params["start_date"] . " 00:00:00";
-        $end_date = $params["end_date"] . " 23:59:59";
+        $start_date = date("Y-m-d", strtotime($params["start_date"])) . " 00:00:00";
+        $end_date = date("Y-m-d", strtotime($params["end_date"])) . " 23:59:59";
         $query = EmiCollection::find()
             ->alias("a")
             ->select([
