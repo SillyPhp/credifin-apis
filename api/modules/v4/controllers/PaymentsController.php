@@ -108,17 +108,28 @@ class PaymentsController extends ApiBaseController
     {
         $model = EmiCollectionExtended::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status'])
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status', 'd.proposed_amount', 'c.payment_amount'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanPaymentsEnc c'], false);
             }], false)
+            ->joinWith(['loanAccountPtps d'])
             ->andWhere(['c.reference_id' => $id])
             ->asArray()
             ->one();
+        if (!$model['proposed_amount']) {
+            $ptpModel = LoanAccountPtps::findOne(['emi_collection_enc_id' => $model['emi_collection_enc_id'], 'proposed_payment_method' => 2]);
+            if (!empty($ptpModel)) {
+                $ptpModel->status = 3;
+                $ptpModel->update();
+            }
+        }
 
         if ($model && $model['emi_payment_status'] != 'paid') {
             $update['collection_date'] = date('Y-m-d');
             $update['emi_payment_status'] = 'paid';
+            if ($model['proposed_amount'] && $model['amount'] != $model['proposed_amount']) {
+                $update['amount'] = $model['payment_amount'];
+            }
             $where = [
                 "AND",
                 ["emi_collection_enc_id" => $model['emi_collection_enc_id']],
