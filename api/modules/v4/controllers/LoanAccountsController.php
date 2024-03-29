@@ -213,12 +213,51 @@ class LoanAccountsController extends ApiBaseController
                     "a.emi_amount",
                     "a.loan_account_number",
                     '(a.ledger_amount + a.overdue_amount) AS total_pending_amount',
+                    "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) target_collection_amount",
+
+                    "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                END) AS total_pending_amount",
+                    "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
                 ])
                 ->joinWith(['emiCollections AS a1' => function ($b) {
                     $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone', 'a1.address', 'a1.latitude', 'a1.longitude', 'a1.created_on', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by"]);
                     $b->joinWith(['createdBy cr'], false);
                     $b->andOnCondition(['a1.is_deleted' => 0]);
                 }])
+                ->joinWith(["assignedCaller ac"], false)
                 ->joinWith(['assignedLoanAccounts d' => function ($d) {
                     $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
                     $d->select([

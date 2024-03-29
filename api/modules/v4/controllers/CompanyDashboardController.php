@@ -2843,7 +2843,14 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting employee with this id
             $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
+            // Correctly assign the field name
             $field = $params['id'];
+            if ($field == 'employee_code') {
+                $existing = UserRoles::findOne([$field => $params['value']]);
+                if ($existing !== null && $existing->user_enc_id != $params['parent_id']) {
+                    return $this->response(400, ['status' => 400, 'message' => 'Employee code already exists']);
+                }
+            }
 
             if ($employee && $params['id'] == 'user_name' || $params['id'] == 'user_number' || $params['id'] == 'user_email') {
                 $users = Users::findOne(['user_enc_id' => $params['parent_id']]);

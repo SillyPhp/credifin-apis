@@ -957,7 +957,7 @@ class EmiCollectionsController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.customer_name', 'a.loan_account_number', 'a.loan_account_enc_id',
-                "c.sales_priority",
+                "c.sales_priority", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "c.collection_priority",
                 "c.telecaller_priority",
                 'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
@@ -974,7 +974,9 @@ class EmiCollectionsController extends ApiBaseController
                     $b1->joinWith(['stateEnc b2'], false);
                 }], false);
             }], false)
-            ->joinWith(['loanAccountEnc c'], false)
+            ->joinWith(['loanAccountEnc c' => function ($c) {
+                $c->joinWith(["assignedCaller ac"], false);
+            }], false)
             ->where(['a.loan_account_number' => $lac, 'a.is_deleted' => 0])
             ->orderBY(['a.id' => SORT_DESC])
             ->limit(1)
@@ -2104,10 +2106,10 @@ class EmiCollectionsController extends ApiBaseController
                 }
             }
         }
-            if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
-                $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
-                $list->andWhere(['a.user_enc_id' => $juniors]);
-            }
+        if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
+            $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $list->andWhere(['a.user_enc_id' => $juniors]);
+        }
         if (!empty($params['field']) && !empty($params['order_by'])) {
             $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
         }
