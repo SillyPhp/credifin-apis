@@ -848,6 +848,11 @@ class CompanyDashboardController extends ApiBaseController
                 $i->select(['i.loan_application_enc_id', 'i.assigned_loan_provider_enc_id', 'i.status', 'j.name']);
                 $i->andOnCondition(['i.is_deleted' => 0]);
                 $i->joinWith(['providerEnc j'], false);
+                $i->joinWith(['branchEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc b1' => function ($b1) {
+                        $b1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }], false);
             }])
             ->joinWith(['managedBy k'], false)
             ->joinWith(['loanProductsEnc lp'], false)
@@ -931,7 +936,7 @@ class CompanyDashboardController extends ApiBaseController
             $purpose_search = ['purpose'];
 
             // fields array for "i" alias table
-            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
+            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
@@ -986,6 +991,9 @@ class CompanyDashboardController extends ApiBaseController
                         switch ($key) {
                             case 'branch':
                                 $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
+                                break;
+                            case 'state_enc_id':
+                                $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
@@ -1119,9 +1127,11 @@ class CompanyDashboardController extends ApiBaseController
 
                 $provider = AssignedLoanProvider::find()
                     ->alias('a')
-                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                    ->select(['a.assigned_loan_provider_enc_id', 'ce2.name', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
                     ->joinWith(['branchEnc b' => function ($b) {
-                        $b->joinWith(['cityEnc b1']);
+                        $b->joinWith(['cityEnc b1' => function ($b1) {
+                            $b1->joinWith(['stateEnc ce2']);
+                        }], false);
                     }], false)
                     ->andWhere(['a.loan_application_enc_id' => $val['loan_app_enc_id']])
                     ->asArray()
@@ -1136,7 +1146,8 @@ class CompanyDashboardController extends ApiBaseController
                     $val['disbursement_approved'] = $provider['disbursement_approved'];
                     $val['insurance_charges'] = $provider['insurance_charges'];
                     $val['branch_id'] = $provider['branch_enc_id'];
-                    $val['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
+                    $val['branch'] = $provider['location_name'];
+                    $val['state_name'] = $provider['name'];
                 }
             }
         }
