@@ -3202,7 +3202,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
-            ->orderBy(['b1.state_enc_id' => SORT_ASC])
+            ->orderBy(['b1.name' => SORT_ASC])
             ->groupBy(['b1.state_enc_id']);
 
         $states = $states_query->asArray()->all();
