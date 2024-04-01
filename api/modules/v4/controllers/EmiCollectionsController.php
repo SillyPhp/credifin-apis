@@ -290,6 +290,10 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
+                        case 'state_enc_id':
+                            $state = "('" . implode("','", $value) . "')";
+                            $fields_search[] = "ANY_VALUE(ce2.state_enc_id) IN $state";
+                            break;
                         case 'reporting_person':
                             $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
                             break;
@@ -311,7 +315,7 @@ class EmiCollectionsController extends ApiBaseController
         $users = UsersExtended::find()
             ->alias('a')
             ->select([
-                'a.user_enc_id AS user_id',
+                'a.user_enc_id AS user_id', 'ANY_VALUE(ce2.name) as state_name',
                 "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) name",
                 "ANY_VALUE(b1.employee_code) employee_code",
                 "ANY_VALUE(b2.designation) designation",
@@ -325,7 +329,11 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(["userRoles0 b1" => function ($b1) {
                 $b1->joinWith(["designation b2"], false);
                 $b1->joinWith(["reportingPerson b3"], false);
-                $b1->joinWith(["branchEnc b4"], false);
+                $b1->joinWith(["branchEnc b4" => function ($b4) {
+                    $b4->joinWith(['cityEnc c1' => function ($b1) {
+                        $b1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }], false);
             }], false)
             ->joinWith(["employeesCashReports3 c" => function ($c) use ($subquery1) {
                 $c->from(["subquery" => $subquery1]);
