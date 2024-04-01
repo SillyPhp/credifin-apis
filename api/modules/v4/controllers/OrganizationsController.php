@@ -3198,9 +3198,6 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['latitude']) || empty($params['longitude'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information: "latitude" and "longitude"']);
         }
-        if (empty($params['page_location'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "page_location"']);
-        }
         $location = new UserLocations();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
