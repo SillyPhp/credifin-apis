@@ -35,6 +35,7 @@ use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
+use common\models\UserLocations;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
@@ -3188,7 +3189,32 @@ class OrganizationsController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()];
         }
     }
-
+    public function actionLocationUpdate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['latitude']) || empty($params['longitude'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "latitude" and "longitude"']);
+        }
+        if (empty($params['page_location'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "page_location"']);
+        }
+        $location = new UserLocations();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $location->user_location_enc_id = $utilitiesModel->encrypt();
+        $location->latitude = $params['latitude'];
+        $location->longitude = $params['longitude'];
+        $location->page_location = $params['page_location'];
+        $location->created_on = date('Y-m-d H:i:s');
+        $location->created_by = $user->user_enc_id;
+        if (!$location->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $location->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
     public function actionGetStates()
     {
         if (!$user = $this->isAuthorized()) {
