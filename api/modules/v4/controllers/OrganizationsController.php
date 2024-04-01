@@ -35,7 +35,7 @@ use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
-use common\models\UserLocation;
+use common\models\UserLocations;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
@@ -3201,7 +3201,7 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['page_location'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information: "page_location"']);
         }
-        $location = new UserLocation();
+        $location = new UserLocations();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $location->user_location_enc_id = $utilitiesModel->encrypt();

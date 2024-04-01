@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%user_location}}".
+ * This is the model class for table "{{%user_locations}}".
  *
  * @property int $id
  * @property string $user_location_enc_id
@@ -17,14 +17,14 @@ use Yii;
  *
  * @property Users $createdBy
  */
-class UserLocation extends \yii\db\ActiveRecord
+class UserLocations extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%user_location}}';
+        return '{{%user_locations}}';
     }
 
     /**
@@ -33,7 +33,7 @@ class UserLocation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_location_enc_id', 'latitude', 'longitude', 'page_location', 'created_by', 'created_on'], 'required'],
+            [['user_location_enc_id', 'latitude', 'longitude', 'created_by', 'created_on'], 'required'],
             [['latitude', 'longitude'], 'number'],
             [['created_on'], 'safe'],
             [['user_location_enc_id', 'page_location', 'created_by'], 'string', 'max' => 100],
