@@ -262,19 +262,20 @@ class EmiCollectionForm extends Model
             $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
             $options['user_id'] = $user_id;
             $options['org_id'] = $this->org_id;
-            $options['amount'] = $this->amount;
             $options['description'] = 'Emi collection for ' . $this->loan_type;
             $options['name'] = $this->customer_name;
             $options['contact'] = $this->phone;
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['brand'] = $this->brand;
             $options['purpose'] = $this->loan_type;
-            if (in_array($model->emi_payment_method, [1, 2])) {
+            if ($model->emi_payment_mode == 1) {
+                $options['amount'] = $this->amount;
                 $link = self::createLinks($options, $model->emi_payment_method);
                 $return['links'] = $link;
-            } elseif ($model->ptp_payment_method == 2 && $model->emi_payment_mode == 0) {
+            } elseif ($model->ptp_payment_method == 2) {
                 $options['amount'] = $this->ptp_amount;
-                $link = self::ptpLinks($options, $model->ptp_payment_method);
+                $options['close_by'] = strtotime($this->ptp_date . ' 23:59:59');
+                $link = self::createLinks($options, 2);
             }
         }
         return $return;
@@ -291,37 +292,18 @@ class EmiCollectionForm extends Model
         $api_secret = $keys['api_secret'];
         $api = new Api($api_key, $api_secret);
         $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
-        if ($type == 1) {
+        if (empty($options['close_by'])) {
             $options['close_by'] = time() + 24 * 60 * 60 * 30;
+        }
+        if ($type == 1) {
             $link['qr'] = \common\models\payments\Payments::createQr($api, $options);
             if (!$link['qr']) {
                 throw new \Exception('an error occurred while creating qr');
             }
         }
         if ($type == 2) {
-            $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['link'] = \common\models\payments\Payments::createLink($api, $options);
             if (!$link['link']) {
-                throw new \Exception('an error occurred while creating link');
-            }
-        }
-        return $link ?? false;
-    }
-    private function ptpLinks($options, $type)
-    {
-        $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
-        if (!$keys) {
-            throw new \Exception('an error occurred while fetching razorpay credentials');
-        }
-        $api_key = $keys['api_key'];
-        $api_secret = $keys['api_secret'];
-        $api = new Api($api_key, $api_secret);
-        $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
-        if ($type == 2) {
-            $options['close_by'] = strtotime($this->ptp_date . ' 23:59:59');
-
-            $link['link'] = \common\models\payments\Payments::createLink($api, $options);
-            if (!$link) {
                 throw new \Exception('an error occurred while creating link');
             }
         }
