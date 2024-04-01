@@ -3204,7 +3204,9 @@ class OrganizationsController extends ApiBaseController
         $location->user_location_enc_id = $utilitiesModel->encrypt();
         $location->latitude = $params['latitude'];
         $location->longitude = $params['longitude'];
-        $location->page_location = $params['page_location'];
+        if(!empty($params['page_location'])){
+            $location->page_location = $params['page_location'];
+        }
         $location->created_on = date('Y-m-d H:i:s');
         $location->created_by = $user->user_enc_id;
         if (!$location->save()) {
