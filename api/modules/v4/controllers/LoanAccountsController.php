@@ -1082,7 +1082,7 @@ class LoanAccountsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        $where = ['a.is_deleted' => 0];
+        $where = ['a.is_deleted' => 0, 'a.hard_recovery' => 0];
         if (!empty($params['bucketVal'])) {
             $where['bucket'] = $params['bucketVal'];
         }
