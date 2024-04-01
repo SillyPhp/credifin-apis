@@ -13,7 +13,9 @@ use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\NotificationTokens;
 use common\models\UserAccessTokens;
+use Exception;
 
 // base controller for v4 api's
 class ApiBaseController extends Controller
@@ -156,6 +158,37 @@ class ApiBaseController extends Controller
             $res = self::specialCheck($this->user->user_enc_id);
         }
         return $res;
+    }
+
+    public function logout()
+    {
+        try {
+            $source = Yii::$app->request->headers->get('source');
+            $bearer_token = Yii::$app->request->headers->get('Authorization');
+            $token = explode(" ", $bearer_token);
+
+            // validating if the variables are correct
+            if (count($token) != 2 || $token[0] != 'Bearer' || empty($source)) {
+                throw new \Exception("invalid auth info");
+            }
+            $where = ['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0];
+            $update = ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s')];
+            // Deleting User Access Token
+            Yii::$app->db->createCommand()->update(UserAccessTokens::tableName(), $update, $where)->execute();
+
+            $params = Yii::$app->request->post();
+
+            // Checking if notification token is in params
+            if (!empty($params['token'])) {
+                $where = ['token' => $params['token'], 'is_deleted' => 0];
+                $update = ['is_deleted' => 1, 'token_expired_on' => date('Y-m-d H:i:s')];
+                // Deleting Notification Token
+                Yii::$app->db->createCommand()->update(NotificationTokens::tableName(), $update, $where)->execute();
+            }
+            return $this->response(200, ['message' => 'updated successfully']);
+        } catch (Exception $exception) {
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
     }
 
     public static function specialCheck($user_id)

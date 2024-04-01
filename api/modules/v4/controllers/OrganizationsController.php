@@ -42,6 +42,7 @@ use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -2517,7 +2518,7 @@ class OrganizationsController extends ApiBaseController
             ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0])
             ->andWhere(['>', 'z1.proposed_date', date('Y-m-d')])
             ->orderBy(['z1.proposed_date' => SORT_DESC]);
-
+        $hard_recovery = !empty($params['type']) && $params['type'] == 'hard_recovery' ? 1 : 0;
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2602,6 +2603,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["emiCollectionsCustom e" => function ($e) use ($sub_query) {
                 $e->from(["e" => $sub_query]);
             }], false)
+            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => $hard_recovery])
             ->groupBy(['a.loan_account_enc_id'])
             ->orderBy([
                 ("CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -2610,11 +2612,7 @@ class OrganizationsController extends ApiBaseController
                     ELSE NULL END") => SORT_DESC
             ]);
 
-        if (!empty($params['type']) && $params['type'] == 'hard_recovery') {
-            $query->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 1]);
-        } else {
-            $query->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => 0]);
-        }
+
 
         if (!empty($params['collection_date'])) {
             $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
@@ -2944,12 +2942,17 @@ class OrganizationsController extends ApiBaseController
 
         if (!$special && $user->username != "phf986") {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
+            $assigned_lc = (new Query())
+                ->select(['z.loan_account_enc_id'])
+                ->from(['z' => AssignedLoanAccounts::tableName()])
+                ->where(['IN', 'z.shared_to', $juniors])
+                ->andWhere(['z.is_deleted' => 0, 'z.status' => 'Active']);
             $query->andWhere([
                 "OR",
                 ["IN", "a.assigned_caller", $juniors],
                 ["IN", "a.collection_manager", $juniors],
                 ["IN", "a.created_by", $juniors],
-                ["IN", "d.shared_to", $juniors],
+                ["IN", "a.loan_account_enc_id", $assigned_lc]
             ]);
         }
 
@@ -3230,7 +3233,7 @@ class OrganizationsController extends ApiBaseController
                 $b->joinWith(['stateEnc b1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
-            ->orderBy(['b1.state_enc_id' => SORT_ASC])
+            ->orderBy(['b1.name' => SORT_ASC])
             ->groupBy(['b1.state_enc_id']);
 
         $states = $states_query->asArray()->all();
