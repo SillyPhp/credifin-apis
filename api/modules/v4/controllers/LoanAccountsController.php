@@ -1172,7 +1172,7 @@ class LoanAccountsController extends ApiBaseController
                     ["IN", "a.loan_account_enc_id", $assigned_lc],
                 ]);
         }
-        $bucket = $bucket->asArray()->one();
+        $bucket = $bucket->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
         return $this->response(200, ["status" => 200, "data" => $bucket]);
     }
