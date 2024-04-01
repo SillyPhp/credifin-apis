@@ -35,6 +35,7 @@ use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
+use common\models\UserLocation;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
@@ -204,8 +205,10 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias("a")
-                ->select(["a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
-                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status"])
+                ->select([
+                    "a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
+                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status"
+                ])
                 ->addSelect(["a.location_name as value"])
                 ->joinWith(["cityEnc b"], false)
                 ->andWhere(["a.is_deleted" => 0, "a.organization_enc_id" => $org_id])
@@ -3183,7 +3186,32 @@ class OrganizationsController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()];
         }
     }
-
+    public function actionLocationUpdate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['latitude']) || empty($params['longitude'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "latitude" and "longitude"']);
+        }
+        if (empty($params['page_location'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information: "page_location"']);
+        }
+        $location = new UserLocation();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $location->user_location_enc_id = $utilitiesModel->encrypt();
+        $location->latitude = $params['latitude'];
+        $location->longitude = $params['longitude'];
+        $location->page_location = $params['page_location'];
+        $location->created_on = date('Y-m-d H:i:s');
+        $location->created_by = $user->user_enc_id;
+        if (!$location->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $location->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
     public function actionGetStates()
     {
         if (!$user = $this->isAuthorized()) {
