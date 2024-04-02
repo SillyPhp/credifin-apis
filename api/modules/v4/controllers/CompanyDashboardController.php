@@ -1580,6 +1580,7 @@ class CompanyDashboardController extends ApiBaseController
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
+            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null; 
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
 
