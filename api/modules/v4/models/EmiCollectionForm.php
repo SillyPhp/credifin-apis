@@ -270,14 +270,13 @@ class EmiCollectionForm extends Model
             $options['purpose'] = $this->loan_type;
             if ($model->emi_payment_mode == 1) {
                 $options['amount'] = $this->amount;
-                $type = $model->emi_payment_method;
+                $link = self::createLinks($options, $model->emi_payment_method);
+                $return['links'] = $link;
             } else {
                 $options['amount'] = $this->ptp_amount;
                 $options['close_by'] = strtotime($this->ptp_date . ' 23:59:59');
-                $type = 2;
+                self::createLinks($options, 2);
             }
-            $link = self::createLinks($options, $type);
-            $return['links'] = $link;
         }
         return $return;
     }
