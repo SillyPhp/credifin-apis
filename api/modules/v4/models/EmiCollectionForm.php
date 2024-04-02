@@ -254,25 +254,28 @@ class EmiCollectionForm extends Model
         }
 
         $return = ['status' => 200, 'message' => 'Saved Successfully'];
-
-        if ($model->emi_payment_mode == 1) {
-            if (in_array($model->emi_payment_method, [1, 2])) {
-                $options = [];
-                if (!empty($this->loan_app_enc_id)) {
-                    $options['loan_app_enc_id'] = $this->loan_app_enc_id;
-                }
-                $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
-                $options['user_id'] = $user_id;
-                $options['org_id'] = $this->org_id;
+        if (in_array($model->emi_payment_mode, [0, 1])) {
+            $options = [];
+            if (!empty($this->loan_app_enc_id)) {
+                $options['loan_app_enc_id'] = $this->loan_app_enc_id;
+            }
+            $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
+            $options['user_id'] = $user_id;
+            $options['org_id'] = $this->org_id;
+            $options['description'] = 'Emi collection for ' . $this->loan_type;
+            $options['name'] = $this->customer_name;
+            $options['contact'] = $this->phone;
+            $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
+            $options['brand'] = $this->brand;
+            $options['purpose'] = $this->loan_type;
+            if ($model->emi_payment_mode == 1) {
                 $options['amount'] = $this->amount;
-                $options['description'] = 'Emi collection for ' . $this->loan_type;
-                $options['name'] = $this->customer_name;
-                $options['contact'] = $this->phone;
-                $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
-                $options['brand'] = $this->brand;
-                $options['purpose'] = $this->loan_type;
                 $link = self::createLinks($options, $model->emi_payment_method);
                 $return['links'] = $link;
+            } elseif ($model->ptp_payment_method == 2) {
+                $options['amount'] = $this->ptp_amount;
+                $options['close_by'] = strtotime($this->ptp_date . ' 23:59:59');
+                $link = self::createLinks($options, 2);
             }
         }
         return $return;
@@ -289,15 +292,16 @@ class EmiCollectionForm extends Model
         $api_secret = $keys['api_secret'];
         $api = new Api($api_key, $api_secret);
         $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
-        if ($type == 1) {
+        if (empty($options['close_by'])) {
             $options['close_by'] = time() + 24 * 60 * 60 * 30;
+        }
+        if ($type == 1) {
             $link['qr'] = \common\models\payments\Payments::createQr($api, $options);
             if (!$link['qr']) {
                 throw new \Exception('an error occurred while creating qr');
             }
         }
         if ($type == 2) {
-            $options['close_by'] = time() + 24 * 60 * 60 * 30;
             $link['link'] = \common\models\payments\Payments::createLink($api, $options);
             if (!$link['link']) {
                 throw new \Exception('an error occurred while creating link');
@@ -305,7 +309,6 @@ class EmiCollectionForm extends Model
         }
         return $link ?? false;
     }
-
 
     private function fileUpload($img_obj, $image, $image_location, $path)
     {
