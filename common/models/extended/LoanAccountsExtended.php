@@ -19,6 +19,29 @@ class LoanAccountsExtended extends LoanAccounts
         ];
     }
 
+    public static $buckets = [
+        'SMA0' => [
+            'name' => 'SMA-0',
+            'value' => 1.25
+        ],
+        'SMA1' => [
+            'name' => 'SMA-1',
+            'value' => 1.5
+        ],
+        'SMA2' => [
+            'name' => 'SMA-2',
+            'value' => 1.5
+        ],
+        'NPA' => [
+            'name' => 'NPA',
+            'value' => 1
+        ],
+        'OnTime' => [
+            'name' => 'OnTime',
+            'value' => null
+        ],
+    ];
+
     public function getEmiCollectionsCustom()
     {
         return $this->hasOne(EmiCollection::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);

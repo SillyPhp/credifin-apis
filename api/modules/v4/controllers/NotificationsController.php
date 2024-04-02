@@ -61,21 +61,7 @@ class NotificationsController extends ApiBaseController
 
     public function actionUpdateToken()
     {
-        $params = Yii::$app->request->post();
-
-        if (empty($params['token'])) {
-            return $this->response(422, ['status' => 422, 'message' => '"token" in missing']);
-        }
-        $notification_token = NotificationTokens::findOne(['token' => $params['token'], 'is_deleted' => 0]);
-        if ($notification_token) {
-            $notification_token->is_deleted = 1;
-            $notification_token->token_expired_on = date('Y-m-d H:i:s');
-            if (!$notification_token->update()) {
-                return $this->response(500, 'an error occurred');
-            }
-        }
-
-        return $this->response(200, ['status' => 200, 'message' => 'Token Expired Successfully']);
+        return $this->logout();
     }
 
     public function actionGetNotificationsList()
