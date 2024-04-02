@@ -212,7 +212,6 @@ class LoanAccountsController extends ApiBaseController
                     "a.loan_type",
                     "a.emi_amount",
                     "a.loan_account_number",
-                    '(a.ledger_amount + a.overdue_amount) AS total_pending_amount',
                     "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
@@ -1083,7 +1082,7 @@ class LoanAccountsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        $where = ['a.is_deleted' => 0];
+        $where = ['a.is_deleted' => 0, 'a.hard_recovery' => 0];
         if (!empty($params['bucketVal'])) {
             $where['bucket'] = $params['bucketVal'];
         }
@@ -1106,8 +1105,42 @@ class LoanAccountsController extends ApiBaseController
                 }
             }
         }
-        $bucket = LoanAccountsExtended::find()
-            ->alias('a')
+        $buckets = LoanAccountsExtended::$buckets;
+        $loan = (new Query())
+            ->select(['*', "(CASE
+                                WHEN (ledger_amount + overdue_amount) < 0 THEN
+                                    (CASE
+                                        WHEN bucket = 'onTime' THEN emi_amount
+                                        ELSE
+                                            (CASE
+                                                WHEN (ledger_amount + overdue_amount) <
+                                                    emi_amount * (CASE
+                                                                        WHEN bucket = 'sma-0' THEN 1.25
+                                                                        WHEN bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                                                        WHEN bucket = 'npa' THEN 2
+                                                                        ELSE 1
+                                                        END)
+                                                    THEN (ledger_amount + overdue_amount)
+                                                ELSE emi_amount *
+                                                    (CASE
+                                                            WHEN bucket = 'sma-0' THEN 1.25
+                                                            WHEN bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                                            WHEN bucket = 'npa' THEN 2
+                                                            ELSE 1
+                                                        END)
+                                                END)
+                                        END)
+                                ELSE (ledger_amount + overdue_amount)
+                            END) AS total_pending_amount"])
+            ->from(LoanAccounts::tableName());
+
+        $b_select = [];
+        foreach ($buckets as $key => $value) {
+            $b_select[] = "SUM(CASE WHEN bucket = '" . $value['name'] . "' THEN a.total_pending_amount END) AS total_sum_$key";
+            $b_select[] = "COUNT(CASE WHEN bucket = '" . $value['name'] . "' THEN a.total_pending_amount END) AS total_count_$key";
+        }
+
+        $bucket = (new Query())
             ->select([
                 "COUNT(a.loan_account_enc_id) AS loan_accounts_count",
                 "COUNT(NULLIF(a.overdue_amount, 0)) AS overdue_count",
@@ -1119,6 +1152,8 @@ class LoanAccountsController extends ApiBaseController
                 "(COALESCE(COUNT(a.ledger_amount), 0) + COALESCE(COUNT(a.overdue_amount), 0)) AS total_pending_count",
                 "(COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) AS total_pending_sum"
             ])
+            ->addSelect($b_select)
+            ->from(['a' => $loan])
             ->where($where);
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
@@ -1137,7 +1172,7 @@ class LoanAccountsController extends ApiBaseController
                     ["IN", "a.loan_account_enc_id", $assigned_lc],
                 ]);
         }
-        $bucket = $bucket->asArray()->one();
+        $bucket = $bucket->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
         return $this->response(200, ["status" => 200, "data" => $bucket]);
     }

@@ -11,6 +11,7 @@ use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanPayments;
@@ -108,17 +109,27 @@ class PaymentsController extends ApiBaseController
     {
         $model = EmiCollectionExtended::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status'])
+            ->select(['a.emi_collection_enc_id', 'a.loan_account_enc_id', 'a.amount', 'a.emi_payment_status', 'd.proposed_amount', 'c.payment_amount', 'a.emi_payment_method'])
             ->joinWith(['assignedLoanPayments b' => function ($b) {
                 $b->joinWith(['loanPaymentsEnc c'], false);
             }], false)
+            ->joinWith(['loanAccountPtps d'])
             ->andWhere(['c.reference_id' => $id])
             ->asArray()
             ->one();
 
+
         if ($model && $model['emi_payment_status'] != 'paid') {
             $update['collection_date'] = date('Y-m-d');
             $update['emi_payment_status'] = 'paid';
+            if ($model['emi_payment_method'] == 0) {
+                Yii::$app->db->createCommand()->update(
+                    LoanAccountPtps::tableName(),
+                    ['status' => 3], // updating
+                    ['emi_collection_enc_id' => $model['emi_collection_enc_id'], 'proposed_payment_method' => 2] // where
+                )->execute();
+                $update['amount'] = $model['payment_amount'];
+            }
             $where = [
                 "AND",
                 ["emi_collection_enc_id" => $model['emi_collection_enc_id']],

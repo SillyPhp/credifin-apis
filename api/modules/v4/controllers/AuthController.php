@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v2\models\ChangePassword;
+use api\modules\v4\models\ChangePassword;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\LoginForm;
@@ -34,6 +34,7 @@ class AuthController extends ApiBaseController
                 'signup',
                 'validate',
                 'login',
+                'logout',
                 'upload-profile-picture',
                 'upload-logo',
                 'otp-login',
@@ -60,6 +61,7 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST', 'OPTIONS'],
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
+                'logout' => ['POST', 'OPTIONS'],
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
                 'upload-logo' => ['POST', 'OPTIONS'],
                 'otp-login' => ['POST', 'OPTIONS'],
@@ -117,7 +119,6 @@ class AuthController extends ApiBaseController
                 } else {
                     return $this->response(401, ['message' => 'Token Expired or Invalid Token']);
                 }
-
             } else {
                 return $this->response(401, ['message' => 'Error', 'Error' => 'Your Are Not Allowed To Perform This Action']);
             }
@@ -159,7 +160,7 @@ class AuthController extends ApiBaseController
                 if ($model->validate()) {
                     // saving user data
                     $data = $model->save();
-//                    print_r($model);exit();
+                    //                    print_r($model);exit();
 
                     // if user saved successfully
                     if ($data['status'] == 201) {
@@ -169,7 +170,6 @@ class AuthController extends ApiBaseController
                         if (($user_data['user_type'] != 'Individual' && $model->getScenario() != 'FinancerDealer')) {
                             $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
                             return $this->response(201, ['status' => 201, 'message' => $message]);
-
                         }
                         return $this->response(201, ['status' => 201, 'data' => $user_data]);
                     } else {
@@ -184,7 +184,6 @@ class AuthController extends ApiBaseController
 
             // if there is no data in post request then send 400 bad request
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-
         } catch (\Exception $exception) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
@@ -278,6 +277,11 @@ class AuthController extends ApiBaseController
         }
     }
 
+    public function actionLogout()
+    {
+        return $this->logout();
+    }
+
     // finding user with username or email
     private function findUser($model)
     {
@@ -307,13 +311,11 @@ class AuthController extends ApiBaseController
                 }
 
                 return $this->response(500, $image);
-
             } else {
 
                 // if not validated then returning conflict
                 return $this->response(409, ['status' => 409, 'message' => 'conflict']);
             }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -357,7 +359,6 @@ class AuthController extends ApiBaseController
                     // if an error occurred while adding/updating oge logo
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $orgModel->getErrors()]);
                 }
-
             } else {
                 // 409 conflict must be organization login to upload logo
                 return $this->response(409, ['status' => 409, 'message' => 'Must be an organization']);
@@ -515,7 +516,8 @@ class AuthController extends ApiBaseController
                     'is_deleted' => 1,
                     'last_updated_on' => date('Y-m-d H:i:s')
                 ],
-                ['and',
+                [
+                    'and',
                     ['user_enc_id' => $user_id],
                     ['is_deleted' => 0]
                 ]
@@ -575,43 +577,41 @@ class AuthController extends ApiBaseController
             $data['data']['weak_password'] = $pass === $user['password'];
 
             return $this->response($data["status"], $data);
-
         } catch (\Exception $exception) {
             return $this->response(500, ['status' => 200, 'message' => 'an error occurred', 'error' => json_decode($exception, true)]);
         }
-
     }
 
     // this action is used to change password
-//    public function actionChangePassword()
-//    {
-//        if ($user = $this->isAuthorized()) {
-//            $params = Yii::$app->request->post();
-//
-//            // checking new_password empty return missing information
-//            if (empty($params['new_password'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
-//            }
-//
-//            // getting user object with user_enc_id
-//            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-//
-//            // encrypting and updating new password
-//            $utilitiesModel = new Utilities();
-//            $utilitiesModel->variables['password'] = $params['new_password'];
-//            $user->password = $utilitiesModel->encrypt_pass();
-//            $user->last_updated_on = date('Y-m-d H:i:s');
-//            if (!$user->update()) {
-//                // if not update returning 500 error
-//                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
-//            }
-//
-//            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-//
-//        } else {
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
-//    }
+    //    public function actionChangePassword()
+    //    {
+    //        if ($user = $this->isAuthorized()) {
+    //            $params = Yii::$app->request->post();
+    //
+    //            // checking new_password empty return missing information
+    //            if (empty($params['new_password'])) {
+    //                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+    //            }
+    //
+    //            // getting user object with user_enc_id
+    //            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+    //
+    //            // encrypting and updating new password
+    //            $utilitiesModel = new Utilities();
+    //            $utilitiesModel->variables['password'] = $params['new_password'];
+    //            $user->password = $utilitiesModel->encrypt_pass();
+    //            $user->last_updated_on = date('Y-m-d H:i:s');
+    //            if (!$user->update()) {
+    //                // if not update returning 500 error
+    //                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+    //            }
+    //
+    //            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+    //
+    //        } else {
+    //            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    //        }
+    //    }
 
     // verifying phone
     public function actionVerifyPhone()
@@ -660,7 +660,8 @@ class AuthController extends ApiBaseController
                 'last_updated_on' => date('Y-m-d H:i:s'),
                 'last_updated_by' => $user->user_enc_id,
                 'is_deleted' => 1
-            ], ['and',
+            ], [
+                'and',
                 ['verification_type' => 1],
                 ['created_by' => $user->user_enc_id],
                 ['status' => 'Pending'],
@@ -734,7 +735,6 @@ class AuthController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -844,5 +844,4 @@ class AuthController extends ApiBaseController
 
         return $this->response($user_data['status'], $user_data);
     }
-
 }
