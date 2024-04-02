@@ -4456,8 +4456,12 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($params['comment_type']) && $params['comment_type'] == 2) {
             $query->andWhere(['a.comment_type' => 2, 'a.is_deleted' => 0, "a.loan_application_enc_id" => $params['loan_app_id']]);
         } else {
-            $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'],
-                'b1.organization_enc_id' => $org_id, 'a.is_deleted' => 0]);
+            $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'], 'a.is_deleted' => 0]);
+            $query->andWhere([
+                "OR",
+                ['b.organization_enc_id' => $org_id],
+                ['b1.organization_enc_id' => $org_id]
+            ]);
         }
 
         $query = $query
