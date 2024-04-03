@@ -2410,6 +2410,20 @@ class OrganizationsController extends ApiBaseController
         if ($loan_number) {
             $params['loan_number'] = $loan_number;
         }
+
+        $sub_query1 = (new \yii\db\Query())
+            ->select([
+                'MAX(z.id) AS id',
+                'z.loan_account_enc_id',
+                'z1.proposed_date', 'z1.proposed_amount',
+                'RANK() OVER(PARTITION BY z.loan_account_enc_id ORDER BY z1.proposed_date DESC) AS rnk'
+            ])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->join('INNER JOIN', ['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id')
+            ->where(['IS NOT', 'z.ptp_payment_method', null])
+            ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0])
+            ->groupBy(['z.loan_account_enc_id', 'z1.proposed_date', 'z1.proposed_amount']);
+
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
                 ->alias('a')
@@ -2435,6 +2449,10 @@ class OrganizationsController extends ApiBaseController
                 END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
+                ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
+                    $emi->from(['emi' => $sub_query1]);
+                    $emi->andOnCondition(['emi.rnk' => 1]);
+                }])
                 ->joinWith(["assignedCaller ac"], false)
                 ->joinWith(["assignedLoanAccounts d" => function ($d) {
                     $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
