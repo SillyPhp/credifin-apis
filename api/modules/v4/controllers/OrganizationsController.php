@@ -2454,9 +2454,27 @@ class OrganizationsController extends ApiBaseController
                                             ELSE 1
                                         END)
                                 END)
-                        END) AS target_collection_amount"
+                        END) AS target_collection_amount",
 
-                    , "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                    "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN 0 ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE a.emi_amount * 
+                            (CASE 
+                                WHEN a.bucket = 'sma-0' THEN 1.25
+                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN a.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                END) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
@@ -2555,8 +2573,8 @@ class OrganizationsController extends ApiBaseController
                 "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN 0 ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
                         WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2564,7 +2582,7 @@ class OrganizationsController extends ApiBaseController
                         ELSE 1
                     END)  
                     THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
+                        ELSE a.emi_amount * 
                             (CASE 
                                 WHEN a.bucket = 'sma-0' THEN 1.25
                                 WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2777,25 +2795,25 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(['IN', 'b.location_enc_id', $value]);
                         }
                     } elseif ($key == 'total_pending_amount') {
-                        $query->having(['LIKE', "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                        (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                            (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        $query->having(['LIKE', "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN 0 ELSE
+                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
+                        WHEN a.bucket = 'sma-0' THEN 1.25
+                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN a.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
+                        ELSE a.emi_amount * 
+                            (CASE 
                                 WHEN a.bucket = 'sma-0' THEN 1.25
                                 WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
                                 WHEN a.bucket = 'npa' THEN 2
                                 ELSE 1
-                            END)  
-                            THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                                ELSE emi_amount * 
-                                    (CASE 
-                                        WHEN a.bucket = 'sma-0' THEN 1.25
-                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                        WHEN a.bucket = 'npa' THEN 2
-                                        ELSE 1
-                                END) 
-                            END) 
-                        END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
-                        END)", "$value%", false]);
+                        END) 
+                    END) 
+                END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                END)", "$value%", false]);
                     } elseif ($key == 'financer') {
                         $query->andWhere(['LIKE', 'af.name', "%$value%", false]);
                     } elseif ($key == 'target_collection_amount') {
