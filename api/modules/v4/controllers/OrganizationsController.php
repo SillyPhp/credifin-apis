@@ -2698,11 +2698,17 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.telecaller_priority', $value]);
                         }
-                    } elseif ($key == 'proposed_amount') {
+                    } elseif ($key == 'min_proposed_amount') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['lap.proposed_amount' . $key => null]);
                         } else {
-                            $query->andWhere(['LIKE', 'lap.proposed_amount', "$value%", false]);
+                            $query->andWhere(['>=', 'lap.proposed_amount', "$value"]);
+                        }
+                    } elseif ($key == 'max_proposed_amount') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['lap.proposed_amount' . $key => null]);
+                        } else {
+                            $query->andWhere(['<=', 'lap.proposed_amount', "$value"]);
                         }
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
@@ -2766,30 +2772,28 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'b.location_enc_id', $value]);
                         }
-                    } elseif ($key == 'total_pending_amount') {
-                        $query->having(['LIKE', "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                        (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                            (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                            END)  
-                            THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                                ELSE emi_amount * 
-                                    (CASE 
-                                        WHEN a.bucket = 'sma-0' THEN 1.25
-                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                        WHEN a.bucket = 'npa' THEN 2
-                                        ELSE 1
-                                END) 
-                            END) 
-                        END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
-                        END)", "$value%", false]);
+                    } elseif ($key == 'min_total_pending_amount') {
+                        $query->andHaving(['>=', "total_pending_amount", "$value"]);
+                    } elseif ($key == 'max_total_pending_amount') {
+                        $query->andHaving(['<=', "total_pending_amount", "$value"]);
                     } elseif ($key == 'financer') {
                         $query->andWhere(['LIKE', 'af.name', "%$value%", false]);
-                    } elseif ($key == 'target_collection_amount') {
-                        $query->having(['LIKE', 'target_collection_amount', "$value%", false]);
+                    } elseif ($key == 'min_target_collection_amount') {
+                        $query->andHaving(['>=', 'target_collection_amount', "$value"]);
+                    } elseif ($key == 'max_target_collection_amount') {
+                        $query->andHaving(['<=', 'target_collection_amount', "$value"]);
+                    } elseif ($key == 'min_emi_amount') {
+                        $query->andWhere(['>=', 'a.emi_amount', "$value"]);
+                    } elseif ($key == 'max_emi_amount') {
+                        $query->andWhere(['<=', 'a.emi_amount', "$value"]);
+                    } elseif ($key == 'min_overdue_amount') {
+                        $query->andWhere(['>=', 'a.overdue_amount', "$value"]);
+                    } elseif ($key == 'max_overdue_amount') {
+                        $query->andWhere(['<=', 'a.overdue_amount', "$value"]);
+                    } elseif ($key == 'min_pos') {
+                        $query->andWhere(['>=', 'a.pos', "$value"]);
+                    } elseif ($key == 'max_pos') {
+                        $query->andWhere(['<=', 'a.pos', "$value"]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(['d.user_type' => 2])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -3222,7 +3226,7 @@ class OrganizationsController extends ApiBaseController
         $location->user_location_enc_id = $utilitiesModel->encrypt();
         $location->latitude = $params['latitude'];
         $location->longitude = $params['longitude'];
-        if(!empty($params['page_location'])){
+        if (!empty($params['page_location'])) {
             $location->page_location = $params['page_location'];
         }
         $location->created_on = date('Y-m-d H:i:s');
