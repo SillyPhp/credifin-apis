@@ -1721,34 +1721,55 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Not Collected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Rejected', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
-            if ($item['status'] == 'not paid') {
-                $item['status'] = 'not collected';
+            if (empty($payment_method)) {
+                continue;
             }
+            if ($item['status'] == 'not paid') {
+                $item['status'] = 'PTP';
+            }
+
             $sum = $item['sum'];
             $count = $item['count'];
             $status = ucwords($item['status']);
+
             if ($status == 'Paid') {
                 $res[$payment_method]['sum'] += $sum;
                 $res[$payment_method]['count'] += $count;
-            } else if (isset($res[$payment_method]['pending']) && !in_array($status, ['Failed', 'Rejected'])) {
-                $res[$payment_method]['pending']['count'] += $count;
-                $res[$payment_method]['pending']['sum'] += $sum;
+                $res['Total']['sum'] += $sum;
+                $res['Total']['count'] += $count;
+            } elseif (!in_array($status, ['Failed', 'Rejected'])) {
+                if (isset($res[$payment_method]['pending'])) {
+                    $res[$payment_method]['pending']['count'] += $count;
+                    $res[$payment_method]['pending']['sum'] += $sum;
+                }
+                $res['Pending']['sum'] += $sum;
+                $res['Pending']['count'] += $count;
             }
-            if (isset($res[$status])) {
-                $res[$status]['sum'] += $sum;
-                $res[$status]['count'] += $count;
-            }
-            $res['Total']['sum'] += $sum;
-            $res['Total']['count'] += $count;
+        }
+        $res['Total']['pending']['sum'] = $res['Pending']['sum'];
+        $res['Total']['pending']['count'] = $res['Pending']['count'];
+
+        if (empty($method)) {
+            $this->customData($res);
         }
 
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
+    }
+
+    private function customData(&$data)
+    {
+        foreach ($data as &$item) {
+            if (in_array($item['payment_method'], ['Rejected', 'Failed'])) {
+                $data['Pending']['custom'][] = $item;
+                unset($data[$item['payment_method']]);
+            }
+        }
     }
 
     public function actionEmiDetail()
@@ -2414,13 +2435,50 @@ class OrganizationsController extends ApiBaseController
         if ($loan_number) {
             $params['loan_number'] = $loan_number;
         }
+
+        $sub_query1 = (new \yii\db\Query())
+            ->select([
+                'MAX(z.id) AS id',
+                'z.loan_account_enc_id',
+                'z1.proposed_date', 'z1.proposed_amount',
+                'RANK() OVER(PARTITION BY z.loan_account_enc_id ORDER BY z1.proposed_date DESC) AS rnk'
+            ])
+            ->from(['z' => EmiCollectionExtended::tableName()])
+            ->join('INNER JOIN', ['z1' => LoanAccountPtps::tableName()], 'z1.emi_collection_enc_id = z.emi_collection_enc_id')
+            ->where(['IS NOT', 'z.ptp_payment_method', null])
+            ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0])
+            ->groupBy(['z.loan_account_enc_id', 'z1.proposed_date', 'z1.proposed_amount']);
+
         if (!empty($params['loan_number'])) {
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
                     'a.loan_account_enc_id', "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
-                    "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    "(CASE WHEN a.bucket = 'onTime' THEN (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) <= 0 THEN 0
+                    ELSE a.emi_amount END)
+                                ELSE
+                                (CASE
+                                    WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount *
+                                        (CASE
+                                            WHEN a.bucket = 'sma-0' THEN 1.25
+                                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN a.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                                    ELSE a.emi_amount *
+                                        (CASE
+                                            WHEN a.bucket = 'sma-0' THEN 1.25
+                                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN a.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                END)
+                        END) AS target_collection_amount",
+
+                    "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN 0 ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
                         WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2428,7 +2486,7 @@ class OrganizationsController extends ApiBaseController
                         ELSE 1
                     END)  
                     THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
+                        ELSE a.emi_amount * 
                             (CASE 
                                 WHEN a.bucket = 'sma-0' THEN 1.25
                                 WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2436,9 +2494,14 @@ class OrganizationsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                END) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
+                ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
+                    $emi->from(['emi' => $sub_query1]);
+                    $emi->andOnCondition(['emi.rnk' => 1]);
+                }])
                 ->joinWith(["assignedCaller ac"], false)
                 ->joinWith(["assignedLoanAccounts d" => function ($d) {
                     $d->andOnCondition(["d.is_deleted" => 0, "d.status" => "Active"]);
@@ -2531,8 +2594,8 @@ class OrganizationsController extends ApiBaseController
                 "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                 "a.created_on", "CONCAT(cm.first_name, ' ', COALESCE(cm.last_name, '')) as collection_manager",
                 "b.location_enc_id as branch", "b.location_name as branch_name", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
-                "CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN a.bucket = 'onTime' THEN 0 ELSE
                     (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
                         WHEN a.bucket = 'sma-0' THEN 1.25
                         WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2540,7 +2603,7 @@ class OrganizationsController extends ApiBaseController
                         ELSE 1
                     END)  
                     THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
+                        ELSE a.emi_amount * 
                             (CASE 
                                 WHEN a.bucket = 'sma-0' THEN 1.25
                                 WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
@@ -2549,28 +2612,32 @@ class OrganizationsController extends ApiBaseController
                         END) 
                     END) 
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
-                END AS total_pending_amount",
+                END) AS total_pending_amount",
 
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
                 'c2.name as state_name', 'c2.state_enc_id',
-                "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                        WHEN a.bucket = 'sma-0' THEN 1.25
-                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN a.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
-                            (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END target_collection_amount"
+                "(CASE WHEN a.bucket = 'onTime' THEN (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) <= 0 THEN 0
+                    ELSE a.emi_amount END)
+                                ELSE
+                                (CASE
+                                    WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount *
+                                        (CASE
+                                            WHEN a.bucket = 'sma-0' THEN 1.25
+                                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN a.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
+                                    ELSE a.emi_amount *
+                                        (CASE
+                                            WHEN a.bucket = 'sma-0' THEN 1.25
+                                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN a.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                END)
+                        END) AS target_collection_amount",
 
             ])
             ->addSelect($selectQuery)
@@ -2680,11 +2747,17 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'a.telecaller_priority', $value]);
                         }
-                    } elseif ($key == 'proposed_amount') {
+                    } elseif ($key == 'min_proposed_amount') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['lap.proposed_amount' . $key => null]);
                         } else {
-                            $query->andWhere(['LIKE', 'lap.proposed_amount', "$value%", false]);
+                            $query->andWhere(['>=', 'lap.proposed_amount', "$value"]);
+                        }
+                    } elseif ($key == 'max_proposed_amount') {
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['lap.proposed_amount' . $key => null]);
+                        } else {
+                            $query->andWhere(['<=', 'lap.proposed_amount', "$value"]);
                         }
                     } elseif ($key == 'loan_type') {
                         $query->andWhere(['IN', 'a.loan_type', $value]);
@@ -2748,30 +2821,28 @@ class OrganizationsController extends ApiBaseController
                         } else {
                             $query->andWhere(['IN', 'b.location_enc_id', $value]);
                         }
-                    } elseif ($key == 'total_pending_amount') {
-                        $query->having(['LIKE', "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                        (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                            (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                            END)  
-                            THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                                ELSE emi_amount * 
-                                    (CASE 
-                                        WHEN a.bucket = 'sma-0' THEN 1.25
-                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                        WHEN a.bucket = 'npa' THEN 2
-                                        ELSE 1
-                                END) 
-                            END) 
-                        END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
-                        END)", "$value%", false]);
+                    } elseif ($key == 'min_total_pending_amount') {
+                        $query->andHaving(['>=', "total_pending_amount", "$value"]);
+                    } elseif ($key == 'max_total_pending_amount') {
+                        $query->andHaving(['<=', "total_pending_amount", "$value"]);
                     } elseif ($key == 'financer') {
                         $query->andWhere(['LIKE', 'af.name', "%$value%", false]);
-                    } elseif ($key == 'target_collection_amount') {
-                        $query->having(['LIKE', 'target_collection_amount', "$value%", false]);
+                    } elseif ($key == 'min_target_collection_amount') {
+                        $query->andHaving(['>=', 'target_collection_amount', "$value"]);
+                    } elseif ($key == 'max_target_collection_amount') {
+                        $query->andHaving(['<=', 'target_collection_amount', "$value"]);
+                    } elseif ($key == 'min_emi_amount') {
+                        $query->andWhere(['>=', 'a.emi_amount', "$value"]);
+                    } elseif ($key == 'max_emi_amount') {
+                        $query->andWhere(['<=', 'a.emi_amount', "$value"]);
+                    } elseif ($key == 'min_overdue_amount') {
+                        $query->andWhere(['>=', 'a.overdue_amount', "$value"]);
+                    } elseif ($key == 'max_overdue_amount') {
+                        $query->andWhere(['<=', 'a.overdue_amount', "$value"]);
+                    } elseif ($key == 'min_pos') {
+                        $query->andWhere(['>=', 'a.pos', "$value"]);
+                    } elseif ($key == 'max_pos') {
+                        $query->andWhere(['<=', 'a.pos', "$value"]);
                     } elseif ($key == 'collection_manager') {
                         $query->andWhere(['d.user_type' => 2])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -3204,7 +3275,7 @@ class OrganizationsController extends ApiBaseController
         $location->user_location_enc_id = $utilitiesModel->encrypt();
         $location->latitude = $params['latitude'];
         $location->longitude = $params['longitude'];
-        if(!empty($params['page_location'])){
+        if (!empty($params['page_location'])) {
             $location->page_location = $params['page_location'];
         }
         $location->created_on = date('Y-m-d H:i:s');
