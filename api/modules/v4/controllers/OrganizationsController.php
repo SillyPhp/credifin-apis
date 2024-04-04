@@ -1721,34 +1721,55 @@ class OrganizationsController extends ApiBaseController
         $res = [];
         foreach ($def as $item) {
             $res[$item] = ['payment_method' => $item, 'sum' => 0, 'count' => 0];
-            if (!in_array($item, ['Total', 'Pending', 'Collected', 'Rejected', 'Not Collected', 'Pipeline', 'Paid', 'Failed']) && empty($method)) {
+            if (!in_array($item, ['Total', 'Pending', 'Rejected', 'Failed']) && empty($method)) {
                 $res[$item]['pending']['count'] = $res[$item]['pending']['sum'] = 0;
             }
         }
         foreach ($data as $item) {
             $payment_method = $def[$item['method']] ?? '';
-            if ($item['status'] == 'not paid') {
-                $item['status'] = 'not collected';
+            if (empty($payment_method)) {
+                continue;
             }
+            if ($item['status'] == 'not paid') {
+                $item['status'] = 'PTP';
+            }
+
             $sum = $item['sum'];
             $count = $item['count'];
             $status = ucwords($item['status']);
+
             if ($status == 'Paid') {
                 $res[$payment_method]['sum'] += $sum;
                 $res[$payment_method]['count'] += $count;
-            } else if (isset($res[$payment_method]['pending']) && !in_array($status, ['Failed', 'Rejected'])) {
-                $res[$payment_method]['pending']['count'] += $count;
-                $res[$payment_method]['pending']['sum'] += $sum;
+                $res['Total']['sum'] += $sum;
+                $res['Total']['count'] += $count;
+            } elseif (!in_array($status, ['Failed', 'Rejected'])) {
+                if (isset($res[$payment_method]['pending'])) {
+                    $res[$payment_method]['pending']['count'] += $count;
+                    $res[$payment_method]['pending']['sum'] += $sum;
+                }
+                $res['Pending']['sum'] += $sum;
+                $res['Pending']['count'] += $count;
             }
-            if (isset($res[$status])) {
-                $res[$status]['sum'] += $sum;
-                $res[$status]['count'] += $count;
-            }
-            $res['Total']['sum'] += $sum;
-            $res['Total']['count'] += $count;
+        }
+        $res['Total']['pending']['sum'] = $res['Pending']['sum'];
+        $res['Total']['pending']['count'] = $res['Pending']['count'];
+
+        if (empty($method)) {
+            $this->customData($res);
         }
 
         return $this->response(200, ['status' => 200, 'data' => array_values($res)]);
+    }
+
+    private function customData(&$data)
+    {
+        foreach ($data as &$item) {
+            if (in_array($item['payment_method'], ['Rejected', 'Failed'])) {
+                $data['Pending']['custom'][] = $item;
+                unset($data[$item['payment_method']]);
+            }
+        }
     }
 
     public function actionEmiDetail()
