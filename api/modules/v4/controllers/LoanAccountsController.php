@@ -571,6 +571,14 @@ class LoanAccountsController extends ApiBaseController
                         $data->andWhere(['a.' . $key => $value]);
                     } elseif ($key == 'loan_account_number') {
                         $data->andWhere(['b.' . $key => $value]);
+                    } elseif ($key == 'min_current_market_value') {
+                        $data->andWhere(['>=', 'current_market_value', $value]);
+                    } elseif ($key == 'max_current_market_value') {
+                        $data->andWhere(['<=', 'current_market_value', $value]);
+                    } elseif ($key == 'min_km_driven') {
+                        $data->andWhere(['>=', 'km_driven', $value]);
+                    } elseif ($key == 'max_km_driven') {
+                        $data->andWhere(['<=', 'km_driven', $value]);
                     } elseif ($key == 'brand_name') {
                         $data->andWhere(['like', 'd.' . $key, $value]);
                     } elseif ($key == 'insurance' || $key == 'rc') {
@@ -1358,10 +1366,26 @@ class LoanAccountsController extends ApiBaseController
                         }
                     } elseif ($key == 'total_pending_amount') {
                         $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
-                    } elseif ($key == 'proposed_amount') {
-                        $ptpcases->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
-                    } elseif ($key == 'pos') {
-                        $ptpcases->andWhere(["LIKE", 'c.' . $key, $value]);
+                    } elseif ($key == 'min_proposed_amount') {
+                        $ptpcases->andWhere([">=", 'a.proposed_amount', $value]);
+                    } elseif ($key == 'max_proposed_amount') {
+                        $ptpcases->andWhere(["<=", 'a.proposed_amount', $value]);
+                    } elseif ($key == 'min_overdue_amount') {
+                        $ptpcases->andWhere([">=", 'overdue_amount', $value]);
+                    } elseif ($key == 'max_overdue_amount') {
+                        $ptpcases->andWhere(["<=", 'overdue_amount', $value]);
+                    } elseif ($key == 'min_pos') {
+                        $ptpcases->andWhere([">=", 'pos', $value]);
+                    } elseif ($key == 'max_pos') {
+                        $ptpcases->andWhere(["<=", 'pos', $value]);
+                    } elseif ($key == 'min_emi_amount') {
+                        $ptpcases->andWhere([">=", 'emi_amount', $value]);
+                    } elseif ($key == 'max_emi_amount') {
+                        $ptpcases->andWhere(["<=", 'emi_amount', $value]);
+                    } elseif ($key == 'min_last_emi_received_amount') {
+                        $ptpcases->andWhere([">=", 'last_emi_received_amount', $value]);
+                    } elseif ($key == 'max_last_emi_received_amount') {
+                        $ptpcases->andWhere(["<=", 'last_emi_received_amount', $value]);
                     } elseif ($key == 'emi_date') {
                         $ptpcases->andWhere(['DAY(c.emi_date)' => $value]);
                     } elseif ($key == 'collection_manager') {
@@ -1479,8 +1503,7 @@ class LoanAccountsController extends ApiBaseController
                                             ELSE 1
                                         END)
                                 END)
-                        END) AS target_collection_amount"
-                    , "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                        END) AS target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(["assignedCaller ac"], false)
@@ -2300,9 +2323,6 @@ class LoanAccountsController extends ApiBaseController
                             $sub_query->andWhere(['IN', 'bb.location_enc_id', $value]);
                             $query->andWhere(['IN', 'bb.location_enc_id', $value]);
                         }
-                    } elseif ($key == 'total_pending_amount') {
-                        $sub_query->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
-                        $query->having(['=', "COALESCE(SUM(la.ledger_amount), 0) + COALESCE(SUM(la.overdue_amount), 0)", $value]);
                     } elseif ($key == 'assigned_bdo') {
                         $sub_query->andWhere(['ala.user_type' => 1])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -2313,12 +2333,30 @@ class LoanAccountsController extends ApiBaseController
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                         $query->andWhere(['ala.user_type' => 2])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
-                    } elseif ($key == 'proposed_amount') {
-                        $sub_query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
-                        $query->andWhere(["LIKE", 'a.' . $key, "$value%", false]);
-                    } elseif ($key == 'pos') {
-                        $sub_query->andWhere(["LIKE", 'c.' . $key, $value]);
-                        $query->andWhere(["LIKE", 'la.' . $key, $value]);
+                    } elseif ($key == 'min_proposed_amount') {
+                        $sub_query->andWhere([">=", 'a.proposed_amount', $value]);
+                        $query->andWhere([">=", 'a.proposed_amount', $value]);
+                    } elseif ($key == 'max_proposed_amount') {
+                        $sub_query->andWhere(["<=", 'a.' . $key, "$value", false]);
+                        $query->andWhere(["<=", 'a.' . $key, "$value%", false]);
+                    } elseif ($key == 'min_pos') {
+                        $sub_query->andWhere([">=", 'c.pos', $value]);
+                        $query->andWhere([">=", 'la.pos', $value]);
+                    } elseif ($key == 'max_pos') {
+                        $sub_query->andWhere(["<=", 'c.pos', $value]);
+                        $query->andWhere(["<=", 'la.pos', $value]);
+                    } elseif ($key == 'min_emi_amount') {
+                        $sub_query->andWhere([">=", 'c.emi_amount', $value]);
+                        $query->andWhere([">=", 'la.emi_amount', $value]);
+                    } elseif ($key == 'max_emi_amount') {
+                        $sub_query->andWhere(["<=", 'c.emi_amount', $value]);
+                        $query->andWhere(["<=", 'la.emi_amount', $value]);
+                    } elseif ($key == 'min_overdue_amount') {
+                        $sub_query->andWhere([">=", 'c.overdue_amount', $value]);
+                        $query->andWhere([">=", 'la.overdue_amount', $value]);
+                    } elseif ($key == 'max_overdue_amount') {
+                        $sub_query->andWhere(["<=", 'c.overdue_amount', $value]);
+                        $query->andWhere(["<=", 'la.overdue_amount', $value]);
                     } elseif ($key == 'emi_date') {
                         $sub_query->andWhere(['DAY(c.emi_date)' => $value]);
                         $query->andWhere(['DAY(la.emi_date)' => $value]);

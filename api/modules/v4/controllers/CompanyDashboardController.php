@@ -520,7 +520,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'state_enc_id', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
+            $a = ['applicant_name', 'login_date', 'state_enc_id', 'application_number', 'loan_status_updated_on', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'min_amount', 'max_amount', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -529,7 +529,7 @@ class CompanyDashboardController extends ApiBaseController
             $purpose_search = ['purpose'];
 
             // fields array for "i" alias table
-            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
+            $i = ['min_bdo_approved_amount', 'max_bdo_approved_amount', 'min_tl_approved_amount', 'max_tl_approved_amount', 'min_soft_approval', 'max_soft_approval', 'min_soft_sanction', 'max_soft_sanction', 'min_valuation', 'max_valuation', 'min_disbursement_approved', 'max_disbursement_approved', 'insurance_charges', 'status', 'branch'];
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
@@ -551,6 +551,12 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'login_end_date':
                                 $loans->andWhere(['<=', 'a.login_date', $val]);
+                                break;
+                            case 'min_amount':
+                                $loans->andWhere(['>=', 'a.amount', $val]);
+                                break;
+                            case 'max_amount':
+                                $loans->andWhere(['<=', 'a.amount', $val]);
                                 break;
                             case 'apply_date':
                                 $loans->andWhere(['like', 'a.created_on', $val]);
@@ -590,6 +596,42 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
+                                break;
+                            case 'min_bdo_approved_amount':
+                                $loans->andWhere(['>=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'max_bdo_approved_amount':
+                                $loans->andWhere(['<=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'min_tl_approved_amount':
+                                $loans->andWhere(['>=', 'tl_approved_amount', $val]);
+                                break;
+                            case 'max_tl_approved_amount':
+                                $loans->andWhere(['<=', 'tl_approved_amount', $val]);
+                                break;
+                            case 'min_soft_approval':
+                                $loans->andWhere(['>=', 'soft_approval', $val]);
+                                break;
+                            case 'max_soft_approval':
+                                $loans->andWhere(['<=', 'soft_approval', $val]);
+                                break;
+                            case 'min_soft_sanction':
+                                $loans->andWhere(['>=', 'soft_sanction', $val]);
+                                break;
+                            case 'max_soft_sanction':
+                                $loans->andWhere(['<=', 'soft_sanction', $val]);
+                                break;
+                            case 'min_valuation':
+                                $loans->andWhere(['>=', 'valuation', $val]);
+                                break;
+                            case 'max_valuation':
+                                $loans->andWhere(['<=', 'valuation', $val]);
+                                break;
+                            case 'min_disbursement_approved':
+                                $loans->andWhere(['>=', 'disbursement_approved', $val]);
+                                break;
+                            case 'max_disbursement_approved':
+                                $loans->andWhere(['<=', 'disbursement_approved', $val]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'i.' . $key, $val]);
@@ -634,7 +676,6 @@ class CompanyDashboardController extends ApiBaseController
                 ['like', 'a.applicant_name', $params['search_keyword']],
                 ['like', 'h.name', $params['search_keyword']],
                 ['like', 'a.loan_type', $params['search_keyword']],
-                ['like', 'a.amount', $params['search_keyword']],
                 ['like', 'a.created_on', $params['search_keyword']],
                 ['like', 'a.phone', $params['search_keyword']],
                 ['like', 'a.application_number', $params['search_keyword']],
@@ -927,7 +968,7 @@ class CompanyDashboardController extends ApiBaseController
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'min_amount', 'max_amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo', 'provider'];
@@ -967,6 +1008,48 @@ class CompanyDashboardController extends ApiBaseController
                                 break;
                             case 'end_date':
                                 $loans->andWhere(['<=', 'a.created_on', $val]);
+                                break;
+                            case 'min_amount':
+                                $loans->andWhere(['>=', 'a.amount', $val]);
+                                break;
+                            case 'max_amount':
+                                $loans->andWhere(['<=', 'a.amount', $val]);
+                                break;
+                            case 'min_bdo_approved_amount':
+                                $loans->andWhere(['>=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'max_bdo_approved_amount':
+                                $loans->andWhere(['<=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'min_disbursement_approved':
+                                $loans->andWhere(['>=', 'disbursement_approved', $val]);
+                                break;
+                            case 'max_disbursement_approved':
+                                $loans->andWhere(['<=', 'disbursement_approved', $val]);
+                                break;
+                            case 'min_soft_approval':
+                                $loans->andWhere(['>=', 'soft_approval', $val]);
+                                break;
+                            case 'max_soft_approval':
+                                $loans->andWhere(['<=', 'soft_approval', $val]);
+                                break;
+                            case 'min_soft_sanction':
+                                $loans->andWhere(['>=', 'soft_sanction', $val]);
+                                break;
+                            case 'max_soft_sanction':
+                                $loans->andWhere(['<=', 'soft_sanction', $val]);
+                                break;
+                            case 'min_tl_approved_amount':
+                                $loans->andWhere(['>=', 'tl_approved_amoun', $val]);
+                                break;
+                            case 'max_tl_approved_amount':
+                                $loans->andWhere(['<=', 'tl_approved_amoun', $val]);
+                                break;
+                            case 'min_valuation':
+                                $loans->andWhere(['>=', 'valuation', $val]);
+                                break;
+                            case 'max_valuation':
+                                $loans->andWhere(['<=', 'valuation', $val]);
                                 break;
                             case 'disbursement_start_date':
                                 $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
@@ -1580,7 +1663,7 @@ class CompanyDashboardController extends ApiBaseController
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
-            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null; 
+            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null;
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
 
@@ -4474,5 +4557,4 @@ class CompanyDashboardController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'data' => $query, 'type' => $params['comment_type']]);
     }
-
 }
