@@ -2432,10 +2432,18 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
         $params = Yii::$app->request->post();
-        if ($loan_number) {
-            $params['loan_number'] = $loan_number;
-        }
         if (!empty($params['loan_number'])) {
+            $loan_number = $params['loan_number'];
+        }
+        if (!empty($loan_number)) {
+            $where = [
+                'OR',
+                ['LIKE', 'a.loan_account_number', $loan_number],
+                ['LIKE', 'a.lms_loan_account_number', $loan_number],
+            ];
+            if (strlen($loan_number) > 7) {
+                $where[] = ['LIKE', 'a.phone', $loan_number];
+            }
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
@@ -2471,13 +2479,7 @@ class OrganizationsController extends ApiBaseController
                     $d->joinWith(['sharedTo d1'], false);
                 }])
                 ->where(['a.is_deleted' => 0])
-                ->andWhere([
-                    'OR',
-                    ['LIKE', 'a.loan_account_number', $params['loan_number']],
-                    ['LIKE', 'a.lms_loan_account_number', $params['loan_number']],
-                    ['LIKE', 'a.phone', $params['loan_number']],
-                    ['LIKE', 'a.lms_loan_account_number', $params['loan_number']],
-                ])
+                ->andWhere($where)
                 ->groupBy(['a.loan_account_enc_id'])
                 ->limit(20)
                 ->asArray()
@@ -3225,7 +3227,7 @@ class OrganizationsController extends ApiBaseController
         $location->user_location_enc_id = $utilitiesModel->encrypt();
         $location->latitude = $params['latitude'];
         $location->longitude = $params['longitude'];
-        if(!empty($params['page_location'])){
+        if (!empty($params['page_location'])) {
             $location->page_location = $params['page_location'];
         }
         $location->created_on = date('Y-m-d H:i:s');
