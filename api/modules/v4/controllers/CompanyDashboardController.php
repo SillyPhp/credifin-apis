@@ -394,11 +394,17 @@ class CompanyDashboardController extends ApiBaseController
                 END) as gender",
                 "a.login_date", 'ce2.name as state_name'
             ])
-            ->joinWith(['loanPurposes lpp' => function ($lpp) {
-                $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
-                $lpp->joinWith(['financerLoanPurposeEnc lpp1' => function ($lpp1) {
-                    $lpp1->andOnCondition(['lpp1.is_deleted' => 0]);
-                }], false);
+//            ->joinWith(['loanPurposes lpp' => function ($lpp) {
+//                $lpp->select(['lpp.loan_app_enc_id', 'lpp1.financer_loan_product_purpose_enc_id', 'lpp1.purpose']);
+//                $lpp->joinWith(['financerLoanPurposeEnc lpp1' => function ($lpp1) {
+//                    $lpp1->andOnCondition(['lpp1.is_deleted' => 0]);
+//                }], false);
+//            }])
+
+            ->joinWith(['loanPurposes lpp' => function ($g) {
+                $g->select(['lpp.financer_loan_purpose_enc_id', 'lpp.financer_loan_purpose_enc_id', 'lpp.loan_app_enc_id', 'lpp1.purpose']);
+                $g->joinWith(['financerLoanPurposeEnc lpp1'], false);
+                $g->onCondition(['lpp.is_deleted' => 0]);
             }])
             ->joinWith(['leadBy lb'], false)
             ->joinWith(['createdBy cb' => function ($cr) {
@@ -868,58 +874,7 @@ class CompanyDashboardController extends ApiBaseController
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }]);
-        if (isset($params['type'])) {
-            switch ($params['type']) {
-                case 'rejected':
-                    $loans->andWhere(['or', ['i.status' => 28], ['i.status' => 32]]);
-                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-                    break;
-                case 'disbursed':
-                    $loans->andWhere(['i.status' => 31]);
-                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-                    break;
-                case 'new_lead':
-                    $loans->andWhere(['i.status' => 0]);
-                    break;
-                case 'completed':
-                    $loans->andWhere(['i.status' => 33]);
-                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-                    break;
-                case 'all':
-                    //                    $loans->andWhere(['not in', 'i.status', [0, 28, 31, 32, 33]]);
-                    break;
-                case 'tvr':
-                    $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {
-                        $m->select(['m.loan_application_tvr_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
-                        $m->onCondition(['m.status' => 0]);
-                    }]);
-                    break;
-                case 'fi':
-                    $loans->innerJoinWith(['loanApplicationFis m' => function ($m) {
-                        $m->select(['m.loan_application_fi_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
-                        $m->onCondition(['m.status' => 0]);
-                    }]);
-                    break;
-                case 'pd':
-                    $loans->innerJoinWith(['loanApplicationPds m' => function ($m) {
-                        $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
-                        $m->onCondition(['m.status' => 0]);
-                    }]);
-                    break;
-                case 'release_payment':
-                    $loans->innerJoinWith(['loanApplicationReleasePayments m' => function ($m) {
-                        $m->select(['m.loan_application_release_payment_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
-                        $m->onCondition(['m.status' => 0]);
-                    }]);
-                    break;
-                case 'only_removed':
-                    $is_removed = 1;
-                    break;
-                case 'only_disbursed';
-                    $is_disbursed = 1;
-                    break;
-            }
-        }
+        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
 
         if ($filter) {
             $loans->andWhere(['in', 'i.status', $filter]);
@@ -927,7 +882,7 @@ class CompanyDashboardController extends ApiBaseController
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo', 'provider'];
@@ -936,7 +891,7 @@ class CompanyDashboardController extends ApiBaseController
             $purpose_search = ['purpose'];
 
             // fields array for "i" alias table
-            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
+            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status', 'co_branch'];
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
@@ -947,8 +902,8 @@ class CompanyDashboardController extends ApiBaseController
 
                         // if key is apply_date then checking created_on time
                         switch ($key) {
-                            case 'loan_products_enc_id':
-                                $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
+                            case 'co_loan_product':
+                                $loans->andWhere(['LIKE', 'lp.name', $val]);
                                 break;
                             case 'login_start_date':
                                 $loans->andWhere(['>=', 'a.login_date', $val]);
@@ -963,10 +918,10 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['like', 'h.name', $val]);
                                 break;
                             case 'start_date':
-                                $loans->andWhere(['>=', 'a.created_on', $val]);
+                                $loans->andWhere(['>=', 'a.loan_status_updated_on', $val]);
                                 break;
                             case 'end_date':
-                                $loans->andWhere(['<=', 'a.created_on', $val]);
+                                $loans->andWhere(['<=', 'a.loan_status_updated_on', $val]);
                                 break;
                             case 'disbursement_start_date':
                                 $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
@@ -989,8 +944,8 @@ class CompanyDashboardController extends ApiBaseController
                     // key match to "i" table array
                     if (in_array($key, $i)) {
                         switch ($key) {
-                            case 'branch':
-                                $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
+                            case 'co_branch':
+                                $loans->andWhere(['LIKE', 'b.location_name', $val]);
                                 break;
                             case 'state_enc_id':
                                 $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
@@ -1058,7 +1013,7 @@ class CompanyDashboardController extends ApiBaseController
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
 
             // fields array of "i" alias table
-            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'status'];
 
             // loop field_sort array
             foreach ($params['field_sort'] as $key => $val) {
@@ -1140,11 +1095,6 @@ class CompanyDashboardController extends ApiBaseController
                 if (!empty($provider)) {
                     $val['bdo_approved_amount'] = $provider['bdo_approved_amount'];
                     $val['tl_approved_amount'] = $provider['tl_approved_amount'];
-                    $val['soft_approval'] = $provider['soft_approval'];
-                    $val['soft_sanction'] = $provider['soft_sanction'];
-                    $val['valuation'] = $provider['valuation'];
-                    $val['disbursement_approved'] = $provider['disbursement_approved'];
-                    $val['insurance_charges'] = $provider['insurance_charges'];
                     $val['branch_id'] = $provider['branch_enc_id'];
                     $val['branch'] = $provider['location_name'];
                     $val['state_name'] = $provider['name'];
@@ -1303,7 +1253,7 @@ class CompanyDashboardController extends ApiBaseController
                     'd.loan_co_app_enc_id', 'd.father_name', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                     'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation',
                     'ANY_VALUE(d1.address) address', 'ANY_VALUE(d2.name) city', 'ANY_VALUE(d3.name) state', 'ANY_VALUE(d3.abbreviation) state_abbreviation', 'ANY_VALUE(d1.postal_code) postal_code', 'ANY_VALUE(d3.state_code) state_code',
-                    'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score', 'd.passport_number',
+                    'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', "(CASE WHEN d.gender = 1 THEN 'Male' WHEN d.gender = 2 THEN 'Female' ELSE 'Other' END) gender", 'd.marital_status', 'd.driving_license_number', 'd.cibil_score', 'd.passport_number',
                     "CASE WHEN d.image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . "',d.image_location, d.image) ELSE NULL END image",
                 ]);
                 $d->groupBy(['d.loan_co_app_enc_id']);
@@ -1580,7 +1530,7 @@ class CompanyDashboardController extends ApiBaseController
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
-            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null; 
+            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null;
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
 
@@ -4475,4 +4425,51 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'data' => $query, 'type' => $params['comment_type']]);
     }
 
+    public function actionPartnerLoanStats()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $org_id = $user->organization_enc_id;
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
+//        $shared_apps = $this->sharedApps($user->user_enc_id);
+
+        $start_date = $params['start_date'];
+        $end_date = $params['end_date'];
+        $shared = LoanApplications::find()
+            ->alias('b')
+            ->select([
+                "SUM(CASE WHEN i.status = '0' THEN b.amount ELSE 0 END) as new_lead_amount",
+                "SUM(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.amount ELSE 0 END) as login_amount",
+                "SUM(CASE WHEN i.status = '31' THEN i.disbursement_approved ELSE 0 END) as disbursed_amount",
+                "SUM(CASE WHEN i.status = '32' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount",
+                "SUM(CASE WHEN i.status = '28' THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount",
+                "COUNT(CASE WHEN i.status = '0' THEN b.loan_app_enc_id END) as new_lead_count",
+                "COUNT(CASE WHEN b.login_date BETWEEN '$start_date' AND '$end_date' THEN b.loan_app_enc_id END) as login_count",
+                "COUNT(CASE WHEN i.status = '31' THEN b.loan_app_enc_id END) as disbursed_count",
+                "COUNT(CASE WHEN i.status = '28' THEN b.loan_app_enc_id END) as cni_count",
+                "COUNT(CASE WHEN i.status = '32' THEN b.loan_app_enc_id END) as rejected_count",
+            ])
+            ->innerJoinWith(['loanApplicationPartners lap' => function ($lap) use ($org_id) {
+                $lap->andOnCondition(['lap.partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['assignedLoanProviders i'], false)
+            ->joinWith(['sharedLoanApplications n' => function ($n) use ($user) {
+                $n->andOnCondition(['n.shared_to' => $user->user_enc_id, 'n.status' => 'Active', 'n.is_deleted' => 0]);
+                $n->joinWith(['sharedBy sb1'], false);
+            }], false);
+        $shared->andWhere(['between', 'b.loan_status_updated_on', $start_date, $end_date]);
+        $shared->andWhere(['b.is_deleted' => 0]);
+//        $count = $shared->count();
+        $shared = $shared
+            ->asArray()
+            ->one();
+
+        return $this->response(200, ['status' => 200, 'data' => $shared]);
+    }
 }
