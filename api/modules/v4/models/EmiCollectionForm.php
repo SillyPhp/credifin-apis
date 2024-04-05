@@ -272,10 +272,10 @@ class EmiCollectionForm extends Model
                 $options['amount'] = $this->amount;
                 $link = self::createLinks($options, $model->emi_payment_method);
                 $return['links'] = $link;
-            } elseif ($model->ptp_payment_method == 2) {
+            } else {
                 $options['amount'] = $this->ptp_amount;
                 $options['close_by'] = strtotime($this->ptp_date . ' 23:59:59');
-                $link = self::createLinks($options, 2);
+                self::createLinks($options, 2);
             }
         }
         return $return;

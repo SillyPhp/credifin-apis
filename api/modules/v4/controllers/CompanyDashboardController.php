@@ -1580,6 +1580,7 @@ class CompanyDashboardController extends ApiBaseController
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
+            $loanApp->is_removed ? ($loanApp->is_removed = 0) : null; 
             $loanApp->updated_on = date('Y-m-d H:i:s');
 
 
@@ -4456,8 +4457,12 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($params['comment_type']) && $params['comment_type'] == 2) {
             $query->andWhere(['a.comment_type' => 2, 'a.is_deleted' => 0, "a.loan_application_enc_id" => $params['loan_app_id']]);
         } else {
-            $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'],
-                'b1.organization_enc_id' => $org_id, 'a.is_deleted' => 0]);
+            $query->andWhere(['a.comment_type' => 1, "a.loan_application_enc_id" => $params['loan_app_id'], 'a.is_deleted' => 0]);
+            $query->andWhere([
+                "OR",
+                ['b.organization_enc_id' => $org_id],
+                ['b1.organization_enc_id' => $org_id]
+            ]);
         }
 
         $query = $query
