@@ -411,6 +411,10 @@ class SignupForm extends Model
             $user_role->user_enc_id = $this->user_id;
             $user_role->organization_enc_id = $ref->organization_enc_id;
             if ($this->user_type == 'Employee') {
+                $existing = UserRoles::findOne(['employee_code' => $this->employee_code, 'organization_enc_id' => $ref->organization_enc_id]);
+                if ($existing != null && $existing->user_enc_id != $this->user_id) {
+                    throw new \Exception('Employee code already exists');
+                }
                 $user_role->employee_code = $this->employee_code;
             }
             $user_role->created_by = $this->user_id;
