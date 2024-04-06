@@ -6,6 +6,7 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\models\PaymentModel;
 use common\models\AssignedLoanPayments;
 use common\models\EmiCollection;
+use common\models\EmiPaymentRecords;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\LoanApplicationsExtended;
@@ -443,5 +444,74 @@ class PaymentsController extends ApiBaseController
             throw new \Exception($query->getErrors());
         }
         return 'You have paid successfully.';
+    }
+
+    public function actionNachRecords()
+    {
+        $this->isAuth();
+        $params = $this->post;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        if (empty($params['start_date']) && empty($params['end_date'])) {
+            return $this->response(500, ['message' => 'an error occurred', 'error' => 'missing information "start_date" or "end_date"']);
+        }
+        $data = EmiPaymentRecords::find()
+            ->alias('a')
+            ->select([
+                'a.emi_payment_records_enc_id',
+                'a.loan_account_enc_id',
+                'a.loan_account_number',
+                'a.payment_id',
+                'a.name',
+                "IF(a.type = 1, 'nach', 'e-nach') AS type",
+                'a.amount',
+                'a.nach_date',
+                'a.status',
+                'a.created_on'
+            ])
+            ->joinWith(['loanAccountEnc AS b'], false)
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['BETWEEN', 'a.created_on', $params['start_date'], $params['end_date']]);
+        if (!empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value) {
+                if (empty($value) && $value != '0') {
+                    continue;
+                }
+                switch ($key) {
+                    case 'payment_amount':
+                        $data->andWhere(['LIKE', 'a.amount', "$value%", false]);
+                        break;
+                    case 'loan_account_number':
+                        $data->andWhere(['LIKE', 'a.loan_account_number', "$value%", false]);
+                        break;
+                    case 'nach_start_date':
+                        $data->andWhere(['>=', 'a.nach_date', $value]);
+                        break;
+                    case 'nach_end_date':
+                        $data->andWhere(['<=', 'a.nach_date', $value]);
+                        break;
+                    case 'name':
+                    case 'payment_id':
+                    case 'payment_type':
+                    case 'nach_payment_status':
+                        if ($key == 'payment_type') {
+                            $key = 'type';
+                        } elseif ($key == 'nach_payment_status') {
+                            $key = 'status';
+                        }
+                        $data->andWhere(['LIKE', "a.$key", $value]);
+                        break;
+                }
+            }
+        }
+        $count = $data->count();
+        $data = $data
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['BETWEEN', 'a.created_on', $params['start_date'], $params['end_date']])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        return $this->response(200, ['message' => 'fetched successfully', 'data' => $data, 'count' => $count]);
     }
 }

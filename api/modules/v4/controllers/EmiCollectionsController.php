@@ -6,6 +6,7 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\EmiCollection;
+use common\models\EmiPaymentRecords;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -416,19 +417,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -1315,7 +1316,7 @@ class EmiCollectionsController extends ApiBaseController
             $model->andWhere("IF(a.emi_payment_mode = 1, a.emi_payment_status != 'pending', TRUE)");
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'amount', 'ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount','max_amount', 'min_ptp_amount','max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
             $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1360,14 +1361,20 @@ class EmiCollectionsController extends ApiBaseController
                                 }
                                 $model->andWhere($where);
                                 break;
-                            case 'amount':
-                                $model->andWhere(['like', 'a.amount', $value . '%', false]);
+                            case 'min_amount':
+                                $model->andWhere(['>=', 'a.amount', $value]);
+                                break;
+                            case 'max_amount':
+                                $model->andWhere(['<=', 'a.amount', $value]);
                                 break;
                             case 'address':
                                 $model->andWhere(['like', "CONCAT(a.address,', ', COALESCE(a.pincode, ''))", $value]);
                                 break;
-                            case 'ptp_amount':
-                                $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
+                            case 'min_ptp_amount':
+                                $model->andWhere(['>=', 'a.ptp_amount', $value]);
+                                break;
+                            case 'max_ptp_amount':
+                                $model->andWhere(['<=', 'a.ptp_amount', $value]);
                                 break;
                             case 'start_date':
                                 $model->andWhere(['>=', 'a.ptp_date', $value]);
@@ -1882,6 +1889,123 @@ class EmiCollectionsController extends ApiBaseController
             return $this->response(500, ['message' => 'An error occurred', 'error' => $exception->getMessage()]);
         }
     }
+    public function actionUploadSheet()
+    {
+        $user = $this->isAuth(2);
+        $params = $this->post;
+        try {
+            $file = $_FILES['file'];
+            if (!$file) {
+                throw new \Exception("send file");
+            }
+            if (!empty($file['error'])) {
+                throw new \Exception("file error code: " . $file['error']);
+            }
+            $sql = [];
+            $type = $params['type'] == 'nach' ? 1 : ($params['type'] == 'enach' ? 2 : '');
+            if (empty($type)) {
+                throw new \Exception("Type should be nach or enach.");
+            }
+            $loan_header_name = $type == 1 ? 'unique registration number' : 'caseno';
+            $date_header_name = $type == 1 ? 'date' : 'due date';
+            $required_fields = [
+                $loan_header_name,
+                $date_header_name,
+                'customer name',
+                'amount',
+                'status'
+            ];
+            if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+                $count = true;
+                $transaction = Yii::$app->db->beginTransaction();
+                $utilitiesModel = new Utilities();
+                $payment_id_exists = false;
+                $found = $inserted = 0;
+                while (($data = fgetcsv($handle, 100000)) !== FALSE) {
+                    if ($count) {
+                        // headers
+                        $headers = array_map(function ($header) {
+                            return strtolower(trim($header));
+                        }, $data);
+
+                        // finding missing fields
+                        $arr_diff = array_diff($required_fields, $headers);
+                        if (!empty($arr_diff)) {
+                            throw new \Exception("Missing fields " . implode(', ', $arr_diff));
+                        }
+
+                        if (array_search('payment id', $headers) !== false) {
+                            $payment_id_exists = array_search('payment id', $headers);
+                        }
+                        $count = false;
+                        continue;
+                    }
+
+                    if (empty($headers)) {
+                        throw new \Exception("Headers not found.");
+                    }
+
+                    // cleaning data
+                    $data = array_map(function ($key, $item) use ($headers, $loan_header_name) {
+                        $item = trim($item);
+                        return $key === array_search($loan_header_name, $headers) ? str_replace(' ', '', $item) : $item;
+                    }, array_keys($data), $data);
+
+                    // loan account number
+                    $loan_account_number = $data[array_search($loan_header_name, $headers)];
+
+                    // loan account enc id finding with subquery in select command
+                    $loan_enc_command = LoanAccounts::find()
+                        ->select(['loan_account_enc_id'])
+                        ->where([
+                            "REGEXP_REPLACE(loan_account_number, '[^a-zA-Z0-9]', '')" => new Expression("REGEXP_REPLACE('$loan_account_number', '[^a-zA-Z0-9]', '')")
+                        ])
+                        ->createCommand()->getRawSql();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 1000000000);
+                    $current_date = date('Y:m:d H:i:s');
+                    $record_date = date('Y-m-d', strtotime($data[array_search($date_header_name, $headers)]));
+                    $insert_params = [
+                        'emi_payment_records_enc_id' => "'{$utilitiesModel->encrypt()}'",
+                        'loan_account_enc_id' => "($loan_enc_command)",
+                        'loan_account_number' => "'" . $data[array_search($loan_header_name, $headers)] . "'",
+                        'type' => $type,
+                        'name' => "'{$data[array_search('customer name',$headers)]}'",
+                        'amount' => $data[array_search('amount', $headers)],
+                        'nach_date' => "'{$record_date}'",
+                        'status' => "'{$data[array_search('status',$headers)]}'",
+                        'created_on' => "'{$current_date}'",
+                        'created_by' => "'$user->user_enc_id'",
+                        'updated_on' => "'{$current_date}'",
+                        'updated_by' => "'$user->user_enc_id'",
+                    ];
+                    if ($payment_id_exists && !empty($data[$payment_id_exists])) {
+                        $insert_params['payment_id'] = "'{$data[$payment_id_exists]}'";
+                    }
+                    $columns = implode(', ', array_keys($insert_params));
+                    $values = implode(', ', array_values($insert_params));
+                    $find_subquery = EmiPaymentRecords::find()
+                        ->select(['id'])
+                        ->andWhere([
+                            'type' => $type,
+                            'amount' => $data[array_search('amount', $headers)],
+                            'nach_date' => $record_date,
+                            'status' => $data[array_search('status', $headers)],
+                            'loan_account_number' => "$loan_account_number"
+                        ])->createCommand()->getRawSql();
+                    $insert = "INSERT INTO lJCWPnNNVy3d95ppLp7M_emi_payment_records ($columns) SELECT $values WHERE NOT EXISTS ($find_subquery);";
+                    $sql[] = $insert;
+                }
+                foreach ($sql as $item) {
+                    $found++;
+                    $inserted += Yii::$app->db->createCommand($item)->execute();
+                }
+                $transaction->commit();
+                return $this->response(200, ['message' => 'successfully saved', 'found' => $found, 'inserted' => $inserted]);
+            }
+        } catch (\Exception $exception) {
+            return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
 
     public function actionCollectionReportBranches()
     {
@@ -2128,7 +2252,5 @@ class EmiCollectionsController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
-
     }
-
 }
