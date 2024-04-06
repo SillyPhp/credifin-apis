@@ -1051,7 +1051,52 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
-                'a.emi_payment_status', 'd1.payment_short_url'
+                'a.emi_payment_status', 'd1.payment_short_url',
+                "(CASE
+                        WHEN lc.bucket = 'onTime' THEN
+                            (CASE
+                                WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) <= 0 THEN 0
+                                ELSE lc.emi_amount
+                                END)
+                                ELSE
+                                (CASE
+                                    WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount *
+                                        (CASE
+                                            WHEN lc.bucket = 'sma-0' THEN 1.25
+                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN lc.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
+                                    ELSE lc.emi_amount *
+                                        (CASE
+                                            WHEN lc.bucket = 'sma-0' THEN 1.25
+                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN lc.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                END)
+                        END) AS target_collection_amount",
+
+                "(CASE WHEN (COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN lc.bucket = 'onTime' THEN 0 ELSE
+                    (CASE WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount * (CASE 
+                        WHEN lc.bucket = 'sma-0' THEN 1.25
+                        WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN lc.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN lc.bucket = 'sma-0' THEN 1.25
+                                WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN lc.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) ELSE COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
+                END) AS total_pending_amount"
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc'], false)
@@ -1263,7 +1308,52 @@ class EmiCollectionsController extends ApiBaseController
                 "CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . "',a.other_doc_image_location, '/', a.other_doc_image) ELSE NULL END as other_doc_image",
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "b.user_enc_id as collected_by_id", 'c2.name as state_name', 'c2.state_enc_id',
-                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket'
+                'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket',
+                "(CASE
+                        WHEN lc.bucket = 'onTime' THEN
+                            (CASE
+                                WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) <= 0 THEN 0
+                                ELSE lc.emi_amount
+                                END)
+                                ELSE
+                                (CASE
+                                    WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount *
+                                        (CASE
+                                            WHEN lc.bucket = 'sma-0' THEN 1.25
+                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN lc.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
+                                    ELSE lc.emi_amount *
+                                        (CASE
+                                            WHEN lc.bucket = 'sma-0' THEN 1.25
+                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                            WHEN lc.bucket = 'npa' THEN 2
+                                            ELSE 1
+                                        END)
+                                END)
+                        END) AS target_collection_amount",
+
+                "(CASE WHEN (COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)) <= 0 THEN 
+                (CASE WHEN lc.bucket = 'onTime' THEN 0 ELSE
+                    (CASE WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount * (CASE 
+                        WHEN lc.bucket = 'sma-0' THEN 1.25
+                        WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN lc.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)  
+                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)  
+                        ELSE emi_amount * 
+                            (CASE 
+                                WHEN lc.bucket = 'sma-0' THEN 1.25
+                                WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                WHEN lc.bucket = 'npa' THEN 2
+                                ELSE 1
+                        END) 
+                    END) 
+                END) ELSE COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
+                END) AS total_pending_amount"
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc' => function ($lc) {
@@ -1315,8 +1405,8 @@ class EmiCollectionsController extends ApiBaseController
             $model->andWhere("IF(a.emi_payment_mode = 1, a.emi_payment_status != 'pending', TRUE)");
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount','max_amount', 'min_ptp_amount','max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
+            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1397,6 +1487,21 @@ class EmiCollectionsController extends ApiBaseController
                             case 'branch':
                                 $model->andWhere(['c.location_enc_id' => $value]);
                                 break;
+
+                            case 'min_target_collection_amount':
+                                $model->andHaving(['>=', 'target_collection_amount', "$value"]);
+                                break;
+                            case 'max_target_collection_amount':
+                                $model->andHaving(['<=', 'target_collection_amount', "$value"]);
+                                break;
+
+                            case 'min_total_pending_amount':
+                                $model->andHaving(['>=', 'total_pending_amount', "$value"]);
+                                break;
+                            case 'max_total_pending_amount':
+                                $model->andHaving(['<=', 'total_pending_amount', "$value"]);
+                                break;
+
                             case 'state_enc_id':
                                 $model->andWhere(['IN', "c2.state_enc_id", $value]);
                                 break;
