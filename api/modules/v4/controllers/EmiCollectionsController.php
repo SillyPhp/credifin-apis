@@ -10,9 +10,11 @@ use common\models\EmiPaymentRecords;
 use common\models\EmployeesCashReport;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\extended\UsersExtended;
 use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
+use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
@@ -2239,6 +2241,75 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params['field']) && !empty($params['order_by'])) {
             $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
         }
+        $count = $list->count();
+        $list = $list
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
+    }
+
+    public function actionBranchDailyStats()
+    {
+        $user = $this->isAuth();
+        $params = $this->post;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $start_date = $params['start_date'];
+        $end_date = $params['end_date'];
+        $org_id = $user->organization_enc_id;
+        if (!$org_id) {
+            $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $user_roles->organization_enc_id;
+        }
+        $valuesSma = LoanAccountsExtended::$buckets;
+        $select = [
+            "COUNT(a.id) total_cases_count",
+            "SUM(CASE WHEN a.amount > 0 THEN a.amount END) total_collected_cases_sum",
+            "SUM(CASE WHEN a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END) total_collected_verified_amount",
+            "SUM(CASE WHEN a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END) total_collected_unverified_amount",
+            "COUNT(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN a.amount END) total_interaction_count",
+            "SUM(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END) total_interaction_sum",
+        ];
+        foreach ($valuesSma as $key => $value) {
+            $select[] = "COALESCE(COUNT(CASE WHEN (b.bucket = '{$value['name']}') AND a.amount > 0 THEN a.amount END), 0) {$key}_total_cases_count";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_cases_sum";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_verified_amount";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END), 0) {$key}_collected_unverified_amount";
+            $select[] = "COALESCE(COUNT(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN a.amount END), 0) {$key}_total_interaction_count";
+            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END), 0) {$key}_total_interaction_sum";
+        }
+
+        $subquery = (new \yii\db\Query())
+            ->select(['a.branch_enc_id'])
+            ->addSelect($select)
+            ->from(['a' => EmiCollection::tableName()])
+            ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+            ->join('LEFT JOIN', ['c' => LoanAccountPtps::tableName()], 'c.emi_collection_enc_id = a.emi_collection_enc_id')
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['BETWEEN', "a.collection_date", $start_date, $end_date])
+            ->groupBy(['a.branch_enc_id']);
+        if (!empty($params['loan_type'])) {
+            $subquery->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+        }
+        if (!empty($params['fields_search']['branch'])) {
+            $subquery->andWhere(['IN', 'a.branch_enc_id', $params['fields_search']['branch']]);
+        }
+        $list = OrganizationLocations::find()
+            ->alias('a')
+            ->select([
+                'a.location_enc_id',
+                'a.location_name',
+                "CONCAT(b.name, ', ', c.name) location",
+                'subquery.*'
+            ])
+            ->innerJoin(['subquery' => $subquery], 'a.location_enc_id = subquery.branch_enc_id')
+            ->joinWith(['cityEnc AS b' => function ($b) {
+                $b->joinWith(['stateEnc AS c'], false);
+            }], false)
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id]);
+
         $count = $list->count();
         $list = $list
             ->limit($limit)
