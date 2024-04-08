@@ -1341,7 +1341,11 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $ptpcases->andWhere(['c2.state_enc_id' => null]);
+                        } else {
+                            $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);
@@ -2290,8 +2294,13 @@ class LoanAccountsController extends ApiBaseController
                         $sub_query->andWhere(['b.' . $key => $value]);
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $sub_query->andWhere(['c2.state_enc_id' => null]);
+                            $query->andWhere(['c2.state_enc_id' => null]);
+                        } else {
+                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $sub_query->andWhere(['c.bucket' => null]);

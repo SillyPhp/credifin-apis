@@ -2663,7 +2663,11 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(['IN', 'a.nach_approved', $value]);
                         }
                     } elseif ($key == 'state_enc_id') {
-                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        if (in_array("unassigned", $value)) {
+                            $query->andWhere(['c2.state_enc_id' => null]);
+                        } else {
+                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        }
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
                                     WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -2803,6 +2807,10 @@ class OrganizationsController extends ApiBaseController
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
                     } elseif ($key == 'company_id') {
                         $query->andWhere(['LIKE', "a.company_id", "$value%", false]);
+                    } elseif ($key == 'min_last_emi_received_amount') {
+                        $query->andHaving(['>=', 'last_emi_received_amount', "$value"]);
+                    } elseif ($key == 'max_last_emi_received_amount') {
+                        $query->andHaving(['<=', 'last_emi_received_amount', "$value"]);
                     } elseif ($key == 'case_no') {
                         $query->andWhere(['LIKE', "a.case_no", "$value%", false]);
                     } elseif ($key == 'loan_account_number') {
