@@ -293,7 +293,13 @@ class EmiCollectionsController extends ApiBaseController
                             break;
                         case 'state_enc_id':
                             $state = "('" . implode("','", $value) . "')";
-                            $fields_search[] = "ANY_VALUE(ce2.state_enc_id) IN $state";
+                            if ($key == 'state_enc_id') {
+                                if (in_array("unassigned", $value)) {
+                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) => null";
+                                } else {
+                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) IN $state";
+                                }
+                            }
                             break;
                         case 'reporting_person':
                             $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
@@ -1486,7 +1492,11 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
                                 break;
                             case 'branch':
-                                $model->andWhere(['c.location_enc_id' => $value]);
+                                if (in_array("unassigned", $value)) {
+                                    $model->andWhere(['c.location_enc_id' => null]);
+                                } else {
+                                    $model->andWhere(['c.location_enc_id' => $value]);
+                                }
                                 break;
 
                             case 'min_target_collection_amount':
@@ -1504,7 +1514,11 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
 
                             case 'state_enc_id':
-                                $model->andWhere(['IN', "c2.state_enc_id", $value]);
+                                if (in_array("unassigned", $value)) {
+                                    $model->andWhere(["c2.state_enc_id" => null]);
+                                } else {
+                                    $model->andWhere(['IN', "c2.state_enc_id", $value]);
+                                }
                                 break;
                             case 'designation':
                                 $model->andWhere(['like', 'b1a.' . $key, $value]);
@@ -2326,13 +2340,21 @@ class EmiCollectionsController extends ApiBaseController
                             $list->andWhere(['like', "CONCAT(a.first_name,' ', COALESCE(a.last_name))", $value]);
                             break;
                         case 'state_enc_id':
-                            $list->andWhere(['IN', "b5.state_enc_id", $value]);
+                            if (in_array("unassigned", $value)) {
+                                $list->andWhere(["b5.state_enc_id" => null]);
+                            } else {
+                                $list->andWhere(['IN', "b5.state_enc_id", $value]);
+                            }
                             break;
                         case 'reporting_person':
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ', COALESCE(b2.last_name))", $value]);
                             break;
                         case 'branch':
-                            $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            if (in_array("unassigned", $value)) {
+                                $list->andWhere(['b3.location_enc_id' => null]);
+                            } else {
+                                $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            }
                             break;
                         case 'designation_id':
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
