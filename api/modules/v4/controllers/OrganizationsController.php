@@ -2550,14 +2550,14 @@ class OrganizationsController extends ApiBaseController
                         "CASE
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 0 AND 15 THEN 1
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 16 AND 30 THEN 2
-                WHEN (a.overdue_amount / a.emi_amount) * 30 = 0 THEN 0
+                WHEN (a.overdue_amount / a.emi_amount) * 30 <= 0 THEN 'X'
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 31 AND 45 THEN 3
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 46 AND 60 THEN 4
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 61 AND 75 THEN 5
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 76 AND 90 THEN 6
                 WHEN (a.overdue_amount / a.emi_amount) * 30 BETWEEN 91 AND 120 THEN 7
                 ELSE 8
-            END AS overdue_category"
+            END AS sub_bucket"
                 , "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 'a.assigned_financer_enc_id',
