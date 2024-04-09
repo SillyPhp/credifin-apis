@@ -19,6 +19,7 @@ use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCoApplicants;
 use common\models\LoanStatus;
+use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use common\models\Users;
 use Yii;
@@ -1441,5 +1442,28 @@ class TestController extends ApiBaseController
         print_r($loans);
         exit();
 //        return ['loans' => $loans, 'count' => $count];
+    }
+
+    private function sharedApps($user_id)
+    {
+        // getting loan applications shared to this user
+        $shared = SharedLoanApplications::find()
+            ->alias('a')
+            ->select(["a.loan_app_enc_id", "a.access"])
+            ->addSelect(["CONCAT(b.first_name, ' ' ,b.last_name) shared_by"])
+            ->joinWith(['sharedBy b'], false)
+            ->joinWith(['loanAppEnc c'], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id, 'c.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        $loan_app_ids = [];
+        if ($shared) {
+            foreach ($shared as $s) {
+                $loan_app_ids[] = $s["loan_app_enc_id"];
+            }
+        }
+
+        // returning application id's and shared detail
+        return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
 }
