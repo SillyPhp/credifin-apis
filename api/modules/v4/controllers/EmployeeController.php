@@ -43,7 +43,8 @@ class EmployeeController extends ApiBaseController
         return $behaviors;
     }
 
-    public function actionUpdateProfile(){
+    public function actionUpdateProfile()
+    {
         if ($user = $this->isAuthorized()) {
             $model = new Employee();
             $model->load(Yii::$app->getRequest()->getBodyParams());
@@ -58,7 +59,8 @@ class EmployeeController extends ApiBaseController
         }
     }
 
-    public function actionListUsers(){
+    public function actionListUsers()
+    {
         if ($user = $this->isAuthorized()) {
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -90,7 +92,8 @@ class EmployeeController extends ApiBaseController
                     'is_deleted' => 1,
                     'last_updated_on' => date('Y-m-d H:i:s')
                 ],
-                ['and',
+                [
+                    'and',
                     ['user_enc_id' => $user_enc_id],
                     ['is_deleted' => 0]
                 ]
@@ -121,7 +124,6 @@ class EmployeeController extends ApiBaseController
         } else {
             return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
         }
-
     }
 
     private function employee($org_id, $params = null)
@@ -148,8 +150,10 @@ class EmployeeController extends ApiBaseController
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
             }], false)
-            ->where(['b.status' => 'Inactive', 'a.organization_enc_id' => $org_id,
-                'c.user_type' => 'Employee', 'a.is_deleted' => 0]);
+            ->where([
+                'b.status' => 'Inactive', 'a.organization_enc_id' => $org_id,
+                'c.user_type' => 'Employee', 'a.is_deleted' => 0
+            ]);
 
         if ($params != null && !empty($params['fields_search'])) {
             $a = ['designation_id', 'employee_code', 'grade', 'employee_joining_date'];
@@ -211,9 +215,9 @@ class EmployeeController extends ApiBaseController
 
         return $inactive_employees->asArray()
             ->all();
-
     }
-    public function actionEmployeeCollectedEmiStats(){
+    public function actionEmployeeCollectedEmiStats()
+    {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
@@ -251,9 +255,9 @@ class EmployeeController extends ApiBaseController
             foreach ($valuesSma as $key => $value) {
                 $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
                 $CollectedCasesNumber = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
-                if ($key == 'OnTime'):
+                if ($key == 'OnTime') :
                     $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
-                else:
+                else :
                     $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
                 endif;
                 $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) collected_verified_amount_{$key},";
@@ -308,7 +312,11 @@ class EmployeeController extends ApiBaseController
                         if ($key == 'employee_code') {
                             $list->andWhere(['like', 'b.' . $key, $value]);
                         } elseif ($key == 'state_enc_id') {
-                            $list->andWhere(['IN', 'ce2.state_enc_id', $value]);
+                            if (in_array("unassigned", $value)) {
+                                $list->andWhere(['ce2.state_enc_id' => null]);
+                            } else {
+                                $list->andWhere(['IN', 'ce2.state_enc_id', $value]);
+                            }
                         } elseif ($key == 'phone') {
                             $list->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'username') {
@@ -318,11 +326,14 @@ class EmployeeController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            if (in_array("unassigned", $value)) {
+                                $list->andWhere(['b3.location_enc_id'=> null]);
+                            } else {
+                                $list->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            }
                         } elseif ($key == 'designation_id') {
                             $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
-                        }
-                        else {
+                        } else {
                             $list->andWhere(['like', $key, $value]);
                         }
                     }
@@ -335,7 +346,7 @@ class EmployeeController extends ApiBaseController
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
-            if (isset($params['report_type'])&&$params['report_type'] != "") {
+            if (isset($params['report_type']) && $params['report_type'] != "") {
                 $list->andWhere(['=', 'ala.user_type', $params['report_type']]);
             }
             $count = $list->count();
@@ -344,7 +355,7 @@ class EmployeeController extends ApiBaseController
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
-            if ($list):
+            if ($list) :
                 $list = ArrayProcessJson::Parse($list);
             endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
@@ -362,10 +373,12 @@ class EmployeeController extends ApiBaseController
 
         $employee = Users::find()
             ->alias('a')
-            ->select(['a.username', 'b.employee_joining_date', 'b2.designation', 'b.employee_code', 'b3.location_name', 'a.email', 'a.phone',
+            ->select([
+                'a.username', 'b.employee_joining_date', 'b2.designation', 'b.employee_code', 'b3.location_name', 'a.email', 'a.phone',
                 "CONCAT(a.first_name , ' ', COALESCE(a.last_name, '')) as name", 'a.status',
                 "(CASE WHEN a.status = 'Active' OR a.status = 'Inactive' THEN a.status ELSE NULL END) as status",
-                "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",])
+                "CASE WHEN a.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . "', a.image_location, '/', a.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')), '&size=200&rounded=false&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END employee_image",
+            ])
             ->joinWith(['userRoles0 b' => function ($d) {
                 $d->joinWith(['designation b2'], false);
                 $d->joinWith(['branchEnc b3' => function ($f) {

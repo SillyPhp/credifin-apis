@@ -550,7 +550,11 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
                                 break;
                             case 'state_enc_id':
-                                $loans->andWhere(['IN', "ce2.state_enc_id", $val]);
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(["ce2.state_enc_id" => null]);
+                                } else {
+                                    $loans->andWhere(['IN', "ce2.state_enc_id", $val]);
+                                }
                                 break;
                             case 'login_start_date':
                                 $loans->andWhere(['>=', 'a.login_date', $val]);
@@ -598,7 +602,11 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $i)) {
                         switch ($key) {
                             case 'branch':
-                                $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(['i.branch_enc_id' => null]);
+                                } else {
+                                    $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
+                                }
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
@@ -923,7 +931,7 @@ class CompanyDashboardController extends ApiBaseController
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date','branch'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo', 'provider'];
@@ -932,7 +940,7 @@ class CompanyDashboardController extends ApiBaseController
             $purpose_search = ['purpose'];
 
             // fields array for "i" alias table
-            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status', 'co_branch'];
+            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status','co_branch'];
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
@@ -1012,6 +1020,13 @@ class CompanyDashboardController extends ApiBaseController
                             case 'disbursement_end_date':
                                 $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
                                 break;
+                            case 'branch':
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(['b.location_enc_id' => null]);
+                                } else {
+                                    $loans->andWhere(['IN', 'b.location_enc_id', $val]);
+                                }
+                                break;
                             default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
                         }
@@ -1031,7 +1046,11 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['LIKE', 'b.location_name', $val]);
                                 break;
                             case 'state_enc_id':
-                                $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(['ce2.state_enc_id' => null]);
+                                } else {
+                                    $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
+                                }
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
@@ -1178,7 +1197,7 @@ class CompanyDashboardController extends ApiBaseController
                 if (!empty($provider)) {
                     $val['bdo_approved_amount'] = $provider['bdo_approved_amount'];
                     $val['tl_approved_amount'] = $provider['tl_approved_amount'];
-                    $val['branch_id'] = $provider['branch_enc_id'];
+                    $val['branch'] = $provider['branch_enc_id'];
                     $val['branch'] = $provider['location_name'];
                     $val['state_name'] = $provider['name'];
                 }
@@ -3321,7 +3340,11 @@ class CompanyDashboardController extends ApiBaseController
                         } elseif ($key == 'phone') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'state_enc_id') {
-                            $employeeStats->andWhere(['IN', 'ce2.state_enc_id', $value]);
+                            if (in_array("unassigned", $value)) {
+                                $employeeStats->andWhere(['ce2.state_enc_id' => null]);
+                            } else {
+                                $employeeStats->andWhere(['IN', 'ce2.state_enc_id', $value]);
+                            }
                         } elseif ($key == 'username') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'employee_name') {
@@ -3329,7 +3352,11 @@ class CompanyDashboardController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $employeeStats->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            $employeeStats->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            if (in_array("unassigned", $value)) {
+                                $employeeStats->andWhere(['b3.location_enc_id' => null]);
+                            } else {
+                                $employeeStats->andWhere(['IN', 'b3.location_enc_id', $value]);
+                            }
                         } elseif ($key == 'designation_id') {
                             $employeeStats->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {
