@@ -6,25 +6,27 @@ use api\modules\v4\models\EmiCollectionForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanPayments;
+use common\models\AssignedLoanProvider;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountOtherDetails;
-use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
 use common\models\LoanActionRequests;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCoApplicants;
 use common\models\LoanStatus;
+use common\models\UserRoles;
 use common\models\Users;
 use Yii;
 use yii\db\Exception;
 use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\Response;
 
 class TestController extends ApiBaseController
@@ -1065,5 +1067,379 @@ class TestController extends ApiBaseController
         Yii::$app->cache->flush();
         print_r('Cache Cleared');
         exit();
+    }
+
+    public function actionPartnerApplications()
+    {
+        $user = $this->isAuthorized();
+        $params = Yii::$app->request->post();
+        $org_id = $user->organization_enc_id;
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
+        // using this var in where condition and defined here because it might be changed in some cases
+        $is_removed = 0;
+
+        // getting shared applications to logged-in user
+        $shared_apps = $this->sharedApps($user->user_enc_id);
+
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+
+        // getting loan applications list
+        $loans = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.id', 'a.loan_app_enc_id',
+                'a.created_on as apply_date', 'a.application_number',
+                'i.status status_number',
+                'a.amount',
+                'h.name applicant_name',
+                'a.amount_received',
+                'a.amount_due',
+                'a.scholarship',
+                'a.loan_products_enc_id',
+                'a.loan_type',
+                'a.years',
+                'a.phone',
+                'a.email',
+                'a.applicant_current_city as city',
+                'a.applicant_dob as dob',
+                'a.created_by',
+                'a.lead_by',
+                'a.managed_by',
+                'lp.name as loan_product',
+                'i.updated_on',
+                'a.created_on',
+                'a.loan_status_updated_on as disbursement_date',
+                "CONCAT(k.first_name, ' ', COALESCE(k.last_name,'')) employee_name",
+                "(CASE
+                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name,' ',COALESCE(lb.last_name, ''))
+                    ELSE CONCAT('SELF (',cb.first_name, ' ', COALESCE(cb.last_name, ''), ')')
+                END) as creator_name",
+                "(CASE 
+                    WHEN a.lead_by IS NOT NULL THEN '0' 
+                    ELSE '1' 
+                END) as is_self",
+                "(CASE
+                    WHEN a.gender = '1' THEN 'Male'
+                    WHEN a.gender = '2' THEN 'Female'
+                    ELSE 'N/A'
+                END) as gender",
+                "a.login_date"
+            ])
+            ->joinWith(['loanPurposes lpp' => function ($lpp) {
+                $lpp->select(['lpp.loan_app_enc_id', 'lpp.financer_loan_purpose_enc_id', 'lpp1.purpose']);
+                $lpp->joinWith(['financerLoanPurposeEnc lpp1' => function ($lpp1) {
+                    $lpp1->andOnCondition(['lpp1.is_deleted' => 0]);
+                }], false);
+                $lpp->andOnCondition(['lpp.is_deleted' => 0]);
+            }])
+            ->innerJoinWith(['loanApplicationPartners lap' => function ($lap) use ($org_id) {
+                $lap->andOnCondition(['lap.partner_enc_id' => $org_id]);
+                $lap->andOnCondition(['lap.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['leadBy lb'], false)
+            ->joinWith(['createdBy cb' => function ($cr) {
+                $cr->joinWith(['userTypeEnc ute'], false);
+            }], false)
+            ->joinWith(['loanCoApplicants h' => function ($h) {
+                $h->andOnCondition(['h.borrower_type' => 'Borrower']);
+            }])
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->select(['i.loan_application_enc_id', 'i.assigned_loan_provider_enc_id', 'i.status', 'j.name']);
+                $i->andOnCondition(['i.is_deleted' => 0]);
+                $i->joinWith(['providerEnc j'], false);
+                $i->joinWith(['branchEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc b1' => function ($b1) {
+                        $b1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }], false);
+            }])
+            ->joinWith(['managedBy k'], false)
+            ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['sharedLoanApplications n' => function ($n) {
+                $n->select([
+                    'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
+                    "CASE WHEN n1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', n1.image_location, '/', n1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', concat(n1.first_name,' ',n1.last_name), '&size=200&rounded=false&background=', REPLACE(n1.initials_color, '#', ''), '&color=ffffff') END image"
+                ])
+                    ->joinWith(['sharedTo n1' => function ($n1) {
+                        $n1->joinWith(["userRoles0 n1a" => function ($n1a) {
+                            $n1a->joinWith(["designation n1b"]);
+                        }], false);
+                    }], false)
+                    ->onCondition(['n.is_deleted' => 0]);
+            }]);
+
+        if (!empty($params['fields_search'])) {
+            // fields array for "a" alias table
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date', 'branch'];
+
+            // fields array for "cb" alias table
+            $name_search = ['created_by', 'sharedTo', 'provider'];
+
+            // fields array for "lpp" alias table
+            $purpose_search = ['purpose'];
+
+            // fields array for "i" alias table
+            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status', 'co_branch'];
+
+            // loop fields
+            foreach ($params['fields_search'] as $key => $val) {
+
+                if (!empty($val) || $val == '0') {
+                    // key match to "a" table array
+                    if (in_array($key, $a)) {
+
+                        // if key is apply_date then checking created_on time
+                        switch ($key) {
+                            case 'co_loan_product':
+                                $loans->andWhere(['LIKE', 'lp.name', $val]);
+                                break;
+                            case 'login_start_date':
+                                $loans->andWhere(['>=', 'a.login_date', $val]);
+                                break;
+                            case 'login_end_date':
+                                $loans->andWhere(['<=', 'a.login_date', $val]);
+                                break;
+                            case 'apply_date':
+                                $loans->andWhere(['like', 'a.created_on', $val]);
+                                break;
+                            case 'applicant_name':
+                                $loans->andWhere(['like', 'h.name', $val]);
+                                break;
+                            case 'start_date':
+                                $loans->andWhere(['>=', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'end_date':
+                                $loans->andWhere(['<=', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'min_amount':
+                                $loans->andWhere(['>=', 'a.amount', $val]);
+                                break;
+                            case 'max_amount':
+                                $loans->andWhere(['<=', 'a.amount', $val]);
+                                break;
+                            case 'min_bdo_approved_amount':
+                                $loans->andWhere(['>=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'max_bdo_approved_amount':
+                                $loans->andWhere(['<=', 'bdo_approved_amount', $val]);
+                                break;
+                            case 'min_disbursement_approved':
+                                $loans->andWhere(['>=', 'disbursement_approved', $val]);
+                                break;
+                            case 'max_disbursement_approved':
+                                $loans->andWhere(['<=', 'disbursement_approved', $val]);
+                                break;
+                            case 'min_soft_approval':
+                                $loans->andWhere(['>=', 'soft_approval', $val]);
+                                break;
+                            case 'max_soft_approval':
+                                $loans->andWhere(['<=', 'soft_approval', $val]);
+                                break;
+                            case 'min_soft_sanction':
+                                $loans->andWhere(['>=', 'soft_sanction', $val]);
+                                break;
+                            case 'max_soft_sanction':
+                                $loans->andWhere(['<=', 'soft_sanction', $val]);
+                                break;
+                            case 'min_tl_approved_amount':
+                                $loans->andWhere(['>=', 'tl_approved_amoun', $val]);
+                                break;
+                            case 'max_tl_approved_amount':
+                                $loans->andWhere(['<=', 'tl_approved_amoun', $val]);
+                                break;
+                            case 'min_valuation':
+                                $loans->andWhere(['>=', 'valuation', $val]);
+                                break;
+                            case 'max_valuation':
+                                $loans->andWhere(['<=', 'valuation', $val]);
+                                break;
+                            case 'disbursement_start_date':
+                                $loans->andWhere(['>', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'disbursement_end_date':
+                                $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
+                                break;
+                            case 'branch':
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(['b.location_enc_id' => null]);
+                                } else {
+                                    $loans->andWhere(['IN', 'b.location_enc_id', $val]);
+                                }
+                                break;
+                            default:
+                                $loans->andWhere(['like', 'a.' . $key, $val]);
+                        }
+                    }
+
+                    // key match to "lpp" table array
+                    if (in_array($key, $purpose_search)) {
+                        if ($key == 'purpose') {
+                            $loans->andWhere(['like', 'lpp1.purpose', $val]);
+                        }
+                    }
+
+                    // key match to "i" table array
+                    if (in_array($key, $i)) {
+                        switch ($key) {
+                            case 'co_branch':
+                                $loans->andWhere(['LIKE', 'b.location_name', $val]);
+                                break;
+                            case 'state_enc_id':
+                                if (in_array("unassigned", $val)) {
+                                    $loans->andWhere(['ce2.state_enc_id' => null]);
+                                } else {
+                                    $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
+                                }
+                                break;
+                            case 'status':
+                                $loans->andWhere(['IN', 'i.status', $val]);
+                                break;
+                            default:
+                                $loans->andWhere(['like', 'i.' . $key, $val]);
+                                break;
+                        }
+                    }
+
+                    // key match to "$name_search" table array
+                    if (in_array($key, $name_search)) {
+                        switch ($key) {
+                            case 'created_by':
+                                $loans->andWhere([
+                                    'OR',
+                                    [
+                                        'AND',
+                                        [
+                                            'NOT',
+                                            ['a.lead_by' => null]
+                                        ],
+                                        ['LIKE', "CONCAT(lb.first_name, ' ', COALESCE(lb.last_name,''))", $val]
+                                    ],
+                                    [
+                                        'AND',
+                                        ['a.lead_by' => null],
+                                        ['LIKE', "CONCAT(cb.first_name, ' ', COALESCE(cb.last_name, ''))", $val]
+                                    ]
+                                ]);
+                                break;
+                            case 'sharedTo':
+                                $loans->andWhere(['LIKE', "CONCAT(n1.first_name, ' ', COALESCE(n1.last_name,''))", $val]);
+                                break;
+                            case 'provider':
+                                $loans->andWhere(['LIKE', "j.name", $val]);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // sorting data
+        if (!empty($params['field_sort'])) {
+
+            // fields array of "a" alias table
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
+
+            // fields array of "i" alias table
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'status'];
+
+            // loop field_sort array
+            foreach ($params['field_sort'] as $key => $val) {
+
+                // if $val not null or empty
+                if ($val != null || $val != '') {
+
+                    // if val is ASC then sorting ascending
+                    if ($val == 'ASC') {
+                        $val = SORT_ASC;
+                    } else if ($val == 'DESC') {
+                        // else sort descending
+                        $val = SORT_DESC;
+                    }
+
+                    if (in_array($key, $a)) {
+
+                        // if key apply_date then order_by created_by
+                        if ($key == 'apply_date') {
+                            $loans->orderBy(['a.created_on' => $val]);
+                        } else {
+                            // else with field name
+                            $loans->orderBy(['a.' . $key => $val]);
+                        }
+
+                        // if "i" alias table array matching then sorting from their
+                        if (in_array($key, $i)) {
+                            $loans->orderBy(['i.' . $key => $val]);
+                        }
+                    }
+                } else {
+                    // else order_by i.updated_on desc and created_on desc
+                    $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+                }
+            }
+        } else {
+            // else order_by i.updated_on desc and created_on desc
+            $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+        }
+
+        $loans->andWhere(['a.is_deleted' => 0, 'a.is_removed' => $is_removed]);
+
+        $count = $loans->count();
+        $loans = $loans
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+        print_r($loans);
+
+        if ($loans) {
+            foreach ($loans as &$val) {
+                $val['sharedTo'] = $val['sharedLoanApplications'];
+                unset($val['sharedLoanApplications']);
+
+                $val['access'] = null;
+                $val['shared_by'] = null;
+                $val['is_shared'] = false;
+                if ($shared_apps['app_ids']) {
+                    foreach ($shared_apps['shared'] as $s) {
+                        if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
+                            $val['access'] = $s['access'];
+                            $val['shared_by'] = $s['shared_by'];
+                            $val['is_shared'] = true;
+                        }
+                    }
+                }
+
+                $provider = AssignedLoanProvider::find()
+                    ->alias('a')
+                    ->select(['a.assigned_loan_provider_enc_id', 'ce2.name', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                    ->joinWith(['branchEnc b' => function ($b) {
+                        $b->joinWith(['cityEnc b1' => function ($b1) {
+                            $b1->joinWith(['stateEnc ce2']);
+                        }], false);
+                    }], false)
+                    ->andWhere(['a.loan_application_enc_id' => $val['loan_app_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                if (!empty($provider)) {
+                    $val['bdo_approved_amount'] = $provider['bdo_approved_amount'];
+                    $val['tl_approved_amount'] = $provider['tl_approved_amount'];
+                    $val['branch'] = $provider['branch_enc_id'];
+                    $val['branch'] = $provider['location_name'];
+                    $val['state_name'] = $provider['name'];
+                }
+                print_r($provider);
+                exit();
+            }
+        }
+
+        print_r($loans);
+        exit();
+//        return ['loans' => $loans, 'count' => $count];
     }
 }
