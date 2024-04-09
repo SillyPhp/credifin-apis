@@ -1435,7 +1435,6 @@ class TestController extends ApiBaseController
                     $val['state_name'] = $provider['name'];
                 }
                 print_r($provider);
-                exit();
             }
         }
 
