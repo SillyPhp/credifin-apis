@@ -3903,16 +3903,16 @@ class CompanyDashboardController extends ApiBaseController
             ->alias('a')
             ->select([
                 'a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
-                'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
-                'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
-                'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
-                'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
-                'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
-                'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
-                'COUNT(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount',
-                'COUNT(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount',
-                'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'
+                "COUNT(CASE WHEN b.status = '0' THEN c.amount END) as new_lead_amount",
+                "COUNT(CASE WHEN b.status = '4' THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount",
+                "COUNT(CASE WHEN b.status = '31' THEN b.disbursement_approved END) as disbursed_amount",
+                "COUNT(CASE WHEN b.status = '26' THEN b.disbursement_approved END) as disbursed_approval_amount",
+                "COUNT(CASE WHEN b.status = '24' THEN b.soft_sanction END) as soft_sanctioned_amount",
+                "COUNT(CASE WHEN b.status = '15' THEN b.soft_approval END) as soft_approval_amount",
+                "COUNT(CASE WHEN b.status != '0' AND b.status != '4' AND b.status != '15' AND b.status != '31' AND b.status != '26' AND b.status != '32' AND b.status != '30' AND b.status != '28' AND b.status != '24' THEN c.amount END) as under_process_amount",
+                "COUNT(CASE WHEN b.status = '32' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount",
+                "COUNT(CASE WHEN b.status = '28' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount",
+                "COUNT(CASE WHEN b.status = '30' THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount"
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
