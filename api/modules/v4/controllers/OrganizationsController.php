@@ -2592,7 +2592,6 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 "a.loan_account_enc_id", "a.stock",
                 "a.advance_interest", "a.bucket",
-                        "((a.overdue_amount / a.emi_amount) * 30) result",
                         "CASE
                         WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
                  WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
