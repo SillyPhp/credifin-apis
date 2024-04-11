@@ -1348,6 +1348,17 @@ class LoanAccountsController extends ApiBaseController
         $ptpcases = LoanAccountPtps::find()
             ->alias('a')
             ->select([
+                  "CASE
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 30 AND ((c.overdue_amount / c.emi_amount) * 30) <= 45 THEN 3
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 45 AND ((c.overdue_amount / c.emi_amount) * 30) <= 60 THEN 4
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 60 AND ((c.overdue_amount / c.emi_amount) * 30) <= 75 THEN 5
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 75 AND ((c.overdue_amount / c.emi_amount) * 30) <= 90 THEN 6
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 90 AND ((c.overdue_amount / c.emi_amount) * 30) <= 120 THEN 7
+                    WHEN (c.overdue_amount / c.emi_amount) * 30 >= 120 THEN 8
+                END AS sub_bucket",
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
                 "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
@@ -1396,7 +1407,10 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key == 'assigned_caller') {
+                    if ($key=='sub_bucket'){
+                        $ptpcases->having(['in','sub_bucket',$value]);
+                    }
+                    elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                         } else {
