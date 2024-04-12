@@ -2652,7 +2652,7 @@ class OrganizationsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                END target_collection_amount",
+                END) target_collection_amount",
                 "(CASE WHEN epr.id IS NOT NULL THEN 'true' ELSE 'false' END) AS due"
             ])
             ->addSelect($selectQuery)
