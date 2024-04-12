@@ -270,7 +270,7 @@ class LoanAccountsController extends ApiBaseController
                     $ld->andOnCondition(['ld.type' => 'phone']);
                 }])
                 ->joinWith(['emiPaymentRecords AS epr' => function ($epr) {
-                    $epr->select(['epr.emi_payment_records_enc_id', 'epr.loan_account_enc_id', 'epr.payment_id', "(CASE WHEN epr.type = 1 THEN 'nach' WHEN epr.type = 2 THEN 'enach' END) AS type", 'epr.amount', 'epr.nach_date', 'epr.status']);
+                    $epr->select(['epr.emi_payment_records_enc_id', 'epr.loan_account_enc_id', 'epr.payment_id', "(CASE WHEN epr.type = 1 THEN 'nach' WHEN epr.type = 2 THEN 'enach' END) AS type", 'epr.amount', 'epr.nach_date']);
                     $epr->andOnCondition("epr.status REGEXP 'fail|failed' AND epr.charges_paid = 0");
                 }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
