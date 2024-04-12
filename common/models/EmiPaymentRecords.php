@@ -15,6 +15,7 @@ use Yii;
  * @property string $name Name
  * @property int $type 1 for nach, 2 for e-nach
  * @property double $amount Amount
+ * @property double $charges_paid
  * @property string $nach_date Nach Date
  * @property string $status Status
  * @property string $created_by Created By
@@ -45,7 +46,7 @@ class EmiPaymentRecords extends \yii\db\ActiveRecord
         return [
             [['emi_payment_records_enc_id', 'loan_account_number', 'name', 'type', 'amount', 'nach_date', 'status', 'created_by', 'created_on', 'updated_by', 'updated_on'], 'required'],
             [['type', 'is_deleted'], 'integer'],
-            [['amount'], 'number'],
+            [['amount', 'charges_paid'], 'number'],
             [['nach_date', 'created_on', 'updated_on'], 'safe'],
             [['emi_payment_records_enc_id', 'loan_account_enc_id', 'loan_account_number', 'payment_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['status'], 'string', 'max' => 50],

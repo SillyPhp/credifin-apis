@@ -2652,8 +2652,8 @@ class OrganizationsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                        END) AS target_collection_amount",
-
+                END target_collection_amount",
+                "(CASE WHEN epr.id IS NOT NULL THEN 'true' ELSE 'false' END) AS due"
             ])
             ->addSelect($selectQuery)
             ->joinWith(["branchEnc b" => function ($b) {
@@ -2685,8 +2685,11 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(["emiCollectionsCustom e" => function ($e) use ($sub_query) {
                 $e->from(["e" => $sub_query]);
             }], false)
+            ->joinWith(['emiPaymentRecords AS epr' => function ($epr) {
+                $epr->andOnCondition("epr.status REGEXP 'fail|failed' AND epr.charges_paid = 0");
+            }], false)
             ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => $hard_recovery])
-            ->groupBy(['a.loan_account_enc_id'])
+            ->groupBy(['a.loan_account_enc_id', 'epr.id'])
             ->orderBy([
                 ("CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
                     WHEN ANY_VALUE(d.user_type) = 2 THEN a.collection_priority

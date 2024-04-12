@@ -269,6 +269,10 @@ class LoanAccountsController extends ApiBaseController
                 ->joinWith(['loanAccountOtherDetails ld' => function ($ld) {
                     $ld->andOnCondition(['ld.type' => 'phone']);
                 }])
+                ->joinWith(['emiPaymentRecords AS epr' => function ($epr) {
+                    $epr->select(['epr.emi_payment_records_enc_id', 'epr.loan_account_enc_id', 'epr.payment_id', "(CASE WHEN epr.type = 1 THEN 'nach' WHEN epr.type = 2 THEN 'enach' END) AS type", 'epr.amount', 'epr.nach_date', 'epr.status']);
+                    $epr->andOnCondition("epr.status REGEXP 'fail|failed' AND epr.charges_paid = 0");
+                }])
                 ->where(['a.loan_account_enc_id' => $loan_id])
                 ->groupBy(['a.loan_account_enc_id'])
                 ->asArray()
@@ -1423,7 +1427,7 @@ class LoanAccountsController extends ApiBaseController
                             $ptpcases->andWhere(['c2.state_enc_id' => null]);
                         } else {
                             $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        }                    
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);
@@ -2373,12 +2377,12 @@ class LoanAccountsController extends ApiBaseController
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
                         if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['c2.state_enc_id' => null]);
-                            $query->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $sub_query->andWhere(['c2.state_enc_id' => null]);
+                        $query->andWhere(['c2.state_enc_id' => null]);
+                    } else {
+                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                    }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $sub_query->andWhere(['c.bucket' => null]);
