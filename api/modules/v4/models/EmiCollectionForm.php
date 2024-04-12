@@ -224,8 +224,9 @@ class EmiCollectionForm extends Model
             $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location, $path);
         }
         // visit_charges only in manual cash payment 
-        if ($this->payment_method == 4) {
-            $model->visit_charges = Yii::$app->params->charges->visit_charges;
+        if (!empty(Yii::$app->params->charges->visit_charges)) {
+            $visit_charges = Yii::$app->params->charges->visit_charges;
+            $model->visit_charges = $visit_charges;
         }
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
@@ -254,7 +255,7 @@ class EmiCollectionForm extends Model
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
             $trackCash['emi_id'] = $model->emi_collection_enc_id;
-            $trackCash['visit_charges'] = Yii::$app->params->charges->visit_charges;
+            $trackCash['visit_charges'] = $visit_charges ?? 0;
             $this->collect_cash($trackCash);
         }
 
