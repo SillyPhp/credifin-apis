@@ -3057,6 +3057,10 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
 
+        if (!empty($params["sub_bucket"])) {
+            $query->having(['sub_bucket'=>$params["sub_bucket"]]);
+        }
+
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
             $start_date = $end_date = date('Y-m-d');
