@@ -357,7 +357,7 @@ class EmiCollectionsController extends ApiBaseController
                 ["IS NOT", "subquery2.received_from", NULL]
             ])
             ->andWhere($fields_search)
-            ->groupBy(['a.user_enc_id', 'emi.loan_type']);
+            ->groupBy(['a.user_enc_id']);
 
         if (!empty($params['loan_type'])) {
             $users->andWhere(['IN', 'emi.loan_type', $params['loan_type']]);
