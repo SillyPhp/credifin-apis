@@ -2474,9 +2474,9 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params['loan_type'])) {
             $subquery->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
         }
-        if (!empty($params['fields_search']['branch'])) {
-            $subquery->andWhere(['IN', 'a.branch_enc_id', $params['fields_search']['branch']]);
-        }
+//        if (!empty($params['fields_search']['branch'])) {
+//            $subquery->andWhere(['IN', 'a.branch_enc_id', $params['fields_search']['branch']]);
+//        }
         $list = OrganizationLocations::find()
             ->alias('a')
             ->select([
@@ -2502,6 +2502,13 @@ class EmiCollectionsController extends ApiBaseController
                             break;
                         case 'max':
                             $list->andHaving(['<=', "{$dynamic}", $value]);
+                            break;
+                        case 'branch':
+                            if (in_array("unassigned", $value)) {
+                                $list->andWhere(['a.location_enc_id' => null]);
+                            } else {
+                                $list->andWhere(['IN', 'a.location_enc_id', $value]);
+                            }
                             break;
                         default:
                             switch ($key) {
