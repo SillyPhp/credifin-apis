@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%emi_collection}}".
  *
@@ -23,6 +25,7 @@ namespace common\models;
  * @property string $customer_interaction
  * @property string $customer_visit
  * @property string $transaction_initiated_date
+ * @property double $visiting_charges
  * @property int $ptp_payment_method 1 = cash, 2 = online
  * @property double $ptp_amount Ptp Amount
  * @property string $ptp_date Ptp Date
@@ -78,7 +81,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'phone', 'amount', 'loan_type', 'created_by'], 'required'],
             [['company_id', 'ptp_payment_method', 'emi_payment_mode', 'emi_payment_method', 'is_deleted', 'discrepency_emi'], 'integer'],
             [['collection_date', 'transaction_initiated_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
-            [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
+            [['amount', 'visiting_charges', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['customer_interaction', 'customer_visit', 'emi_payment_status', 'address', 'comments'], 'string'],
             [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'case_no', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],

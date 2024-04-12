@@ -33,6 +33,7 @@ class EmiCollectionForm extends Model
     public $other_delay_reason;
     public $other_doc_image;
     public $borrower_image;
+    public $visiting_charges;
     public $pr_receipt_image;
     public $address;
     public $state;
@@ -223,6 +224,9 @@ class EmiCollectionForm extends Model
             $path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
             $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location, $path);
         }
+        if ($this->payment_method == 4) {
+            $model->visiting_charges = Yii::$app->params->charges->visiting_charges;
+        }
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
@@ -250,6 +254,7 @@ class EmiCollectionForm extends Model
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
             $trackCash['emi_id'] = $model->emi_collection_enc_id;
+            $trackCash['visiting_charges'] = Yii::$app->params->charges->visiting_charges;
             $this->collect_cash($trackCash);
         }
 
@@ -368,11 +373,11 @@ class EmiCollectionForm extends Model
             }
         }
 
-        $remaining_amount = $data['amount'];
+        $amount = !empty($data['visiting_charges']) ? $data['amount'] + $data['visiting_charges'] : $data['amount'];
         $query->status = $status;
         $query->remarks = !empty($data['remarks']) ? $data['remarks'] : '';
-        $query->amount = $data['amount'];
-        $query->remaining_amount = $remaining_amount;
+        $query->amount = $amount;
+        $query->remaining_amount = $amount;
         $query->created_by = $query->updated_by = $data['user_id'];
         $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
 
