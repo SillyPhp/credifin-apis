@@ -32,6 +32,7 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanApplicationsReferencesExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
+use common\models\extended\UserRolesExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\FinancerLoanProducts;
 use common\models\FinancerVehicleBrand;
@@ -834,7 +835,6 @@ class CompanyDashboardController extends ApiBaseController
         // getting shared applications to logged-in user
         $shared_apps = $this->sharedApps($user->user_enc_id);
 
-        $filter = !empty($params['filter']) ? $params['filter'] : null;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
 
@@ -923,15 +923,10 @@ class CompanyDashboardController extends ApiBaseController
                     }], false)
                     ->onCondition(['n.is_deleted' => 0]);
             }]);
-        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-
-        if ($filter) {
-            $loans->andWhere(['in', 'i.status', $filter]);
-        }
 
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date','branch'];
+            $a = ['applicant_name', 'login_date', 'application_number', 'loan_status_updated_on', 'amount', 'apply_date', 'loan_type', 'co_loan_product', 'start_date', 'end_date', 'disbursement_start_date', 'disbursement_end_date', 'login_start_date', 'login_end_date', 'branch'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo', 'provider'];
@@ -940,7 +935,7 @@ class CompanyDashboardController extends ApiBaseController
             $purpose_search = ['purpose'];
 
             // fields array for "i" alias table
-            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status','co_branch'];
+            $i = ['bdo_approved_amount', 'state_enc_id', 'tl_approved_amount', 'status', 'co_branch'];
 
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
@@ -1094,20 +1089,6 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        // keyword search matching with these fields
-        if (!empty($params['search_keyword'])) {
-            $loans->andWhere([
-                'or',
-                ['like', 'a.applicant_name', $params['search_keyword']],
-                ['like', 'h.name', $params['search_keyword']],
-                ['like', 'a.loan_type', $params['search_keyword']],
-                ['like', 'a.amount', $params['search_keyword']],
-                ['like', 'a.created_on', $params['search_keyword']],
-                ['like', 'a.phone', $params['search_keyword']],
-                ['like', 'a.application_number', $params['search_keyword']],
-            ]);
-        }
-
         // sorting data
         if (!empty($params['field_sort'])) {
 
@@ -1208,30 +1189,6 @@ class CompanyDashboardController extends ApiBaseController
     }
 
 
-    //    private function loanApplicationStats()
-    //    {
-    //        $currentYear = date('Y');
-    //        $currentMonth = date('m');
-    //
-    //        $query = AssignedLoanProvider::find()
-    //            ->alias('a')
-    //            ->select([
-    //                "COUNT(CASE WHEN a.status = '33' THEN b.loan_app_enc_id END) as completed",
-    //                "COUNT(CASE WHEN a.status != '33' AND a.status != '0' THEN b.loan_app_enc_id END) as pending",
-    //            ])
-    //            ->joinWith(['loanApplicationEnc b'], false)
-    //            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
-    //            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
-    //            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth])
-    //            ->asArray()
-    //            ->one();
-    //
-    //        if ($query) {
-    //            return ['status' => 200, 'data' => $query];
-    //        } else {
-    //            return ['status' => 404, 'message' => 'Not found'];
-    //        }
-    //    }
 
     // getting shared loan applications
     private function sharedApps($user_id)
@@ -2906,7 +2863,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting employee with this id
-            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
+            $employee = UserRolesExtended::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             // Correctly assign the field name
             $field = $params['id'];
             if ($field == 'employee_code') {
@@ -2944,7 +2901,7 @@ class CompanyDashboardController extends ApiBaseController
                 }
             } else {
                 // if not exists then adding it
-                $employee = new UserRoles();
+                $employee = new UserRolesExtended();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $employee->role_enc_id = $utilitiesModel->encrypt();
