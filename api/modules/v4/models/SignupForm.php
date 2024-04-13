@@ -9,6 +9,7 @@ use common\models\AssignedFinancerDealers;
 use common\models\AssignedSupervisor;
 use common\models\BankDetails;
 use common\models\EmailLogs;
+use common\models\extended\UserRolesExtended;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -72,12 +73,12 @@ class SignupForm extends Model
             [['username', 'email', 'vehicle_type', 'since_with_financer', 'financing_facility', 'dealership_date', 'agreement_status', 'brands', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'ifsc_code', 'account_number', 'bank_name', 'account_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-//            [['vehicle_type', 'brands'], function () {
-//                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
-//                    $this->addError('vehicle_type', 'It must be an array!');
-//                    $this->addError('brands', 'It must be an array!');
-//                }
-//            }],
+            //            [['vehicle_type', 'brands'], function () {
+            //                if (!is_array($this->brands) && !is_array($this->vehicle_type)) {
+            //                    $this->addError('vehicle_type', 'It must be an array!');
+            //                    $this->addError('brands', 'It must be an array!');
+            //                }
+            //            }],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],
             [['password'], 'string', 'length' => [8, 20]],
@@ -182,7 +183,6 @@ class SignupForm extends Model
             // commiting code
             $transaction->commit();
             return ['status' => 201, 'user_id' => $user->user_enc_id];
-
         } catch (\Exception $exception) {
             $transaction->rollback();
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
@@ -222,21 +222,21 @@ class SignupForm extends Model
         $options->dealership_date = !empty($this->dealership_date) ? $this->dealership_date : null;
         $options->since_with_financer = !empty($this->since_with_financer) ? $this->since_with_financer : null;
 
-//        $options->tc_number = $this->tc_number;
-//        $logo = UploadedFile::getInstanceByName('tc_logo');
-//        if ($logo) {
-//            $options->tc_logo_location = \Yii::$app->getSecurity()->generateRandomString();
-//            $base_path = Yii::$app->params->upload_directories->tc_logo->logo . $options->tc_logo_location . '/';
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $options->tc_logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
-//            $type = $logo->type;
-//            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-//            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-//            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $options->tc_logo, "public", ['params' => ['ContentType' => $type]]);
-//            if (!$result) {
-//                throw new \Exception('Failed to upload logo');
-//            }
-//        }
+        //        $options->tc_number = $this->tc_number;
+        //        $logo = UploadedFile::getInstanceByName('tc_logo');
+        //        if ($logo) {
+        //            $options->tc_logo_location = \Yii::$app->getSecurity()->generateRandomString();
+        //            $base_path = Yii::$app->params->upload_directories->tc_logo->logo . $options->tc_logo_location . '/';
+        //            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        //            $options->tc_logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+        //            $type = $logo->type;
+        //            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        //            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        //            $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $options->tc_logo, "public", ['params' => ['ContentType' => $type]]);
+        //            if (!$result) {
+        //                throw new \Exception('Failed to upload logo');
+        //            }
+        //        }
 
         $options->created_on = $options->updated_on = date('Y-m-d H:i:s');
         $options->created_by = $options->updated_by = $this->user_id;
@@ -403,7 +403,7 @@ class SignupForm extends Model
         $ref = Referral::findOne(['code' => $this->ref_id]);
 
         if (!empty($ref)) {
-            $user_role = new UserRoles();
+            $user_role = new UserRolesExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $user_role->role_enc_id = $utilitiesModel->encrypt();
@@ -423,7 +423,6 @@ class SignupForm extends Model
                 throw new \Exception(json_encode($user_role->getErrors()));
             }
         }
-
     }
 
     // adding service for Financer, DSA and Connector
@@ -555,5 +554,4 @@ class SignupForm extends Model
             $mail_logs->save();
         }
     }
-
 }
