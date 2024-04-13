@@ -225,6 +225,14 @@ class LoanAccounts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanAppEnc0()
+    {
+        return $this->hasMany(LoanCoApplicants::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanActionRequests()
     {
         return $this->hasMany(LoanActionRequests::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
