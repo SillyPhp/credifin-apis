@@ -32,6 +32,8 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                 $this->enc_id = $this->owner->emi_collection_enc_id;
             } elseif (isset($this->owner->loan_account_enc_id)) {
                 $this->enc_id = $this->owner->loan_account_enc_id;
+            } elseif (isset($this->owner->role_enc_id)) {
+                $this->enc_id = $this->owner->role_enc_id;
             }
             $log->model = $this->className;
             $log->old_value = $old_value;
@@ -236,7 +238,7 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                 $amount = numfmt_format($fmt, $amount) . "\n";
                 $amount = explode(".", $amount);
                 $amount = $amount[0];
-//                $newValue = '<span class="amountLoan">' . $amount . '</span>';
+                //                $newValue = '<span class="amountLoan">' . $amount . '</span>';
                 $newValue = $amount;
                 break;
             case 'provider_enc_id':

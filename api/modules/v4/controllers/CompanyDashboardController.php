@@ -2868,7 +2868,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting employee with this id
-            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
+            $employee = UserRolesExtended::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             // Correctly assign the field name
             $field = $params['id'];
             if ($field == 'employee_code') {

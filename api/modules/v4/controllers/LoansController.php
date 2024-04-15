@@ -1087,7 +1087,7 @@ class LoansController extends ApiBaseController
             // getting negative locations
             $query = FinancerLoanNegativeLocation::find()
                 ->alias('a')
-                ->select(['a.negative_location_enc_id', 'CONCAT(b.first_name, " ", b.last_name) AS name', 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
+                ->select(['a.negative_location_enc_id', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) AS name", 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
                 ->joinWith(['userEnc b'], false);
 
             if (!empty($user->organization_enc_id)) {
