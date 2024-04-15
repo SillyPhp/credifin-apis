@@ -11,7 +11,7 @@ class UserRolesExtended extends UserRoles
         $model = explode("\\", UserRoles::className());
         return [
             'LoggableBehavior' => [
-                'class' => 'common\models\extended\LoanLoggableBehavior',
+                'class' => 'common\models\extended\LoggableBehavior',
                 'className' => end($model),
             ]
         ];
