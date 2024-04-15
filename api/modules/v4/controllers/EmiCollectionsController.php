@@ -1313,6 +1313,17 @@ class EmiCollectionsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
+                "CASE
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) <= 0 THEN 'X'
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) >= 0 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 15 THEN 1
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 15 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 30 THEN 2
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 30 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 45 THEN 3
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 45 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 60 THEN 4
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 60 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 75 THEN 5
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 75 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 90 THEN 6
+            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 90 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 120 THEN 7
+            WHEN (lc.overdue_amount / lc.emi_amount) * 30 >= 120 THEN 8
+             END AS sub_bucket",
                 'a.company_id', 'a.case_no', 'a.updated_on', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, '')) updated_by",
                 'a.emi_collection_enc_id', 'c.location_name as branch_name', 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.amount', 'a.loan_type', 'a.emi_payment_method', 'a.emi_payment_mode',
@@ -1421,7 +1432,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket'];
+            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket','sub_bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -1545,6 +1556,9 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
                             case 'bucket':
                                 $model->andWhere(['lc.bucket' => $value]);
+                                break;
+                            case 'sub_bucket':
+                                $model->having(['sub_bucket' => $value]);
                                 break;
                         }
                     }
