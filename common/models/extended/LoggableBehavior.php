@@ -1,15 +1,18 @@
 <?php
+
 namespace common\models\extended;
+
 use common\models\extended\AuditTrail;
 
-class LoggableBehavior extends \sammaye\audittrail\LoggableBehavior {
+class LoggableBehavior extends \sammaye\audittrail\LoggableBehavior
+{
+    public $className = '';
+
     public function leaveTrail($action, $name = null, $value = null, $old_value = null)
     {
         if ($this->active) {
-
             $log = new AuditTrail();
-            $className = $this->owner->className();
-            $log->model = $className;
+            $log->model = $this->className;
             $log->old_value = $old_value;
             $log->new_value = $value;
             $log->action = $action;
@@ -23,4 +26,3 @@ class LoggableBehavior extends \sammaye\audittrail\LoggableBehavior {
         }
     }
 }
-?>

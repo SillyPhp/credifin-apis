@@ -7,6 +7,16 @@ use common\models\Users;
 
 class UsersExtended extends Users
 {
+    public function behaviors()
+    {
+        $model = explode("\\", Users::className());
+        return [
+            'LoggableBehavior' => [
+                'class' => 'common\models\extended\LoggableBehavior',
+                'className' => end($model),
+            ]
+        ];
+    }
     public function getEmployeesCashReports2()
     {
         return $this->hasOne(EmployeesCashReport::className(), ['received_from' => 'user_enc_id']);
@@ -16,5 +26,4 @@ class UsersExtended extends Users
     {
         return $this->hasOne(EmployeesCashReport::className(), ['given_to' => 'user_enc_id']);
     }
-
 }
