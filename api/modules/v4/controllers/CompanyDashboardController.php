@@ -1297,7 +1297,7 @@ class CompanyDashboardController extends ApiBaseController
                 'ANY_VALUE(lpo.payable_value) as payable_value', 'ANY_VALUE(lpo.field_officer) as field_officer',
                 'ANY_VALUE(lpo.emi_amount) as emi_amount', 'ANY_VALUE(lpo.vehicle_color) as vehicle_color',
                 "ANY_VALUE(b.provider_enc_id) provider_enc_id",
-                "ANY_VALUE(lpo.motor_number) AS motor_number",
+                "ANY_VALUE(lpo.motor_number) AS motor_number", 'ANY_VALUE(lpo.erickshaw_purpose) as erickshaw_purpose'
 
             ])
             ->joinWith(['leadBy cr'], false)
@@ -1349,16 +1349,21 @@ class CompanyDashboardController extends ApiBaseController
                 $i->joinWith(['cityEnc i1'], false);
                 $i->joinWith(['stateEnc i2'], false);
             }], false)
+
             ->joinWith(['sharedLoanApplications k' => function ($k) {
                 $k->select([
                     'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
-
-                    "CASE WHEN k1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', k1.image_location, '/', k1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(k1.first_name,' ',k1.last_name), '&size=200&rounded=false&background=', REPLACE(k1.initials_color, '#', ''), '&color=ffffff') END image"
+                    "CASE WHEN k1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', k1.image_location, '/', k1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(k1.first_name,' ',k1.last_name), '&size=200&rounded=false&background=', REPLACE(k1.initials_color, '#', ''), '&color=ffffff') END image",
+                    "ANY_VALUE(k3b.location_name) as branch_name"
                 ])->joinWith(['sharedTo k1' => function ($k1) {
                     $k1->joinWith(["userRoles0 k1a" => function ($k1a) {
                         $k1a->joinWith(["designation k1b"], false);
+                        $k1a->joinWith(["organizationEnc k2b" => function ($k2b) {
+                            $k2b->joinWith(['organizationLocations k3b'], false);
+                        }], false);
                     }]);
                 }], false)
+                    ->groupBy(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k1b.designation'])
                     ->onCondition(['k.is_deleted' => 0]);
             }])
             ->joinWith(['assignedLoanPayments p' => function ($p) use ($alp) {
