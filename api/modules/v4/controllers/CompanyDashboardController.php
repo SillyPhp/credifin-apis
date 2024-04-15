@@ -33,6 +33,7 @@ use common\models\extended\LoanApplicationsReferencesExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\extended\UserRolesExtended;
+use common\models\extended\UsersExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\FinancerLoanProducts;
 use common\models\FinancerVehicleBrand;
@@ -2863,7 +2864,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting employee with this id
-            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
+            $employee = UserRolesExtended::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             // Correctly assign the field name
             $field = $params['id'];
             if ($field == 'employee_code') {
@@ -2874,7 +2875,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             if ($employee && $params['id'] == 'user_name' || $params['id'] == 'user_number' || $params['id'] == 'user_email') {
-                $users = Users::findOne(['user_enc_id' => $params['parent_id']]);
+                $users = UsersExtended::findOne(['user_enc_id' => $params['parent_id']]);
                 if ($params['id'] == 'user_number') {
                     $users->phone = $params['value'];
                 } elseif ($params['id'] == 'user_email') {
