@@ -1411,8 +1411,23 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key=='sub_bucket'){
-                        $ptpcases->having(['in','sub_bucket',$value]);
+                    if ($key=='sub_bucket') {
+                            if (in_array("unassigned", $value) && count($value) == 1) {
+                                $ptpcases->andWhere([
+                                    'or',
+                                    ['c.bucket' => null],
+                                    ['c.bucket' => '']
+                                ]);
+                            } elseif (in_array("unassigned", $value) && count($value) > 1) {
+                                $ptpcases->orWhere([
+                                    'or',
+                                    ['c.bucket' => null],
+                                    ['c.bucket' => '']
+                                ]);
+                                $ptpcases->orHaving(['in', 'sub_bucket', $value]);
+                            } else {
+                                $ptpcases->having(['in', 'sub_bucket', $value]);
+                            }
                     }
                     elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
