@@ -2707,7 +2707,22 @@ class OrganizationsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key=='sub_bucket'){
-                        $query->having(['in','sub_bucket',$value]);
+                        if (in_array("unassigned", $value)&&count($value)==1) {
+                            $query->andWhere([
+                                'or',
+                                ['a.bucket' => null],
+                                ['a.bucket' => '']
+                            ]);
+                        }elseif(in_array("unassigned", $value)&&count($value)>1){
+                            $query->orWhere([
+                                'or',
+                                ['a.bucket' => null],
+                                ['a.bucket' => '']
+                            ]);
+                            $query->orHaving(['in','sub_bucket',$value]);
+                        }else{
+                            $query->having(['in','sub_bucket',$value]);
+                        }
                     }
                      elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
