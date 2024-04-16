@@ -2107,7 +2107,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ["status" => 422, "message" => "missing information 'user_id'"]);
             }
 
-            $user = Users::findOne(["user_enc_id" => $params["user_id"]]);
+            $user = UsersExtended::findOne(["user_enc_id" => $params["user_id"]]);
 
             if (!$user) {
                 return $this->response(404, ["status" => 404, "message" => "user not found"]);
