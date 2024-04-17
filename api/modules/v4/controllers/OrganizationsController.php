@@ -2508,6 +2508,17 @@ class OrganizationsController extends ApiBaseController
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
+                    "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket"
                 ])
                 ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
                     $emi->from(['emi' => $sub_query1]);
@@ -2592,7 +2603,7 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 "a.loan_account_enc_id", "a.stock",
                 "a.advance_interest", "a.bucket",
-                        "CASE
+                "CASE
                         WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
                  WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
                  WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
@@ -2706,22 +2717,22 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key=='sub_bucket'){
-                        if (in_array("unassigned", $value)&&count($value)==1) {
+                    if ($key == 'sub_bucket') {
+                        if (in_array("unassigned", $value) && count($value) == 1) {
                             $query->andWhere([
                                 'or',
                                 ['a.bucket' => null],
                                 ['a.bucket' => '']
                             ]);
-                        }elseif(in_array("unassigned", $value)&&count($value)>1){
+                        } elseif (in_array("unassigned", $value) && count($value) > 1) {
                             $query->orWhere([
                                 'or',
                                 ['a.bucket' => null],
                                 ['a.bucket' => '']
                             ]);
-                            $query->orHaving(['in','sub_bucket',$value]);
-                        }else{
-                            $query->having(['in','sub_bucket',$value]);
+                            $query->orHaving(['in', 'sub_bucket', $value]);
+                        } else {
+                            $query->having(['in', 'sub_bucket', $value]);
                         }
                     }
                      elseif ($key == 'assigned_caller') {
@@ -3076,7 +3087,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         if (!empty($params["sub_bucket"])) {
-            $query->having(['sub_bucket'=>$params["sub_bucket"]]);
+            $query->having(['sub_bucket' => $params["sub_bucket"]]);
         }
 
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {

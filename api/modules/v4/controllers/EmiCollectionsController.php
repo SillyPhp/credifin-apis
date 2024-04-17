@@ -985,6 +985,17 @@ class EmiCollectionsController extends ApiBaseController
                 "c.telecaller_priority",
                 'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
                 "c.bucket AS bucket_value",
+                "CASE
+                        WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 30 AND ((c.overdue_amount / c.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 45 AND ((c.overdue_amount / c.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 60 AND ((c.overdue_amount / c.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 75 AND ((c.overdue_amount / c.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 90 AND ((c.overdue_amount / c.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (c.overdue_amount / c.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket",
                 'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
                 'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
                 "CONCAT(b.location_name, ', ', COALESCE(b2.name, '')) AS branch_name",
@@ -1432,7 +1443,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket','sub_bucket'];
+            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket', 'sub_bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
