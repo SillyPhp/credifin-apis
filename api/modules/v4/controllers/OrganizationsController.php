@@ -98,7 +98,8 @@ class OrganizationsController extends ApiBaseController
                 "upload-application-image" => ["POST", "OPTIONS"],
                 "get-assigned-images" => ["POST", "OPTIONS"],
                 "search-emi" => ["POST", "GET", "OPTIONS"],
-                "update-pendency" => ["POST", "OPTIONS"]
+                "update-pendency" => ["POST", "OPTIONS"],
+                "user-audit" => ["POST", "OPTIONS"]
             ]
         ];
 
