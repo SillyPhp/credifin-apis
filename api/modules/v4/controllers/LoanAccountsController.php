@@ -201,6 +201,17 @@ class LoanAccountsController extends ApiBaseController
                     'a.telecaller_priority',
                     'a.collection_priority',
                     'a.bucket',
+                    "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket",
                     "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                     'a.emi_date',
                     'a.created_on',
@@ -1412,22 +1423,22 @@ class LoanAccountsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
-                            if (in_array("unassigned", $value) && count($value) == 1) {
-                                $ptpcases->andWhere([
-                                    'or',
-                                    ['c.bucket' => null],
-                                    ['c.bucket' => '']
-                                ]);
-                            } elseif (in_array("unassigned", $value) && count($value) > 1) {
-                                $ptpcases->orWhere([
-                                    'or',
-                                    ['c.bucket' => null],
-                                    ['c.bucket' => '']
-                                ]);
-                                $ptpcases->orHaving(['in', 'sub_bucket', $value]);
-                            } else {
-                                $ptpcases->having(['in', 'sub_bucket', $value]);
-                            }
+                        if (in_array("unassigned", $value) && count($value) == 1) {
+                            $ptpcases->andWhere([
+                                'or',
+                                ['c.bucket' => null],
+                                ['c.bucket' => '']
+                            ]);
+                        } elseif (in_array("unassigned", $value) && count($value) > 1) {
+                            $ptpcases->orWhere([
+                                'or',
+                                ['c.bucket' => null],
+                                ['c.bucket' => '']
+                            ]);
+                            $ptpcases->orHaving(['in', 'sub_bucket', $value]);
+                        } else {
+                            $ptpcases->having(['in', 'sub_bucket', $value]);
+                        }
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);

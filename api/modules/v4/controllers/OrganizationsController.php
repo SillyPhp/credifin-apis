@@ -2509,6 +2509,17 @@ class OrganizationsController extends ApiBaseController
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
+                    "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket"
                 ])
                 ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
                     $emi->from(['emi' => $sub_query1]);
@@ -2713,7 +2724,7 @@ class OrganizationsController extends ApiBaseController
                                 ['a.bucket' => null],
                                 ['a.bucket' => '']
                             ]);
-                        }elseif(in_array("unassigned", $value)&&count($value)>1){
+                        } elseif (in_array("unassigned", $value) && count($value) > 1) {
                             $query->orWhere([
                                 'or',
                                 ['a.bucket' => null],
