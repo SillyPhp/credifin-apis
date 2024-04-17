@@ -1166,7 +1166,7 @@ class LoanAccountsController extends ApiBaseController
             ->from(['a' => $loan])
             ->where($where);
         $bucketVal = '';
-        if (!empty($params['sub_bucket'])&&isset($params['sub_bucket'])){
+        if (!empty($params['sub_bucket']) && isset($params['sub_bucket'])) {
             $bucketVal = $params['sub_bucket'];
         }
         if (!empty($bucketVal)) {
@@ -1352,7 +1352,7 @@ class LoanAccountsController extends ApiBaseController
         $ptpcases = LoanAccountPtps::find()
             ->alias('a')
             ->select([
-                  "CASE
+                "CASE
                     WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
                     WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
                     WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
@@ -1411,7 +1411,7 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key=='sub_bucket') {
+                    if ($key == 'sub_bucket') {
                             if (in_array("unassigned", $value) && count($value) == 1) {
                                 $ptpcases->andWhere([
                                     'or',
@@ -1428,8 +1428,7 @@ class LoanAccountsController extends ApiBaseController
                             } else {
                                 $ptpcases->having(['in', 'sub_bucket', $value]);
                             }
-                    }
-                    elseif ($key == 'assigned_caller') {
+                    } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                         } else {
@@ -1442,7 +1441,7 @@ class LoanAccountsController extends ApiBaseController
                             $ptpcases->andWhere(['c2.state_enc_id' => null]);
                         } else {
                             $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }                    
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);
@@ -1553,6 +1552,13 @@ class LoanAccountsController extends ApiBaseController
                     'user_type' => $user_type,
                 ];
             }, $tm['assignedLoanAccounts']);
+            $collection_manager = array_map(function ($cm) {
+                if ($cm['user_type'] == 2) {
+                    $shared_name = $cm['sharedTo']['first_name'] . ' ' . ($cm['sharedTo']['last_name'] ?? null);
+                    return ['name' => $shared_name];
+                }
+            }, $tm['assignedLoanAccounts']);
+            $item['collection_manager'] = array_values(array_unique(array_column($collection_manager, 'name')));;
             unset($item['emiCollectionEnc'], $item['loanAccountEnc']);
         }
 
@@ -2379,71 +2385,69 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key=='sub_bucket'){
+                    if ($key == 'sub_bucket') {
                         if (!empty($value)) {
                             foreach ($value as $val) {
-                            switch ($val) {
-                                case 1:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min1 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max1';
-                                    $queryParams[':min1'] = 0;
-                                    $queryParams[':max1'] = 15;
-                                    break;
-                                case 2:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min2 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max2';
-                                    $queryParams[':min2'] = 15;
-                                    $queryParams[':max2'] = 30;
-                                    break;
-                                case 3:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min3 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max3';
-                                    $queryParams[':min3'] = 30;
-                                    $queryParams[':max3'] = 45;
-                                    break;
-                                case 4:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min4 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max4';
-                                    $queryParams[':min4'] = 45;
-                                    $queryParams[':max4'] = 60;
-                                    break;
-                                case 5:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min5 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max5';
-                                    $queryParams[':min5'] = 60;
-                                    $queryParams[':max5'] = 75;
-                                    break;
-                                case 6:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min6 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max6';
-                                    $queryParams[':min6'] = 75;
-                                    $queryParams[':max6'] = 90;
-                                    break;
-                                case 7:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min7 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max7';
-                                    $queryParams[':min7'] = 90;
-                                    $queryParams[':max7'] = 120;
-                                    break;
-                                case 8:
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min58';
-                                    $queryParams[':min8'] = 120;
-                                    break;
-                                case 'X':
-                                    $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) <= :max10';
-                                    $queryParams[':max10'] = 120;
-                                    break;
-                                default:
-                                    //skip
-                                    break;
+                                switch ($val) {
+                                    case 1:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min1 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max1';
+                                        $queryParams[':min1'] = 0;
+                                        $queryParams[':max1'] = 15;
+                                        break;
+                                    case 2:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min2 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max2';
+                                        $queryParams[':min2'] = 15;
+                                        $queryParams[':max2'] = 30;
+                                        break;
+                                    case 3:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min3 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max3';
+                                        $queryParams[':min3'] = 30;
+                                        $queryParams[':max3'] = 45;
+                                        break;
+                                    case 4:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min4 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max4';
+                                        $queryParams[':min4'] = 45;
+                                        $queryParams[':max4'] = 60;
+                                        break;
+                                    case 5:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min5 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max5';
+                                        $queryParams[':min5'] = 60;
+                                        $queryParams[':max5'] = 75;
+                                        break;
+                                    case 6:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min6 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max6';
+                                        $queryParams[':min6'] = 75;
+                                        $queryParams[':max6'] = 90;
+                                        break;
+                                    case 7:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min7 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max7';
+                                        $queryParams[':min7'] = 90;
+                                        $queryParams[':max7'] = 120;
+                                        break;
+                                    case 8:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min58';
+                                        $queryParams[':min8'] = 120;
+                                        break;
+                                    case 'X':
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) <= :max10';
+                                        $queryParams[':max10'] = 120;
+                                        break;
+                                    default:
+                                        //skip
+                                        break;
+                                }
                             }
-
+                            if (count($subQueryConditions) > 1) {
+                                $subQueryCondition = implode(' OR ', $subQueryConditions);
+                                $sub_query->andWhere($subQueryCondition, $queryParams);
+                                // $query->andWhere($subQueryCondition, $queryParams);
+                            } else {
+                                $subQueryCondition = implode(' ', $subQueryConditions);
+                                $sub_query->andWhere($subQueryCondition, $queryParams);
+                                //$query->andWhere($subQueryCondition,$queryParams);
                             }
-                           if (count($subQueryConditions)>1){
-                               $subQueryCondition = implode(' OR ', $subQueryConditions);
-                               $sub_query->andWhere($subQueryCondition, $queryParams);
-                              // $query->andWhere($subQueryCondition, $queryParams);
-                           }else{
-                               $subQueryCondition = implode(' ',$subQueryConditions);
-                               $sub_query->andWhere($subQueryCondition,$queryParams);
-                               //$query->andWhere($subQueryCondition,$queryParams);
-                           }
                         }
-                    }
-                    elseif ($key == 'assigned_caller') {
+                    } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $sub_query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
@@ -2456,12 +2460,12 @@ class LoanAccountsController extends ApiBaseController
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
                         if (in_array("unassigned", $value)) {
-                        $sub_query->andWhere(['c2.state_enc_id' => null]);
-                        $query->andWhere(['c2.state_enc_id' => null]);
-                    } else {
-                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                    }
+                            $sub_query->andWhere(['c2.state_enc_id' => null]);
+                            $query->andWhere(['c2.state_enc_id' => null]);
+                        } else {
+                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $sub_query->andWhere(['c.bucket' => null]);
