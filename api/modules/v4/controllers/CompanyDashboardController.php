@@ -303,9 +303,11 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "Sumit1992", "wishey"])) {
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey"])) {
             if ($user->username == 'wishey') {
                 $leadsAccessOnly = 'both';
+            } elseif ($user->username == 'ritika927') {
+                $leadsAccessOnly = "school_fee";
             } else {
                 $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
             }
@@ -759,8 +761,11 @@ class CompanyDashboardController extends ApiBaseController
             } else if ($leadsAccessOnly == 'both') {
                 $where = ["OR"];
                 $where[] = ["lp.name" => $this->vehicleList];
-                //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
+                //'Loan Against Property','Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
                 $where[] = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
+            } else if ($leadsAccessOnly == 'school_fee') {
+                // School Fee Loan
+                $where = ["a.loan_products_enc_id" => ['k4x1rvbEZd3N6LKLrzG8oaY7p5gXMV']];
             } else {
                 //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
                 $where = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
@@ -1298,8 +1303,9 @@ class CompanyDashboardController extends ApiBaseController
                 'ANY_VALUE(lpo.payable_value) as payable_value', 'ANY_VALUE(lpo.field_officer) as field_officer',
                 'ANY_VALUE(lpo.emi_amount) as emi_amount', 'ANY_VALUE(lpo.vehicle_color) as vehicle_color',
                 "ANY_VALUE(b.provider_enc_id) provider_enc_id",
-                "ANY_VALUE(lpo.motor_number) AS motor_number", 'ANY_VALUE(lpo.erickshaw_purpose) as erickshaw_purpose'
-
+                "ANY_VALUE(lpo.motor_number) AS motor_number", 'ANY_VALUE(lpo.erickshaw_purpose) as erickshaw_purpose',
+                "ANY_VALUE(lpo.battery_type) as battery_type",
+                "ANY_VALUE(lpo.number_of_batteries) as number_of_batteries", "a.updated_on"
             ])
             ->joinWith(['leadBy cr'], false)
             ->joinWith(['loanApplicationOptions lpo'], false)
@@ -1350,7 +1356,6 @@ class CompanyDashboardController extends ApiBaseController
                 $i->joinWith(['cityEnc i1'], false);
                 $i->joinWith(['stateEnc i2'], false);
             }], false)
-
             ->joinWith(['sharedLoanApplications k' => function ($k) {
                 $k->select([
                     'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
@@ -1819,49 +1824,55 @@ class CompanyDashboardController extends ApiBaseController
     // getting employee, dsa and connector list of this financer
     public function actionEmployees()
     {
-        // checking authorization
+        // Checking authorization
         if ($user = $this->isAuthorized()) {
-
-            // checking if its organization
+            // Checking if it's an organization
             $org_id = $user->organization_enc_id;
             if (!$user->organization_enc_id) {
+                // If user's organization is not directly set, find it through roles
                 $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 $org_id = $findOrg->organization_enc_id;
             }
             if ($org_id) {
-
                 $params = Yii::$app->request->post();
-
-                // getting employees list
-                $employee = $this->employeesList($org_id, $params);
-
-                $deleted = $this->employeesList($org_id, $params, 'deleted');
-
-                // getting dsa's list
-                $dsa = $this->dsaList($user->user_enc_id, $params);
-
-
-                // extracting dsa user_enc_Id
-                $dsa_id = [];
-                if ($dsa) {
-                    foreach ($dsa as $d) {
-                        $dsa_id[] = $d['user_enc_id'];
-                    }
+                switch ($params['type'] ?? '') {
+                    case 'deleted':
+                        $deleted = $this->employeesList($org_id, $params, 'deleted');
+                        break;
+                    case 'dsa':
+                        $dsa = $this->dsaList($user->user_enc_id, $params);
+                        break;
+                    case 'connector':
+                        $dsa_id = $this->dsaId($user->user_enc_id, $this->dsaList($user->user_enc_id, $params));
+                        $dsa_id[] = $user->user_enc_id;
+                        $connector = $this->connectorsList($dsa_id, $params);
+                        break;
+                    default:
+                        $employee = $this->employeesList($org_id, $params);
+                        break;
                 }
-
-                $dsa_id[] = $user->user_enc_id;
-
-                // getting connectors list
-                $connector = $this->connectorsList($dsa_id, $params);
-
-                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'deleted' => $deleted]);
+                return $this->response(200, ['status' => 200, 'employees' => $employee ?? [], 'dsa' => $dsa ?? [], 'connector' => $connector ?? [], 'deleted' => $deleted ?? []]);
             } else {
+                // Returning unauthorized message if user is not associated with an organization
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
         } else {
+            // Returning unauthorized message if user is not authorized
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    private function dsaId($user_id, $dsaList)
+    {
+        $dsa_ids = [];
+        if ($dsaList) {
+            foreach ($dsaList as $dsa) {
+                $dsa_ids[] = $dsa['user_enc_id'];
+            }
+        }
+        return $dsa_ids;
+    }
+
 
     // getting employee list
     private function employeesList($org_id, $params = null, $deleted = null)
@@ -2107,7 +2118,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ["status" => 422, "message" => "missing information 'user_id'"]);
             }
 
-            $user = Users::findOne(["user_enc_id" => $params["user_id"]]);
+            $user = UsersExtended::findOne(["user_enc_id" => $params["user_id"]]);
 
             if (!$user) {
                 return $this->response(404, ["status" => 404, "message" => "user not found"]);

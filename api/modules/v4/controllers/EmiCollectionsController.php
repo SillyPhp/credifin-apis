@@ -985,6 +985,17 @@ class EmiCollectionsController extends ApiBaseController
                 "c.telecaller_priority",
                 'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
                 "c.bucket AS bucket_value",
+                "CASE
+                        WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 30 AND ((c.overdue_amount / c.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 45 AND ((c.overdue_amount / c.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 60 AND ((c.overdue_amount / c.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 75 AND ((c.overdue_amount / c.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 90 AND ((c.overdue_amount / c.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (c.overdue_amount / c.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket",
                 'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
                 'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
                 "CONCAT(b.location_name, ', ', COALESCE(b2.name, '')) AS branch_name",
@@ -1432,7 +1443,7 @@ class EmiCollectionsController extends ApiBaseController
         }
         if (!empty($search)) {
             $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
-            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket','sub_bucket'];
+            $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket', 'sub_bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
                     if (in_array($key, $a)) {
@@ -2460,8 +2471,8 @@ class EmiCollectionsController extends ApiBaseController
         }
         $valuesSma = LoanAccountsExtended::$buckets;
         $select = [
-            "COUNT(a.id) total_cases_count",
-            "COALESCE(SUM(CASE WHEN a.amount > 0 THEN a.amount END), 0) total_collected_cases_sum",
+            "COUNT(CASE WHEN amount > 0 OR emi_payment_method = 0 THEN amount END) total_cases_count",
+            "COALESCE(SUM(a.amount), 0) total_collected_cases_sum",
             "COALESCE(SUM(CASE WHEN a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END), 0) total_collected_verified_amount",
             "COALESCE(SUM(CASE WHEN a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END), 0) total_collected_unverified_amount",
             "COALESCE(COUNT(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN a.amount END), 0) total_interaction_count",
@@ -2483,27 +2494,24 @@ class EmiCollectionsController extends ApiBaseController
             ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
             ->join('LEFT JOIN', ['c' => LoanAccountPtps::tableName()], 'c.emi_collection_enc_id = a.emi_collection_enc_id')
             ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['BETWEEN', "a.collection_date", $start_date, $end_date])
+            ->andWhere(['BETWEEN', "COALESCE(a.collection_date, a.created_on)", $start_date, $end_date])
             ->groupBy(['a.branch_enc_id']);
         if (!empty($params['loan_type'])) {
             $subquery->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
         }
-//        if (!empty($params['fields_search']['branch'])) {
-//            $subquery->andWhere(['IN', 'a.branch_enc_id', $params['fields_search']['branch']]);
-//        }
         $list = OrganizationLocations::find()
-            ->alias('a')
+            ->alias('ol')
             ->select([
-                'a.location_enc_id',
-                'a.location_name',
+                'ol.location_enc_id',
+                'ol.location_name',
                 "CONCAT(b.name, ', ', c.name) location",
                 'subquery.*'
             ])
-            ->innerJoin(['subquery' => $subquery], 'a.location_enc_id = subquery.branch_enc_id')
+            ->innerJoin(['subquery' => $subquery], 'ol.location_enc_id = subquery.branch_enc_id')
             ->joinWith(['cityEnc AS b' => function ($b) {
                 $b->joinWith(['stateEnc AS c'], false);
             }], false)
-            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id]);
+            ->andWhere(['ol.is_deleted' => 0, 'ol.organization_enc_id' => $org_id]);
 
         if (!empty($params['fields_search'])) {
             foreach ($params['fields_search'] as $key => $value) {
@@ -2519,9 +2527,9 @@ class EmiCollectionsController extends ApiBaseController
                             break;
                         case 'branch':
                             if (in_array("unassigned", $value)) {
-                                $list->andWhere(['a.location_enc_id' => null]);
+                                $list->andWhere(['ol.location_enc_id' => null]);
                             } else {
-                                $list->andWhere(['IN', 'a.location_enc_id', $value]);
+                                $list->andWhere(['IN', 'ol.location_enc_id', $value]);
                             }
                             break;
                         default:
