@@ -307,7 +307,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($user->username == 'wishey') {
                 $leadsAccessOnly = 'both';
             } elseif ($user->username == 'ritika927') {
-                $leadsAccessOnly = "school_fee";
+                $product_based = true;
             } else {
                 $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
             }
@@ -511,7 +511,11 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere(['i.status' => 31]);
         } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly && $is_removed === 0) {
             // else checking lead_by and managed_by by logged-in user or shared app_ids exists then also getting data for those applications
-            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id], ['a.loan_app_enc_id' => $shared_apps['app_ids']]]);
+            $where = ['OR', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id], ['a.loan_app_enc_id' => $shared_apps['app_ids']]];
+            if ($product_based) {
+                $where[] = ["a.loan_products_enc_id" => ['Y632Wx8amy38nzw3dvMnZ1JKzpXQPb']];
+            }
+            $loans->andWhere($where);
         }
 
         // filter to check status
@@ -763,9 +767,6 @@ class CompanyDashboardController extends ApiBaseController
                 $where[] = ["lp.name" => $this->vehicleList];
                 //'Loan Against Property','Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
                 $where[] = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
-            } else if ($leadsAccessOnly == 'school_fee') {
-                // School Fee Loan
-                $where = ["a.loan_products_enc_id" => ['k4x1rvbEZd3N6LKLrzG8oaY7p5gXMV']];
             } else {
                 //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
                 $where = ["a.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
