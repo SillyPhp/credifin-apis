@@ -1464,7 +1464,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['branchEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
-                ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id']])
                 ->limit(1)
                 ->asArray()
                 ->one();
