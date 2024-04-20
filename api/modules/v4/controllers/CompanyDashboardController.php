@@ -1196,7 +1196,6 @@ class CompanyDashboardController extends ApiBaseController
     }
 
 
-
     // getting shared loan applications
     private function sharedApps($user_id)
     {
@@ -3851,15 +3850,22 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
+            ->leftJoin(FinancerLoanProducts::tableName() . 'as d', 'd.financer_loan_product_enc_id = c.loan_products_enc_id')
+            ->leftJoin(AssignedFinancerLoanTypes::tableName() . 'as e', 'e.assigned_financer_enc_id = d.assigned_financer_loan_type_enc_id')
+            ->leftJoin(LoanTypes::tableName() . 'as f', 'f.loan_type_enc_id = e.loan_type_enc_id')
             ->where(['between', 'c.updated_on', $params['start_date'], $params['end_date']])
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['a.location_enc_id']);
 
-        if (!empty($params['keyword'])) {
-            $branchSum->andWhere([
-                'or',
-                ['like', 'a.location_enc_id', $params['keyword']],
-            ]);
+        if (!empty($params['product_id'])) {
+            $branchSum->andWhere(['IN', 'd.financer_loan_product_enc_id', $params['product_id']]);
+        }
+
+        if (!empty($params['loan_type_enc_id'])) {
+            $branchSum->andWhere(['IN', 'f.loan_type_enc_id', $params['loan_type_enc_id']]);
+        }
+        if (!empty($params['branch'])) {
+            $branchSum->andWhere(['IN', 'a.location_enc_id', $params['branch']]);
         }
 
         $branchSum = $branchSum
@@ -3891,15 +3897,23 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
+            ->leftJoin(FinancerLoanProducts::tableName() . 'as d', 'd.financer_loan_product_enc_id = c.loan_products_enc_id')
+            ->leftJoin(AssignedFinancerLoanTypes::tableName() . 'as e', 'e.assigned_financer_enc_id = d.assigned_financer_loan_type_enc_id')
+            ->leftJoin(LoanTypes::tableName() . 'as f', 'f.loan_type_enc_id = e.loan_type_enc_id')
             ->where(['between', 'c.updated_on', $params['start_date'], $params['end_date']])
             ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['a.location_enc_id']);
 
-        if (!empty($params['keyword'])) {
-            $branchCount->andWhere([
-                'or',
-                ['like', 'a.location_enc_id', $params['keyword']],
-            ]);
+        if (!empty($params['product_id'])) {
+            $branchCount->andWhere(['IN', 'd.financer_loan_product_enc_id', $params['product_id']]);
+        }
+
+        if (!empty($params['loan_type_enc_id'])) {
+            $branchCount->andWhere(['IN', 'f.loan_type_enc_id', $params['loan_type_enc_id']]);
+        }
+
+        if (!empty($params['branch'])) {
+            $branchCount->andWhere(['IN', 'a.location_enc_id', $params['branch']]);
         }
 
         $branchCount = $branchCount
