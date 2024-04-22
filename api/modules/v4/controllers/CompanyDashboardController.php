@@ -267,13 +267,21 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting loan application by loan_status
             $loan_status = [];
+            $date_filter = [
+                'disbursement_start_date' => date('Y-m-d 00:00:00', strtotime('-30 days')),
+                'disbursement_end_date' => date('Y-m-d H:i:s')
+            ];
             foreach ($status as $s) {
 
                 // to filter loan status
                 $params['filter'] = [$s];
+                $search = $params;
+                if (in_array($s, [31, 33])) {
+                    $search['fields_search'] = $date_filter;
+                }
 
                 // getting applications
-                $d = $this->__getApplications($user, $params);
+                $d = $this->__getApplications($user, $search);
 
                 // if not empty then add it to main loan_status array
                 if (!empty($d)) {
