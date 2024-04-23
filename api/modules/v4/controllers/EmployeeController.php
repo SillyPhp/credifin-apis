@@ -231,21 +231,32 @@ class EmployeeController extends ApiBaseController
                 $org_id = $user_roles->organization_enc_id;
             }
             $valuesSma = LoanAccountsExtended::$buckets;
-            $queryResult = "";
+            $select = [
+                "COALESCE(COUNT(DISTINCT lac.loan_account_enc_id),0) total_cases_count",
+                "COUNT(CASE WHEN lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) total_collected_cases_count",
+                "COALESCE(SUM(CASE WHEN lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND  ec.emi_payment_status = 'paid' AND ec.amount > 0 THEN ec.amount END), 0) total_collected_verified_amount",
+                "COALESCE(SUM(CASE WHEN  lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND  ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN ec.amount END), 0) total_collected_unverified_amount",
+                "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount ELSE LEAST(lac.ledger_amount + lac.overdue_amount, lac.emi_amount * 
+                (CASE 
+                        WHEN lac.bucket = 'sma-0' THEN 1.25
+                        WHEN lac.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                        WHEN lac.bucket = 'npa' THEN 2
+                        ELSE 1
+                    END)
+            ) END) AS total_target_amount"
+            ];
             foreach ($valuesSma as $key => $value) {
-                $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
-                $CollectedCasesNumber = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+                $select[] = "COALESCE(COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END),0) {$key}_total_cases_count";
+                $select[] = "COUNT(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) {$key}_collected_cases_count";
                 if ($key == 'OnTime') :
-                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+                    $select[] = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN COALESCE(lac.emi_amount, 0) ELSE 0 END) {$key}_target_amount";
                 else :
-                    $targetAmount = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+                    $select[] = "SUM(CASE WHEN lac.bucket = '{$value['name']}' THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END) {$key}_target_amount";
                 endif;
-                $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) collected_verified_amount_{$key},";
-                $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(ec.amount, 0) END),0) collected_unverified_amount_{$key},";
-
-                $queryResult .= "$totalCasesNumber $CollectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
+                $select[] = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status = 'paid' THEN COALESCE(ec.amount, 0) END),0) {$key}_collected_verified_amount";
+                $select[] = "COALESCE(SUM(CASE WHEN lac.bucket = '{$value['name']}' AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(ec.amount, 0) END),0) {$key}_collected_unverified_amount";
             }
-            $queryResult = rtrim($queryResult, ',');
+            $select = implode(',', $select);
             $list = Users::find()
                 ->alias('a')
                 ->select([
@@ -257,7 +268,7 @@ class EmployeeController extends ApiBaseController
                     'gd.designation designation',
                     "CONCAT(b2.first_name,' ',b2.last_name) reporting_person",
                     'b3.location_name branch_name', 'b3.location_enc_id branch_id',
-                    $queryResult, "ANY_VALUE(ce2.name) as state_name"
+                    "ANY_VALUE(ce2.name) as state_name", $select
                 ])
                 ->joinWith(['userRoles0 b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
@@ -287,37 +298,57 @@ class EmployeeController extends ApiBaseController
                 $list->andWhere(['IN', 'ec.loan_type', $params['loan_type']]);
             }
             if (!empty($params['fields_search'])) {
+                $where = ['and'];
+                $having = ['and'];
                 foreach ($params['fields_search'] as $key => $value) {
-                    if (!empty($value)) {
-                        if ($key == 'employee_code') {
-                            $list->andWhere(['like', 'b.' . $key, $value]);
-                        } elseif ($key == 'state_enc_id') {
-                            if (in_array("unassigned", $value)) {
-                                $list->andWhere(['ce2.state_enc_id' => null]);
-                            } else {
-                                $list->andWhere(['IN', 'ce2.state_enc_id', $value]);
-                            }
-                        } elseif ($key == 'phone') {
-                            $list->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'username') {
-                            $list->andWhere(['like', 'a.' . $key, $value]);
-                        } elseif ($key == 'employee_name') {
-                            $list->andWhere(['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value]);
-                        } elseif ($key == 'reporting_person') {
-                            $list->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
-                        } elseif ($key == 'branch') {
-                            if (in_array("unassigned", $value)) {
-                                $list->andWhere(['b3.location_enc_id'=> null]);
-                            } else {
-                                $list->andWhere(['IN', 'b3.location_enc_id', $value]);
-                            }
-                        } elseif ($key == 'designation_id') {
-                            $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
-                        } else {
-                            $list->andWhere(['like', $key, $value]);
+                    if (!empty($value) || $value == 0) {
+                        switch ($key) {
+                            case 'phone':
+                            case 'username':
+                                $where[] = ['like', 'a.' . $key, $value];
+                                break;
+                            case 'state_enc_id':
+                                if (in_array("unassigned", $value)) {
+                                    $where[] = ['ce2.state_enc_id' => null];
+                                } else {
+                                    $where[] = ['IN', 'ce2.state_enc_id', $value];
+                                }
+                                break;
+                            case 'employee_name':
+                                $where[] = ['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value];
+                                break;
+                            case 'reporting_person':
+                                $where[] = ['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value];
+                                break;
+                            case 'branch':
+                                if (in_array("unassigned", $value)) {
+                                    $where[] = ['b3.location_enc_id' => null];
+                                } else {
+                                    $where[] = ['IN', 'b3.location_enc_id', $value];
+                                }
+                                break;
+                            case 'designation_id':
+                                $where[] = ['IN', 'gd.assigned_designation_enc_id', $value];
+                                break;
+                            case 'employee_code':
+                                $where[] = ['like', 'b.employee_code', $value];
+                                break;
+                            default:
+                                if (strpos($key, 'min_') === 0) {
+                                    $field = substr($key, 4);
+                                    $having[] = ['>=', $field, $value];
+                                } elseif (strpos($key, 'max_') === 0) {
+                                    $field = substr($key, 4);
+                                    $having[] = ['<=', $field, $value];
+                                } else {
+                                    $having[] = ['LIKE', $key, $value];
+                                }
+                                break;
                         }
                     }
                 }
+                $list->andWhere($where);
+                $list->andHaving($having);
             }
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
                 $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
@@ -335,9 +366,6 @@ class EmployeeController extends ApiBaseController
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
-            if ($list) :
-                $list = ArrayProcessJson::Parse($list);
-            endif;
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
