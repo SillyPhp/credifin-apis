@@ -863,7 +863,7 @@ class LoansController extends ApiBaseController
             }
 
             // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $provider_id]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id']]);
 
             // if provider not found
             if (!$provider) {
