@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\Employee;
 use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
+use common\models\extended\LoanAccountsExtended;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\Users;
@@ -229,28 +230,7 @@ class EmployeeController extends ApiBaseController
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 $org_id = $user_roles->organization_enc_id;
             }
-            $valuesSma = [
-                'SMA0' => [
-                    'name' => 'SMA-0',
-                    'value' => 1.25
-                ],
-                'SMA1' => [
-                    'name' => 'SMA-1',
-                    'value' => 1.5
-                ],
-                'SMA2' => [
-                    'name' => 'SMA-2',
-                    'value' => 1.5
-                ],
-                'NPA' => [
-                    'name' => 'NPA',
-                    'value' => 1
-                ],
-                'OnTime' => [
-                    'name' => 'OnTime',
-                    'value' => null
-                ],
-            ];
+            $valuesSma = LoanAccountsExtended::$buckets;
             $queryResult = "";
             foreach ($valuesSma as $key => $value) {
                 $totalCasesNumber = "COUNT(DISTINCT CASE WHEN lac.bucket = '{$value['name']}' THEN lac.loan_account_enc_id END) total_cases_count_{$key},";
