@@ -143,17 +143,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($user->organization_enc_id) {
 
                 // getting DSA
-                $leads = $this->getDsa($user->user_enc_id);
-
-                // if leads not empty then adding assigned_user_enc_id in dsa array
-                if ($leads) {
-                    $dsa = [];
-                    foreach ($leads as $val) {
-                        $dsa[] = $val['assigned_user_enc_id'];
-                    }
-                }
-
-                $dsa[] = $user->user_enc_id;
+                $dsa = $this->getDsa($user->user_enc_id);
             }
 
             // checking if this user is financer by checking service "Loans"
@@ -222,7 +212,6 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting applications data
             $loans = $this->__getApplications($user, $params);
-            //            $data = $this->loanApplicationStats();
 
             return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'count' => $loans['count']]);
         } else {
@@ -267,17 +256,26 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting loan application by loan_status
             $loan_status = [];
+            $date_filter = [
+                'disbursement_start_date' => date('Y-m-d 00:00:00', strtotime('-30 days')),
+                'disbursement_end_date' => date('Y-m-d H:i:s')
+            ];
             foreach ($status as $s) {
 
                 // to filter loan status
                 $params['filter'] = [$s];
+                $search = $params;
+                if (in_array($s, [28, 31, 32, 33])) {
+                    $search['fields_search'] = $date_filter;
+                }
 
                 // getting applications
-                $d = $this->__getApplications($user, $params);
+                $d = $this->__getApplications($user, $search);
 
                 // if not empty then add it to main loan_status array
                 if (!empty($d)) {
                     $loan_status[$s]['data'] = $d['loans'];
+                    $loan_status[$s]['count'] = $d['count'];
                     $loan_status[$s]['page'] = $page;
                     $loan_status[$s]['limit'] = $limit;
                 }
@@ -318,16 +316,7 @@ class CompanyDashboardController extends ApiBaseController
         if ($user->organization_enc_id) {
 
             // getting DSA
-            $leads = $this->getDsa($user->user_enc_id);
-
-            // if leads not empty then adding assigned_user_enc_id in dsa array
-            if ($leads) {
-                foreach ($leads as $val) {
-                    $dsa[] = $val['assigned_user_enc_id'];
-                }
-            }
-
-            $dsa[] = $user->user_enc_id;
+            $dsa = $this->getDsa($user->user_enc_id);
         } else {
             $accessroles = UserUtilities::$rolesArray;
             $role = UserRoles::find()
@@ -1224,12 +1213,15 @@ class CompanyDashboardController extends ApiBaseController
     private function getDsa($user_id)
     {
         // getting dsa of this user
-        return AssignedSupervisor::find()
+        $res =  AssignedSupervisor::find()
             ->select(['assigned_user_enc_id'])
             ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
             ->groupBy(['assigned_user_enc_id'])
             ->asArray()
             ->all();
+        $res = array_column($res, 'assigned_user_enc_id');
+        $res[] = $user_id;
+        return $res;
     }
 
     // getting detail of loan application
@@ -3052,98 +3044,54 @@ class CompanyDashboardController extends ApiBaseController
     // getting stats according to laon status
     public function actionStatusStats()
     {
-        if ($user = $this->isAuthorized()) {
+        $user = $this->isAuth();
+        $params = $this->post;
+        $where = ["AND", ['a.is_deleted' => 0, 'a.form_type' => 'others', 'a.is_removed' => 0, 'a.source' => 'EmpowerFintech']];
 
-            $params = Yii::$app->request->post();
-            //get user roles
-            $specialroles = false;
-            $roleUnderId = null;
-
-            // checking if its organization
-            if ($user->organization_enc_id) {
-
-                // getting dsa
-                $leads = $this->getDsa($user->user_enc_id);
-
-                $dsa = [];
-                if ($leads) {
-                    foreach ($leads as $val) {
-                        $dsa[] = $val['assigned_user_enc_id'];
-                    }
-                }
-
-                $dsa[] = $user->user_enc_id;
-            } else {
-                $accessroles = UserUtilities::$rolesArray;
-                $role = UserRoles::find()
-                    ->alias('a')
-                    ->where(['user_enc_id' => $user->user_enc_id])
-                    ->andWhere(['a.is_deleted' => 0])
-                    ->joinWith(['designation b' => function ($b) use ($accessroles) {
-                        $b->andWhere(['in', 'b.designation', $accessroles]);
-                    }], true, 'INNER JOIN');
-                $specialroles = $role->exists();
-
-                if ($specialroles) {
-                    $roleUnder = $role->asArray()->one();
-                    $roleUnderId = $roleUnder['organization_enc_id'];
-                }
-            }
-
-            // checking if logged-in user financer
-            $service = SelectedServices::find()
-                ->alias('a')
-                ->joinWith(['serviceEnc b'], false)
-                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
-                ->exists();
-
-            // getting shared applications
-            $shared_apps = $this->sharedApps($user->user_enc_id);
-
-            // getting stats
-            $stats = LoanApplications::find()
-                ->alias('a')
-                ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
-                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
-                    $i->joinWith(['providerEnc j']);
-                    $i->joinWith(['status0 j1']);
-                    if ($service) {
-                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
-                    }
-                    if (!empty($roleUnderId) || $roleUnderId != null) {
-                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
-                    }
-                }], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others', 'a.is_removed' => 0, 'a.source' => 'EmpowerFintech']);
-
-            if ($user->organization_enc_id) {
-                if (!$service && !empty($dsa)) {
-                    $stats->andWhere(['a.lead_by' => $dsa]);
-                }
-            }
-            if (!$user->organization_enc_id && !$specialroles) {
-                // else checking lead_by and managed_by by logged-in user
-                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            }
-
-            if ($shared_apps['app_ids']) {
-                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
-            }
-
-            if (!empty($params['loan_product'])) {
-                $stats->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
-                $product_name = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['loan_product']]);
-            }
-
-            $stats = $stats
-                ->groupBy(['i.status'])
-                ->asArray()
-                ->all();
-
-            return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => !empty($product_name) ? $product_name->name : '']);
+        $provider = false;
+        if ($user->organization_enc_id) {
+            $provider = $user->organization_enc_id;
+            // $dsa = $this->getDsa($user->user_enc_id);
+            // $where[] = ['IN', 'a.lead_by', $dsa];
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            $accessroles = UserUtilities::$rolesArray;
+            $role = UserRoles::find()
+                ->alias('a')
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->andWhere(['a.is_deleted' => 0])
+                ->joinWith(['designation b' => function ($b) use ($accessroles) {
+                    $b->andWhere(['in', 'b.designation', $accessroles]);
+                }], true, 'INNER JOIN')->asArray()->one();
+
+            if ($role) {
+                $provider = $role['organization_enc_id'];
+            } else {
+                $sub_where = ["OR"];
+                $sub_where[] = ['IN', 'a.lead_by', $user->user_enc_id];
+                $sub_where[] = ['IN', 'a.loan_app_enc_id', $this->sharedApps($user->user_enc_id)['app_ids']];
+                $sub_where[] = ['IN', 'a.managed_by', $user->user_enc_id];
+                $where[] = $sub_where;
+            }
         }
+        if (!empty($params['loan_product'])) {
+            $where[] = ['a.loan_products_enc_id' => $params['loan_product']];
+        }
+
+        $stats = LoanApplications::find()
+            ->alias('a')
+            ->select(['j1.loan_status', 'COUNT(a.id) count', 'j1.status_color', 'j1.value', 'p.name AS product_name'])
+            ->innerJoinWith(['assignedLoanProviders i' => function ($i) use ($provider) {
+                $i->innerJoinWith(['status0 j1']);
+                if ($provider) {
+                    $i->andOnCondition(['i.provider_enc_id' => $provider]);
+                }
+            }], false)
+            ->joinWith(['loanProductsEnc AS p'], false)
+            ->where($where)
+            ->groupBy('i.status')
+            ->asArray()->all();
+
+        return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => !empty($params['loan_product']) && !empty($stats) ? $stats[0]['product_name'] : '']);
     }
 
     // adding column preferences
@@ -3679,16 +3627,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($user->organization_enc_id) {
 
                 // getting dsa
-                $leads = $this->getDsa($user->user_enc_id);
-
-                $dsa = [];
-                if ($leads) {
-                    foreach ($leads as $val) {
-                        $dsa[] = $val['assigned_user_enc_id'];
-                    }
-                }
-
-                $dsa[] = $user->user_enc_id;
+                $dsa = $this->getDsa($user->user_enc_id);
             } else {
                 $accessroles = UserUtilities::$rolesArray;
                 $role = UserRoles::find()

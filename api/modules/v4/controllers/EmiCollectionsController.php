@@ -2173,28 +2173,7 @@ class EmiCollectionsController extends ApiBaseController
             $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
             $org_id = $user_roles->organization_enc_id;
         }
-        $valuesSma = [
-            'SMA0' => [
-                'name' => 'SMA-0',
-                'value' => 1.25
-            ],
-            'SMA1' => [
-                'name' => 'SMA-1',
-                'value' => 1.5
-            ],
-            'SMA2' => [
-                'name' => 'SMA-2',
-                'value' => 1.5
-            ],
-            'NPA' => [
-                'name' => 'NPA',
-                'value' => 1
-            ],
-            'OnTime' => [
-                'name' => 'OnTime',
-                'value' => null
-            ],
-        ];
+        $valuesSma = LoanAccountsExtended::$buckets;
         $list = EmiCollection::find()
             ->alias('a')
             ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
@@ -2278,28 +2257,7 @@ class EmiCollectionsController extends ApiBaseController
             $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
             $org_id = $user_roles->organization_enc_id;
         }
-        $valuesSma = [
-            'SMA0' => [
-                'name' => 'SMA-0',
-                'value' => 1.25
-            ],
-            'SMA1' => [
-                'name' => 'SMA-1',
-                'value' => 1.5
-            ],
-            'SMA2' => [
-                'name' => 'SMA-2',
-                'value' => 1.5
-            ],
-            'NPA' => [
-                'name' => 'NPA',
-                'value' => 1
-            ],
-            'OnTime' => [
-                'name' => 'OnTime',
-                'value' => null
-            ],
-        ];
+        $valuesSma = LoanAccountsExtended::$buckets;
         $select = [
             "COALESCE(COUNT(a.id), 0) total_cases_count",
             "COALESCE(SUM(CASE WHEN a.amount > 0 THEN a.amount END), 0) total_collected_cases_sum",

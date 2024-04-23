@@ -143,6 +143,7 @@ class EmiCollectionForm extends Model
         } elseif ($this->loan_type == 'E-Rickshaw') {
             $model->company_id = '25';
         }
+        $loan_account_number = str_replace(' ', '', $loan_account_number);
 
         $model->customer_interaction = $this->customer_interaction;
         $model->customer_visit = $this->customer_visit;
@@ -152,7 +153,7 @@ class EmiCollectionForm extends Model
             $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
         }
         $model->transaction_initiated_date = date('Y-m-d');
-        $model->loan_account_number = str_replace(' ', '', $loan_account_number);
+        $model->loan_account_number = $loan_account_number;
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
@@ -268,7 +269,7 @@ class EmiCollectionForm extends Model
             $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
             $options['user_id'] = $user_id;
             $options['org_id'] = $this->org_id;
-            $options['description'] = 'Emi collection for ' . $this->loan_type;
+            $options['description'] = 'EMI Collection for ' . $loan_account_number;
             $options['name'] = $this->customer_name;
             $options['contact'] = $this->phone;
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
@@ -428,7 +429,6 @@ class EmiCollectionForm extends Model
 
     public static function updateOverdue($loan_id, $amount, $user_id = ""): void
     {
-        return;
         $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $loan_id]);
         if ($query) {
             $query->overdue_amount -= $amount;
