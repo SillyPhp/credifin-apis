@@ -2719,7 +2719,7 @@ class OrganizationsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
-                        if (in_array("unassigned", $value)&&count($value)==1) {
+                        if (in_array("unassigned", $value) && count($value) == 1) {
                             $query->andWhere([
                                 'or',
                                 ['a.bucket' => null],
@@ -2731,8 +2731,8 @@ class OrganizationsController extends ApiBaseController
                                 ['a.bucket' => null],
                                 ['a.bucket' => '']
                             ]);
-                            $query->orHaving(['in','sub_bucket',$value]);
-                        }else{
+                            $query->orHaving(['in', 'sub_bucket', $value]);
+                        } else {
                             $query->having(['in', 'sub_bucket', $value]);
                         }
                     } elseif ($key == 'assigned_caller') {
@@ -3213,16 +3213,21 @@ class OrganizationsController extends ApiBaseController
             ->leftJoin(['f' => FinancerAssignedDesignations::tableName()], 'f.assigned_designation_enc_id = c.designation_id')
             ->leftJoin(['e' => Users::tableName()], 'e.id = a.model_id')
             ->leftJoin(['g' => OrganizationLocations::tableName()], 'g.location_enc_id = a.new_value')
-
             ->leftJoin(['z' => $sub_query], 'a.id = z.id')
             ->where([
                 'or',
                 ['c.user_enc_id' => $params['user_id']],
                 ['e.user_enc_id' => $params['user_id']]
             ])
-            ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', null]]])
+            ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'updated_by', null]]])
+            ->andWhere([
+                'or',
+                ['not like', 'a.field', '%_enc_id%', false],
+                ['a.field' => 'branch_enc_id']
+            ])
             ->andWhere(['IN', 'a.model', ['Users', 'UserRoles']])
             ->andWhere(['not like', 'a.field', '%updated_on%', false])
+            ->andWhere(['not like', 'a.action', '%set%', false])
             ->orderBy(['a.stamp' => SORT_DESC])
             ->all();
         return $this->response(200, ['status' => 200, 'data' => $audit]);
