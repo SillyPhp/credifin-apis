@@ -265,7 +265,7 @@ class CompanyDashboardController extends ApiBaseController
                 // to filter loan status
                 $params['filter'] = [$s];
                 $search = $params;
-                if (in_array($s, [31, 33])) {
+                if (in_array($s, [28, 31, 32, 33])) {
                     $search['fields_search'] = $date_filter;
                 }
 
