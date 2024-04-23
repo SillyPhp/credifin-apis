@@ -428,7 +428,6 @@ class EmiCollectionForm extends Model
 
     public static function updateOverdue($loan_id, $amount, $user_id = ""): void
     {
-        return;
         $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $loan_id]);
         if ($query) {
             $query->overdue_amount -= $amount;
