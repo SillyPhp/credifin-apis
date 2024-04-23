@@ -225,6 +225,8 @@ class EmployeeController extends ApiBaseController
             $page = !empty($params['page']) ? $params['page'] : 1;
             $startDate = $params['start_date'];
             $endDate = $params['end_date'];
+            $startDay = date('d', strtotime($startDate));
+            $endDay = date('d', strtotime($endDate));
             $org_id = $user->organization_enc_id;
             if (!$org_id) {
                 $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
@@ -287,13 +289,13 @@ class EmployeeController extends ApiBaseController
                     }]);
                 }], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
-                //date between condition need to be set after shalya beta test and scenerio
-                ->andWhere(['between', new Expression('DAY(emi_date)'), new Expression("DAY('$startDate')"), new Expression("DAY('$endDate')")])
                 ->andWhere(['<=', new Expression('YEAR(emi_date)'), new Expression("YEAR('$endDate')")])
                 ->andWhere(['<=', new Expression('MONTH(emi_date)'), new Expression("MONTH('$endDate')")])
                 ->andWhere(['a.status' => 'active', 'a.is_deleted' => 0, 'b.organization_enc_id' => $org_id])
                 ->groupBy(['a.user_enc_id', 'b2.image', 'b2.image_location', 'b2.initials_color', 'b.employee_code', 'b2.first_name', 'b2.last_name', 'gd.designation', 'b3.location_name', 'b3.location_enc_id']);
-
+            if ($startDay != $endDay){
+                $list->andWhere(['between', new Expression('DAY(emi_date)'), new Expression("DAY('$startDate')"), new Expression("DAY('$endDate')")]);
+            }
             if (!empty($params['loan_type'])) {
                 $list->andWhere(['IN', 'ec.loan_type', $params['loan_type']]);
             }
