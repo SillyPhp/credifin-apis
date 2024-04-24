@@ -180,7 +180,7 @@ class TestController extends ApiBaseController
             ->asArray()
             ->one();
         $res = '';
-        if ($user && in_array($user['designation'], $data)) {
+        if ($user && in_array($user['designation'], array_keys($data))) {
             $res = $user['designation'];
         }
         return $res;
