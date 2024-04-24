@@ -50,20 +50,28 @@ class StatsController extends ApiBaseController
             '8' => 'magenta',
         ];
 
-        $loan_type = $keyword;
+        $loan_types = [];
         $case = '';
 
         if (isset($params['hr'])) {
             $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
-                WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
-                WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
-                WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8";
+        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+        WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8";
         } elseif (isset($params['lr'])) {
             $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
-                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
-                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
-                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
-                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4";
+         WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4";
+        }
+
+        if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {
+            $loan_types = ['MSME', 'Loan Against Property'];
+        } elseif ($keyword == 'HCV' || $keyword == 'LCV') {
+            $loan_types = ['HCV', 'LCV'];
+        } else {
+            $loan_types = [$keyword];
         }
 
         $query = LoanAccountsExtended::find()
@@ -73,8 +81,8 @@ class StatsController extends ApiBaseController
             ])
             ->andWhere(["a.is_deleted" => 0]);
 
-        if ($loan_type != null) {
-            $query->andWhere(["a.loan_type" => $loan_type]);
+        if (!empty($loan_types)) {
+            $query->andWhere(["IN", "a.loan_type", $loan_types]);
         }
 
         $query->groupBy(['sub_bucket'])
@@ -83,7 +91,7 @@ class StatsController extends ApiBaseController
         $data = [];
         foreach ($query->asArray()->all() as $row) {
             $sub_bucket = $row['sub_bucket'];
-            if ($sub_bucket === null) {
+            if ($sub_bucket == null) {
                 continue;
             }
             $fillColor = isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray';
