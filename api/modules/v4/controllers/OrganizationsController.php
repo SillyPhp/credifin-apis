@@ -3210,7 +3210,7 @@ class OrganizationsController extends ApiBaseController
             ->leftJoin(['b' => Users::tableName()], 'b.id=a.user_id')
             ->leftJoin(['c' => UserRoles::tableName()], 'c.id = a.model_id')
             ->leftJoin(['d' => Users::tableName()], 'd.user_enc_id = a.new_value')
-            ->leftJoin(['f' => FinancerAssignedDesignations::tableName()], 'f.assigned_designation_enc_id = c.designation_id')
+            ->leftJoin(['f' => FinancerAssignedDesignations::tableName()], 'f.assigned_designation_enc_id = a.new_value')
             ->leftJoin(['e' => Users::tableName()], 'e.id = a.model_id')
             ->leftJoin(['g' => OrganizationLocations::tableName()], 'g.location_enc_id = a.new_value')
             ->leftJoin(['z' => $sub_query], 'a.id = z.id')
