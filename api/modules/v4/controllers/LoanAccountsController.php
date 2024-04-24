@@ -64,6 +64,7 @@ class LoanAccountsController extends ApiBaseController
                 'upload-sheet' => ['POST', 'OPTIONS'],
                 'update-branch' => ['POST', 'OPTIONS'],
                 'update-target-dates' => ['POST', 'OPTIONS'],
+                'customer-loan-account-detail' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -438,6 +439,41 @@ class LoanAccountsController extends ApiBaseController
             }
         }
         return ['data' => $model, 'count' => $count];
+    }
+
+    public function actionCustomerLoanAccountDetail()
+    {
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+        $loan_acc_id = $params['loan_account_enc_id'];
+        $data = LoanAccounts::find()
+            ->alias('a')
+            ->select([
+                'a.name', 'a.loan_account_number', 'a.loan_type', 'DAY(emi_date) AS emi_date', 'a.overdue_amount', 'a.emi_amount',
+                "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN (a.ledger_amount + a.overdue_amount) < (a.emi_amount * (CASE 
+                                                                                        WHEN a.bucket = 'sma-0' THEN 1.25
+                                                                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                                                                        WHEN a.bucket = 'npa' THEN 2
+                                                                                        ELSE 1
+                                                                                    END) )
+                        THEN a.ledger_amount + a.overdue_amount 
+                    ELSE emi_amount * 
+                        (CASE 
+                            WHEN a.bucket = 'sma-0' THEN 1.25
+                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                            WHEN a.bucket = 'npa' THEN 2
+                            ELSE 1
+                        END) 
+                    END) 
+                END) AS target_collection_amount"
+            ])
+            ->andWhere(['loan_account_enc_id' => $loan_acc_id])
+            ->asArray()
+            ->one();
+        return $this->response(200, ['message' => 'fetched successfully', 'data' => $data]);
     }
 
     public function actionUpdateNach()

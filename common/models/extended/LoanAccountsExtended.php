@@ -34,7 +34,7 @@ class LoanAccountsExtended extends LoanAccounts
         ],
         'NPA' => [
             'name' => 'NPA',
-            'value' => 1
+            'value' => 2
         ],
         'OnTime' => [
             'name' => 'OnTime',
