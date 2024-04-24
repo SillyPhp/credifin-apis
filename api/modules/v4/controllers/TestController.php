@@ -64,19 +64,19 @@ class TestController extends ApiBaseController
         if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
             return ['status' => 401, 'msg' => 'authentication failed'];
         }
+        $transaction = Yii::$app->db->beginTransaction();
         try {
-            $query = EmiCollection::find()
-                ->alias('a')
-                ->select(['loan_account_enc_id', 'GROUP_CONCAT(DISTINCT created_by) AS collectors'])
-                ->andWhere('loan_account_enc_id IS NOT NULL')
-                ->groupBy('loan_account_enc_id')
+            $query = (new Query())
+                ->from(['a' => EmiCollection::tableName()])
+                ->select(['a.loan_account_enc_id', 'GROUP_CONCAT(DISTINCT a.created_by) AS collectors'])
+                ->leftJoin(['b' => AssignedLoanAccounts::tableName()], "b.loan_account_enc_id = a.loan_account_enc_id AND a.created_by = b.shared_to AND b.access = 'Full Access' AND b.status = 'Active' AND b.is_deleted = 0")
+                ->andWhere('a.loan_account_enc_id IS NOT NULL AND b.id IS NULL')
+                ->groupBy('a.loan_account_enc_id')
                 ->offset(($page - 1) * $limit)
                 ->limit($limit)
-                ->asArray()
                 ->all();
             $utilitiesModel = new Utilities();
             $found_user_types = $sqls = [];
-            $transaction = Yii::$app->db->beginTransaction();
             foreach ($query as $item) {
                 $loan_acc_id = $item['loan_account_enc_id'];
                 $collectors = explode(',', $item['collectors']);
