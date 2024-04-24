@@ -257,12 +257,10 @@ class CompanyDashboardController extends ApiBaseController
             // getting loan application by loan_status
             $loan_status = [];
             $date_filter = [
-                'disbursement_start_date' => date('Y-m-d 00:00:00', strtotime('-30 days')),
-                'disbursement_end_date' => date('Y-m-d H:i:s')
+                'disbursement_start_date' => date('Y-m-d 00:00:00', strtotime('-30 days'))
             ];
             $disbursed_filter = [
-                'disbursement_start_date' => date('Y-m-01 00:00:00'),
-                'disbursement_end_date' => date('Y-m-d H:i:s'),
+                'disbursement_start_date' => date('Y-m-01 00:00:00')
             ];
             foreach ($status as $s) {
 
