@@ -132,7 +132,7 @@ class TestController extends ApiBaseController
             $found = count($sqls);
             $inserted = 0;
             foreach ($sqls as $sql) {
-                $inserted = Yii::$app->db->createCommand($sql)->execute();
+                $inserted += Yii::$app->db->createCommand($sql)->execute();
             }
             $transaction->commit();
             return $this->response(200, ['message' => 'successfully saved', 'found' => $found, 'inserted' => $inserted]);
