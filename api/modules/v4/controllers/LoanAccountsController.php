@@ -260,8 +260,10 @@ class LoanAccountsController extends ApiBaseController
                     END) 
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
-                    "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+                    "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                    "be.location_name as branch_name"
                 ])
+                ->joinWith(['branchEnc be'], false)
                 ->joinWith(['emiCollections AS a1' => function ($b) {
                     $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone', 'a1.address', 'a1.latitude', 'a1.longitude', 'a1.created_on', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by"]);
                     $b->joinWith(['createdBy cr'], false);
