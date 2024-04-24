@@ -64,6 +64,7 @@ class LoanAccountsController extends ApiBaseController
                 'upload-sheet' => ['POST', 'OPTIONS'],
                 'update-branch' => ['POST', 'OPTIONS'],
                 'update-target-dates' => ['POST', 'OPTIONS'],
+                'customer-loan-account-detail' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -201,6 +202,17 @@ class LoanAccountsController extends ApiBaseController
                     'a.telecaller_priority',
                     'a.collection_priority',
                     'a.bucket',
+                    "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket",
                     "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved",
                     'a.emi_date',
                     'a.created_on',
@@ -425,6 +437,41 @@ class LoanAccountsController extends ApiBaseController
             }
         }
         return ['data' => $model, 'count' => $count];
+    }
+
+    public function actionCustomerLoanAccountDetail()
+    {
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_account_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
+        }
+        $loan_acc_id = $params['loan_account_enc_id'];
+        $data = LoanAccounts::find()
+            ->alias('a')
+            ->select([
+                'a.name', 'a.loan_account_number', 'a.loan_type', 'DAY(emi_date) AS emi_date', 'a.overdue_amount', 'a.emi_amount',
+                "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
+                    (CASE WHEN (a.ledger_amount + a.overdue_amount) < (a.emi_amount * (CASE 
+                                                                                        WHEN a.bucket = 'sma-0' THEN 1.25
+                                                                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                                                                                        WHEN a.bucket = 'npa' THEN 2
+                                                                                        ELSE 1
+                                                                                    END) )
+                        THEN a.ledger_amount + a.overdue_amount 
+                    ELSE emi_amount * 
+                        (CASE 
+                            WHEN a.bucket = 'sma-0' THEN 1.25
+                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
+                            WHEN a.bucket = 'npa' THEN 2
+                            ELSE 1
+                        END) 
+                    END) 
+                END) AS target_collection_amount"
+            ])
+            ->andWhere(['loan_account_enc_id' => $loan_acc_id])
+            ->asArray()
+            ->one();
+        return $this->response(200, ['message' => 'fetched successfully', 'data' => $data]);
     }
 
     public function actionUpdateNach()
@@ -1095,9 +1142,6 @@ class LoanAccountsController extends ApiBaseController
         $params = $this->post;
         $user = $this->user;
         $where = ['a.is_deleted' => 0, 'a.hard_recovery' => 0];
-        if (!empty($params['bucketVal'])) {
-            $where['bucket'] = $params['bucketVal'];
-        }
         if (!empty($params['fields_search'])) {
             $fields_search = $params['fields_search'];
             foreach ($fields_search as $key => $value) {
@@ -1152,6 +1196,7 @@ class LoanAccountsController extends ApiBaseController
             $b_select[] = "COUNT(CASE WHEN bucket = '" . $value['name'] . "' THEN a.total_pending_amount END) AS total_count_$key";
         }
 
+
         $bucket = (new Query())
             ->select([
                 "COUNT(a.loan_account_enc_id) AS loan_accounts_count",
@@ -1167,6 +1212,72 @@ class LoanAccountsController extends ApiBaseController
             ->addSelect($b_select)
             ->from(['a' => $loan])
             ->where($where);
+        $bucketVal = '';
+        if (!empty($params['sub_bucket']) && isset($params['sub_bucket'])) {
+            $bucketVal = $params['sub_bucket'];
+        }
+        if (!empty($bucketVal)) {
+            switch ($bucketVal) {
+                case 1:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 0,
+                        ':max' => 15
+                    ]);
+                    break;
+                case 2:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 15,
+                        ':max' => 30
+                    ]);
+                    break;
+                case 3:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 30,
+                        ':max' => 45
+                    ]);
+                    break;
+                case 4:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 45,
+                        ':max' => 60
+                    ]);
+                    break;
+                case 5:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 60,
+                        ':max' => 75
+                    ]);
+                    break;
+                case 6:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 75,
+                        ':max' => 90
+                    ]);
+                    break;
+                case 7:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min AND ((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':min' => 90,
+                        ':max' => 120
+                    ]);
+                    break;
+                case 8:
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) >= :min', [
+                        ':min' => 120
+                    ]);
+                    break;
+                case 'X':
+                    $bucket->andWhere('((a.overdue_amount / a.emi_amount) * 30) <= :max', [
+                        ':max' => 0
+                    ]);
+                    break;
+                default:
+                    //skip
+                    break;
+            }
+        }
+
+
+
         if (!$this->isSpecial(1)) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
 
@@ -1288,6 +1399,17 @@ class LoanAccountsController extends ApiBaseController
         $ptpcases = LoanAccountPtps::find()
             ->alias('a')
             ->select([
+                "CASE
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 30 AND ((c.overdue_amount / c.emi_amount) * 30) <= 45 THEN 3
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 45 AND ((c.overdue_amount / c.emi_amount) * 30) <= 60 THEN 4
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 60 AND ((c.overdue_amount / c.emi_amount) * 30) <= 75 THEN 5
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 75 AND ((c.overdue_amount / c.emi_amount) * 30) <= 90 THEN 6
+                    WHEN ((c.overdue_amount / c.emi_amount) * 30) > 90 AND ((c.overdue_amount / c.emi_amount) * 30) <= 120 THEN 7
+                    WHEN (c.overdue_amount / c.emi_amount) * 30 >= 120 THEN 8
+                END AS sub_bucket",
                 "a.ptp_enc_id", "a.emi_collection_enc_id", "a.proposed_payment_method", "a.proposed_date",
                 "a.proposed_amount", "a.status", "a.collection_manager as collection_manager_enc_id", "b.loan_account_enc_id",
                 "b.loan_account_number", "c.total_installments", "c.financed_amount", "c.stock", "c.last_emi_received_date",
@@ -1336,7 +1458,24 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key == 'assigned_caller') {
+                    if ($key == 'sub_bucket') {
+                        if (in_array("unassigned", $value) && count($value) == 1) {
+                            $ptpcases->andWhere([
+                                'or',
+                                ['c.bucket' => null],
+                                ['c.bucket' => '']
+                            ]);
+                        } elseif (in_array("unassigned", $value) && count($value) > 1) {
+                            $ptpcases->orWhere([
+                                'or',
+                                ['c.bucket' => null],
+                                ['c.bucket' => '']
+                            ]);
+                            $ptpcases->orHaving(['in', 'sub_bucket', $value]);
+                        } else {
+                            $ptpcases->having(['in', 'sub_bucket', $value]);
+                        }
+                    } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                         } else {
@@ -1349,7 +1488,7 @@ class LoanAccountsController extends ApiBaseController
                             $ptpcases->andWhere(['c2.state_enc_id' => null]);
                         } else {
                             $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }                    
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $ptpcases->andWhere(['c.bucket' => null]);
@@ -1460,6 +1599,13 @@ class LoanAccountsController extends ApiBaseController
                     'user_type' => $user_type,
                 ];
             }, $tm['assignedLoanAccounts']);
+            $collection_manager = array_map(function ($cm) {
+                if ($cm['user_type'] == 2) {
+                    $shared_name = $cm['sharedTo']['first_name'] . ' ' . ($cm['sharedTo']['last_name'] ?? null);
+                    return ['name' => $shared_name];
+                }
+            }, $tm['assignedLoanAccounts']);
+            $item['collection_manager'] = array_values(array_unique(array_column($collection_manager, 'name')));;
             unset($item['emiCollectionEnc'], $item['loanAccountEnc']);
         }
 
@@ -2286,7 +2432,69 @@ class LoanAccountsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key == 'assigned_caller') {
+                    if ($key == 'sub_bucket') {
+                        if (!empty($value)) {
+                            foreach ($value as $val) {
+                                switch ($val) {
+                                    case 1:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min1 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max1';
+                                        $queryParams[':min1'] = 0;
+                                        $queryParams[':max1'] = 15;
+                                        break;
+                                    case 2:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min2 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max2';
+                                        $queryParams[':min2'] = 15;
+                                        $queryParams[':max2'] = 30;
+                                        break;
+                                    case 3:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min3 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max3';
+                                        $queryParams[':min3'] = 30;
+                                        $queryParams[':max3'] = 45;
+                                        break;
+                                    case 4:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min4 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max4';
+                                        $queryParams[':min4'] = 45;
+                                        $queryParams[':max4'] = 60;
+                                        break;
+                                    case 5:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min5 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max5';
+                                        $queryParams[':min5'] = 60;
+                                        $queryParams[':max5'] = 75;
+                                        break;
+                                    case 6:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min6 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max6';
+                                        $queryParams[':min6'] = 75;
+                                        $queryParams[':max6'] = 90;
+                                        break;
+                                    case 7:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min7 AND ((c.overdue_amount / c.emi_amount) * 30) <= :max7';
+                                        $queryParams[':min7'] = 90;
+                                        $queryParams[':max7'] = 120;
+                                        break;
+                                    case 8:
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) >= :min58';
+                                        $queryParams[':min8'] = 120;
+                                        break;
+                                    case 'X':
+                                        $subQueryConditions[] = '((c.overdue_amount / c.emi_amount) * 30) <= :max10';
+                                        $queryParams[':max10'] = 120;
+                                        break;
+                                    default:
+                                        //skip
+                                        break;
+                                }
+                            }
+                            if (count($subQueryConditions) > 1) {
+                                $subQueryCondition = implode(' OR ', $subQueryConditions);
+                                $sub_query->andWhere($subQueryCondition, $queryParams);
+                                // $query->andWhere($subQueryCondition, $queryParams);
+                            } else {
+                                $subQueryCondition = implode(' ', $subQueryConditions);
+                                $sub_query->andWhere($subQueryCondition, $queryParams);
+                                //$query->andWhere($subQueryCondition,$queryParams);
+                            }
+                        }
+                    } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $sub_query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
@@ -2299,12 +2507,12 @@ class LoanAccountsController extends ApiBaseController
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
                         if (in_array("unassigned", $value)) {
-                        $sub_query->andWhere(['c2.state_enc_id' => null]);
-                        $query->andWhere(['c2.state_enc_id' => null]);
-                    } else {
-                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                    }
+                            $sub_query->andWhere(['c2.state_enc_id' => null]);
+                            $query->andWhere(['c2.state_enc_id' => null]);
+                        } else {
+                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
+                        }
                     } elseif ($key == 'bucket') {
                         if (in_array("unassigned", $value)) {
                             $sub_query->andWhere(['c.bucket' => null]);

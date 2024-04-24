@@ -10,6 +10,7 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanAccounts;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
+use common\models\extended\AuditTrail;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
@@ -97,7 +98,8 @@ class OrganizationsController extends ApiBaseController
                 "upload-application-image" => ["POST", "OPTIONS"],
                 "get-assigned-images" => ["POST", "OPTIONS"],
                 "search-emi" => ["POST", "GET", "OPTIONS"],
-                "update-pendency" => ["POST", "OPTIONS"]
+                "update-pendency" => ["POST", "OPTIONS"],
+                "user-audit" => ["POST", "OPTIONS"]
             ]
         ];
 
@@ -2508,6 +2510,17 @@ class OrganizationsController extends ApiBaseController
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
+                    "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket"
                 ])
                 ->joinWith(['emiCollectionsCustom emi' => function ($emi) use ($sub_query1) {
                     $emi->from(['emi' => $sub_query1]);
@@ -2591,7 +2604,18 @@ class OrganizationsController extends ApiBaseController
             ->alias("a")
             ->select([
                 "a.loan_account_enc_id", "a.stock",
-                "a.advance_interest", "a.bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
+                "a.advance_interest", "a.bucket",
+                "CASE
+                        WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
+                 WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
+                 WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8
+            END AS sub_bucket", "a.branch_enc_id", "a.bucket_status_date", "a.pos",
                 "a.loan_account_number", "a.last_emi_date", "a.name",
                 'a.assigned_financer_enc_id',
                 "a.emi_amount", "a.overdue_amount", "a.loan_type", "a.emi_date",
@@ -2694,7 +2718,24 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params["fields_search"])) {
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
-                    if ($key == 'assigned_caller') {
+                    if ($key == 'sub_bucket') {
+                        if (in_array("unassigned", $value) && count($value) == 1) {
+                            $query->andWhere([
+                                'or',
+                                ['a.bucket' => null],
+                                ['a.bucket' => '']
+                            ]);
+                        } elseif (in_array("unassigned", $value) && count($value) > 1) {
+                            $query->orWhere([
+                                'or',
+                                ['a.bucket' => null],
+                                ['a.bucket' => '']
+                            ]);
+                            $query->orHaving(['in', 'sub_bucket', $value]);
+                        } else {
+                            $query->having(['in', 'sub_bucket', $value]);
+                        }
+                    } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
                         } else {
@@ -3045,6 +3086,10 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(["a.bucket" => $params["bucket"]]);
         }
 
+        if (!empty($params["sub_bucket"])) {
+            $query->having(['sub_bucket' => $params["sub_bucket"]]);
+        }
+
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
             $start_date = $end_date = date('Y-m-d');
@@ -3131,6 +3176,61 @@ class OrganizationsController extends ApiBaseController
             return $this->response(201, ["status" => 201, "message" => "Already exists"]);
         }
         return $this->response(200, ["status" => 200, "message" => "Doesn't exist"]);
+    }
+
+    public function actionUserAudit()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = $this->post;
+        if (empty($params['user_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
+        }
+        $sub_query = (new Query())
+            ->select(['a.id', "(CASE
+             WHEN a.old_value = d.user_enc_id THEN CONCAT(d.first_name,' ',d.last_name) 
+             WHEN a.old_value = e.location_enc_id THEN e.location_name 
+                WHEN a.old_value = f.assigned_designation_enc_id THEN  f.designation
+                ELSE a.old_value END) AS old_value"])
+            ->from(['a' => AuditTrail::tableName()])
+            ->leftJoin(['c' => UserRoles::tableName()], 'c.role_enc_id = a.old_value')
+            ->leftJoin(['d' => Users::tableName()], 'd.user_enc_id = a.old_value')
+            ->leftJoin(['f' => FinancerAssignedDesignations::tableName()], 'f.assigned_designation_enc_id = a.old_value')
+            ->leftJoin(['e' => OrganizationLocations::tableName()], 'e.location_enc_id = a.old_value')
+            ->andWhere(['IN', 'a.model', ['Users', 'UserRoles']]);
+
+        $audit = (new Query())
+            ->select(['a.id', 'z.old_value', "(CASE
+            WHEN a.new_value = d.user_enc_id THEN  CONCAT(d.first_name,' ',d.last_name)
+            WHEN a.new_value = f.assigned_designation_enc_id THEN  f.designation
+            WHEN a.new_value = g.location_enc_id THEN  g.location_name
+            ELSE a.new_value END) AS new_value", "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image",  'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"])
+            ->from(['a' => AuditTrail::tableName()])
+            ->leftJoin(['b' => Users::tableName()], 'b.id=a.user_id')
+            ->leftJoin(['c' => UserRoles::tableName()], 'c.id = a.model_id')
+            ->leftJoin(['d' => Users::tableName()], 'd.user_enc_id = a.new_value')
+            ->leftJoin(['f' => FinancerAssignedDesignations::tableName()], 'f.assigned_designation_enc_id = c.designation_id')
+            ->leftJoin(['e' => Users::tableName()], 'e.id = a.model_id')
+            ->leftJoin(['g' => OrganizationLocations::tableName()], 'g.location_enc_id = a.new_value')
+            ->leftJoin(['z' => $sub_query], 'a.id = z.id')
+            ->where([
+                'or',
+                ['c.user_enc_id' => $params['user_id']],
+                ['e.user_enc_id' => $params['user_id']]
+            ])
+            ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'updated_by', null]]])
+            ->andWhere([
+                'or',
+                ['not like', 'a.field', '%_enc_id%', false],
+                ['a.field' => 'branch_enc_id']
+            ])
+            ->andWhere(['IN', 'a.model', ['Users', 'UserRoles']])
+            ->andWhere(['not like', 'a.field', '%updated_on%', false])
+            ->andWhere(['not like', 'a.action', '%set%', false])
+            ->orderBy(['a.stamp' => SORT_DESC])
+            ->all();
+        return $this->response(200, ['status' => 200, 'data' => $audit]);
     }
 
     public function actionUpdateType($start_date, $end_date = '', $limit = 50, $page = 1, $auth = '')

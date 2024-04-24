@@ -10,6 +10,7 @@ use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\auth\JwtAuth;
+use common\models\extended\UserRolesExtended;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
@@ -792,9 +793,9 @@ class AuthController extends ApiBaseController
                 return $this->response(400, ['status' => 400, 'message' => 'Employee code already exists']);
             }
 
-            $user_role = UserRoles::findOne(['user_enc_id' => $user_id]);
+            $user_role = UserRolesExtended::findOne(['user_enc_id' => $user_id]);
             if (!$user_role) {
-                $user_role = new UserRoles();
+                $user_role = new UserRolesExtended();
                 $user_role->user_enc_id = $user_id;
             }
             $user_role->employee_code = $params['employee_code'];

@@ -143,6 +143,7 @@ class EmiCollectionForm extends Model
         } elseif ($this->loan_type == 'E-Rickshaw') {
             $model->company_id = '25';
         }
+        $loan_account_number = str_replace(' ', '', $loan_account_number);
 
         $model->customer_interaction = $this->customer_interaction;
         $model->customer_visit = $this->customer_visit;
@@ -152,7 +153,7 @@ class EmiCollectionForm extends Model
             $model->collection_date = !empty($this->collection_date) ? $this->collection_date : date('Y-m-d');
         }
         $model->transaction_initiated_date = date('Y-m-d');
-        $model->loan_account_number = str_replace(' ', '', $loan_account_number);
+        $model->loan_account_number = $loan_account_number;
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
@@ -223,6 +224,11 @@ class EmiCollectionForm extends Model
             $path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
             $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location, $path);
         }
+        // visit_charges only in manual cash payment 
+        if (!empty(Yii::$app->params->charges->visit_charges)) {
+            $visit_charges = Yii::$app->params->charges->visit_charges;
+            $model->visit_charges = $visit_charges;
+        }
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
@@ -250,6 +256,7 @@ class EmiCollectionForm extends Model
             $trackCash['user_id'] = $trackCash['given_to'] = $user_id;
             $trackCash['amount'] = $this->amount;
             $trackCash['emi_id'] = $model->emi_collection_enc_id;
+            $trackCash['visit_charges'] = $visit_charges ?? 0;
             $this->collect_cash($trackCash);
         }
 
@@ -262,7 +269,7 @@ class EmiCollectionForm extends Model
             $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
             $options['user_id'] = $user_id;
             $options['org_id'] = $this->org_id;
-            $options['description'] = 'Emi collection for ' . $this->loan_type;
+            $options['description'] = 'EMI Collection for ' . $loan_account_number;
             $options['name'] = $this->customer_name;
             $options['contact'] = $this->phone;
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
@@ -368,11 +375,11 @@ class EmiCollectionForm extends Model
             }
         }
 
-        $remaining_amount = $data['amount'];
+        $amount = !empty($data['visit_charges']) ? $data['amount'] + $data['visit_charges'] : $data['amount'];
         $query->status = $status;
         $query->remarks = !empty($data['remarks']) ? $data['remarks'] : '';
-        $query->amount = $data['amount'];
-        $query->remaining_amount = $remaining_amount;
+        $query->amount = $amount;
+        $query->remaining_amount = $amount;
         $query->created_by = $query->updated_by = $data['user_id'];
         $query->created_on = $query->updated_on = date('Y-m-d H:i:s');
 
@@ -422,7 +429,6 @@ class EmiCollectionForm extends Model
 
     public static function updateOverdue($loan_id, $amount, $user_id = ""): void
     {
-        return;
         $query = LoanAccountsExtended::findOne(["loan_account_enc_id" => $loan_id]);
         if ($query) {
             $query->overdue_amount -= $amount;

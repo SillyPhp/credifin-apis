@@ -863,7 +863,7 @@ class LoansController extends ApiBaseController
             }
 
             // getting assigned loan provider object from loan_application_enc_id and provider_enc_id
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $provider_id]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id']]);
 
             // if provider not found
             if (!$provider) {
@@ -1087,7 +1087,7 @@ class LoansController extends ApiBaseController
             // getting negative locations
             $query = FinancerLoanNegativeLocation::find()
                 ->alias('a')
-                ->select(['a.negative_location_enc_id', 'CONCAT(b.first_name, " ", b.last_name) AS name', 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
+                ->select(['a.negative_location_enc_id', "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) AS name", 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
                 ->joinWith(['userEnc b'], false);
 
             if (!empty($user->organization_enc_id)) {
@@ -1577,7 +1577,7 @@ class LoansController extends ApiBaseController
                 $model->updated_on = date('Y-m-d H:i:s');
             } elseif (in_array($type, [
                 'model_year', 'engine_number', 'ex_showroom_price', 'on_road_price', 'emi_amount',
-                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'valid_till', 'payable_value', 'vehicle_color', 'field_officer', 'motor_number'
+                'margin_money', 'ltv', 'name_of_company', 'policy_number', 'battery_type', 'number_of_batteries', 'erickshaw_purpose', 'valid_till', 'payable_value', 'vehicle_color', 'field_officer', 'motor_number'
             ])) {
                 $model = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $params['id']]);
                 if (!$model) {

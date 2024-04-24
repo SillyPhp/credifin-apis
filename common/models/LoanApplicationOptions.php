@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_application_options}}".
  *
@@ -11,6 +9,9 @@ use Yii;
  * @property string $option_enc_id Option Encrypted ID
  * @property string $loan_app_enc_id
  * @property int $application_by who is filing the application 0 as self or student itself 1 as parent 2 as execitive
+ * @property int $erickshaw_purpose 1 is self driven, 2 is rental
+ * @property string $battery_type
+ * @property int $number_of_batteries
  * @property int $number_of_loans number of previous loans if nay
  * @property double $total_loan_amount
  * @property double $monthly_emi
@@ -82,9 +83,9 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
     {
         return [
             [['option_enc_id', 'loan_app_enc_id'], 'required'],
-            [['application_by', 'number_of_loans', 'loan_option_value', 'desired_tenure', 'is_deleted'], 'integer'],
+            [['application_by', 'erickshaw_purpose', 'number_of_batteries', 'number_of_loans', 'loan_option_value', 'desired_tenure', 'is_deleted'], 'integer'],
+            [['battery_type', 'property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
             [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover', 'ex_showroom_price', 'emi_amount', 'on_road_price', 'margin_money', 'ltv', 'payable_value'], 'number'],
-            [['property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
             [['follow_up_on', 'valid_till', 'disbursement_date', 'created_on', 'last_updated_on'], 'safe'],
             [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'engine_number', 'motor_number', 'policy_number', 'field_officer', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],

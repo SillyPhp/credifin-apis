@@ -8,11 +8,13 @@ use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanPurposeExtended;
 use common\models\LoanApplications;
+use common\models\LoanAuditTrail;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use common\models\Utilities;
 use Yii;
+use yii\db\Query;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -426,7 +428,8 @@ class LoanApplicationsController extends ApiBaseController
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
 
-    public function actionDownloadQrCode($url, $name){
+    public function actionDownloadQrCode($url, $name)
+    {
         $file_path = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" . $url . "&choe=UTF-8&chld=0|1";
 
         header('Content-Description: File Transfer');
@@ -442,6 +445,217 @@ class LoanApplicationsController extends ApiBaseController
         flush();
         readfile($file_path);
         exit();
+    }
+
+    public function actionCaseReportDetails()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+
+        $tvr = $this->getTvr($params['loan_app_enc_id']);
+        $pd = $this->getPd($params['loan_app_enc_id']);
+        $fi = $this->getFi($params['loan_app_enc_id']);
+        $lg = $this->getLogin($params['loan_app_enc_id']);
+
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.login_date',
+                "(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee",
+                'a.loan_app_enc_id',
+                'a.created_on as lead_start',
+                'e.stamp as lead_end',
+                'as.valuation',
+                'CASE WHEN e.stamp IS NULL THEN NULL ELSE TIMESTAMPDIFF(MINUTE, a.created_on, e.stamp) END as lead_creation_tat',
+                'b.diff as tvr_tat',
+                'c.diff as pd_tat',
+                'd.diff as fi_tat',
+            ])
+            ->joinWith(['assignedLoanProviders as'], false)
+            ->join('LEFT JOIN', ['b' => $tvr], 'b.foreign_id = a.loan_app_enc_id')
+            ->join('LEFT JOIN', ['c' => $pd], 'c.foreign_id = a.loan_app_enc_id')
+            ->join('LEFT JOIN', ['d' => $fi], 'd.foreign_id = a.loan_app_enc_id')
+            ->join('LEFT JOIN', ['e' => $lg], 'e.foreign_id = a.loan_app_enc_id')
+            ->andWhere(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $params['loan_app_enc_id']])
+            ->asArray()
+            ->one();
+
+        if ($query['lead_end'] == null) {
+            $query['lead_creation_tat'] = null;
+        } else {
+            $leadStart = new \DateTime($query['lead_start']);
+            $leadEnd = new \DateTime($query['lead_end']);
+            $leadDiff = $leadStart->diff($leadEnd);
+            $query['lead_creation_tat'] = $leadDiff->format('%a days, %h hours, %i minutes');
+        }
+
+        $query['tvr_tat'] = $this->timeDiff($query['tvr_tat']);
+        $query['pd_tat'] = $this->timeDiff($query['pd_tat']);
+        $query['fi_tat'] = $this->timeDiff($query['fi_tat']);
+
+        $total_tat_minutes = (int)$query['tvr_tat'] + (int)$query['fi_tat'] + (int)$query['pd_tat'];
+        if ($query['lead_creation_tat'] != null) {
+            $total_tat_minutes += (int)$query['lead_creation_tat'];
+        }
+        $total_tat_days = floor($total_tat_minutes / (24 * 60));
+        $query['total_tat'] = "$total_tat_days";
+
+        return $this->response(200, ['status' => 200, 'data' => $query]);
+    }
+
+    private function getTvr($loanAppEncId)
+    {
+        return (new Query())
+            ->from(['a' => LoanAuditTrail::tableName()])
+            ->select([
+                'a.foreign_id',
+                "TIMEDIFF(MAX(a.stamp) ,MIN(a.stamp)) diff",
+            ])
+            ->andWhere(['a.model' => 'LoanApplicationTvr', 'a.field' => 'status', 'a.foreign_id' => $loanAppEncId])
+            ->andWhere([
+                'OR',
+                ['a.new_value' => 'Approved'],
+                ['a.new_value' => 'Pending'],
+            ])
+            ->groupBy(['a.foreign_id']);
+    }
+
+    private function getFi($loanAppEncId)
+    {
+        return (new Query())
+            ->from(['d' => LoanAuditTrail::tableName()])
+            ->select([
+                'd.foreign_id',
+                "TIMEDIFF(MAX(d.stamp) ,MIN(d.stamp)) diff",
+            ])
+            ->andWhere(['d.model' => 'LoanApplicationFi', 'd.field' => 'status', 'd.foreign_id' => $loanAppEncId])
+            ->andWhere([
+                'OR',
+                ['d.new_value' => 'Approved'],
+                ['d.new_value' => 'Pending'],
+            ])
+            ->groupBy(['d.foreign_id']);
+    }
+
+    private function getPd($loanAppEncId)
+    {
+        return (new Query())
+            ->from(['c' => LoanAuditTrail::tableName()])
+            ->select([
+                'c.foreign_id',
+                "TIMEDIFF(MAX(c.stamp) ,MIN(c.stamp)) diff",
+            ])
+            ->andWhere(['c.model' => 'LoanApplicationPd', 'c.field' => 'status', 'c.foreign_id' => $loanAppEncId])
+            ->andWhere([
+                'OR',
+                ['c.new_value' => 'Approved'],
+                ['c.new_value' => 'Pending'],
+            ])
+            ->groupBy(['c.foreign_id']);
+    }
+
+    private function getLogin($loanAppEncId)
+    {
+        return (new Query())
+            ->from(['e' => LoanAuditTrail::tableName()])
+            ->select(['e.foreign_id', "e.stamp", 'e.field'])
+            ->andWhere(['e.model' => 'AssignedLoanProvider', 'e.field' => 'status', 'e.new_value' => 'Login', 'e.foreign_id' => $loanAppEncId])
+            ->groupBy(['e.foreign_id', 'e.stamp']);
+    }
+
+    private function timeDiff($timeDiff)
+    {
+        $timeComponents = explode(':', $timeDiff);
+        $days = floor($timeComponents[0] / 24);
+        $timeComponents[0] %= 24;
+        $time = '';
+        if ($days > 0) {
+            $time .= $days . ' day' . ($days > 1 ? 's' : '') . ' ';
+        }
+        if ($timeComponents[0] > 0) {
+            $time .= $timeComponents[0] . ' hour' . ($timeComponents[0] > 1 ? 's' : '') . ' ';
+        }
+        if ($timeComponents[1] > 0) {
+            $time .= $timeComponents[1] . ' minute' . ($timeComponents[1] > 1 ? 's' : '') . ' ';
+        }
+
+        return trim($time);
+    }
+
+    public function actionStatusTat()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+
+        $query = LoanAuditTrail::find()
+            ->alias('a')
+            ->select(['a.foreign_id', 'a.new_value', 'a.stamp', 'a.old_value'])
+            ->andWhere(['a.model' => 'AssignedLoanProvider', 'a.field' => 'status', 'a.foreign_id' => $params['loan_app_enc_id']])
+            ->orderBy(['a.stamp' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $status_data = [];
+
+        $status_count = count($query);
+
+        if (!empty($query)) {
+            for ($i = 0; $i < $status_count - 1; $i++) {
+                $current_status = $query[$i]['new_value'];
+                $next_status = $query[$i + 1]['new_value'];
+
+                $current_stamp = new \DateTime($query[$i]['stamp']);
+                $next_stamp = new \DateTime($query[$i + 1]['stamp']);
+
+                $difference = $current_stamp->diff($next_stamp);
+
+                $time_difference = '';
+
+                if ($difference->d > 0) {
+                    $time_difference .= $difference->d . ' day' . ($difference->d > 1 ? 's' : '') . ' ';
+                }
+                if ($difference->h > 0) {
+                    $time_difference .= $difference->h . ' hour' . ($difference->h > 1 ? 's' : '') . ' ';
+                }
+                if ($difference->i > 0) {
+                    $time_difference .= $difference->i . ' minute' . ($difference->i > 1 ? 's' : '') . ' ';
+                }
+                if ($difference->s > 0) {
+                    $time_difference .= $difference->s . ' second' . ($difference->s > 1 ? 's' : '');
+                }
+
+                $start_date = $query[$i]['stamp'];
+                $end_date = $query[$i + 1]['stamp'];
+
+                $status_data[] = [
+                    'status' => $current_status,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                    'time_difference' => $time_difference
+                ];
+            }
+
+            $status_data[] = [
+                'status' => $query[$status_count - 1]['new_value'],
+                'start_date' => $query[$status_count - 1]['stamp'],
+                'end_date' => null,
+                'time_difference' => ''
+            ];
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $status_data]);
     }
 
 }

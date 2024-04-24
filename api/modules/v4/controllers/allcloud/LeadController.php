@@ -66,7 +66,7 @@ class LeadController extends ApiBaseController
 
     public function actionAddNewCollection(){
         try {
-            if ($user = $this->isAuthorized()){
+           // if ($user = $this->isAuthorized()){
                 $payload = Yii::$app->request->post();
                 $options = [];
                 $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
@@ -99,16 +99,16 @@ class LeadController extends ApiBaseController
                     }
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
-            }
+//            } else{
+//                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+//            }
         }catch (\Exception $exception){
             return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
         }
     }
     public function actionAddNewLead(){
         try {
-            if ($user = $this->isAuthorized()){
+           // if ($user = $this->isAuthorized()){
                 $payload = Yii::$app->request->post();
                 $options = [];
                 $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
@@ -141,9 +141,9 @@ class LeadController extends ApiBaseController
                     }
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
-            }
+//            } else{
+//                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+//            }
         }catch (\Exception $exception){
             return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
         }
@@ -151,7 +151,7 @@ class LeadController extends ApiBaseController
 
     public function actionAddNewLoan(){
         try {
-            if ($user = $this->isAuthorized()){
+            //if ($user = $this->isAuthorized()){
                 $payload = Yii::$app->request->post();
                 $options = [];
                 $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
@@ -185,9 +185,9 @@ class LeadController extends ApiBaseController
                     }
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
-            }
+//            } else{
+//                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+//            }
         }catch (\Exception $exception){
             return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
         }
@@ -195,7 +195,7 @@ class LeadController extends ApiBaseController
 
     public function actionAddCustomer(){
         try {
-            if ($user = $this->isAuthorized()){
+           // if ($user = $this->isAuthorized()){
                 $payload = Yii::$app->request->post();
                 $options = [];
                 $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
@@ -228,9 +228,9 @@ class LeadController extends ApiBaseController
                     }
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
-            }
+//            } else{
+//                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+//            }
         }catch (\Exception $exception){
             return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
         }
@@ -238,7 +238,7 @@ class LeadController extends ApiBaseController
 
     public function actionAddDocuments(){
         try {
-            if ($user = $this->isAuthorized()){
+           // if ($user = $this->isAuthorized()){
                 $payload = Yii::$app->request->post();
                 $options = [];
                 $options['AppId'] = Yii::$app->params->allcloud->phf->dev->AppId;
@@ -267,11 +267,12 @@ class LeadController extends ApiBaseController
                     }
                 }
 
-            } else{
-                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
-            }
-        }catch (\Exception $exception){
+//            } else{
+//                return  $this->response(401, ['message'=>'Error','Error'=>'Your Are Not Allowed To Perform This Action']);
+//            }
+        } catch (\Exception $exception){
             return  $this->response(422, ['message'=>'Error','Error'=>$exception->getMessage()]);
         }
     }
+
 }
