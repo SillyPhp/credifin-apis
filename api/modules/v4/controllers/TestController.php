@@ -11,6 +11,7 @@ use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountOtherDetails;
 use common\models\LoanAccounts;
@@ -70,6 +71,32 @@ class TestController extends ApiBaseController
                 ->from(['a' => EmiCollection::tableName()])
                 ->select(['a.loan_account_enc_id', 'GROUP_CONCAT(DISTINCT a.created_by) AS collectors'])
                 ->leftJoin(['b' => AssignedLoanAccounts::tableName()], "b.loan_account_enc_id = a.loan_account_enc_id AND a.created_by = b.shared_to AND b.access = 'Full Access' AND b.status = 'Active' AND b.is_deleted = 0")
+                ->innerJoin(['c' => UserRoles::tableName()], 'c.user_enc_id = a.created_by')
+                ->innerJoin(['d' => FinancerAssignedDesignations::tableName()], "d.assigned_designation_enc_id = c.designation_id AND d.designation IN (
+                'Area Collection Manager',
+                'Area Sales Manager',
+                'Branch Operations Executive',
+                'Business Development Officer',
+                'Business Manager',
+                'Collection Head',
+                'Collection Manager',
+                'Collection Officer',
+                'Customer Relationship Manager',
+                'Deputy Area Collection Manager',
+                'Deputy Area Sales Manager',
+                'Marketing Executive',
+                'MIS Manager',
+                'Operations Executive',
+                'Operations Manager',
+                'Regional  Operations Executive',
+                'Regional Collection Manager',
+                'Regional Operation Executive',
+                'Regional Operations Manager',
+                'Senior Business Development Officer',
+                'Senior Business Manager',
+                'Team Leader',
+                'Team Leader Collection',
+                'Team Leader Sales')")
                 ->andWhere('a.loan_account_enc_id IS NOT NULL AND b.id IS NULL')
                 ->groupBy('a.loan_account_enc_id')
                 ->offset(($page - 1) * $limit)
@@ -134,7 +161,7 @@ class TestController extends ApiBaseController
                 $inserted += Yii::$app->db->createCommand($sql)->execute();
             }
             $transaction->commit();
-            return $this->response(200, ['message' => 'successfully saved', 'found' => $found, 'inserted' => $inserted]);
+            return $this->response(200, ['message' => 'successfully saved', 'inserted' => $inserted]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
