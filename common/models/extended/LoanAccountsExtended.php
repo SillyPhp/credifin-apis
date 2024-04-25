@@ -42,6 +42,33 @@ class LoanAccountsExtended extends LoanAccounts
         ],
     ];
 
+    public static $user_types = [
+        'Area Collection Manager' => 'Collection',
+        'Area Sales Manager' => 'Sales',
+        'Branch Operations Executive' => 'Sales',
+        'Business Development Officer' => 'Sales',
+        'Business Manager' => 'Sales',
+        'Collection Head' => 'Collection',
+        'Collection Manager' => 'Collection',
+        'Collection Officer' => 'Collection',
+        'Customer Relationship Manager' => 'Sales',
+        'Deputy Area Collection Manager' => 'Collection',
+        'Deputy Area Sales Manager' => 'Sales',
+        'Marketing Executive' => 'Sales',
+        'MIS Manager' => 'Sales',
+        'Operations Executive' => 'Sales',
+        'Operations Manager' => 'Sales',
+        'Regional  Operations Executive' => 'Sales',
+        'Regional Collection Manager' => 'Collection',
+        'Regional Operation Executive' => 'Sales',
+        'Regional Operations Manager' => 'Sales',
+        'Senior Business Development Officer' => 'Sales',
+        'Senior Business Manager' => 'Sales',
+        'Team Leader' => 'Sales',
+        'Team Leader Collection' => 'Collection',
+        'Team Leader Sales' => 'Sales'
+    ];
+
     public function getEmiCollectionsCustom()
     {
         return $this->hasOne(EmiCollection::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);

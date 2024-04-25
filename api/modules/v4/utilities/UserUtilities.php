@@ -6,6 +6,7 @@ use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
+use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanAuditTrail;
 use common\models\Notifications;
@@ -80,7 +81,6 @@ class UserUtilities
                     $employee_organization = $this->getOrganization($user_role->organization_enc_id);
                     $user = array_merge($user, $employee_organization);
                 }
-
             } elseif ($user['user_type'] == 'DSA') {
 
                 // if user_type is DSA then getting its organization id from assigned supervisor table
@@ -190,7 +190,8 @@ class UserUtilities
     {
         return Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'a.slug organization_username', 'a.email organization_email', 'a.phone organization_phone',
+            ->select([
+                'a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'a.slug organization_username', 'a.email organization_email', 'a.phone organization_phone',
             ])
             ->addSelect([
                 "CASE WHEN a.logo IS NOT NULL THEN  CONCAT('" . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . "',a.logo_location, '/', a.logo) ELSE CONCAT('https://ui-avatars.com/api/?name=', a.name, '&size=200&rounded=true&background=', REPLACE(a.initials_color, '#', ''), '&color=ffffff') END logoOrg",
@@ -319,9 +320,11 @@ class UserUtilities
     public function saveNotification($allNotifications)
     {
         if (!empty($allNotifications)) {
-            $savedNotification = Yii::$app->db->createCommand()->batchInsert(Notifications::tableName(),
+            $savedNotification = Yii::$app->db->createCommand()->batchInsert(
+                Notifications::tableName(),
                 ['notification_enc_id', 'user_enc_id', 'title', 'description', 'link', 'created_by'],
-                $allNotifications)->execute();
+                $allNotifications
+            )->execute();
 
 
             if ($savedNotification) {
@@ -382,7 +385,6 @@ class UserUtilities
         }
         curl_close($ch);
         return true;
-
     }
 
     public static function getting_reporting_ids($user_id, $type = 0)
@@ -451,5 +453,24 @@ class UserUtilities
         if (!$audit->save()) {
             throw new Exception(implode(',', array_column($audit->errors, "0")));
         }
+    }
+
+    public static function user_type_finder($user_id, $type = false)
+    {
+        $data = LoanAccountsExtended::$user_types;
+        $user = Users::find()
+            ->alias('a')
+            ->select(['c.designation'])
+            ->innerJoinWith(['userRoles0 AS b' => function ($b) {
+                $b->innerJoinWith(['designation AS c'], false);
+            }], false)
+            ->andWhere(['a.user_enc_id' => $user_id])
+            ->asArray()
+            ->one();
+        $res = '';
+        if ($user && (in_array($user['designation'], array_keys($data)) || $type)) {
+            $res = $user['designation'];
+        }
+        return $res;
     }
 }
