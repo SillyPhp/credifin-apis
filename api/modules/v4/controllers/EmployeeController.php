@@ -359,9 +359,9 @@ class EmployeeController extends ApiBaseController
             $count = $list->count();
             $list = $list
                 ->limit($limit)
-                ->offset(($page - 1) * $limit)->createCommand()->getRawSql();
-//                ->asArray()
-//                ->all();
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
