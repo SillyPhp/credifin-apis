@@ -2109,7 +2109,6 @@ class LoanAccountsController extends ApiBaseController
                             if (in_array($header, ['NachApproved'])) {
                                 $value = $value == 'Yes' ? 1 : 0;
                             } else if ($header == $branch_loc) {
-                                continue;
                                 $branch_name = trim(str_replace($no_need, '', $value));
                                 $branch = $branches[$branch_name];
                                 if (empty($branch)) {
