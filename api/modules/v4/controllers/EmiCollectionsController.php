@@ -306,6 +306,24 @@ class EmiCollectionsController extends ApiBaseController
                         case 'reporting_person':
                             $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
                             break;
+                        case 'min_collected_cash':
+                            $fields_search[] = "COALESCE(collected_cash, 0) >= $value";
+                            break;
+                        case 'max_collected_cash':
+                            $fields_search[] = "COALESCE(collected_cash, 0) <= $value";
+                            break;
+                        case 'min_transfered_cash':
+                            $fields_search[] = "COALESCE(received_pending_cash,0) >= $value";
+                            break;
+                        case 'max_transfered_cash':
+                            $fields_search[] = "COALESCE(received_pending_cash,0) <= $value";
+                            break;
+                        case 'min_deposited_cash':
+                            $fields_search[] = "COALESCE(bank_unapproved_cash,0) >= $value";
+                            break;
+                        case 'max_deposited_cash':
+                            $fields_search[] = "COALESCE(bank_unapproved_cash,0) <= $value";
+                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
