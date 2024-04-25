@@ -84,7 +84,7 @@ class TestController extends ApiBaseController
                 foreach ($collectors as $collector) {
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     if (!in_array($collector, $found_user_types)) {
-                        $found_user_types[$collector] = self::user_type_finder($collector);
+                        $found_user_types[$collector] = UserUtilities::user_type_finder($collector);
                     }
                     $designation = $found_user_types[$collector];
                     if (empty($designation)) {
@@ -105,16 +105,15 @@ class TestController extends ApiBaseController
                         'updated_by' => $collector,
                     ];
 
-                    $skip = ['user_type'];
                     $columns = array_keys($insert_params);
-                    $insert_params = array_map(function ($item, $key) use ($skip) {
-                        if (!in_array($key, $skip)) {
+                    $insert_params = array_map(function ($item, $key) {
+                        if (!in_array($key, ['user_type'])) {
                             $item =  "'" . addslashes($item) . "'";
                         }
                         return $item;
                     }, $insert_params, $columns);
                     $columns = implode(', ', $columns);
-                    $values = implode(', ', array_values($insert_params));
+                    $values = implode(', ', $insert_params);
                     $find_subquery = (new Query())
                         ->from(AssignedLoanAccounts::tableName())
                         ->where([
@@ -140,50 +139,6 @@ class TestController extends ApiBaseController
             $transaction->rollBack();
             return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
-    }
-
-    private function user_type_finder($user_id)
-    {
-        $data = [
-            'Area Collection Manager' => 'Collection',
-            'Area Sales Manager' => 'Sales',
-            'Branch Operations Executive' => 'Sales',
-            'Business Development Officer' => 'Sales',
-            'Business Manager' => 'Sales',
-            'Collection Head' => 'Collection',
-            'Collection Manager' => 'Collection',
-            'Collection Officer' => 'Collection',
-            'Customer Relationship Manager' => 'Sales',
-            'Deputy Area Collection Manager' => 'Collection',
-            'Deputy Area Sales Manager' => 'Sales',
-            'Marketing Executive' => 'Sales',
-            'MIS Manager' => 'Sales',
-            'Operations Executive' => 'Sales',
-            'Operations Manager' => 'Sales',
-            'Regional  Operations Executive' => 'Sales',
-            'Regional Collection Manager' => 'Collection',
-            'Regional Operation Executive' => 'Sales',
-            'Regional Operations Manager' => 'Sales',
-            'Senior Business Development Officer' => 'Sales',
-            'Senior Business Manager' => 'Sales',
-            'Team Leader' => 'Sales',
-            'Team Leader Collection' => 'Collection',
-            'Team Leader Sales' => 'Sales'
-        ];
-        $user = Users::find()
-            ->alias('a')
-            ->select(['c.designation'])
-            ->innerJoinWith(['userRoles0 AS b' => function ($b) {
-                $b->innerJoinWith(['designation AS c'], false);
-            }], false)
-            ->andWhere(['a.user_enc_id' => $user_id])
-            ->asArray()
-            ->one();
-        $res = '';
-        if ($user && in_array($user['designation'], array_keys($data))) {
-            $res = $user['designation'];
-        }
-        return $res;
     }
 
     public function actionCorrectingLoanAccounts($limit = 50, $page = 1, $auth = '')
