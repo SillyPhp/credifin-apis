@@ -3,6 +3,7 @@
 namespace api\modules\v4\models;
 
 use api\modules\v4\utilities\UserUtilities;
+use common\models\AssignedLoanAccounts;
 use common\models\EmiCollection;
 use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
@@ -14,6 +15,7 @@ use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
+use yii\db\Query;
 
 class EmiCollectionForm extends Model
 {
@@ -229,6 +231,10 @@ class EmiCollectionForm extends Model
             $visit_charges = Yii::$app->params->charges->visit_charges;
             $model->visit_charges = $visit_charges;
         }
+        if (!empty($model->loan_account_enc_id)) {
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $this->assign_loan_account($utilitiesModel->encrypt(), $user_id, $model->loan_account_enc_id);
+        }
         if (!$model->save()) {
             throw new \Exception(implode(", ", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
         }
@@ -286,6 +292,49 @@ class EmiCollectionForm extends Model
             }
         }
         return $return;
+    }
+
+    private function assign_loan_account($enc_id, $user_id, $loan_acc_id): void
+    {
+        $designation = UserUtilities::user_type_finder($user_id, true);
+        if (empty($designation)) {
+            return;
+        }
+        $designation = $designation == 'Sales' ? 1 : 2;
+        $current_time = date('Y-m-d H:i:s');
+        $insert_params = [
+            'assigned_enc_id' => $enc_id,
+            'loan_account_enc_id' => $loan_acc_id,
+            'shared_by' => $user_id,
+            'shared_to' => $user_id,
+            'access' => 'Full Access',
+            'user_type' => $designation,
+            'created_on' => $current_time,
+            'created_by' => $user_id,
+            'updated_on' => $current_time,
+            'updated_by' => $user_id,
+        ];
+        $columns = array_keys($insert_params);
+        $insert_params = array_map(function ($item, $key) {
+            if (!in_array($key, ['user_type'])) {
+                $item =  "'" . addslashes($item) . "'";
+            }
+            return $item;
+        }, $insert_params, $columns);
+        $columns = implode(', ', $columns);
+        $values = implode(', ', $insert_params);
+        $find_subquery = (new Query())
+            ->from(AssignedLoanAccounts::tableName())
+            ->where([
+                'loan_account_enc_id' => $loan_acc_id,
+                'access' => $designation,
+                'shared_to' => $user_id,
+                'status' => 'Active',
+                'is_deleted' => 0
+            ])->createCommand()->getRawSql();
+
+        $insert = "INSERT INTO lJCWPnNNVy3d95ppLp7M_assigned_loan_accounts ($columns) SELECT $values WHERE NOT EXISTS ($find_subquery);";
+        Yii::$app->db->createCommand($insert)->execute();
     }
 
 

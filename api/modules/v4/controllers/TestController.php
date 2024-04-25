@@ -11,6 +11,7 @@ use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountOtherDetails;
 use common\models\LoanAccounts;
@@ -70,6 +71,32 @@ class TestController extends ApiBaseController
                 ->from(['a' => EmiCollection::tableName()])
                 ->select(['a.loan_account_enc_id', 'GROUP_CONCAT(DISTINCT a.created_by) AS collectors'])
                 ->leftJoin(['b' => AssignedLoanAccounts::tableName()], "b.loan_account_enc_id = a.loan_account_enc_id AND a.created_by = b.shared_to AND b.access = 'Full Access' AND b.status = 'Active' AND b.is_deleted = 0")
+                ->innerJoin(['c' => UserRoles::tableName()], 'c.user_enc_id = a.created_by')
+                ->innerJoin(['d' => FinancerAssignedDesignations::tableName()], "d.assigned_designation_enc_id = c.designation_id AND d.designation IN (
+                'Area Collection Manager',
+                'Area Sales Manager',
+                'Branch Operations Executive',
+                'Business Development Officer',
+                'Business Manager',
+                'Collection Head',
+                'Collection Manager',
+                'Collection Officer',
+                'Customer Relationship Manager',
+                'Deputy Area Collection Manager',
+                'Deputy Area Sales Manager',
+                'Marketing Executive',
+                'MIS Manager',
+                'Operations Executive',
+                'Operations Manager',
+                'Regional  Operations Executive',
+                'Regional Collection Manager',
+                'Regional Operation Executive',
+                'Regional Operations Manager',
+                'Senior Business Development Officer',
+                'Senior Business Manager',
+                'Team Leader',
+                'Team Leader Collection',
+                'Team Leader Sales')")
                 ->andWhere('a.loan_account_enc_id IS NOT NULL AND b.id IS NULL')
                 ->groupBy('a.loan_account_enc_id')
                 ->offset(($page - 1) * $limit)
@@ -84,7 +111,7 @@ class TestController extends ApiBaseController
                 foreach ($collectors as $collector) {
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     if (!in_array($collector, $found_user_types)) {
-                        $found_user_types[$collector] = self::user_type_finder($collector);
+                        $found_user_types[$collector] = UserUtilities::user_type_finder($collector);
                     }
                     $designation = $found_user_types[$collector];
                     if (empty($designation)) {
@@ -105,16 +132,15 @@ class TestController extends ApiBaseController
                         'updated_by' => $collector,
                     ];
 
-                    $skip = ['user_type'];
                     $columns = array_keys($insert_params);
-                    $insert_params = array_map(function ($item, $key) use ($skip) {
-                        if (!in_array($key, $skip)) {
+                    $insert_params = array_map(function ($item, $key) {
+                        if (!in_array($key, ['user_type'])) {
                             $item =  "'" . addslashes($item) . "'";
                         }
                         return $item;
                     }, $insert_params, $columns);
                     $columns = implode(', ', $columns);
-                    $values = implode(', ', array_values($insert_params));
+                    $values = implode(', ', $insert_params);
                     $find_subquery = (new Query())
                         ->from(AssignedLoanAccounts::tableName())
                         ->where([
@@ -135,55 +161,11 @@ class TestController extends ApiBaseController
                 $inserted += Yii::$app->db->createCommand($sql)->execute();
             }
             $transaction->commit();
-            return $this->response(200, ['message' => 'successfully saved', 'found' => $found, 'inserted' => $inserted]);
+            return $this->response(200, ['message' => 'successfully saved', 'inserted' => $inserted]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
             return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
-    }
-
-    private function user_type_finder($user_id)
-    {
-        $data = [
-            'Area Collection Manager' => 'Collection',
-            'Area Sales Manager' => 'Sales',
-            'Branch Operations Executive' => 'Sales',
-            'Business Development Officer' => 'Sales',
-            'Business Manager' => 'Sales',
-            'Collection Head' => 'Collection',
-            'Collection Manager' => 'Collection',
-            'Collection Officer' => 'Collection',
-            'Customer Relationship Manager' => 'Sales',
-            'Deputy Area Collection Manager' => 'Collection',
-            'Deputy Area Sales Manager' => 'Sales',
-            'Marketing Executive' => 'Sales',
-            'MIS Manager' => 'Sales',
-            'Operations Executive' => 'Sales',
-            'Operations Manager' => 'Sales',
-            'Regional  Operations Executive' => 'Sales',
-            'Regional Collection Manager' => 'Collection',
-            'Regional Operation Executive' => 'Sales',
-            'Regional Operations Manager' => 'Sales',
-            'Senior Business Development Officer' => 'Sales',
-            'Senior Business Manager' => 'Sales',
-            'Team Leader' => 'Sales',
-            'Team Leader Collection' => 'Collection',
-            'Team Leader Sales' => 'Sales'
-        ];
-        $user = Users::find()
-            ->alias('a')
-            ->select(['c.designation'])
-            ->innerJoinWith(['userRoles0 AS b' => function ($b) {
-                $b->innerJoinWith(['designation AS c'], false);
-            }], false)
-            ->andWhere(['a.user_enc_id' => $user_id])
-            ->asArray()
-            ->one();
-        $res = '';
-        if ($user && in_array($user['designation'], array_keys($data))) {
-            $res = $user['designation'];
-        }
-        return $res;
     }
 
     public function actionCorrectingLoanAccounts($limit = 50, $page = 1, $auth = '')
