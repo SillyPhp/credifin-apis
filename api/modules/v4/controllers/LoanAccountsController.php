@@ -1910,10 +1910,11 @@ class LoanAccountsController extends ApiBaseController
             "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
             "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
             "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
-            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "CHANDIGARH" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
             "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
             "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
-            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl",
+            "FARIDKOT" => "r58bO41kKRebD65jX9lvol0gN7YV9j"
         ];
         $defined = [
             'FileNumberNew' => 'loan_account_number',
