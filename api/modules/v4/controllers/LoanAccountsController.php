@@ -261,8 +261,10 @@ class LoanAccountsController extends ApiBaseController
                     END) 
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
-                    "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller"
+                    "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
+                    "be.location_name as branch_name"
                 ])
+                ->joinWith(['branchEnc be'], false)
                 ->joinWith(['emiCollections AS a1' => function ($b) {
                     $b->select(['a1.id', 'a1.loan_account_enc_id', 'a1.phone', 'a1.address', 'a1.latitude', 'a1.longitude', 'a1.created_on', "CONCAT(cr.first_name , ' ', COALESCE(cr.last_name, '')) AS created_by"]);
                     $b->joinWith(['createdBy cr'], false);
@@ -1858,6 +1860,7 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['branch_loc'])) {
             return 'send branch loc';
         }
+        $custom_name_function = !empty($params['find_name']);
         $branch_loc = $params['branch_loc'];
         if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
             return 'send correct loc';
@@ -1907,10 +1910,11 @@ class LoanAccountsController extends ApiBaseController
             "KLE" => "L7B0P3kNEldvwA2zpjxvQm14wrJXbj",
             "GGN" => "zpBn4vYx2RmB75pZDX8loJg3Aq9Vyl",
             "JUC10" => "yVgawN7rxoLL9A10jpnYoYOM5kelbv",
-            "CDG" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
+            "CHANDIGARH" => "E9n1pJ74KRzANyYglp9qQgxm0e5ND6",
             "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
             "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
-            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl"
+            "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl",
+            "FARIDKOT" => "r58bO41kKRebD65jX9lvol0gN7YV9j"
         ];
         $defined = [
             'FileNumberNew' => 'loan_account_number',
@@ -2002,7 +2006,14 @@ class LoanAccountsController extends ApiBaseController
                     if (array_search('FileNumberNew', $headers) !== false) {
                         $loan_account_number = $data[array_search('FileNumberNew', $headers)];
                     }
-                    $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    if ($custom_name_function) {
+                        if (array_search('Name', $headers) === false) {
+                            throw new \Exception("name is not found");
+                        }
+                        $lms_loan_account_number = $this->extractNameAndCode($data[array_search('Name', $headers)])['code'];
+                    } else {
+                        $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    }
                     $case_no = $data[array_search('CaseNo', $headers)];
                     $where = ["AND"];
                     if (!empty($loan_account_number)) {
@@ -2098,10 +2109,10 @@ class LoanAccountsController extends ApiBaseController
                             if (in_array($header, ['NachApproved'])) {
                                 $value = $value == 'Yes' ? 1 : 0;
                             } else if ($header == $branch_loc) {
-                                $branch = trim(str_replace($no_need, '', $value));
-                                $branch = $branches[$branch];
+                                $branch_name = trim(str_replace($no_need, '', $value));
+                                $branch = $branches[$branch_name];
                                 if (empty($branch)) {
-                                    throw new \Exception('branch not found');
+                                    throw new \Exception("branch not found '$branch_name'");
                                 }
                                 $loan->branch_enc_id = $branch;
                             } else if ($header == 'VehicleModel') {
@@ -2178,6 +2189,28 @@ class LoanAccountsController extends ApiBaseController
             exit();
             $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
+    }
+
+    function extractNameAndCode($input)
+    {
+        $input = str_replace(["[", "{"], "(", $input);
+        $input = str_replace(["]", "}"], ")", $input);
+        // Pattern to match code and name
+        $pattern = '/^(.*?)\s*\(([^)]+)\)$/';
+        // Perform the regular expression match
+        if (preg_match($pattern, $input, $matches)) {
+            // Extract code and name
+            $name = trim($matches[2]);
+            $code = trim($matches[1]);
+            // If code contains hyphens, swap code and name
+            if (strpos($code, '-') !== false) {
+                $temp = $name;
+                $name = $code;
+                $code = $temp;
+            }
+            return ['code' => $name, 'name' => $code];
+        }
+        return null;
     }
 
     public function actionUpdateBranch()

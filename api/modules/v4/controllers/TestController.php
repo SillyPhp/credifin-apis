@@ -11,6 +11,7 @@ use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
 use common\models\extended\LoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\LoanAccountComments;
 use common\models\LoanAccountOtherDetails;
 use common\models\LoanAccounts;
@@ -22,6 +23,7 @@ use common\models\LoanStatus;
 use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use common\models\Users;
+use common\models\Utilities;
 use Yii;
 use yii\db\Exception;
 use yii\db\Query;
@@ -56,6 +58,114 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionAssignLoanAccounts($limit = 50, $page = 1, $auth = '')
+    {
+        if ($auth !== 'EXhS3PIQq9iYHoCvpT2f1a62GUCfzRvn') {
+            return ['status' => 401, 'msg' => 'authentication failed'];
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $query = (new Query())
+                ->from(['a' => EmiCollection::tableName()])
+                ->select(['a.loan_account_enc_id', 'GROUP_CONCAT(DISTINCT a.created_by) AS collectors'])
+                ->leftJoin(['b' => AssignedLoanAccounts::tableName()], "b.loan_account_enc_id = a.loan_account_enc_id AND a.created_by = b.shared_to AND b.access = 'Full Access' AND b.status = 'Active' AND b.is_deleted = 0")
+                ->innerJoin(['c' => UserRoles::tableName()], 'c.user_enc_id = a.created_by')
+                ->innerJoin(['d' => FinancerAssignedDesignations::tableName()], "d.assigned_designation_enc_id = c.designation_id AND d.designation IN (
+                'Area Collection Manager',
+                'Area Sales Manager',
+                'Branch Operations Executive',
+                'Business Development Officer',
+                'Business Manager',
+                'Collection Head',
+                'Collection Manager',
+                'Collection Officer',
+                'Customer Relationship Manager',
+                'Deputy Area Collection Manager',
+                'Deputy Area Sales Manager',
+                'Marketing Executive',
+                'MIS Manager',
+                'Operations Executive',
+                'Operations Manager',
+                'Regional  Operations Executive',
+                'Regional Collection Manager',
+                'Regional Operation Executive',
+                'Regional Operations Manager',
+                'Senior Business Development Officer',
+                'Senior Business Manager',
+                'Team Leader',
+                'Team Leader Collection',
+                'Team Leader Sales')")
+                ->andWhere('a.loan_account_enc_id IS NOT NULL AND b.id IS NULL')
+                ->groupBy('a.loan_account_enc_id')
+                ->offset(($page - 1) * $limit)
+                ->limit($limit)
+                ->all();
+            $utilitiesModel = new Utilities();
+            $found_user_types = $sqls = [];
+            foreach ($query as $item) {
+                $loan_acc_id = $item['loan_account_enc_id'];
+                $collectors = explode(',', $item['collectors']);
+                $current_time = date('Y-m-d H:i:s');
+                foreach ($collectors as $collector) {
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    if (!in_array($collector, $found_user_types)) {
+                        $found_user_types[$collector] = UserUtilities::user_type_finder($collector);
+                    }
+                    $designation = $found_user_types[$collector];
+                    if (empty($designation)) {
+                        continue;
+                    }
+                    $designation = $designation == 'Sales' ? 1 : 2;
+                    $query = '';
+                    $insert_params = [
+                        'assigned_enc_id' => $utilitiesModel->encrypt(),
+                        'loan_account_enc_id' => $loan_acc_id,
+                        'shared_by' => $collector,
+                        'shared_to' => $collector,
+                        'access' => 'Full Access',
+                        'user_type' => $designation,
+                        'created_on' => $current_time,
+                        'created_by' => $collector,
+                        'updated_on' => $current_time,
+                        'updated_by' => $collector,
+                    ];
+
+                    $columns = array_keys($insert_params);
+                    $insert_params = array_map(function ($item, $key) {
+                        if (!in_array($key, ['user_type'])) {
+                            $item =  "'" . addslashes($item) . "'";
+                        }
+                        return $item;
+                    }, $insert_params, $columns);
+                    $columns = implode(', ', $columns);
+                    $values = implode(', ', $insert_params);
+                    $find_subquery = (new Query())
+                        ->from(AssignedLoanAccounts::tableName())
+                        ->where([
+                            'loan_account_enc_id' => $loan_acc_id,
+                            'access' => $designation,
+                            'shared_to' => $collector,
+                            'status' => 'Active',
+                            'is_deleted' => 0
+                        ])->createCommand()->getRawSql();
+
+                    $insert = "INSERT INTO lJCWPnNNVy3d95ppLp7M_assigned_loan_accounts ($columns) SELECT $values WHERE NOT EXISTS ($find_subquery);";
+                    $sqls[] = $insert;
+                }
+            }
+            $found = count($sqls);
+            $inserted = 0;
+            foreach ($sqls as $sql) {
+                $inserted += Yii::$app->db->createCommand($sql)->execute();
+            }
+            $transaction->commit();
+            return $this->response(200, ['message' => 'successfully saved', 'inserted' => $inserted]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
     }
 
     public function actionCorrectingLoanAccounts($limit = 50, $page = 1, $auth = '')
@@ -1440,7 +1550,7 @@ class TestController extends ApiBaseController
 
         print_r($loans);
         exit();
-//        return ['loans' => $loans, 'count' => $count];
+        //        return ['loans' => $loans, 'count' => $count];
     }
 
     private function sharedApps($user_id)
