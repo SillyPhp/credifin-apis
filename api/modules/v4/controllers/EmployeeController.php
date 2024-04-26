@@ -233,9 +233,9 @@ class EmployeeController extends ApiBaseController
             $valuesSma = LoanAccountsExtended::$buckets;
             $select = [
                 "COALESCE(COUNT(DISTINCT lac.loan_account_enc_id),0) total_cases_count",
-                "COUNT(DISTINCT CASE WHEN lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) total_collected_cases_count",
-                "COALESCE(SUM(CASE WHEN lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND  ec.emi_payment_status = 'paid' AND ec.amount > 0 AND a.user_enc_id = ec.created_by THEN ec.amount END), 0) total_collected_verified_amount",
-                "COALESCE(SUM(CASE WHEN  lac.bucket IN ('OnTime','SMA-1','SMA-1','SMA-1','','npa') AND  ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND a.user_enc_id = ec.created_by THEN ec.amount END), 0) total_collected_unverified_amount",
+                "COUNT(DISTINCT CASE WHEN lac.bucket IN ('OnTime','SMA-0','SMA-1','SMA-2','','NPA') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) total_collected_cases_count",
+                "COALESCE(SUM(CASE WHEN lac.bucket IN ('OnTime','SMA-0','SMA-1','SMA-2','','NPA') AND  ec.emi_payment_status = 'paid' AND ec.amount > 0 AND a.user_enc_id = ec.created_by THEN ec.amount END), 0) total_collected_verified_amount",
+                "COALESCE(SUM(CASE WHEN  lac.bucket IN ('OnTime','SMA-0','SMA-1','SMA-2','','NPA') AND  ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND a.user_enc_id = ec.created_by THEN ec.amount END), 0) total_collected_unverified_amount",
                 "SUM(CASE WHEN lac.bucket = 'OnTime' THEN lac.emi_amount ELSE LEAST(lac.ledger_amount + lac.overdue_amount, lac.emi_amount * 
                 (CASE 
                         WHEN lac.bucket = 'sma-0' THEN 1.25
@@ -359,9 +359,9 @@ class EmployeeController extends ApiBaseController
             $count = $list->count();
             $list = $list
                 ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
+                ->offset(($page - 1) * $limit)->createCommand()->getRawSql();
+//                ->asArray()
+//                ->all();
             return $this->response(200, ['status' => 200, 'data' => $list, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
