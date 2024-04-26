@@ -633,6 +633,8 @@ class LoanAccountsController extends ApiBaseController
                             $data->andWhere([$key => 1]);
                         } elseif ($value == 'no') {
                             $data->andWhere([$key => 0]);
+                        } elseif ($value == 'all') {
+                            $data->andWhere([$key => 0] || [$key => 1]);
                         }
                     } else {
                         $data->andWhere(['like', $key, $value]);
