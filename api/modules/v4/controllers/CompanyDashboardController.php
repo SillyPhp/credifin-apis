@@ -46,6 +46,7 @@ use common\models\LoanPayments;
 use common\models\LoanSanctionReports;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
+use common\models\OrganizationDepartments;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\Referral;
@@ -3474,17 +3475,50 @@ class CompanyDashboardController extends ApiBaseController
                 $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 $org_id = $findOrg->organization_enc_id;
             }
+            $list = [];
             if ($org_id) {
                 $financerDesignations = FinancerAssignedDesignations::find()
-                    ->select(['assigned_designation_enc_id as id', 'designation as value'])
-                    ->andWhere(['organization_enc_id' => $org_id, 'is_deleted' => 0])
-                    ->orderBy(['designation' => SORT_ASC])
+                    ->alias('a')
+                    ->select([
+                        'a.assigned_designation_enc_id as id', 'a.designation as value',
+                        "COALESCE(b.department,'Unassigned') as department"
+                    ])
+                    ->joinWith(['department0 b'], false)
+                    ->andWhere(['a.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+                    ->orderBy(['b.department' => SORT_ASC])
                     ->asArray()
                     ->all();
-                return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+                $groupedDesignations = array_reduce($financerDesignations, function ($carry, $item) {
+                    $department = $item['department'];
+                    unset($item['department']);
+                    $carry[$department][] = $item;
+                    return $carry;
+                }, []);
+
+                $list = array_map(function ($department, $designations) {
+                    return [$department => $designations];
+                }, array_keys($groupedDesignations), $groupedDesignations);
+                usort($list, function ($a, $b) {
+                    return strcmp(key($a), key($b));
+                });
+                return $this->response(200, ['status' => 200, 'data' => $list]);
             } else {
                 return $this->response(401, ['status' => 201, 'message' => 'Financer not found']);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+    }
+    
+    public function actionOrganizationDepartmentList()
+    {
+        if ($user = $this->isAuthorized()) {
+            $departmentList = OrganizationDepartments::find()
+                ->select(['department_enc_id as value', 'department as label'])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+            return $this->response(200, ['status' => 200, 'data' => $departmentList]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
