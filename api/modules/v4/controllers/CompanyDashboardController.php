@@ -1620,13 +1620,18 @@ class CompanyDashboardController extends ApiBaseController
             if ($params['status'] == 31) {
                 $subquery = (new \yii\db\Query())
                     ->select([
-                        'z.shared_to', 'z.loan_app_enc_id'
+                        'z.shared_to', 'z.loan_app_enc_id', 'z3.designation'
                     ])
                     ->from(['z' => SharedLoanApplications::tableName()])
                     ->join('INNER JOIN', ['z1' => Users::tableName()], 'z1.user_enc_id = z.shared_to')
                     ->join('INNER JOIN', ['z2' => UserRoles::tableName()], 'z2.user_enc_id = z1.user_enc_id')
-                    ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id AND z3.designation = 'Business Development Officer'")
-                    ->andWhere(['z.is_deleted' => 0, 'z1.is_deleted' => 0, 'z2.is_deleted' => 0, 'z3.is_deleted' => 0]);
+                    ->join('INNER JOIN', ['z3' => FinancerAssignedDesignations::tableName()], "z3.assigned_designation_enc_id = z2.designation_id")
+                    ->andWhere([
+                        'z.is_deleted' => 0,
+                        'z1.is_deleted' => 0,
+                        'z2.is_deleted' => 0,
+                        'z3.is_deleted' => 0
+                    ]);
                 $update_data = LoanApplications::find()
                     ->alias('a')
                     ->select([
@@ -1707,7 +1712,17 @@ class CompanyDashboardController extends ApiBaseController
                     if (!$update->save()) {
                         throw new Exception(implode(", ", array_column($update->getErrors(), "0")));
                     }
-                    $assigning_ids = array_merge(array_fill_keys(array_column($update_data['sharedLoanApplications'], 'shared_to'), 1), array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
+
+                    $assigning_ids = [];
+                    $designations = LoanAccountsExtended::$user_types;
+                    $dgn_keys = array_keys($designations);
+                    foreach ($update_data['sharedLoanApplications'] as $item) {
+                        $dgn = $item['designation'];
+                        if (in_array($dgn, $dgn_keys)) {
+                            $assigning_ids[$item['shared_to']] = $designations[$dgn] == 'Sales' ? 1 : 2;
+                        }
+                    }
+                    $assigning_ids = array_merge($assigning_ids, array_fill_keys(array_column($update_data['loanApplicationFis'], 'collection_manager'), 2));
                     foreach ($assigning_ids as $id => $type) {
                         if (empty($id)) {
                             continue;
