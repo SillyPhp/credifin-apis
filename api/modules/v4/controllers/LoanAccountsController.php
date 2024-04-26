@@ -614,8 +614,10 @@ class LoanAccountsController extends ApiBaseController
                 if (!empty($value)) {
                     if ($key == 'registration_number' || $key == 'repossession_date') {
                         $data->andWhere(['a.' . $key => $value]);
+                    } elseif ($key == 'vehicle_model') {
+                        $data->andWhere(['like', 'a.vehicle_model', $value]);
                     } elseif ($key == 'loan_account_number') {
-                        $data->andWhere(['b.' . $key => $value]);
+                        $data->andWhere(['like', 'b.loan_account_number', $value]);
                     } elseif ($key == 'min_current_market_value') {
                         $data->andWhere(['>=', 'current_market_value', $value]);
                     } elseif ($key == 'max_current_market_value') {
@@ -629,7 +631,7 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'insurance' || $key == 'rc') {
                         if ($value == 'yes') {
                             $data->andWhere([$key => 1]);
-                        } elseif ($value == 0) {
+                        } elseif ($value == 'no') {
                             $data->andWhere([$key => 0]);
                         }
                     } else {
