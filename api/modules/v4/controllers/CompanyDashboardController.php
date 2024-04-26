@@ -240,9 +240,8 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
-            // if status is empty sending missing information loan_type
-            if (empty($params['loan_product'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_product"']);
+            if (empty($params['loan_product']) && empty($params['product_portfolio'])) {
+                return $this->response(422, ['status' => 422, 'message' => "missing information 'loan_product' or 'product_portfolio'"]);
             }
 
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
@@ -256,21 +255,17 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting loan application by loan_status
             $loan_status = [];
-            $date_filter = [
-                'disbursement_start_date' => date('Y-m-d 00:00:00', strtotime('-30 days'))
-            ];
-            $disbursed_filter = [
-                'disbursement_start_date' => date('Y-m-01 00:00:00')
-            ];
+            $date_filter = date('Y-m-d 00:00:00', strtotime('-30 days'));
+            $disbursed_filter =  date('Y-m-01 00:00:00');
             foreach ($status as $s) {
 
                 // to filter loan status
                 $params['filter'] = [$s];
                 $search = $params;
                 if (in_array($s, [28, 32, 33])) {
-                    $search['fields_search'] = $date_filter;
+                    $search['fields_search']['disbursement_start_date'] = $date_filter;
                 } elseif ($s == "31") {
-                    $search['fields_search'] = $disbursed_filter;
+                    $search['fields_search']['disbursement_start_date'] = $disbursed_filter;
                 }
 
                 // getting applications
@@ -285,7 +280,7 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
-            return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product']]);
+            return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product'] ?? $params['product_portfolio']]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -426,7 +421,14 @@ class CompanyDashboardController extends ApiBaseController
                 }]);
             }])
             ->joinWith(['managedBy k'], false)
-            ->joinWith(['loanProductsEnc lp'], false)
+            ->joinWith(['loanProductsEnc lp' => function ($lp) use ($params) {
+                if (!empty($params['product_portfolio'])) {
+                    $lp->joinWith(['assignedFinancerLoanTypeEnc lp1' => function ($lp1) {
+                        $lp1->joinWith(['loanTypeEnc lp2'], false);
+                    }], false);
+                    $lp->andWhere(['lp1.loan_type_enc_id' => $params['product_portfolio']]);
+                }
+            }], false)
             ->joinWith(['sharedLoanApplications n' => function ($n) {
                 $n->select([
                     'n.shared_loan_app_enc_id', 'n.loan_app_enc_id', 'n.access', 'n.status', "CONCAT(n1.first_name, ' ',n1.last_name) name", 'n1.phone', 'n1b.designation',
@@ -597,6 +599,10 @@ class CompanyDashboardController extends ApiBaseController
                         if ($key == 'purpose') {
                             $loans->andWhere(['like', 'lpp1.purpose', $val]);
                         }
+                    }
+
+                    if ($key == 'product') {
+                        $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
                     }
 
                     // key match to "i" table array
@@ -3050,11 +3056,16 @@ class CompanyDashboardController extends ApiBaseController
     {
         $user = $this->isAuth();
         $params = $this->post;
+        if (empty($params['loan_product']) && empty($params['product_portfolio'])) {
+            return $this->response(422, ['message' => 'an error occurred', 'error' => "missing information 'loan_product' or 'product_portfolio'"]);
+        }
         $where = ["AND", ['a.is_deleted' => 0, 'a.form_type' => 'others', 'a.is_removed' => 0, 'a.source' => 'EmpowerFintech']];
+        $select = ['j1.loan_status', 'COUNT(a.id) count', 'j1.status_color', 'j1.value'];
 
         $provider = false;
         if ($user->organization_enc_id) {
             $provider = $user->organization_enc_id;
+            // do not remove this
             // $dsa = $this->getDsa($user->user_enc_id);
             // $where[] = ['IN', 'a.lead_by', $dsa];
         } else {
@@ -3079,23 +3090,42 @@ class CompanyDashboardController extends ApiBaseController
         }
         if (!empty($params['loan_product'])) {
             $where[] = ['a.loan_products_enc_id' => $params['loan_product']];
+            $select[] = 'p.name AS product_name';
+        } elseif (!empty($params['product_portfolio'])) {
+            $where[] = ['lte.loan_type_enc_id' => $params['product_portfolio']];
+            $select[] = 'lte.name AS product_name';
         }
 
         $stats = LoanApplications::find()
             ->alias('a')
-            ->select(['j1.loan_status', 'COUNT(a.id) count', 'j1.status_color', 'j1.value', 'p.name AS product_name'])
+            ->select($select)
             ->innerJoinWith(['assignedLoanProviders i' => function ($i) use ($provider) {
                 $i->innerJoinWith(['status0 j1']);
                 if ($provider) {
                     $i->andOnCondition(['i.provider_enc_id' => $provider]);
                 }
             }], false)
-            ->joinWith(['loanProductsEnc AS p'], false)
+            ->innerJoinWith(['loanProductsEnc AS p' => function ($p) use ($params) {
+                if (!empty($params['product_portfolio'])) {
+                    $p->innerJoinWith(['assignedFinancerLoanTypeEnc AS ap' => function ($ap) {
+                        $ap->innerJoinWith(['loanTypeEnc AS lte'], false);
+                    }], false);
+                }
+            }], false)
             ->where($where)
             ->groupBy('i.status')
-            ->asArray()->all();
-
-        return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => !empty($params['loan_product']) && !empty($stats) ? $stats[0]['product_name'] : '']);
+            ->asArray()
+            ->all();
+        if ($stats) {
+            $product_name = $stats[0]['product_name'];
+        } else {
+            if (!empty($params['loan_product'])) {
+                $product_name = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['loan_product']])['name'];
+            } else {
+                $product_name = LoanTypes::findOne(['loan_type_enc_id' => $params['product_portfolio']])['name'];
+            }
+        }
+        return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => $product_name]);
     }
 
     // adding column preferences

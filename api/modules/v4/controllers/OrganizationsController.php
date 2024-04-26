@@ -365,7 +365,12 @@ class OrganizationsController extends ApiBaseController
                 ->alias("a")
                 ->select(["a.assigned_financer_enc_id", "a.organization_enc_id", "a.loan_type_enc_id", "b.name"])
                 ->joinWith(["loanTypeEnc b"], false)
+                ->joinWith(['financerLoanProducts AS p' => function ($p) {
+                    $p->select(['p.assigned_financer_loan_type_enc_id', 'p.financer_loan_product_enc_id', 'p.name']);
+                    $p->andOnCondition(['p.is_deleted' => 0]);
+                }])
                 ->where(["a.organization_enc_id" => $provider_id, "a.is_deleted" => 0, "a.status" => 1])
+                ->groupBy(['a.assigned_financer_enc_id'])
                 ->asArray()
                 ->all();
 
