@@ -129,7 +129,7 @@ class StatsController extends ApiBaseController
                 'COUNT(*) AS count',
                 'ce2.name AS state',
                 "COUNT(b.disbursement_approved) AS disbursed_approval_count",
-                'e.name AS loan_type_name'
+                'c.name AS loan_product_name'
             ])
             ->joinWith(['assignedLoanProviders b' => function ($b) {
                 $b->joinWith(['branchEnc be' => function ($be) {
@@ -139,13 +139,13 @@ class StatsController extends ApiBaseController
                 }], false);
             }], false)
             ->joinWith(['loanProductsEnc c' => function ($c) use ($keyword) {
-                $c->andWhere(['e.name' => $keyword]);
-                $c->joinWith(['assignedFinancerLoanTypeEnc d' => function ($d) {
-                    $d->joinWith(['loanTypeEnc e'], false);
-                }], false);
+                $c->andWhere(['c.name' => $keyword]);
+//                $c->joinWith(['assignedFinancerLoanTypeEnc d' => function ($d) {
+//                    $d->joinWith(['loanTypeEnc e'], false);
+//                }], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0])
-            ->groupBy(['e.name', 'ce2.name'])
+            ->groupBy(['ce2.name'])
             ->orderBy(['ce2.name' => SORT_ASC]);
 
         $results = $query->asArray()->all();
