@@ -144,10 +144,16 @@ class PaymentsController extends ApiBaseController
             $check = Yii::$app->db->createCommand()->update(EmiCollectionExtended::tableName(), $update, $where)->execute();
             if ($check) {
                 EmiCollectionForm::updateOverdue($model["loan_account_enc_id"], $model['amount']);
+                $this->update_sub_bucket($model["loan_account_enc_id"]);
             }
         }
     }
-
+    
+    private function update_sub_bucket($id)
+    {
+        $sql = "CALL update_sub_bucket('$id')";
+        Yii::$app->db->createCommand($sql)->execute();
+    }
 
     private function handleQrWebhook($post)
     {
