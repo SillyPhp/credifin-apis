@@ -2068,7 +2068,7 @@ class LoanAccountsController extends ApiBaseController
                     } else {
                         $loan_type = $params['loan_type'];
                     }
-                    $loan->loan_type = $loan_type;
+                    $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : $loan_type;
                     $loan->updated_by = $user->user_enc_id;
                     foreach ($headers as $header) {
                         if (in_array($header, [
