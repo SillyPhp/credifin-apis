@@ -1363,12 +1363,12 @@ class CompanyDashboardController extends ApiBaseController
                 $k->select([
                     'k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', "CONCAT(k1.first_name,' ',k1.last_name) name", 'k1.phone', 'k1b.designation',
                     "CASE WHEN k1.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', k1.image_location, '/', k1.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(k1.first_name,' ',k1.last_name), '&size=200&rounded=false&background=', REPLACE(k1.initials_color, '#', ''), '&color=ffffff') END image",
-                    "ANY_VALUE(k3b.location_name) as branch_name"
+                    "ANY_VALUE(f.location_name) as branch_name"
                 ])->joinWith(['sharedTo k1' => function ($k1) {
                     $k1->joinWith(["userRoles0 k1a" => function ($k1a) {
                         $k1a->joinWith(["designation k1b"], false);
-                        $k1a->joinWith(["organizationEnc k2b" => function ($k2b) {
-                            $k2b->joinWith(['organizationLocations k3b'], false);
+                        $k1a->joinWith(['branchEnc f' => function ($f) {
+                            $f->joinWith(['cityEnc f1']);
                         }], false);
                     }]);
                 }], false)
