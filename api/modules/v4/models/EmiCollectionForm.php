@@ -488,6 +488,8 @@ class EmiCollectionForm extends Model
             if (!$query->save()) {
                 throw new \Exception("error occurred while updating overdue amount");
             }
+            $sql = "CALL update_sub_bucket('$loan_id')";
+            Yii::$app->db->createCommand($sql)->execute();
         }
     }
 }

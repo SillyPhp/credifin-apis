@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\extended\LoanAccountsExtended;
+use common\models\LoanApplications;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -35,8 +36,10 @@ class StatsController extends ApiBaseController
     {
         $params = Yii::$app->request->get();
 
-        $keyword = isset($params['keyword']) ? str_replace('%', ' ', urldecode($params['keyword'])) : null;
-        $keyword = preg_replace('/[^a-zA-Z\s]/', '', $keyword);
+        $keyword = isset($params['keyword']) ? urldecode($params['keyword']) : null;
+        $keyword = str_replace('%', ' ', $keyword);
+        $keyword = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $keyword);
+        $keyword = str_replace('%20', ' ', $keyword);
 
         $color = [
             'X' => 'green',
@@ -51,19 +54,10 @@ class StatsController extends ApiBaseController
         ];
 
         $loan_types = [];
-        $case = '';
-
         if (isset($params['hr'])) {
-            $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
-        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
-        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
-        WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8";
+            $case = [5, 6, 7, 8];
         } elseif (isset($params['lr'])) {
-            $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4";
+            $case = [0, 1, 2, 3, 4];
         }
 
         if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {
@@ -77,28 +71,28 @@ class StatsController extends ApiBaseController
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
-                "CASE $case END AS sub_bucket", "COUNT(*) AS count"
-            ])
-            ->andWhere(["a.is_deleted" => 0]);
+                "a.sub_bucket", "COUNT(*) AS count"
+            ]);
 
         if (!empty($loan_types)) {
             $query->andWhere(["IN", "a.loan_type", $loan_types]);
         }
 
-        $query->groupBy(['sub_bucket'])
-            ->orderBy(['sub_bucket' => SORT_ASC]);
+        $query = $query
+            ->andWhere(["a.is_deleted" => 0])
+            ->andWhere(['IN', 'a.sub_bucket', $case])
+            ->groupBy(['a.sub_bucket'])
+            ->orderBy(['a.sub_bucket' => SORT_ASC])
+            ->asArray()
+            ->all();
 
         $data = [];
-        foreach ($query->asArray()->all() as $row) {
+        foreach ($query as $row) {
             $sub_bucket = $row['sub_bucket'];
-            if ($sub_bucket == null) {
-                continue;
-            }
-            $fillColor = isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray';
             $data[] = [
                 'name' => $sub_bucket,
                 'value' => $row['count'],
-                'fill' => $fillColor,
+                'fill' => isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray',
             ];
         }
 
@@ -109,4 +103,62 @@ class StatsController extends ApiBaseController
 
         return $response;
     }
+
+
+    public function actionGetDataStateWise()
+    {
+        $params = Yii::$app->request->get();
+
+        $keyword = isset($params['keyword']) ? urldecode($params['keyword']) : null;
+        $keyword = str_replace('%', ' ', $keyword);
+        $keyword = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $keyword);
+        $keyword = str_replace('%20', ' ', $keyword);
+
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'COUNT(*) AS count',
+                'ce2.name AS state',
+                "COUNT(b.disbursement_approved) AS disbursed_approval_count",
+                'c.name AS loan_product_name'
+            ])
+            ->joinWith(['assignedLoanProviders b' => function ($b) {
+                $b->joinWith(['branchEnc be' => function ($be) {
+                    $be->joinWith(['cityEnc ce1' => function ($ce1) {
+                        $ce1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanProductsEnc c' => function ($c) use ($keyword) {
+                $c->andWhere(['c.name' => $keyword]);
+//                $c->joinWith(['assignedFinancerLoanTypeEnc d' => function ($d) {
+//                    $d->joinWith(['loanTypeEnc e'], false);
+//                }], false);
+            }], false)
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['ce2.name'])
+            ->orderBy(['ce2.name' => SORT_ASC]);
+
+        $results = $query->asArray()->all();
+        $data = [];
+        foreach ($results as $row) {
+            $state = $row['state'];
+            if ($state == null) {
+                continue;
+            }
+            $data[] = [
+                'name' => $state,
+                'value' => $row['disbursed_approval_count'],
+            ];
+        }
+
+        $response = [
+            'postfix' => 'USD',
+            'data' => $data
+        ];
+
+        return $response;
+    }
+
+
 }

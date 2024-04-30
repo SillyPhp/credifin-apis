@@ -36,6 +36,7 @@ namespace common\models;
  * @property double $pos POS
  * @property double $advance_interest Advance Hp
  * @property string $bucket Bucket
+ * @property int $sub_bucket
  * @property string $branch_enc_id Branch Enc Id
  * @property string $bucket_status_date Bucket Status Date
  * @property double $emi_amount Emi Amount
@@ -91,7 +92,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return [
             [['loan_account_enc_id', 'loan_account_number', 'name', 'loan_type', 'emi_date', 'created_by', 'updated_on', 'updated_by'], 'required'],
-            [['company_id', 'hard_recovery', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'is_deleted'], 'integer'],
+            [['company_id', 'hard_recovery', 'sales_priority', 'telecaller_priority', 'collection_priority', 'nach_approved', 'total_installments', 'sub_bucket', 'is_deleted'], 'integer'],
             [['sales_target_date', 'telecaller_target_date', 'collection_target_date', 'last_emi_date', 'bucket_status_date', 'emi_date', 'last_emi_received_date', 'vehicle_make', 'created_on', 'updated_on'], 'safe'],
             [['financed_amount', 'stock', 'pos', 'advance_interest', 'emi_amount', 'overdue_amount', 'ledger_amount', 'last_emi_received_amount'], 'number'],
             [['loan_account_enc_id', 'loan_app_enc_id', 'assigned_financer_enc_id', 'loan_account_number', 'lms_loan_account_number', 'case_no', 'collection_manager', 'assigned_caller', 'name', 'company_name', 'dealer_name', 'coborrower_name', 'branch_enc_id', 'loan_type', 'created_by', 'updated_by'], 'string', 'max' => 100],
@@ -125,6 +126,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedLoanPayments::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -148,6 +150,7 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return $this->hasMany(EmiPaymentRecords::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -188,7 +191,6 @@ class LoanAccounts extends \yii\db\ActiveRecord
         return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
     }
 
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -204,7 +206,6 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'assigned_financer_enc_id']);
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -237,7 +238,6 @@ class LoanAccounts extends \yii\db\ActiveRecord
     {
         return $this->hasMany(LoanActionRequests::className(), ['loan_account_enc_id' => 'loan_account_enc_id']);
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
