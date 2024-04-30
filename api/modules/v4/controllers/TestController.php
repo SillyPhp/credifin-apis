@@ -1605,11 +1605,10 @@ class TestController extends ApiBaseController
             }
         }
 
-        if (!empty($duplicates)) {
+        if ($duplicates) {
             return $this->response(200, ['status' => 200, 'message' => 'Deleted successfully']);
-        } else {
-            return $this->response(404, ['status' => 404, 'message' => 'Not found']);
         }
+        return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not found']);
     }
 
 
