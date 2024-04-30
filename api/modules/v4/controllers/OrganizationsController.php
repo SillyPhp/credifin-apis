@@ -2710,7 +2710,7 @@ class OrganizationsController extends ApiBaseController
                         if (in_array("X", $value)) {
                             $value[] = 0;
                         }
-                        $query->andWhere(['in', 'sub_bucket', $value]);
+                        $query->andWhere(['in', 'a.sub_bucket', $value]);
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);

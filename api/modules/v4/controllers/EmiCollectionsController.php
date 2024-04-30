@@ -1573,7 +1573,7 @@ class EmiCollectionsController extends ApiBaseController
                                 if(in_array('unassigned', $value)){
                                     $value[] = null;
                                 }
-                                $model->andWhere(['a.sub_bucket' => $value]);
+                                $model->andWhere(['lc.sub_bucket' => $value]);
                                 break;
                         }
                     }
