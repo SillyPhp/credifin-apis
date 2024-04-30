@@ -51,19 +51,10 @@ class StatsController extends ApiBaseController
         ];
 
         $loan_types = [];
-        $case = '';
-
         if (isset($params['hr'])) {
-            $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) > 60 AND ((a.overdue_amount / a.emi_amount) * 30) <= 75 THEN 5
-        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 75 AND ((a.overdue_amount / a.emi_amount) * 30) <= 90 THEN 6
-        WHEN ((a.overdue_amount / a.emi_amount) * 30) > 90 AND ((a.overdue_amount / a.emi_amount) * 30) <= 120 THEN 7
-        WHEN (a.overdue_amount / a.emi_amount) * 30 >= 120 THEN 8";
+            $case = [5, 6, 7, 8];
         } elseif (isset($params['lr'])) {
-            $case .= " WHEN ((a.overdue_amount / a.emi_amount) * 30) <= 0 THEN 'X'
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) >= 0 AND ((a.overdue_amount / a.emi_amount) * 30) <= 15 THEN 1
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 15 AND ((a.overdue_amount / a.emi_amount) * 30) <= 30 THEN 2
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 30 AND ((a.overdue_amount / a.emi_amount) * 30) <= 45 THEN 3
-         WHEN ((a.overdue_amount / a.emi_amount) * 30) > 45 AND ((a.overdue_amount / a.emi_amount) * 30) <= 60 THEN 4";
+            $case = [0, 1, 2, 3, 4];
         }
 
         if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {
@@ -77,28 +68,28 @@ class StatsController extends ApiBaseController
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
-                "CASE $case END AS sub_bucket", "COUNT(*) AS count"
-            ])
-            ->andWhere(["a.is_deleted" => 0]);
+                "a.sub_bucket", "COUNT(*) AS count"
+            ]);
 
         if (!empty($loan_types)) {
             $query->andWhere(["IN", "a.loan_type", $loan_types]);
         }
 
-        $query->groupBy(['sub_bucket'])
-            ->orderBy(['sub_bucket' => SORT_ASC]);
+        $query = $query
+            ->andWhere(["a.is_deleted" => 0])
+            ->andWhere(['in', 'a.sub_bucket', $case])
+            ->groupBy(['a.sub_bucket'])
+            ->orderBy(['a.sub_bucket' => SORT_ASC])
+            ->asArray()
+            ->all();
 
         $data = [];
-        foreach ($query->asArray()->all() as $row) {
+        foreach ($query as $row) {
             $sub_bucket = $row['sub_bucket'];
-            if ($sub_bucket == null) {
-                continue;
-            }
-            $fillColor = isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray';
             $data[] = [
                 'name' => $sub_bucket,
                 'value' => $row['count'],
-                'fill' => $fillColor,
+                'fill' => isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray',
             ];
         }
 
