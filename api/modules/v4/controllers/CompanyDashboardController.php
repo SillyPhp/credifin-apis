@@ -3485,7 +3485,7 @@ class CompanyDashboardController extends ApiBaseController
                     ])
                     ->joinWith(['department0 b'], false)
                     ->andWhere(['a.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
-                    ->orderBy(['b.department' => SORT_ASC])
+                    ->orderBy(["COALESCE(b.department,'Unassigned')" => SORT_ASC, 'a.designation' => SORT_ASC])
                     ->asArray()
                     ->all();
                 $res = array_reduce($financerDesignations, function ($carry, $item) {
@@ -3510,6 +3510,7 @@ class CompanyDashboardController extends ApiBaseController
             $departmentList = OrganizationDepartments::find()
                 ->select(['department_enc_id as value', 'department as label'])
                 ->andWhere(['is_deleted' => 0])
+                ->orderBy(['department' => SORT_ASC])
                 ->asArray()
                 ->all();
             return $this->response(200, ['status' => 200, 'data' => $departmentList]);
