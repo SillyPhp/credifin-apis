@@ -1367,9 +1367,7 @@ class CompanyDashboardController extends ApiBaseController
                 ])->joinWith(['sharedTo k1' => function ($k1) {
                     $k1->joinWith(["userRoles0 k1a" => function ($k1a) {
                         $k1a->joinWith(["designation k1b"], false);
-                        $k1a->joinWith(['branchEnc f' => function ($f) {
-                            $f->joinWith(['cityEnc f1']);
-                        }], false);
+                        $k1a->joinWith(['branchEnc f'], false);
                     }]);
                 }], false)
                     ->groupBy(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k1b.designation'])
