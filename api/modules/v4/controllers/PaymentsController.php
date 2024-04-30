@@ -106,7 +106,7 @@ class PaymentsController extends ApiBaseController
         }
     }
 
-    private function updateEmi($id)
+    private function updateEmi($id, $payment_id)
     {
         $model = EmiCollectionExtended::find()
             ->alias('a')
@@ -123,6 +123,7 @@ class PaymentsController extends ApiBaseController
         if ($model && $model['emi_payment_status'] != 'paid') {
             $update['collection_date'] = date('Y-m-d');
             $update['emi_payment_status'] = 'paid';
+            $update['reference_number'] = $payment_id;
             if ($model['emi_payment_method'] == 0) {
                 Yii::$app->db->createCommand()->update(
                     LoanAccountPtps::tableName(),
@@ -147,8 +148,8 @@ class PaymentsController extends ApiBaseController
             }
         }
     }
-    
-    
+
+
 
     private function handleQrWebhook($post)
     {
@@ -194,7 +195,7 @@ class PaymentsController extends ApiBaseController
                 if ($status == 'paid' || $status == 'captured') {
                     if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
-                        $this->updateEmi($ref_id);
+                        $this->updateEmi($ref_id, $payment_id);
                         $this->createEmi($model);
                     endif;
                 }
