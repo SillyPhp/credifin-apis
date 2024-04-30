@@ -168,7 +168,7 @@ class PaymentsController extends ApiBaseController
                 if ($status == 'paid' || $status == 'captured') {
                     if (!empty($ref_id)) :
                         $this->closeAllModes($ref_id);
-                        $this->updateEmi($ref_id);
+                        $this->updateEmi($ref_id, $payment_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
