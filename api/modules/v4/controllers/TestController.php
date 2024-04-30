@@ -10,6 +10,7 @@ use common\models\AssignedLoanProvider;
 use common\models\CreditLoanApplicationReports;
 use common\models\EmiCollection;
 use common\models\EmployeesCashReport;
+use common\models\extended\LoanAccountsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\LoanAccountComments;
@@ -67,36 +68,14 @@ class TestController extends ApiBaseController
         }
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $valid_designations = LoanAccountsExtended::$user_types;
+            $valid_designations = "'" . implode("', '", array_keys($valid_designations)) . "'";
             $query = (new Query())
                 ->from(['a' => EmiCollection::tableName()])
                 ->select(['a.loan_account_enc_id', 'GROUP_CONCAT(DISTINCT a.created_by) AS collectors'])
                 ->leftJoin(['b' => AssignedLoanAccounts::tableName()], "b.loan_account_enc_id = a.loan_account_enc_id AND a.created_by = b.shared_to AND b.access = 'Full Access' AND b.status = 'Active' AND b.is_deleted = 0")
                 ->innerJoin(['c' => UserRoles::tableName()], 'c.user_enc_id = a.created_by')
-                ->innerJoin(['d' => FinancerAssignedDesignations::tableName()], "d.assigned_designation_enc_id = c.designation_id AND d.designation IN (
-                'Area Collection Manager',
-                'Area Sales Manager',
-                'Branch Operations Executive',
-                'Business Development Officer',
-                'Business Manager',
-                'Collection Head',
-                'Collection Manager',
-                'Collection Officer',
-                'Customer Relationship Manager',
-                'Deputy Area Collection Manager',
-                'Deputy Area Sales Manager',
-                'Marketing Executive',
-                'MIS Manager',
-                'Operations Executive',
-                'Operations Manager',
-                'Regional  Operations Executive',
-                'Regional Collection Manager',
-                'Regional Operation Executive',
-                'Regional Operations Manager',
-                'Senior Business Development Officer',
-                'Senior Business Manager',
-                'Team Leader',
-                'Team Leader Collection',
-                'Team Leader Sales')")
+                ->innerJoin(['d' => FinancerAssignedDesignations::tableName()], "d.assigned_designation_enc_id = c.designation_id AND d.designation IN ($valid_designations)")
                 ->andWhere('a.loan_account_enc_id IS NOT NULL AND b.id IS NULL')
                 ->groupBy('a.loan_account_enc_id')
                 ->offset(($page - 1) * $limit)
@@ -135,7 +114,7 @@ class TestController extends ApiBaseController
                     $columns = array_keys($insert_params);
                     $insert_params = array_map(function ($item, $key) {
                         if (!in_array($key, ['user_type'])) {
-                            $item =  "'" . addslashes($item) . "'";
+                            $item = "'" . addslashes($item) . "'";
                         }
                         return $item;
                     }, $insert_params, $columns);
@@ -155,16 +134,16 @@ class TestController extends ApiBaseController
                     $sqls[] = $insert;
                 }
             }
-            $found = count($sqls);
             $inserted = 0;
             foreach ($sqls as $sql) {
                 $inserted += Yii::$app->db->createCommand($sql)->execute();
             }
+
             $transaction->commit();
             return $this->response(200, ['message' => 'successfully saved', 'inserted' => $inserted]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
@@ -1575,4 +1554,41 @@ class TestController extends ApiBaseController
         // returning application id's and shared detail
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
+
+    public function actionRemovedDuplicateAccounts()
+    {
+        $duplicates = AssignedLoanAccounts::find()
+            ->select(['shared_to', 'loan_account_enc_id', 'MAX(updated_on) AS latest_updated'])
+            ->where(['is_deleted' => 0])
+            ->groupBy(['shared_to', 'loan_account_enc_id'])
+            ->having('COUNT(*) > 1')
+            ->asArray()
+            ->all();
+
+        foreach ($duplicates as $duplicate) {
+            $records = AssignedLoanAccounts::find()
+                ->where([
+                    'shared_to' => $duplicate['shared_to'],
+                    'loan_account_enc_id' => $duplicate['loan_account_enc_id'],
+                    'is_deleted' => 0
+                ])
+                ->orderBy(['updated_on' => SORT_ASC])
+                ->all();
+
+            $count = count($records);
+            if ($count > 1) {
+                for ($i = 0; $i < $count - 1; $i++) {
+                    $records[$i]['is_deleted'] = 1;
+                    $records[$i]->save(false);
+                }
+            }
+        }
+
+        if ($duplicates) {
+            return $this->response(200, ['status' => 200, 'message' => 'Deleted successfully']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not found']);
+    }
+
+
 }

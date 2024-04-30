@@ -449,19 +449,19 @@ class EmiCollectionsController extends ApiBaseController
                         case 'name':
                             $fields_search[] = "CONCAT(a.first_name, ' ', COALESCE(a.last_name, '')) LIKE '%$value%'";
                             break;
-                        //                        case 'reporting_person':
-                        //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
-                        //                            break;
+                            //                        case 'reporting_person':
+                            //                            $fields_search[] = "CONCAT(ANY_VALUE(b3.first_name), ' ', COALESCE(ANY_VALUE(b3.last_name), '')) LIKE '%$value%'";
+                            //                            break;
                         case 'designation':
                             $fields_search[] = "ANY_VALUE(b2.designation) LIKE '%$value%'";
                             break;
                         case 'phone':
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
-                        //                        case 'branch':
-                        //                            $branch = "('" . implode("','", $value) . "')";
-                        //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
-                        //                            break;
+                            //                        case 'branch':
+                            //                            $branch = "('" . implode("','", $value) . "')";
+                            //                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            //                            break;
                     }
                 }
             }
@@ -1000,20 +1000,10 @@ class EmiCollectionsController extends ApiBaseController
                 'a.customer_name', 'a.loan_account_number', 'a.loan_account_enc_id',
                 "c.sales_priority", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "c.collection_priority",
-                "c.telecaller_priority",
+                "c.telecaller_priority", 'c.ledger_amount', 'c.overdue_amount',
                 'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
                 "c.bucket AS bucket_value",
-                "CASE
-                        WHEN ((c.overdue_amount / c.emi_amount) * 30) <= 0 THEN 'X'
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) >= 0 AND ((c.overdue_amount / c.emi_amount) * 30) <= 15 THEN 1
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 15 AND ((c.overdue_amount / c.emi_amount) * 30) <= 30 THEN 2
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 30 AND ((c.overdue_amount / c.emi_amount) * 30) <= 45 THEN 3
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 45 AND ((c.overdue_amount / c.emi_amount) * 30) <= 60 THEN 4
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 60 AND ((c.overdue_amount / c.emi_amount) * 30) <= 75 THEN 5
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 75 AND ((c.overdue_amount / c.emi_amount) * 30) <= 90 THEN 6
-                 WHEN ((c.overdue_amount / c.emi_amount) * 30) > 90 AND ((c.overdue_amount / c.emi_amount) * 30) <= 120 THEN 7
-                 WHEN (c.overdue_amount / c.emi_amount) * 30 >= 120 THEN 8
-            END AS sub_bucket",
+                "c.sub_bucket",
                 'a.loan_type', 'a.phone', 'SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount',
                 'COUNT(*) OVER(PARTITION BY loan_account_number) AS total_emis',
                 "CONCAT(b.location_name, ', ', COALESCE(b2.name, '')) AS branch_name",
@@ -1294,7 +1284,7 @@ class EmiCollectionsController extends ApiBaseController
         return ['data' => $model, 'count' => $count];
     }
 
-    public static function _emiData($data, $id_type, $search = '', $user = null)
+    public static function _emiData($data, $id_type, $search = [], $user = null)
     {
         function payment_method_add($data)
         {
@@ -1342,17 +1332,7 @@ class EmiCollectionsController extends ApiBaseController
         $model = EmiCollectionExtended::find()
             ->alias('a')
             ->select([
-                "CASE
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) <= 0 THEN 'X'
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) >= 0 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 15 THEN 1
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 15 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 30 THEN 2
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 30 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 45 THEN 3
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 45 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 60 THEN 4
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 60 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 75 THEN 5
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 75 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 90 THEN 6
-            WHEN ((lc.overdue_amount / lc.emi_amount) * 30) > 90 AND ((lc.overdue_amount / lc.emi_amount) * 30) <= 120 THEN 7
-            WHEN (lc.overdue_amount / lc.emi_amount) * 30 >= 120 THEN 8
-             END AS sub_bucket",
+                "lc.sub_bucket",
                 'a.company_id', 'a.case_no', 'a.updated_on', "CONCAT(ub.first_name, ' ', COALESCE(ub.last_name, '')) updated_by",
                 'a.emi_collection_enc_id', 'c.location_name as branch_name', 'a.customer_name', 'a.collection_date', 'a.created_on',
                 'a.loan_account_number', 'a.loan_account_enc_id', 'a.amount', 'a.loan_type', 'a.emi_payment_method', 'a.emi_payment_mode',
@@ -1587,7 +1567,13 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                $model->having(['sub_bucket' => $value]);
+                                if (in_array('X', $value)) {
+                                    $value[] = 0;
+                                }
+                                if(in_array('unassigned', $value)){
+                                    $value[] = null;
+                                }
+                                $model->andWhere(['lc.sub_bucket' => $value]);
                                 break;
                         }
                     }

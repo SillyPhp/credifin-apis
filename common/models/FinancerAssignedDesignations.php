@@ -11,6 +11,7 @@ use Yii;
  * @property string $assigned_designation_enc_id
  * @property string $designation
  * @property string $organization_enc_id
+ * @property string $department
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -20,6 +21,8 @@ use Yii;
  * @property Organizations $organizationEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property OrganizationDepartments $department0
+ * @property UserRoles[] $userRoles
  */
 class FinancerAssignedDesignations extends \yii\db\ActiveRecord
 {
@@ -40,11 +43,12 @@ class FinancerAssignedDesignations extends \yii\db\ActiveRecord
             [['assigned_designation_enc_id', 'designation', 'organization_enc_id', 'created_on', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['assigned_designation_enc_id', 'designation', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['assigned_designation_enc_id', 'designation', 'organization_enc_id', 'department', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['assigned_designation_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['department'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationDepartments::className(), 'targetAttribute' => ['department' => 'department_enc_id']],
         ];
     }
 
@@ -58,6 +62,7 @@ class FinancerAssignedDesignations extends \yii\db\ActiveRecord
             'assigned_designation_enc_id' => 'Assigned Designation Enc ID',
             'designation' => 'Designation',
             'organization_enc_id' => 'Organization Enc ID',
+            'department' => 'Department',
             'created_on' => 'Created On',
             'created_by' => 'Created By',
             'last_updated_on' => 'Last Updated On',
@@ -88,5 +93,21 @@ class FinancerAssignedDesignations extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment0()
+    {
+        return $this->hasOne(OrganizationDepartments::className(), ['department_enc_id' => 'department']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles()
+    {
+        return $this->hasMany(UserRoles::className(), ['designation_id' => 'assigned_designation_enc_id']);
     }
 }
