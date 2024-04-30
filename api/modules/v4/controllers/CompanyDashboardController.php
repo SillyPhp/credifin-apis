@@ -1887,12 +1887,14 @@ class CompanyDashboardController extends ApiBaseController
                 "CONCAT(b.first_name, ' ', COALESCE(b.last_name, '')) as name",
                 'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone',
                 'b.status', 'c.user_type', 'a.employee_code', 'd.designation', 'a.designation_id',
-                "CONCAT(e.first_name, ' ', COALESCE(e.last_name, '')) reporting_person", "CONCAT(f.location_name, ', ', f1.name) AS branch_name",
+                "CONCAT(e.first_name, ' ', COALESCE(e.last_name, '')) reporting_person", "CONCAT(f.location_name, ', ', f1.name) AS branch_name", "COALESCE(d1.department,'') as department",
                 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on platform_joining_date'
             ])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
-            ->joinWith(['designation d'], false)
+            ->joinWith(['designation d' => function ($d) {
+                $d->joinWith(['department0 d1']);
+            }], false)
             ->joinWith(['reportingPerson e'], false)
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
@@ -1908,7 +1910,7 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         if ($params != null && !empty($params['fields_search'])) {
-            $a = ['designation_id', 'employee_code', 'grade', 'employee_joining_date'];
+            $a = ['designation_id', 'employee_code', 'grade', 'employee_joining_date', 'department'];
             $b = ['phone', 'email', 'username', 'status', 'name', 'platform_joining_date'];
             foreach ($params['fields_search'] as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1916,6 +1918,8 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $a)) {
                         if ($key == 'designation_id') {
                             $employee->andWhere(['a.' . $key => $value]);
+                        } elseif ($key == 'department') {
+                            $employee->andWhere(['IN', "COALESCE(d.department,'')", $value]);
                         } else {
                             $employee->andWhere(['like', 'a.' . $key, $value]);
                         }
