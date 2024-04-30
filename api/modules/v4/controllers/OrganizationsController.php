@@ -33,6 +33,7 @@ use common\models\LoanAccounts;
 use common\models\LoanApplications;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
+use common\models\OrganizationDepartments;
 use common\models\OrganizationLocations;
 use common\models\SharedLoanApplications;
 use common\models\spaces\Spaces;
@@ -3154,6 +3155,28 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ["status" => 200, "message" => "Doesn't exist"]);
     }
 
+    public function actionAddDepartment()
+    {
+
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = $this->post;
+        $new = new OrganizationDepartments();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $new->department_enc_id = $utilitiesModel->encrypt();
+        $new->department = $params['dep'];
+        $new->created_by = $user->user_enc_id;
+        $new->created_on = date('Y-m-d H:i:s');
+        $new->updated_by = $user->user_enc_id;
+        $new->updated_on = date('Y-m-d H:i:s');
+        if (!$new->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $new->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        
+    }
     public function actionUserAudit()
     {
         if (!$user = $this->isAuthorized()) {
