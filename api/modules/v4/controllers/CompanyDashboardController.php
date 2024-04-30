@@ -3533,20 +3533,14 @@ class CompanyDashboardController extends ApiBaseController
                     ->orderBy(['b.department' => SORT_ASC])
                     ->asArray()
                     ->all();
-                $groupedDesignations = array_reduce($financerDesignations, function ($carry, $item) {
+                $res = array_reduce($financerDesignations, function ($carry, $item) {
                     $department = $item['department'];
                     unset($item['department']);
                     $carry[$department][] = $item;
                     return $carry;
                 }, []);
 
-                $list = array_map(function ($department, $designations) {
-                    return [$department => $designations];
-                }, array_keys($groupedDesignations), $groupedDesignations);
-                usort($list, function ($a, $b) {
-                    return strcmp(key($a), key($b));
-                });
-                return $this->response(200, ['status' => 200, 'data' => $list]);
+                return $this->response(200, ['status' => 200, 'data' => $res]);
             } else {
                 return $this->response(401, ['status' => 201, 'message' => 'Financer not found']);
             }
@@ -3554,7 +3548,7 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
     }
-    
+
     public function actionOrganizationDepartmentList()
     {
         if ($user = $this->isAuthorized()) {
