@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\extended\LoanAccountsExtended;
+use common\models\LoanApplications;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -35,8 +36,10 @@ class StatsController extends ApiBaseController
     {
         $params = Yii::$app->request->get();
 
-        $keyword = isset($params['keyword']) ? str_replace('%', ' ', urldecode($params['keyword'])) : null;
-        $keyword = preg_replace('/[^a-zA-Z\s]/', '', $keyword);
+        $keyword = isset($params['keyword']) ? urldecode($params['keyword']) : null;
+        $keyword = str_replace('%', ' ', $keyword);
+        $keyword = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $keyword);
+        $keyword = str_replace('%20', ' ', $keyword);
 
         $color = [
             'X' => 'green',
@@ -100,4 +103,62 @@ class StatsController extends ApiBaseController
 
         return $response;
     }
+
+
+    public function actionGetDataStateWise()
+    {
+        $params = Yii::$app->request->get();
+
+        $keyword = isset($params['keyword']) ? urldecode($params['keyword']) : null;
+        $keyword = str_replace('%', ' ', $keyword);
+        $keyword = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $keyword);
+        $keyword = str_replace('%20', ' ', $keyword);
+
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'COUNT(*) AS count',
+                'ce2.name AS state',
+                "COUNT(b.disbursement_approved) AS disbursed_approval_count",
+                'c.name AS loan_product_name'
+            ])
+            ->joinWith(['assignedLoanProviders b' => function ($b) {
+                $b->joinWith(['branchEnc be' => function ($be) {
+                    $be->joinWith(['cityEnc ce1' => function ($ce1) {
+                        $ce1->joinWith(['stateEnc ce2'], false);
+                    }], false);
+                }], false);
+            }], false)
+            ->joinWith(['loanProductsEnc c' => function ($c) use ($keyword) {
+                $c->andWhere(['c.name' => $keyword]);
+//                $c->joinWith(['assignedFinancerLoanTypeEnc d' => function ($d) {
+//                    $d->joinWith(['loanTypeEnc e'], false);
+//                }], false);
+            }], false)
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['ce2.name'])
+            ->orderBy(['ce2.name' => SORT_ASC]);
+
+        $results = $query->asArray()->all();
+        $data = [];
+        foreach ($results as $row) {
+            $state = $row['state'];
+            if ($state == null) {
+                continue;
+            }
+            $data[] = [
+                'name' => $state,
+                'value' => $row['disbursed_approval_count'],
+            ];
+        }
+
+        $response = [
+            'postfix' => 'USD',
+            'data' => $data
+        ];
+
+        return $response;
+    }
+
+
 }

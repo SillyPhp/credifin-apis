@@ -1223,7 +1223,7 @@ class CompanyDashboardController extends ApiBaseController
     private function getDsa($user_id)
     {
         // getting dsa of this user
-        $res =  AssignedSupervisor::find()
+        $res = AssignedSupervisor::find()
             ->select(['assigned_user_enc_id'])
             ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
             ->groupBy(['assigned_user_enc_id'])
@@ -1578,7 +1578,7 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
         }
         $where = ['loan_application_enc_id' => $params['loan_id'], 'is_deleted' => 0];
-        $authorizedUsers = ["kavi123", "alpna", "Sharan07"];
+        $authorizedUsers = ["kavi123", "alpna", "Sharan07", "pushapduggal"];
         if (!in_array($user->username, $authorizedUsers)) {
             // getting provider id
             $provider_id = $this->getFinancerId($user);

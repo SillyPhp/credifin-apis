@@ -114,7 +114,7 @@ class TestController extends ApiBaseController
                     $columns = array_keys($insert_params);
                     $insert_params = array_map(function ($item, $key) {
                         if (!in_array($key, ['user_type'])) {
-                            $item =  "'" . addslashes($item) . "'";
+                            $item = "'" . addslashes($item) . "'";
                         }
                         return $item;
                     }, $insert_params, $columns);
@@ -143,7 +143,7 @@ class TestController extends ApiBaseController
             return $this->response(200, ['message' => 'successfully saved', 'inserted' => $inserted]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return  $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
@@ -1554,4 +1554,41 @@ class TestController extends ApiBaseController
         // returning application id's and shared detail
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
+
+    public function actionRemovedDuplicateAccounts()
+    {
+        $duplicates = AssignedLoanAccounts::find()
+            ->select(['shared_to', 'loan_account_enc_id', 'MAX(updated_on) AS latest_updated'])
+            ->where(['is_deleted' => 0])
+            ->groupBy(['shared_to', 'loan_account_enc_id'])
+            ->having('COUNT(*) > 1')
+            ->asArray()
+            ->all();
+
+        foreach ($duplicates as $duplicate) {
+            $records = AssignedLoanAccounts::find()
+                ->where([
+                    'shared_to' => $duplicate['shared_to'],
+                    'loan_account_enc_id' => $duplicate['loan_account_enc_id'],
+                    'is_deleted' => 0
+                ])
+                ->orderBy(['updated_on' => SORT_ASC])
+                ->all();
+
+            $count = count($records);
+            if ($count > 1) {
+                for ($i = 0; $i < $count - 1; $i++) {
+                    $records[$i]['is_deleted'] = 1;
+                    $records[$i]->save(false);
+                }
+            }
+        }
+
+        if ($duplicates) {
+            return $this->response(200, ['status' => 200, 'message' => 'Deleted successfully']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => [], 'message' => 'Not found']);
+    }
+
+
 }

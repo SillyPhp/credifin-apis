@@ -1000,7 +1000,7 @@ class EmiCollectionsController extends ApiBaseController
                 'a.customer_name', 'a.loan_account_number', 'a.loan_account_enc_id',
                 "c.sales_priority", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                 "c.collection_priority",
-                "c.telecaller_priority",
+                "c.telecaller_priority", 'c.ledger_amount', 'c.overdue_amount',
                 'c.sales_target_date', 'c.telecaller_target_date', 'c.collection_target_date',
                 "c.bucket AS bucket_value",
                 "c.sub_bucket",
