@@ -300,6 +300,12 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
             ->exists();
 
+        // school fee , E-Rickshaw , Personal top up , medical , Consumer Durable , Used E-Rickshaw , Used Bike, Used Car, L5 E-Rickshaw
+        $cross_sale = [
+            'k4x1rvbEZd3N6LKLrzG8oaY7p5gXMV', '6mMpL8zN9QqAn0V0KjV7QAxKOrBbnw', 'qnpLz0AvYopAPWKxpVq6dPrW15BMN9',
+            'NnVA4XWJ6oAlnDJDMVp4ROz8e2MyGq', 'abvgrG4VyQNLBK5Kr4g5opW30A9nXK', 'n9lYWbywLRkWAWpB2874RE854A1z7M'
+            , 'BnE3860mWdn2LgNgAML3djw9A2K5DJ', '3wVg50vYNo8PkDYDJ1m3oBGKXJmWpO', 'rNap3jW8EobkAqPxPr5KdB0yYn7GXq'];
+
 
         //get user roles
         $specialroles = false;
@@ -309,7 +315,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($user->username == 'wishey') {
                 $leadsAccessOnly = 'both';
             } elseif ($user->username == 'ritika927') {
-                $product_based = true;
+                $product_filter = true;
             } else {
                 $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
             }
@@ -505,10 +511,11 @@ class CompanyDashboardController extends ApiBaseController
         } elseif (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly && $is_removed === 0) {
             // else checking lead_by and managed_by by logged-in user or shared app_ids exists then also getting data for those applications
             $where = ['OR', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id], ['a.loan_app_enc_id' => $shared_apps['app_ids']]];
-            if ($product_based) {
-                $where[] = ["a.loan_products_enc_id" => ['Y632Wx8amy38nzw3dvMnZ1JKzpXQPb']];
+            if ($product_filter) {
+                $where[] = ["a.loan_products_enc_id" => $cross_sale];
             }
             $loans->andWhere($where);
+
         }
 
         // filter to check status
