@@ -299,8 +299,8 @@ class CompanyDashboardController extends ApiBaseController
         // school fee , E-Rickshaw , Personal top up , medical , Consumer Durable , Used E-Rickshaw , Used Bike, Used Car, L5 E-Rickshaw
         $cross_sale = [
             'k4x1rvbEZd3N6LKLrzG8oaY7p5gXMV', '6mMpL8zN9QqAn0V0KjV7QAxKOrBbnw', 'qnpLz0AvYopAPWKxpVq6dPrW15BMN9',
-            'NnVA4XWJ6oAlnDJDMVp4ROz8e2MyGq', 'abvgrG4VyQNLBK5Kr4g5opW30A9nXK', 'n9lYWbywLRkWAWpB2874RE854A1z7M'
-            , 'BnE3860mWdn2LgNgAML3djw9A2K5DJ', '3wVg50vYNo8PkDYDJ1m3oBGKXJmWpO', 'rNap3jW8EobkAqPxPr5KdB0yYn7GXq'];
+            'NnVA4XWJ6oAlnDJDMVp4ROz8e2MyGq', 'abvgrG4VyQNLBK5Kr4g5opW30A9nXK', 'n9lYWbywLRkWAWpB2874RE854A1z7M', 'BnE3860mWdn2LgNgAML3djw9A2K5DJ', '3wVg50vYNo8PkDYDJ1m3oBGKXJmWpO', 'rNap3jW8EobkAqPxPr5KdB0yYn7GXq'
+        ];
 
 
         //get user roles
@@ -518,7 +518,6 @@ class CompanyDashboardController extends ApiBaseController
                 $where[] = ["a.loan_products_enc_id" => $cross_sale];
             }
             $loans->andWhere($where);
-
         }
 
         // filter to check status
@@ -1946,7 +1945,7 @@ class CompanyDashboardController extends ApiBaseController
                         if ($key == 'designation_id') {
                             $employee->andWhere(['a.' . $key => $value]);
                         } elseif ($key == 'department') {
-                            $employee->andWhere(['IN', "COALESCE(d.department,'')", $value]);
+                            $employee->andWhere(['IN', 'd.department', $this->assign_unassigned($value)]);
                         } else {
                             $employee->andWhere(['like', 'a.' . $key, $value]);
                         }
@@ -1967,7 +1966,7 @@ class CompanyDashboardController extends ApiBaseController
                             $employee->andWhere(['like', "CONCAT(e.first_name, ' ', COALESCE(e.last_name, ''))", $value]);
                             break;
                         case 'branch':
-                            $employee->andWhere(['IN', 'f.location_enc_id', $value]);
+                            $employee->andWhere(['IN', 'f.location_enc_id', $this->assign_unassigned($value)]);
                             break;
                     }
                 }

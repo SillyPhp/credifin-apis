@@ -168,7 +168,7 @@ class EmployeeController extends ApiBaseController
                         if ($key == 'designation_id') {
                             $inactive_employees->andWhere(['a.' . $key => $value]);
                         } elseif ($key == 'department') {
-                            $inactive_employees->andWhere(['in', "COALESCE(d.department,'')", $value]);
+                            $inactive_employees->andWhere(['IN', 'd.department', $this->assign_unassigned($value)]);
                         } else {
                             $inactive_employees->andWhere(['like', 'a.' . $key, $value]);
                         }
