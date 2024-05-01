@@ -1208,7 +1208,7 @@ class LoanAccountsController extends ApiBaseController
             ->addSelect($b_select)
             ->from(['a' => $loan])
             ->where($where);
-        if (isset($params['sub_bucket'])) {
+        if (isset($params['sub_bucket']) && $params['sub_bucket'] !== "") {
             $bucket->andWhere(['a.sub_bucket' => $params['sub_bucket']]);
         }
 
