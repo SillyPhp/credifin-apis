@@ -1573,7 +1573,7 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
         }
 
-        if ($params['status'] !== "0" && empty($params['status'])) {
+        if ($params['status'] != "0" && empty($params['status'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
         }
         $where = ['loan_application_enc_id' => $params['loan_id'], 'is_deleted' => 0];
