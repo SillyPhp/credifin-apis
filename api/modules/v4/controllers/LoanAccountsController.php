@@ -1209,11 +1209,7 @@ class LoanAccountsController extends ApiBaseController
             ->from(['a' => $loan])
             ->where($where);
         if (isset($params['sub_bucket'])) {
-            $sub_where = $params['sub_bucket'];
-            if ($sub_where == 'X') {
-                $sub_where = 0;
-            }
-            $bucket->andWhere(['a.sub_bucket' => $sub_where]);
+            $bucket->andWhere(['a.sub_bucket' => $params['sub_bucket']]);
         }
 
 
@@ -1390,9 +1386,6 @@ class LoanAccountsController extends ApiBaseController
                     if ($key == 'sub_bucket') {
                         if (in_array("unassigned", $value)) {
                             $value[] = null;
-                        }
-                        if (in_array('X', $value)) {
-                            $value[] = 0;
                         }
                         $ptpcases->andWhere(['in', 'c.sub_bucket', $value]);
                     } elseif ($key == 'assigned_caller') {
@@ -2384,9 +2377,6 @@ class LoanAccountsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
-                        if (in_array('X', $value)) {
-                            $value[] = 0;
-                        }
                         if (in_array('unassigned', $value)) {
                             $value[] = null;
                         }

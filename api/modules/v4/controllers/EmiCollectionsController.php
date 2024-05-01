@@ -1567,9 +1567,6 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                if (in_array('X', $value)) {
-                                    $value[] = 0;
-                                }
                                 if(in_array('unassigned', $value)){
                                     $value[] = null;
                                 }
