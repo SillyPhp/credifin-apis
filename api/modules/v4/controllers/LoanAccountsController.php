@@ -1004,7 +1004,7 @@ class LoanAccountsController extends ApiBaseController
             ->joinWith(['userRoles0 b' => function ($b) {
                 $b->joinWith('designation d');
             }], false)
-            ->where(['d.designation' => 'Tele Caller Collection', 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+            ->where(['d.designation' => 'Tele Caller Collection', 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0, 'status' => 'Active'])
             ->asArray()
             ->all();
 
@@ -1029,7 +1029,7 @@ class LoanAccountsController extends ApiBaseController
         $loanAccounts = (new Query())
             ->from([LoanAccounts::tableName()])
             ->select(['loan_account_enc_id', 'bucket'])
-            ->where(['bucket' => $params['bucket'], 'is_deleted' => 0]);
+            ->where(['sub_bucket' => $params['bucket'], 'is_deleted' => 0]);
         foreach ($loanAccounts->batch(100) as $rows) {
             $assignment = $this->assignCasesToTelecallers($params['caller_ids'], $rows);
             foreach ($assignment as $caseName => $telecaller) {
