@@ -2626,7 +2626,7 @@ class OrganizationsController extends ApiBaseController
                                 WHEN a.bucket = 'npa' THEN 2
                                 ELSE 1
                         END) 
-                    END) 
+                    END)
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
 
@@ -3068,6 +3068,21 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(['a.sub_bucket' => $params["sub_bucket"]]);
         }
 
+        if (!empty($params['type']) && in_array($params['type'], ['npa', 'high_priority', 'other_cases'])) {
+            $condition = [];
+            if ($params['type'] == 'npa') {
+                $condition[] = 'a.sub_bucket IN (8, 7)';
+            } elseif ($params['type'] == 'high_priority') {
+                $condition[] = 'a.sub_bucket IN (6, 5, 4)';
+            } elseif ($params['type'] == 'other_cases') {
+                $condition[] = 'a.sub_bucket IN (3, 2, 1)';
+            }
+            if (!empty($condition)) {
+                $query->andWhere(implode(' OR ', $condition));
+                $query->orderBy(['a.sub_bucket' => SORT_DESC]);
+            }
+        }
+
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
             $end_date = date('Y-m-d');
@@ -3211,7 +3226,7 @@ class OrganizationsController extends ApiBaseController
             WHEN a.new_value = d.user_enc_id THEN  CONCAT(d.first_name,' ',d.last_name)
             WHEN a.new_value = f.assigned_designation_enc_id THEN  f.designation
             WHEN a.new_value = g.location_enc_id THEN  g.location_name
-            ELSE a.new_value END) AS new_value", "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image",  'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"])
+            ELSE a.new_value END) AS new_value", "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"])
             ->from(['a' => AuditTrail::tableName()])
             ->leftJoin(['b' => Users::tableName()], 'b.id=a.user_id')
             ->leftJoin(['c' => UserRoles::tableName()], 'c.id = a.model_id')
