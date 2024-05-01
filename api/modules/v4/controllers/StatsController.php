@@ -57,7 +57,7 @@ class StatsController extends ApiBaseController
         if (isset($params['hr'])) {
             $case = [5, 6, 7, 8];
         } elseif (isset($params['lr'])) {
-            $case = [0, 1, 2, 3, 4];
+            $case = ['X', 1, 2, 3, 4];
         }
 
         if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {

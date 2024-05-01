@@ -2711,9 +2711,6 @@ class OrganizationsController extends ApiBaseController
                         if (in_array("unassigned", $value)) {
                             $value[] = null;
                         }
-                        if (in_array("X", $value)) {
-                            $value[] = 0;
-                        }
                         $query->andWhere(['in', 'a.sub_bucket', $value]);
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
