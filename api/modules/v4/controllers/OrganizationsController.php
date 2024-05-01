@@ -41,6 +41,7 @@ use common\models\UserLocations;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
+use DateTime;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -3069,15 +3070,22 @@ class OrganizationsController extends ApiBaseController
 
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
-            $start_date = $end_date = date('Y-m-d');
+            $end_date = date('Y-m-d');
             if (in_array($params['type'], ['nach', 'upcoming'])) {
                 $end_date = date('Y-m-d', strtotime('+3 day', strtotime($end_date)));
                 if ($params['type'] == 'nach') {
                     $where[] = 'a.nach_approved = 1';
                 }
             }
-            $where[] = "(DAY(a.emi_date) BETWEEN DAY('$start_date') AND DAY('$end_date'))";
-            $where[] = "a.emi_date < '$end_date'";
+            $current_date = new DateTime();
+            $days = [];
+            for ($i = 0; $i < 4; $i++) {
+                $days[] = $current_date->format('j');
+                $current_date->modify('+1 day');
+            }
+            $days = implode(', ', $days);
+            $where[] = "DAY(a.emi_date) IN ($days)";
+            $where[] = "a.emi_date <= '$end_date'";
             $where = implode(' AND ', $where);
             $query->andWhere($where);
         }
@@ -3175,7 +3183,6 @@ class OrganizationsController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the data.', 'error' => $new->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-        
     }
     public function actionUserAudit()
     {

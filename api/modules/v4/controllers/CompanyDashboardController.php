@@ -1702,6 +1702,7 @@ class CompanyDashboardController extends ApiBaseController
                     $update->financed_amount = $update_data['financed_amount'];
                     $update->branch_enc_id = $update_data['branch_enc_id'];
                     $update->bucket = 'OnTime';
+                    $update->sub_bucket = 0;
                     $update->bucket_status_date = date('Y-m-d');
                     $update->emi_date = $update_data['emi_collection_date'];
                     $update->vehicle_type = $update_data['vehicle_type'];
