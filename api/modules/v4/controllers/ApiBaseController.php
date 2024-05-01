@@ -322,4 +322,13 @@ class ApiBaseController extends Controller
 
         return $service->asArray()->all();
     }
+    public function assign_unassigned($value)
+    {
+        if (is_array($value) && in_array('unassigned', $value)) {
+            $value[] = null;
+        } elseif ($value == 'unassigned') {
+            $value = null;
+        }
+        return $value;
+    }
 }
