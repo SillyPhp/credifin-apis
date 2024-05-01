@@ -2872,11 +2872,29 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'max_pos') {
                         $query->andWhere(['<=', 'a.pos', "$value"]);
                     } elseif ($key == 'collection_manager') {
-                        $query->andWhere(['d.user_type' => 2])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = a.loan_account_enc_id')
+                                ->andWhere(['user_type' => '2'])]);
+                        } else {
+                            $query->andWhere(['d.user_type' => 2])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'assigned_bdo') {
-                        $query->andWhere(['d.user_type' => 1])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = a.loan_account_enc_id')
+                                ->andWhere(['user_type' => '1'])]);
+                        } else {
+                            $query->andWhere(['d.user_type' => 1])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'company_id') {
                         $query->andWhere(['LIKE', "a.company_id", "$value%", false]);
                     } elseif ($key == 'min_last_emi_received_amount') {
