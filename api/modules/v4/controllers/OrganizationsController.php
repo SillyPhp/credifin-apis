@@ -1759,10 +1759,12 @@ class OrganizationsController extends ApiBaseController
                 }
                 $res['Pending']['sum'] += $sum;
                 $res['Pending']['count'] += $count;
+                if (!in_array($payment_method, ['PTP', 'Link', 'QR'])) {
+                    $res['Total']['pending']['sum'] += $sum;
+                    $res['Total']['pending']['count'] += $count;
+                }
             }
         }
-        $res['Total']['pending']['sum'] = $res['Pending']['sum'];
-        $res['Total']['pending']['count'] = $res['Pending']['count'];
 
         if (empty($method)) {
             $this->customData($res);
