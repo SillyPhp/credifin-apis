@@ -2628,7 +2628,7 @@ class OrganizationsController extends ApiBaseController
                                 WHEN a.bucket = 'npa' THEN 2
                                 ELSE 1
                         END) 
-                    END) 
+                    END)
                 END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
                 END) AS total_pending_amount",
 
@@ -2872,11 +2872,29 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'max_pos') {
                         $query->andWhere(['<=', 'a.pos', "$value"]);
                     } elseif ($key == 'collection_manager') {
-                        $query->andWhere(['d.user_type' => 2])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = a.loan_account_enc_id')
+                                ->andWhere(['user_type' => '2'])]);
+                        } else {
+                            $query->andWhere(['d.user_type' => 2])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'assigned_bdo') {
-                        $query->andWhere(['d.user_type' => 1])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = a.loan_account_enc_id')
+                                ->andWhere(['user_type' => '1'])]);
+                        } else {
+                            $query->andWhere(['d.user_type' => 1])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'company_id') {
                         $query->andWhere(['LIKE', "a.company_id", "$value%", false]);
                     } elseif ($key == 'min_last_emi_received_amount') {
@@ -3067,6 +3085,21 @@ class OrganizationsController extends ApiBaseController
             $query->andWhere(['a.sub_bucket' => $params["sub_bucket"]]);
         }
 
+        if (!empty($params['type']) && in_array($params['type'], ['npa', 'high_priority', 'other_cases'])) {
+            $condition = [];
+            if ($params['type'] == 'npa') {
+                $condition[] = 'a.sub_bucket IN (8, 7)';
+            } elseif ($params['type'] == 'high_priority') {
+                $condition[] = 'a.sub_bucket IN (6, 5, 4)';
+            } elseif ($params['type'] == 'other_cases') {
+                $condition[] = 'a.sub_bucket IN (3, 2, 1)';
+            }
+            if (!empty($condition)) {
+                $query->andWhere(implode(' OR ', $condition));
+                $query->orderBy(['a.sub_bucket' => SORT_DESC]);
+            }
+        }
+
         if (!empty($params['type']) && in_array($params['type'], ['dashboard', 'upcoming', 'nach'])) {
             $where = [];
             $end_date = date('Y-m-d');
@@ -3210,7 +3243,7 @@ class OrganizationsController extends ApiBaseController
             WHEN a.new_value = d.user_enc_id THEN  CONCAT(d.first_name,' ',d.last_name)
             WHEN a.new_value = f.assigned_designation_enc_id THEN  f.designation
             WHEN a.new_value = g.location_enc_id THEN  g.location_name
-            ELSE a.new_value END) AS new_value", "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image",  'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"])
+            ELSE a.new_value END) AS new_value", "CASE WHEN b.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', b.image_location, '/', b.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(b.first_name,' ',b.last_name), '&size=200&rounded=false&background=', REPLACE(b.initials_color, '#', ''), '&color=ffffff') END image", 'a.model', 'a.action', 'a.field', 'a.stamp', "CONCAT(b.first_name,' ',b.last_name) created_by"])
             ->from(['a' => AuditTrail::tableName()])
             ->leftJoin(['b' => Users::tableName()], 'b.id=a.user_id')
             ->leftJoin(['c' => UserRoles::tableName()], 'c.id = a.model_id')
