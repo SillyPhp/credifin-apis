@@ -88,11 +88,12 @@ class LoanProductsController extends ApiBaseController
                     ->alias('a')
                     ->select([
                         'a.financer_loan_product_status_enc_id', 'a.financer_loan_product_enc_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
-                        'd1.value', 'd1.sequence'
+                        'd1.value', 'd1.sequence', 'a.sequence as sequence_no'
                     ])
                     ->joinWith(['loanStatusEnc d1'], false)
+                    ->groupBy(['a.sequence', 'a.financer_loan_product_status_enc_id'])
                     ->onCondition(['a.is_deleted' => 0])
-                    ->orderBy(['d1.sequence' => SORT_ASC]);
+                    ->orderBy(['a.sequence' => SORT_ASC]);
                 break;
 
             case 4:
