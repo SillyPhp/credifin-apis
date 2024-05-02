@@ -1440,6 +1440,7 @@ class OrganizationsController extends ApiBaseController
             try {
                 foreach ($params['loan_status'] as $key => $val) {
                     $data['loan_status_enc_id'] = $val['loan_status_enc_id'];
+                    $data['sequence'] = $val['sequence_no'];
                     if (isset($val['financer_loan_product_status_enc_id'])) {
                         $loan_status = FinancerLoanProductStatus::findOne([
                             'financer_loan_product_status_enc_id' => $val['financer_loan_product_status_enc_id'],
@@ -1447,6 +1448,7 @@ class OrganizationsController extends ApiBaseController
                         ]);
                         if ($loan_status) {
                             $loan_status->loan_status_enc_id = $val['loan_status_enc_id'];
+                            $loan_status->sequence = $val['sequence_no'];
                             $loan_status->updated_by = $user->user_enc_id;
                             $loan_status->updated_on = date('Y-m-d H:i:s');
                             if (!$loan_status->update()) {
@@ -1469,10 +1471,10 @@ class OrganizationsController extends ApiBaseController
                     }
                 }
                 $transaction->commit();
-                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+                return $this->response(200, ['status' => 200, 'message' => 'Successfully saved']);
             } catch (\Exception $e) {
                 $transaction->rollback();
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $e->getMessage()]);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -1606,6 +1608,7 @@ class OrganizationsController extends ApiBaseController
         $loan_status->financer_loan_product_status_enc_id = $utilitiesModel->encrypt();
         $loan_status->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $loan_status->loan_status_enc_id = $data['loan_status_enc_id'];
+        $loan_status->sequence = $data['sequence'];
         $loan_status->created_by = $data['user_enc_id'];
         $loan_status->created_on = date('Y-m-d H:i:s');
         if (!$loan_status->save()) {
