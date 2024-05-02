@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "lJCWPnNNVy3d95ppLp7M_financer_loan_product_status".
  *
@@ -11,6 +9,7 @@ use Yii;
  * @property string $financer_loan_product_status_enc_id
  * @property string $financer_loan_product_enc_id
  * @property string $loan_status_enc_id loan status enc id
+ * @property int $sequence
  * @property string $created_by created by
  * @property string $created_on created on
  * @property string $updated_by updated by
@@ -39,8 +38,8 @@ class FinancerLoanProductStatus extends \yii\db\ActiveRecord
     {
         return [
             [['financer_loan_product_status_enc_id', 'financer_loan_product_enc_id', 'loan_status_enc_id', 'created_by'], 'required'],
+            [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['financer_loan_product_status_enc_id', 'financer_loan_product_enc_id', 'loan_status_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_product_status_enc_id'], 'unique'],
             [['financer_loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']],
