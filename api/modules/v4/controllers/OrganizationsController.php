@@ -2701,7 +2701,19 @@ class OrganizationsController extends ApiBaseController
                     ELSE NULL END") => SORT_DESC
             ]);
 
-
+        if (!empty($params['type']) && $params['type'] == 'upcoming_priority') {
+            if (!$special && $user->username != "phf986") {
+                $upcoming = date('Y-m-d', strtotime('+6 days'));
+                $query->having(['BETWEEN', 'target_date', date('Y-m-d'), $upcoming]);
+            } else {
+                $upcoming = date('Y-m-d', strtotime('+6 days'));
+                $query->andWhere(['OR',
+                    ['BETWEEN', 'a.sales_target_date', date('Y-m-d'), $upcoming],
+                    ['BETWEEN', 'a.collection_target_date', date('Y-m-d'), $upcoming],
+                    ['BETWEEN', 'a.telecaller_target_date', date('Y-m-d'), $upcoming]
+                ]);
+            }
+        }
 
         if (!empty($params['collection_date'])) {
             $query->andWhere(["DATE_FORMAT(a.emi_date, '%d')" => $params['collection_date']]);
