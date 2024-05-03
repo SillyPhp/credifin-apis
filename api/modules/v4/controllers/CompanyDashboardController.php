@@ -3765,6 +3765,14 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
+                ->joinWith(['loanProductsEnc lp' => function ($lp) use ($params) {
+                    if (!empty($params['product_portfolio'])) {
+                        $lp->joinWith(['assignedFinancerLoanTypeEnc lp1' => function ($lp1) {
+                            $lp1->joinWith(['loanTypeEnc lp2'], false);
+                        }], false);
+                        $lp->andWhere(['lp1.loan_type_enc_id' => $params['product_portfolio']]);
+                    }
+                }], false)
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
 
             $employeeAmount2 = LoanApplications::find()
@@ -3788,6 +3796,14 @@ class CompanyDashboardController extends ApiBaseController
                     }
                     if (!empty($roleUnderId) || $roleUnderId != null) {
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                    }
+                }], false)
+                ->joinWith(['loanProductsEnc lp' => function ($lp) use ($params) {
+                    if (!empty($params['product_portfolio'])) {
+                        $lp->joinWith(['assignedFinancerLoanTypeEnc lp1' => function ($lp1) {
+                            $lp1->joinWith(['loanTypeEnc lp2'], false);
+                        }], false);
+                        $lp->andWhere(['lp1.loan_type_enc_id' => $params['product_portfolio']]);
                     }
                 }], false)
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
