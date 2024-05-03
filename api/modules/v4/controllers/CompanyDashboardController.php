@@ -307,13 +307,13 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey"])) {
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey", "phf1026", "phf1116", "phf766"])) {
             if ($user->username == 'wishey') {
                 $leadsAccessOnly = 'both';
             } elseif ($user->username == 'ritika927') {
                 $product_filter = true;
             } else {
-                $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
+                $leadsAccessOnly = in_array($user->username, ["Sumit1992", "phf1116", "phf1026"]) ? "lap" : "vehicle";
             }
         }
 
