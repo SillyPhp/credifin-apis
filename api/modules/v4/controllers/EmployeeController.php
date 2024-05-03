@@ -350,6 +350,30 @@ class EmployeeController extends ApiBaseController
                 $list->andWhere($where);
                 $list->andHaving($having);
             }
+
+            // sorting data
+            if (!empty($params['field_sort'])) {
+                // if $val not null or empty
+                foreach ($params['field_sort'] as $key => $val){
+                    if ($val != null || $val != '') {
+                        // if val is ASC then sorting ascending
+                        if ($val == 'ASC') {
+                            $val = SORT_ASC;
+                        } else if ($val == 'DESC') {
+                            // else sort descending
+                            $val = SORT_DESC;
+                        }
+                        $list->orderBy([$key => $val]);
+                    } else {
+                        //user created_on desc
+                        $list->orderBy(['a.created_on' => SORT_DESC]);
+                    }
+                }
+            } else {
+                // created_on desc
+                $list->orderBy(['a.created_on' => SORT_DESC]);
+            }
+
             if (!$res = UserUtilities::getUserType($user->user_enc_id) == 'Financer' || self::specialCheck($user->user_enc_id)) {
                 $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
                 $list->andWhere(['a.user_enc_id' => $juniors]);
