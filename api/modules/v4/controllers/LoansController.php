@@ -27,6 +27,7 @@ use common\models\LoanApplicationPendencies;
 use common\models\LoanApplicationPendencyDocuments;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
+use common\models\LoanCoApplicants;
 use common\models\LoanPayments;
 use common\models\LoanPurpose;
 use common\models\Referral;
@@ -99,13 +100,11 @@ class LoansController extends ApiBaseController
     {
         // creating Loan application object
         $model = new LoanApplication();
-
         // loading data into model object
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
 
             // validating request
             if ($model->validate()) {
-
                 // checking user authorization
                 $user = $this->isAuthorized();
 
@@ -148,7 +147,9 @@ class LoansController extends ApiBaseController
                         }
                     }
                 }
-
+                if ($this->phone_validation($model->phone_no)) {
+                    return $this->response(422, ['status' => 422, 'message' => 'Phone no. already exists']);
+                }
                 // saving loan application
                 $response = $model->save($user_id);
 
@@ -977,7 +978,17 @@ class LoansController extends ApiBaseController
         }
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
+    private function phone_validation($phone, $loan_co_app_enc_id = null)
+    {
+        $query = LoanCoApplicants::find()
+            ->alias('a')
+            ->joinWith(['loanAppEnc b'], false)
+            ->andWhere(['>=', 'b.loan_status_updated_on', date('Y-m-d 00:00:00', strtotime('-30 days'))])
+            ->andWhere(['a.phone' => $phone])
+            ->andWhere(['not', ['a.loan_co_app_enc_id' => $loan_co_app_enc_id]]);
 
+        return $query->exists();
+    }
     // this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
@@ -996,7 +1007,9 @@ class LoansController extends ApiBaseController
 
             // validating model
             if ($model->validate()) {
-
+                if ($this->phone_validation($model->phone, $params['loan_co_app_enc_id'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'Phone no. already exists']);
+                }
                 // if not empty loan_co_app_enc_id updating co-applicant
                 if (!empty($params['loan_co_app_enc_id'])) {
                     $co_applicant = $model->update();
