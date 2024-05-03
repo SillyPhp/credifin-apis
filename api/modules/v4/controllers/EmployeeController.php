@@ -301,7 +301,7 @@ class EmployeeController extends ApiBaseController
                 $where = ['and'];
                 $having = ['and'];
                 foreach ($params['fields_search'] as $key => $value) {
-                    if (!empty($value) || $value == 0) {
+                    if (!empty($value) || $value == "0") {
                         switch ($key) {
                             case 'phone':
                             case 'username':
