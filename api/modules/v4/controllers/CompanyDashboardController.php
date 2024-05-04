@@ -1290,7 +1290,7 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->from(['p' => AssignedLoanPayments::tableName()])
             ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
-            ->orderBy(['p1.created_on' => SORT_DESC]);
+            ->orderBy(['p1.created_on' => SORT_ASC]);
 
         // getting loan detail
         $loan = LoanApplications::find()
