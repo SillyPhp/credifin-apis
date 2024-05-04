@@ -2177,20 +2177,21 @@ class EmiCollectionsController extends ApiBaseController
             $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
             $org_id = $user_roles->organization_enc_id;
         }
+
         $valuesSma = LoanAccountsExtended::$buckets;
-        $list = EmiCollection::find()
-            ->alias('a')
-            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
-            ->joinWith(['loanAccountEnc b' => function ($b) {
-                $b->joinWith(['branchEnc b1' => function ($b1) {
-                    $b1->joinWith(['cityEnc b2'], false);
-                }], false);
-            }], false)
-            ->where(['a.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
-            ->orWhere(['between', 'a.collection_date', $params['start_date'], $params['end_date']])
+
+        $list = LoanAccounts::find()
+            ->alias('b')
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name","b1.location_enc_id", $this->data($valuesSma,$params)])
+            ->joinWith(['emiCollections a'],false)
+            ->joinWith(['branchEnc b1'=>function($b1){
+                $b1->joinWith(['cityEnc b2'], false);
+            }],false)
+            ->where(['b.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
             ->andWhere(['NOT', ['b.branch_enc_id' => null]])
             ->andWhere(['NOT', ['b.bucket' => null]])
-            ->groupBy(['b1.location_name', 'b2.name']);
+            ->groupBy(['b1.location_enc_id']);
+
 
         if (!empty($params['loan_type'])) {
             $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
@@ -2226,19 +2227,21 @@ class EmiCollectionsController extends ApiBaseController
     }
 
 
-    private function data($valuesSma)
+    private function data($valuesSma,$params)
     {
+        $startDate = $params['start_date'];
+        $endDate = $params['end_date'];
         $queryResult = '';
         foreach ($valuesSma as $key => $value) {
             $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
-            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}'AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
             if ($key == 'OnTime') {
                 $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
             } else {
                 $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
             }
-            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
-            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
 
             $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
         }

@@ -352,14 +352,14 @@ class EmployeeController extends ApiBaseController
             }
 
             // sorting data
-            if (!empty($params['field_sort'])) {
+            if (!empty($params['fields_sort'])) {
                 // if $val not null or empty
-                foreach ($params['field_sort'] as $key => $val){
+                foreach ($params['fields_sort'] as $key => $val){
                     if ($val != null || $val != '') {
-                        // if val is ASC then sorting ascending
-                        if ($val == 'ASC') {
+                        // if val is 1 then sorting ascending
+                        if ($val == '1') {
                             $val = SORT_ASC;
-                        } else if ($val == 'DESC') {
+                        } else if ($val == '2') {
                             // else sort descending
                             $val = SORT_DESC;
                         }
