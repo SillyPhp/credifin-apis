@@ -357,14 +357,47 @@ class LoanAccountsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $limit = !empty($params['limit']) ? $params['limit'] : 25;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
+        function payment_mode_add($data)
+        {
+            if (in_array(1, $data)) {
+                $data[] = 21;
+            }
+            if (in_array(2, $data)) {
+                $data[] = 22;
+            }
+            if (in_array(3, $data)) {
+                $data[] = 23;
+            }
+            if (in_array(4, $data)) {
+                $data[] = 24;
+            }
+            return $data;
+        }
+
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
                 'a.customer_visit', 'a.customer_interaction',
-                'a.emi_collection_enc_id',
+                'a.emi_collection_enc_id', 'a.phone',
                 'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
+                "SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount",
                 "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
                 "CASE 
                     WHEN a.other_delay_reason IS NOT NULL 
@@ -392,6 +425,7 @@ class LoanAccountsController extends ApiBaseController
                         THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
                     ELSE NULL 
                 END as borrower_image",
+                "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
                 "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
                 WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method",
@@ -402,7 +436,15 @@ class LoanAccountsController extends ApiBaseController
                 $d->joinWith(['loanPaymentsEnc d1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac]);
-        $count = $model->count();
+
+        if (isset($org_id)) {
+            $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+        }
+
+        if (isset($lac)) {
+            $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
@@ -428,7 +470,7 @@ class LoanAccountsController extends ApiBaseController
                 $value['pr_receipt_image'] = $proof;
             }
         }
-        return ['data' => $model, 'count' => $count];
+        return ['data' => $model];
     }
 
     public function actionCustomerLoanAccountDetail()
