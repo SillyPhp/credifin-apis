@@ -1881,6 +1881,9 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['branch_loc'])) {
             return 'send branch loc';
         }
+        if (empty($params['date'])) {
+            return 'send date';
+        }
         $custom_name_function = !empty($params['find_name']);
         $branch_loc = $params['branch_loc'];
         if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
@@ -2066,7 +2069,6 @@ class LoanAccountsController extends ApiBaseController
                         $loan = $model->where($where)->one();
                     }
                     if (!$loan) {
-                        $new = true;
                         $loan = new LoanAccounts();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
@@ -2081,6 +2083,18 @@ class LoanAccountsController extends ApiBaseController
                     } else {
                         $old_cases++;
                     }
+
+                    $overdue = EmiCollection::find()
+                        ->alias('a')
+                        ->select(['SUM(a.amount) AS overdue'])
+                        ->where([
+                            'a.loan_account_number' => $loan->loan_account_number,
+                            'a.emi_payment_status' => 'paid'
+                        ])
+                        ->andWhere(['>', 'a.collection_date', $params['date']])
+                        ->asArray()
+                        ->one();
+                    $overdue = $overdue ? $overdue['overdue'] : 0;
                     $loan->updated_on = date('Y-m-d H:i:s');
                     $loan->updated_by = $user->user_enc_id;
 
@@ -2173,7 +2187,7 @@ class LoanAccountsController extends ApiBaseController
                                 throw new \Exception("db field not found for $header");
                             }
 
-                            if (!empty($value) || $value === 0) {
+                            if (!empty($value) || $value == 0) {
                                 $def = $defined[$header];
                                 if (in_array($header, [
                                     'Stock',
@@ -2186,6 +2200,8 @@ class LoanAccountsController extends ApiBaseController
                                 ])) {
                                     if ($header == 'Ledger A/c' && in_array($loan_type, ['Loan Against Property', 'MSME']) && $value < 0) {
                                         $value = 0;
+                                    } elseif ($header == 'OverDue') {
+                                        $value -= $overdue;
                                     }
                                     $loan->$def = $value;
                                 } else {
@@ -2199,7 +2215,6 @@ class LoanAccountsController extends ApiBaseController
                     if (!$loan->save()) {
                         throw new \Exception(implode(' ', array_column($loan->getErrors(), '0')));
                     }
-                    unset($new);
                 }
                 fclose($handle);
                 $transaction->commit();
