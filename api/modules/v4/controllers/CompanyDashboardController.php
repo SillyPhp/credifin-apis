@@ -1663,7 +1663,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 if (empty($update_data['emi_amount']) || empty($update_data['number_of_emis']) || empty($update_data['financed_amount'])) {
-                    throw new Exception("Emi number, number of emis and financed amount can't be empty.");
+                    throw new Exception("EMI number, Number of EMIs and Financed amount can't be empty.");
                 }
                 $total_emis = $update_data['number_of_emis'];
                 $start_emis = $update_data['emi_collection_date'];
