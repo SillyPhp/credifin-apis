@@ -980,13 +980,14 @@ class LoansController extends ApiBaseController
     }
     private function phone_validation($phone, $loan_co_app_enc_id = null)
     {
+        $where = ["AND", ['a.phone' => $phone], ['>=', 'b.loan_status_updated_on', date('Y-m-d 00:00:00', strtotime('-30 days'))]];
+        if ($loan_co_app_enc_id) {
+            $where[] = ['!=', 'a.loan_co_app_enc_id', $loan_co_app_enc_id];
+        }
         $query = LoanCoApplicants::find()
             ->alias('a')
             ->joinWith(['loanAppEnc b'], false)
-            ->andWhere(['>=', 'b.loan_status_updated_on', date('Y-m-d 00:00:00', strtotime('-30 days'))])
-            ->andWhere(['a.phone' => $phone])
-            ->andWhere(['not', ['a.loan_co_app_enc_id' => $loan_co_app_enc_id]]);
-
+            ->where($where);
         return $query->exists();
     }
     // this action is used to add co-applicant
