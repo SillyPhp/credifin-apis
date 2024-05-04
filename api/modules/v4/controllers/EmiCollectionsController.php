@@ -297,9 +297,9 @@ class EmiCollectionsController extends ApiBaseController
                             $state = "('" . implode("','", $value) . "')";
                             if ($key == 'state_enc_id') {
                                 if (in_array("unassigned", $value)) {
-                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) => null";
+                                    $fields_search[] = "ANY_VALUE(ce2.state_enc_id) => null";
                                 } else {
-                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) IN $state";
+                                    $fields_search[] = "ANY_VALUE(ce2.state_enc_id) IN $state";
                                 }
                             }
                             break;
@@ -1570,10 +1570,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                if (in_array('unassigned', $value)) {
-                                    $value[] = null;
-                                }
-                                $model->andWhere(['lc.sub_bucket' => $value]);
+                                $model->andWhere(['IN', 'lc.sub_bucket', ApiBaseController::assign_unassigned($value)]);
                                 break;
                         }
                     }
