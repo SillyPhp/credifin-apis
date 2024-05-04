@@ -2236,12 +2236,12 @@ class EmiCollectionsController extends ApiBaseController
             $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
             $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}'AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
             if ($key == 'OnTime') {
-                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+                $targetAmount = "ROUND(SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END), 2) target_amount_{$key},";
             } else {
-                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+                $targetAmount = "ROUND(SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END), 2) target_amount_{$key},";
             }
-            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
-            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+            $collectedVerifiedAmount = "ROUND(COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0), 2) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "ROUND(COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0), 2) collected_unverified_amount_{$key},";
 
             $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
         }
