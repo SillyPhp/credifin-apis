@@ -1677,6 +1677,10 @@ class CompanyDashboardController extends ApiBaseController
                     ->groupBy(['a.loan_app_enc_id'])
                     ->asArray()
                     ->one();
+
+                if (empty($update_data['emi_amount']) || empty($update_data['number_of_emis']) || empty($update_data['financed_amount'])) {
+                    throw new Exception("Emi number, number of emis and financed amount can't be empty.");
+                }
                 $total_emis = $update_data['number_of_emis'];
                 $start_emis = $update_data['emi_collection_date'];
                 $last_emi_date = null;
