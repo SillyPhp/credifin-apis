@@ -1385,7 +1385,6 @@ class LoanAccountsController extends ApiBaseController
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
                         $ptpcases->andWhere(['IN', 'c.sub_bucket', $this->assign_unassigned($value)]);
-
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
@@ -1395,25 +1394,13 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['c.bucket' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'c.bucket', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'c.bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'loan_type') {
                         $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
                     } elseif ($key == 'branch') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['bb.location_enc_id' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'bb.location_enc_id', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'total_pending_amount') {
                         $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
                     } elseif ($key == 'min_proposed_amount') {
@@ -2517,32 +2504,17 @@ class LoanAccountsController extends ApiBaseController
                         $sub_query->andWhere(['b.' . $key => $value]);
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['c2.state_enc_id' => null]);
-                            $query->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['c.bucket' => null]);
-                            $query->andWhere(['la.bucket' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'c.bucket', $value]);
-                            $query->andWhere(['IN', 'la.bucket', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'c.bucket', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'la.bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'loan_type') {
                         $sub_query->andWhere(['IN', 'c.loan_type', $value]);
                         $query->andWhere(['IN', 'la.loan_type', $value]);
                     } elseif ($key == 'branch') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['bb.location_enc_id' => null]);
-                            $query->andWhere(['bb.location_enc_id' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'bb.location_enc_id', $value]);
-                            $query->andWhere(['IN', 'bb.location_enc_id', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'assigned_bdo') {
                         $sub_query->andWhere(['ala.user_type' => 1])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -2873,6 +2845,7 @@ class LoanAccountsController extends ApiBaseController
                 'b.name',
                 'b.loan_account_number',
                 'b.bucket',
+                'b.sub_bucket',
                 'b.bucket_status_date',
                 'c.payment_amount',
                 'c.payment_status',
@@ -2894,6 +2867,7 @@ class LoanAccountsController extends ApiBaseController
             'loan_account_number',
             'customer_name',
             'bucket',
+            'sub_bucket',
             'phone',
             'loan_type',
             'collection_start_date',
@@ -2928,6 +2902,9 @@ class LoanAccountsController extends ApiBaseController
                         break;
                     case 'phone':
                         $data->andWhere(['LIKE', 'b.phone', "$val%", false]);
+                        break;
+                    case 'sub_bucket':
+                        $data->andWhere(['IN', 'b.sub_bucket', $this->assign_unassigned($val)]);
                         break;
                     default:
                         // default is only for b alias name so set accordingly

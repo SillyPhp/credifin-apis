@@ -308,11 +308,7 @@ class EmployeeController extends ApiBaseController
                                 $where[] = ['like', 'a.' . $key, $value];
                                 break;
                             case 'state_enc_id':
-                                if (in_array("unassigned", $value)) {
-                                    $where[] = ['ce2.state_enc_id' => null];
-                                } else {
-                                    $where[] = ['IN', 'ce2.state_enc_id', $value];
-                                }
+                                $where[] = ['IN', 'ce2.state_enc_id', $this->assign_unassigned($value)];
                                 break;
                             case 'employee_name':
                                 $where[] = ['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value];
@@ -321,11 +317,7 @@ class EmployeeController extends ApiBaseController
                                 $where[] = ['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value];
                                 break;
                             case 'branch':
-                                if (in_array("unassigned", $value)) {
-                                    $where[] = ['b3.location_enc_id' => null];
-                                } else {
-                                    $where[] = ['IN', 'b3.location_enc_id', $value];
-                                }
+                                $where[] = ['IN', 'b3.location_enc_id', $this->assign_unassigned($value)];
                                 break;
                             case 'designation_id':
                                 $where[] = ['IN', 'gd.assigned_designation_enc_id', $value];
