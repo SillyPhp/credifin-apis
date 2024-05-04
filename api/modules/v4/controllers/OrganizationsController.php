@@ -212,7 +212,7 @@ class OrganizationsController extends ApiBaseController
                 ->alias("a")
                 ->select([
                     "a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
-                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status"
+                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status", "b.state_enc_id"
                 ])
                 ->addSelect(["a.location_name as value"])
                 ->joinWith(["cityEnc b"], false)
@@ -2707,7 +2707,8 @@ class OrganizationsController extends ApiBaseController
                 $query->having(['BETWEEN', 'target_date', date('Y-m-d'), $upcoming]);
             } else {
                 $upcoming = date('Y-m-d', strtotime('+6 days'));
-                $query->andWhere(['OR',
+                $query->andWhere([
+                    'OR',
                     ['BETWEEN', 'a.sales_target_date', date('Y-m-d'), $upcoming],
                     ['BETWEEN', 'a.collection_target_date', date('Y-m-d'), $upcoming],
                     ['BETWEEN', 'a.telecaller_target_date', date('Y-m-d'), $upcoming]
