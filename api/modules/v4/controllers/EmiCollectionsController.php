@@ -334,6 +334,7 @@ class EmiCollectionsController extends ApiBaseController
                             $value = "('" . implode("','", $value) . "')";
                             $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $value";
                             break;
+
                         case 'designation_id':
                             $value = "('" . implode("','", $value) . "')";
                             $fields_search[] = "b1.designation_id IN $value";
@@ -1523,11 +1524,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
                                 break;
                             case 'branch':
-                                if (in_array("unassigned", $value)) {
-                                    $model->andWhere(['c.location_enc_id' => null]);
-                                } else {
-                                    $model->andWhere(['c.location_enc_id' => $value]);
-                                }
+                                $model->andWhere(['IN', 'c.location_enc_id', self::assign_unassigned($value)]);
                                 break;
 
                             case 'min_target_collection_amount':
@@ -1545,11 +1542,7 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
 
                             case 'state_enc_id':
-                                if (in_array("unassigned", $value)) {
-                                    $model->andWhere(["c2.state_enc_id" => null]);
-                                } else {
-                                    $model->andWhere(['IN', "c2.state_enc_id", $value]);
-                                }
+                                $model->andWhere(['IN', "c2.state_enc_id", self::assign_unassigned($value)]);
                                 break;
                             case 'designation':
                                 $model->andWhere(['like', 'b1a.' . $key, $value]);
@@ -1570,7 +1563,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                $model->andWhere(['IN', 'lc.sub_bucket', ApiBaseController::assign_unassigned($value)]);
+                                $model->andWhere(['IN', 'lc.sub_bucket', self::assign_unassigned($value)]);
                                 break;
                         }
                     }
@@ -2343,21 +2336,13 @@ class EmiCollectionsController extends ApiBaseController
                                     $list->andWhere(['like', "CONCAT(a.first_name,' ', COALESCE(a.last_name))", $value]);
                                     break;
                                 case 'state_enc_id':
-                                    if (in_array("unassigned", $value)) {
-                                        $list->andWhere(["b5.state_enc_id" => null]);
-                                    } else {
-                                        $list->andWhere(['IN', "b5.state_enc_id", $value]);
-                                    }
+                                    $list->andWhere(['IN', "b5.state_enc_id", self::assign_unassigned($value)]);
                                     break;
                                 case 'reporting_person':
                                     $list->andWhere(['like', "CONCAT(b2.first_name,' ', COALESCE(b2.last_name))", $value]);
                                     break;
                                 case 'branch':
-                                    if (in_array("unassigned", $value)) {
-                                        $list->andWhere(['b3.location_enc_id' => null]);
-                                    } else {
-                                        $list->andWhere(['IN', 'b3.location_enc_id', $value]);
-                                    }
+                                    $list->andWhere(['IN', 'b3.location_enc_id', $this->assign_unassigned($value)]);
                                     break;
                                 case 'designation_id':
                                     $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
@@ -2485,11 +2470,7 @@ class EmiCollectionsController extends ApiBaseController
                             $list->andHaving(['<=', "{$dynamic}", $value]);
                             break;
                         case 'branch':
-                            if (in_array("unassigned", $value)) {
-                                $list->andWhere(['ol.location_enc_id' => null]);
-                            } else {
-                                $list->andWhere(['IN', 'ol.location_enc_id', $value]);
-                            }
+                            $list->andWhere(['IN', 'ol.location_enc_id', $this->assign_unassigned($value)]);
                             break;
                         default:
                             switch ($key) {
