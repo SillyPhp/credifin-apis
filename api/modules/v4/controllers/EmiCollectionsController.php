@@ -297,9 +297,9 @@ class EmiCollectionsController extends ApiBaseController
                             $state = "('" . implode("','", $value) . "')";
                             if ($key == 'state_enc_id') {
                                 if (in_array("unassigned", $value)) {
-                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) => null";
+                                    $fields_search[] = "ANY_VALUE(ce2.state_enc_id) => null";
                                 } else {
-                                    $fields_search[] = "ANY_VALUE(ce2.state_encc_id) IN $state";
+                                    $fields_search[] = "ANY_VALUE(ce2.state_enc_id) IN $state";
                                 }
                             }
                             break;
@@ -331,8 +331,12 @@ class EmiCollectionsController extends ApiBaseController
                             $fields_search[] = "ANY_VALUE(a.phone) LIKE '%$value%'";
                             break;
                         case 'branch':
-                            $branch = "('" . implode("','", $value) . "')";
-                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $branch";
+                            $value = "('" . implode("','", $value) . "')";
+                            $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $value";
+                            break;
+                        case 'designation_id':
+                            $value = "('" . implode("','", $value) . "')";
+                            $fields_search[] = "b1.designation_id IN $value";
                             break;
                     }
                 }
@@ -380,7 +384,6 @@ class EmiCollectionsController extends ApiBaseController
         if (!empty($params['loan_type'])) {
             $users->andWhere(['IN', 'emi.loan_type', $params['loan_type']]);
         }
-
         $count = $users->count();
         $users = $users
             ->limit($limit)
@@ -1567,7 +1570,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                if(in_array('unassigned', $value)){
+                                if (in_array('unassigned', $value)) {
                                     $value[] = null;
                                 }
                                 $model->andWhere(['lc.sub_bucket' => $value]);

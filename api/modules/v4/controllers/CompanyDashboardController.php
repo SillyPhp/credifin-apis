@@ -307,13 +307,13 @@ class CompanyDashboardController extends ApiBaseController
         $specialroles = false;
         $leadsAccessOnly = false;
         $roleUnderId = null;
-        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey"])) {
+        if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey", "phf1026", "phf1116", "phf766"])) {
             if ($user->username == 'wishey') {
                 $leadsAccessOnly = 'both';
             } elseif ($user->username == 'ritika927') {
                 $product_filter = true;
             } else {
-                $leadsAccessOnly = $user->username === "Sumit1992" ? "lap" : "vehicle";
+                $leadsAccessOnly = in_array($user->username, ["Sumit1992", "phf1116", "phf1026"]) ? "lap" : "vehicle";
             }
         }
 
@@ -1701,7 +1701,7 @@ class CompanyDashboardController extends ApiBaseController
                     $update->financed_amount = $update_data['financed_amount'];
                     $update->branch_enc_id = $update_data['branch_enc_id'];
                     $update->bucket = 'OnTime';
-                    $update->sub_bucket = '0';
+                    $update->sub_bucket = 'X';
                     $update->bucket_status_date = date('Y-m-d');
                     $update->emi_date = $update_data['emi_collection_date'];
                     $update->vehicle_type = $update_data['vehicle_type'];
@@ -3765,6 +3765,14 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
+                ->joinWith(['loanProductsEnc lp' => function ($lp) use ($params) {
+                    if (!empty($params['product_portfolio'])) {
+                        $lp->joinWith(['assignedFinancerLoanTypeEnc lp1' => function ($lp1) {
+                            $lp1->joinWith(['loanTypeEnc lp2'], false);
+                        }], false);
+                        $lp->andWhere(['lp1.loan_type_enc_id' => $params['product_portfolio']]);
+                    }
+                }], false)
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
 
             $employeeAmount2 = LoanApplications::find()
@@ -3788,6 +3796,14 @@ class CompanyDashboardController extends ApiBaseController
                     }
                     if (!empty($roleUnderId) || $roleUnderId != null) {
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
+                    }
+                }], false)
+                ->joinWith(['loanProductsEnc lp' => function ($lp) use ($params) {
+                    if (!empty($params['product_portfolio'])) {
+                        $lp->joinWith(['assignedFinancerLoanTypeEnc lp1' => function ($lp1) {
+                            $lp1->joinWith(['loanTypeEnc lp2'], false);
+                        }], false);
+                        $lp->andWhere(['lp1.loan_type_enc_id' => $params['product_portfolio']]);
                     }
                 }], false)
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);

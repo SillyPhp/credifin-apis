@@ -1804,6 +1804,118 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'Marked Hard Recovery']);
     }
+    public function actionAssignInvestmentSource()
+    {
+        $this->isAuth(2);
+        $user = $this->user;
+        $params = $this->post;
+        $custom_name_function = !empty($params['find_name']);
+        $always_required = [
+            'CompanyID',
+            'LmsNumber',
+            'FileNumberNew',
+            'CaseNo',
+            'Name',
+            'InvestmentSource'
+        ];
+        $loan_account_table = LoanAccounts::tableName();
+        $file = $_FILES['file'];
+        $updates = [];
+        $updated = 0;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+                $count = true;
+                while (($data = fgetcsv($handle, 100000)) !== FALSE) {
+                    if ($count) {
+                        $headers = $data;
+                        $missing = [];
+                        foreach ($always_required as $item) {
+                            if (!in_array($item, $headers)) {
+                                $missing[] = $item;
+                            }
+                        }
+                        if (!empty($missing)) {
+                            throw new \Exception("These fields are required" . json_encode($missing));
+                        }
+                        $count = false;
+                        continue;
+                    }
+                    if (empty($headers)) {
+                        throw new \Exception("Headers error.");
+                    }
+                    $data = array_map(function ($key, $item) use ($headers) {
+                        $item = trim($item);
+                        return in_array($key, [array_search('FileNumberNew', $headers), array_search('CaseNo', $headers)]) ? str_replace(' ', '', $item) : $item;
+                    }, array_keys($data), $data);
+                    unset($loan_account_number);
+                    $investment_source = array_search('InvestmentSource', $headers);
+                    if ($investment_source === false) {
+                        continue;
+                    }
+                    $investment_source = $data[$investment_source];
+                    if (empty($investment_source)) {
+                        continue;
+                    }
+
+                    if (array_search('FileNumberNew', $headers) !== false) {
+                        $loan_account_number = $data[array_search('FileNumberNew', $headers)];
+                    }
+                    if ($custom_name_function) {
+                        if (array_search('Name', $headers) === false) {
+                            throw new \Exception("name is not found");
+                        }
+                        $lms_loan_account_number = $this->extractNameAndCode($data[array_search('Name', $headers)])['code'];
+                    } else {
+                        $lms_loan_account_number = $data[array_search('LmsNumber', $headers)];
+                    }
+                    $case_no = $data[array_search('CaseNo', $headers)];
+                    $where = ["AND"];
+                    if (!empty($loan_account_number)) {
+                        $where[] = ["loan_account_number" => $loan_account_number];
+                    } else {
+                        $company_id = $data[array_search('CompanyID', $headers)];
+                        $where[] = ["case_no" => $case_no];
+                        $where[] = ["company_id" => $company_id];
+                        $loan_account_number = $lms_loan_account_number;
+                    }
+                    if (array_search('Name', $headers) !== false) {
+                        $name = $data[array_search('Name', $headers)];
+                        $name = explode(' ', $name)[0];
+                        $where[] = ['LIKE', 'name', "$name%", false];
+                    }
+                    $model = LoanAccounts::find();
+                    $loan = $model->where($where)->one();
+                    if (!$loan && !empty($loan_account_number)) {
+                        $where = [
+                            'AND',
+                            [
+                                'OR',
+                                ['loan_account_number' => $loan_account_number],
+                                ['lms_loan_account_number' => $loan_account_number]
+                            ],
+                            ['IS', 'loan_app_enc_id', null]
+                        ];
+                        $loan = $model->where($where)->one();
+                    }
+                    if (!$loan) {
+                        continue;
+                    }
+                    $update_on = date('Y-m-d H:i:s');
+                    $updates[] = "UPDATE $loan_account_table SET investment_source = '$investment_source' , updated_on = '$update_on' , updated_by = '{$user->user_enc_id}' WHERE id = {$loan->id};";
+                }
+                fclose($handle);
+                foreach ($updates as $update) {
+                    $updated += Yii::$app->db->createCommand($update)->execute();
+                }
+                $transaction->commit();
+                return $this->response(200, ['message' => 'successfully saved', 'updated' => $updated]);
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollback();
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+        }
+    }
 
     public function actionUploadSheet()
     {
@@ -1927,10 +2039,10 @@ class LoanAccountsController extends ApiBaseController
         $new_cases = 0;
         $old_cases = 0;
         $file = $_FILES['file'];
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                 $count = true;
-                $transaction = Yii::$app->db->beginTransaction();
                 $utilitiesModel = new Utilities();
                 while (($data = fgetcsv($handle, 100000)) !== FALSE) {
                     if ($count) {
@@ -2138,9 +2250,8 @@ class LoanAccountsController extends ApiBaseController
                 return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
             }
         } catch (\Exception $exception) {
-            print_r(['exception' => $exception]);
-            exit();
-            $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
+            $transaction->rollback();
+            return $this->response(500, ['message' => 'an error occurred', 'error' => $exception->getMessage()]);
         }
     }
 
