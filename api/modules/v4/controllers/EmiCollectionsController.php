@@ -2415,8 +2415,8 @@ class EmiCollectionsController extends ApiBaseController
         $params = $this->post;
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
         $page = !empty($params['page']) ? $params['page'] : 1;
-        $start_date = $params['start_date'];
-        $end_date = $params['end_date'];
+        $startDate = $params['start_date'];
+        $endDate = $params['end_date'];
         $org_id = $user->organization_enc_id;
         if (!$org_id) {
             $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
@@ -2424,102 +2424,105 @@ class EmiCollectionsController extends ApiBaseController
         }
         $valuesSma = LoanAccountsExtended::$buckets;
         $select = [
-            "COUNT(CASE WHEN amount > 0 OR emi_payment_method = 0 THEN amount END) total_cases_count",
-            "COALESCE(SUM(a.amount), 0) total_collected_cases_sum",
-            "COALESCE(SUM(CASE WHEN a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END), 0) total_collected_verified_amount",
-            "COALESCE(SUM(CASE WHEN a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END), 0) total_collected_unverified_amount",
-            "COALESCE(COUNT(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN a.amount END), 0) total_interaction_count",
-            "COALESCE(SUM(CASE WHEN c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END), 0) total_interaction_sum",
+            "COALESCE(COUNT(ec.id), 0) total_cases_count",
+            "COALESCE(SUM(CASE WHEN ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_cases_sum",
+            "COALESCE(SUM(CASE WHEN ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_verified_amount",
+            "COALESCE(SUM(CASE WHEN ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_unverified_amount",
+            "COALESCE(COUNT(CASE WHEN lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_interaction_count",
+            "COALESCE(SUM(CASE WHEN lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN (ec.amount + lap.proposed_amount) END), 0) total_interaction_sum",
         ];
         foreach ($valuesSma as $key => $value) {
-            $select[] = "COALESCE(COUNT(CASE WHEN (b.bucket = '{$value['name']}') AND a.amount > 0 THEN a.amount END), 0) {$key}_total_cases_count";
-            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_cases_sum";
-            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' AND a.amount > 0 THEN a.amount END), 0) {$key}_collected_verified_amount";
-            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') THEN a.amount END), 0) {$key}_collected_unverified_amount";
-            $select[] = "COALESCE(COUNT(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN a.amount END), 0) {$key}_total_interaction_count";
-            $select[] = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND c.id IS NOT NULL AND a.amount > 0 THEN (a.amount + c.proposed_amount) END), 0) {$key}_total_interaction_sum";
+            $select[] = "COALESCE(COUNT(CASE WHEN (lac.sub_bucket IN ('{$value['subBucket']}')) AND ec.amount > 0 THEN ec.amount END), 0) {$key}_total_cases_count";
+            $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_cases_sum";
+            $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_verified_amount";
+            $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_unverified_amount";
+            $select[] = "COALESCE(COUNT(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_total_interaction_count";
+            $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN (ec.amount + lap.proposed_amount) END), 0) {$key}_total_interaction_sum";
         }
+        $select = implode(',', $select);
+        $list = EmiCollection::find()
+            ->alias('ec') //a
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name",$select])
+            ->joinWith(['loanAccountEnc lac'=>function($x){ //b
+                $x->joinWith(['branchEnc b1'=>function($b1){
+                    $b1->joinWith(['cityEnc b2'], false);
+                }],false);
+            }],false)
+            ->joinWith(['loanAccountPtps lap'],false)
+            ->where(['b1.organization_enc_id' => $org_id])
+            ->andWhere(['NOT', ['lac.branch_enc_id' => null]])
+            ->groupBy(['b1.location_enc_id']);
 
-        $subquery = (new \yii\db\Query())
-            ->select(['a.branch_enc_id'])
-            ->addSelect($select)
-            ->from(['a' => EmiCollection::tableName()])
-            ->join('LEFT JOIN', ['b' => LoanAccounts::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
-            ->join('LEFT JOIN', ['c' => LoanAccountPtps::tableName()], 'c.emi_collection_enc_id = a.emi_collection_enc_id')
-            ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['BETWEEN', "COALESCE(a.collection_date, a.created_on)", $start_date, $end_date])
-            ->groupBy(['a.branch_enc_id']);
+
         if (!empty($params['loan_type'])) {
-            $subquery->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
+            $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
         }
-        $list = OrganizationLocations::find()
-            ->alias('ol')
-            ->select([
-                'ol.location_enc_id',
-                'ol.location_name',
-                "CONCAT(b.name, ', ', c.name) location",
-                'subquery.*'
-            ])
-            ->innerJoin(['subquery' => $subquery], 'ol.location_enc_id = subquery.branch_enc_id')
-            ->joinWith(['cityEnc AS b' => function ($b) {
-                $b->joinWith(['stateEnc AS c'], false);
-            }], false)
-            ->andWhere(['ol.is_deleted' => 0, 'ol.organization_enc_id' => $org_id]);
-
         if (!empty($params['fields_search'])) {
+            $where = ['and'];
+            $having = ['and'];
             foreach ($params['fields_search'] as $key => $value) {
-                if (!empty($value) || $value == '0') {
-                    $parts = explode('_', $key);
-                    $dynamic = implode('_', array_slice($parts, 1));
-                    switch ($parts[0]) {
-                        case 'min':
-                            $list->andHaving(['>=', "{$dynamic}", $value]);
+                if (!empty($value) || $value == 0) {
+                    switch ($key) {
+                        case 'phone':
+                        case 'username':
+                            $where[] = ['like', 'a.' . $key, $value];
                             break;
-                        case 'max':
-                            $list->andHaving(['<=', "{$dynamic}", $value]);
+                        case 'state_enc_id':
+                            if (in_array("unassigned", $value)) {
+                                $where[] = ['ce2.state_enc_id' => null];
+                            } else {
+                                $where[] = ['IN', 'ce2.state_enc_id', $value];
+                            }
+                            break;
+                        case 'employee_name':
+                            $where[] = ['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value];
+                            break;
+                        case 'reporting_person':
+                            $where[] = ['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value];
                             break;
                         case 'branch':
                             if (in_array("unassigned", $value)) {
-                                $list->andWhere(['ol.location_enc_id' => null]);
+                                $where[] = ['b3.location_enc_id' => null];
                             } else {
-                                $list->andWhere(['IN', 'ol.location_enc_id', $value]);
+                                $where[] = ['IN', 'b3.location_enc_id', $value];
                             }
                             break;
+                        case 'designation_id':
+                            $where[] = ['IN', 'gd.assigned_designation_enc_id', $value];
+                            break;
+                        case 'employee_code':
+                            $where[] = ['like', 'b.employee_code', $value];
+                            break;
                         default:
-                            switch ($key) {
-                                default:
-                                    $parts = explode('_', $key);
-                                    $dynamic = implode('_', array_slice($parts, 0));
-                                    switch ($parts[0]) {
-                                        case 'OnTime':
-                                        case 'SMA0':
-                                        case 'SMA1':
-                                        case 'SMA2':
-                                        case 'NPA':
-                                            $list->andWhere(['=', "{$dynamic}", $value]);
-                                            break;
-                                        default:
-                                            $list->andWhere(['like', $key, $value]);
-                                            break;
-                                    }
-                                    break;
+                            if (strpos($key, 'min_') === 0) {
+                                $field = substr($key, 4);
+                                $having[] = ['>=', $field, $value];
+                            } elseif (strpos($key, 'max_') === 0) {
+                                $field = substr($key, 4);
+                                $having[] = ['<=', $field, $value];
+                            } else {
+                                $having[] = ['LIKE', $key, $value];
                             }
                             break;
                     }
                 }
             }
+            $list->andWhere($where);
+            $list->andHaving($having);
         }
 
         if (!empty($params['fields_sort'])) {
-            foreach ($params['fields_sort'] as $key => $value) {
-                if (!empty($value)) {
-                    if ($value == 1) {
-                        $value = SORT_ASC;
-                    } else if ($value == 2) {
-                        $value = SORT_DESC;
+            // if $val not null or empty
+            foreach ($params['fields_sort'] as $key => $val){
+                if ($val != null || $val != '') {
+                    // if val is 1 then sorting ascending
+                    if ($val == '1') {
+                        $val = SORT_ASC;
+                    } else if ($val == '2') {
+                        // else sort descending
+                        $val = SORT_DESC;
                     }
-                    $dynamic = $key;
-                    $list->orderBy([$dynamic => $value]);
+                    $list->orderBy([$key => $val]);
                 }
             }
         }
