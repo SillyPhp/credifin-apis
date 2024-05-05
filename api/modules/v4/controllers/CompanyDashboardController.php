@@ -560,11 +560,7 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['IN', 'a.loan_products_enc_id', $val]);
                                 break;
                             case 'state_enc_id':
-                                if (in_array("unassigned", $val)) {
-                                    $loans->andWhere(["ce2.state_enc_id" => null]);
-                                } else {
-                                    $loans->andWhere(['IN', "ce2.state_enc_id", $val]);
-                                }
+                                $loans->andWhere(['IN', "ce2.state_enc_id", $this->assign_unassigned($val)]);
                                 break;
                             case 'login_start_date':
                                 $loans->andWhere(['>=', 'a.login_date', $val]);
@@ -616,11 +612,7 @@ class CompanyDashboardController extends ApiBaseController
                     if (in_array($key, $i)) {
                         switch ($key) {
                             case 'branch':
-                                if (in_array("unassigned", $val)) {
-                                    $loans->andWhere(['i.branch_enc_id' => null]);
-                                } else {
-                                    $loans->andWhere(['IN', 'i.branch_enc_id', $val]);
-                                }
+                                $loans->andWhere(['IN', 'i.branch_enc_id', $this->assign_unassigned($val)]);
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
@@ -1029,11 +1021,7 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['<', 'a.loan_status_updated_on', $val]);
                                 break;
                             case 'branch':
-                                if (in_array("unassigned", $val)) {
-                                    $loans->andWhere(['b.location_enc_id' => null]);
-                                } else {
-                                    $loans->andWhere(['IN', 'b.location_enc_id', $val]);
-                                }
+                                $loans->andWhere(['IN', 'b.location_enc_id', $this->assign_unassigned($val)]);
                                 break;
                             default:
                                 $loans->andWhere(['like', 'a.' . $key, $val]);
@@ -1054,11 +1042,7 @@ class CompanyDashboardController extends ApiBaseController
                                 $loans->andWhere(['LIKE', 'b.location_name', $val]);
                                 break;
                             case 'state_enc_id':
-                                if (in_array("unassigned", $val)) {
-                                    $loans->andWhere(['ce2.state_enc_id' => null]);
-                                } else {
-                                    $loans->andWhere(['IN', 'ce2.state_enc_id', $val]);
-                                }
+                                $loans->andWhere(['IN', 'ce2.state_enc_id', $this->assign_unassigned($val)]);
                                 break;
                             case 'status':
                                 $loans->andWhere(['IN', 'i.status', $val]);
@@ -1290,7 +1274,7 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->from(['p' => AssignedLoanPayments::tableName()])
             ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
-            ->orderBy(['p1.created_on' => SORT_DESC]);
+            ->orderBy(['p1.created_on' => SORT_ASC]);
 
         // getting loan detail
         $loan = LoanApplications::find()
@@ -1677,6 +1661,10 @@ class CompanyDashboardController extends ApiBaseController
                     ->groupBy(['a.loan_app_enc_id'])
                     ->asArray()
                     ->one();
+
+                if (empty($update_data['emi_amount']) || empty($update_data['number_of_emis']) || empty($update_data['financed_amount'])) {
+                    throw new Exception("EMI number, Number of EMIs and Financed amount can't be empty.");
+                }
                 $total_emis = $update_data['number_of_emis'];
                 $start_emis = $update_data['emi_collection_date'];
                 $last_emi_date = null;
@@ -3321,11 +3309,7 @@ class CompanyDashboardController extends ApiBaseController
                         } elseif ($key == 'phone') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'state_enc_id') {
-                            if (in_array("unassigned", $value)) {
-                                $employeeStats->andWhere(['ce2.state_enc_id' => null]);
-                            } else {
-                                $employeeStats->andWhere(['IN', 'ce2.state_enc_id', $value]);
-                            }
+                            $employeeStats->andWhere(['IN', 'ce2.state_enc_id', $this->assign_unassigned($value)]);
                         } elseif ($key == 'username') {
                             $employeeStats->andWhere(['like', 'a.' . $key, $value]);
                         } elseif ($key == 'employee_name') {
@@ -3333,11 +3317,7 @@ class CompanyDashboardController extends ApiBaseController
                         } elseif ($key == 'reporting_person') {
                             $employeeStats->andWhere(['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value]);
                         } elseif ($key == 'branch') {
-                            if (in_array("unassigned", $value)) {
-                                $employeeStats->andWhere(['b3.location_enc_id' => null]);
-                            } else {
-                                $employeeStats->andWhere(['IN', 'b3.location_enc_id', $value]);
-                            }
+                            $employeeStats->andWhere(['IN', 'b3.location_enc_id', $this->assign_unassigned($value)]);
                         } elseif ($key == 'designation_id') {
                             $employeeStats->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
                         } else {

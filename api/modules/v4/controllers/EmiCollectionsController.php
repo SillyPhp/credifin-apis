@@ -334,6 +334,7 @@ class EmiCollectionsController extends ApiBaseController
                             $value = "('" . implode("','", $value) . "')";
                             $fields_search[] = "ANY_VALUE(b4.location_enc_id) IN $value";
                             break;
+
                         case 'designation_id':
                             $value = "('" . implode("','", $value) . "')";
                             $fields_search[] = "b1.designation_id IN $value";
@@ -1523,11 +1524,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['like', "CONCAT(b.first_name , ' ', COALESCE(b.last_name, ''))", $value]);
                                 break;
                             case 'branch':
-                                if (in_array("unassigned", $value)) {
-                                    $model->andWhere(['c.location_enc_id' => null]);
-                                } else {
-                                    $model->andWhere(['c.location_enc_id' => $value]);
-                                }
+                                $model->andWhere(['IN', 'c.location_enc_id', self::assign_unassigned($value)]);
                                 break;
 
                             case 'min_target_collection_amount':
@@ -1545,11 +1542,7 @@ class EmiCollectionsController extends ApiBaseController
                                 break;
 
                             case 'state_enc_id':
-                                if (in_array("unassigned", $value)) {
-                                    $model->andWhere(["c2.state_enc_id" => null]);
-                                } else {
-                                    $model->andWhere(['IN', "c2.state_enc_id", $value]);
-                                }
+                                $model->andWhere(['IN', "c2.state_enc_id", self::assign_unassigned($value)]);
                                 break;
                             case 'designation':
                                 $model->andWhere(['like', 'b1a.' . $key, $value]);
@@ -1570,10 +1563,7 @@ class EmiCollectionsController extends ApiBaseController
                                 $model->andWhere(['lc.bucket' => $value]);
                                 break;
                             case 'sub_bucket':
-                                if (in_array('unassigned', $value)) {
-                                    $value[] = null;
-                                }
-                                $model->andWhere(['lc.sub_bucket' => $value]);
+                                $model->andWhere(['IN', 'lc.sub_bucket', self::assign_unassigned($value)]);
                                 break;
                         }
                     }
@@ -2177,20 +2167,21 @@ class EmiCollectionsController extends ApiBaseController
             $user_roles = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
             $org_id = $user_roles->organization_enc_id;
         }
+
         $valuesSma = LoanAccountsExtended::$buckets;
-        $list = EmiCollection::find()
-            ->alias('a')
-            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name", $this->data($valuesSma)])
-            ->joinWith(['loanAccountEnc b' => function ($b) {
-                $b->joinWith(['branchEnc b1' => function ($b1) {
-                    $b1->joinWith(['cityEnc b2'], false);
-                }], false);
-            }], false)
-            ->where(['a.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
-            ->orWhere(['between', 'a.collection_date', $params['start_date'], $params['end_date']])
+
+        $list = LoanAccounts::find()
+            ->alias('b')
+            ->select(["CONCAT(b1.location_name, ', ', b2.name) as location_name","b1.location_enc_id", $this->data($valuesSma,$params)])
+            ->joinWith(['emiCollections a'],false)
+            ->joinWith(['branchEnc b1'=>function($b1){
+                $b1->joinWith(['cityEnc b2'], false);
+            }],false)
+            ->where(['b.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
             ->andWhere(['NOT', ['b.branch_enc_id' => null]])
             ->andWhere(['NOT', ['b.bucket' => null]])
-            ->groupBy(['b1.location_name', 'b2.name']);
+            ->groupBy(['b1.location_enc_id']);
+
 
         if (!empty($params['loan_type'])) {
             $list->andWhere(['IN', 'a.loan_type', $params['loan_type']]);
@@ -2226,19 +2217,21 @@ class EmiCollectionsController extends ApiBaseController
     }
 
 
-    private function data($valuesSma)
+    private function data($valuesSma,$params)
     {
+        $startDate = $params['start_date'];
+        $endDate = $params['end_date'];
         $queryResult = '';
         foreach ($valuesSma as $key => $value) {
             $totalCasesNumber = "COUNT(DISTINCT CASE WHEN b.bucket = '{$value['name']}' THEN b.loan_account_enc_id END) total_cases_count_{$key},";
-            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
+            $collectedCasesNumber = "COUNT(CASE WHEN b.bucket = '{$value['name']}'AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN 1 END) collected_cases_count_{$key},";
             if ($key == 'OnTime') {
-                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END) target_amount_{$key},";
+                $targetAmount = "ROUND(SUM(CASE WHEN b.bucket = '{$value['name']}' THEN COALESCE(b.emi_amount, 0) ELSE 0 END), 2) target_amount_{$key},";
             } else {
-                $targetAmount = "SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END) target_amount_{$key},";
+                $targetAmount = "ROUND(SUM(CASE WHEN b.bucket = '{$value['name']}' THEN LEAST(COALESCE(b.ledger_amount, 0) + COALESCE(b.overdue_amount, 0), b.emi_amount * '{$value['value']}') ELSE 0 END), 2) target_amount_{$key},";
             }
-            $collectedVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0) collected_verified_amount_{$key},";
-            $collectedUnVerifiedAmount = "COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0) collected_unverified_amount_{$key},";
+            $collectedVerifiedAmount = "ROUND(COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status = 'paid' THEN COALESCE(a.amount, 0) END),0), 2) collected_verified_amount_{$key},";
+            $collectedUnVerifiedAmount = "ROUND(COALESCE(SUM(CASE WHEN b.bucket = '{$value['name']}' AND a.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND a.emi_payment_status != 'paid' AND a.emi_payment_status NOT IN ('rejected', 'failed','pending') THEN COALESCE(a.amount, 0) END),0), 2) collected_unverified_amount_{$key},";
 
             $queryResult .= "$totalCasesNumber $collectedCasesNumber $targetAmount $collectedVerifiedAmount $collectedUnVerifiedAmount";
         }
@@ -2346,21 +2339,13 @@ class EmiCollectionsController extends ApiBaseController
                                     $list->andWhere(['like', "CONCAT(a.first_name,' ', COALESCE(a.last_name))", $value]);
                                     break;
                                 case 'state_enc_id':
-                                    if (in_array("unassigned", $value)) {
-                                        $list->andWhere(["b5.state_enc_id" => null]);
-                                    } else {
-                                        $list->andWhere(['IN', "b5.state_enc_id", $value]);
-                                    }
+                                    $list->andWhere(['IN', "b5.state_enc_id", self::assign_unassigned($value)]);
                                     break;
                                 case 'reporting_person':
                                     $list->andWhere(['like', "CONCAT(b2.first_name,' ', COALESCE(b2.last_name))", $value]);
                                     break;
                                 case 'branch':
-                                    if (in_array("unassigned", $value)) {
-                                        $list->andWhere(['b3.location_enc_id' => null]);
-                                    } else {
-                                        $list->andWhere(['IN', 'b3.location_enc_id', $value]);
-                                    }
+                                    $list->andWhere(['IN', 'b3.location_enc_id', $this->assign_unassigned($value)]);
                                     break;
                                 case 'designation_id':
                                     $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $value]);
@@ -2488,11 +2473,7 @@ class EmiCollectionsController extends ApiBaseController
                             $list->andHaving(['<=', "{$dynamic}", $value]);
                             break;
                         case 'branch':
-                            if (in_array("unassigned", $value)) {
-                                $list->andWhere(['ol.location_enc_id' => null]);
-                            } else {
-                                $list->andWhere(['IN', 'ol.location_enc_id', $value]);
-                            }
+                            $list->andWhere(['IN', 'ol.location_enc_id', $this->assign_unassigned($value)]);
                             break;
                         default:
                             switch ($key) {
