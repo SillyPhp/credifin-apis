@@ -212,7 +212,7 @@ class OrganizationsController extends ApiBaseController
                 ->alias("a")
                 ->select([
                     "a.location_enc_id", "a.location_enc_id as id", "a.organization_code",
-                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status"
+                    "a.location_name", "a.location_for", 'b.city_code', "a.address", "a.status", "b.state_enc_id"
                 ])
                 ->addSelect(["a.location_name as value"])
                 ->joinWith(["cityEnc b"], false)
@@ -2707,7 +2707,8 @@ class OrganizationsController extends ApiBaseController
                 $query->having(['BETWEEN', 'target_date', date('Y-m-d'), $upcoming]);
             } else {
                 $upcoming = date('Y-m-d', strtotime('+6 days'));
-                $query->andWhere(['OR',
+                $query->andWhere([
+                    'OR',
                     ['BETWEEN', 'a.sales_target_date', date('Y-m-d'), $upcoming],
                     ['BETWEEN', 'a.collection_target_date', date('Y-m-d'), $upcoming],
                     ['BETWEEN', 'a.telecaller_target_date', date('Y-m-d'), $upcoming]
@@ -2723,10 +2724,7 @@ class OrganizationsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $value[] = null;
-                        }
-                        $query->andWhere(['in', 'a.sub_bucket', $value]);
+                        $query->andWhere(['IN', 'a.sub_bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
@@ -2734,11 +2732,7 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(["LIKE", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, ''))", "$value%", false]);
                         }
                     } elseif ($key == 'bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['a.bucket' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'a.bucket', $value]);
-                        }
+                        $query->andWhere(['IN', 'a.bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'nach_approved') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['a.nach_approved' => null]);
@@ -2746,11 +2740,7 @@ class OrganizationsController extends ApiBaseController
                             $query->andWhere(['IN', 'a.nach_approved', $value]);
                         }
                     } elseif ($key == 'state_enc_id') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $query->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'priority') {
                         $query->andWhere(['IN', "(CASE 
                                     WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
@@ -2773,23 +2763,11 @@ class OrganizationsController extends ApiBaseController
                                 ELSE NULL 
                              END)", $value]);
                     } elseif ($key == 'sales_priority') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['sales_priority' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'a.sales_priority', $value]);
-                        }
+                        $query->andWhere(['IN', 'a.sales_priority', $this->assign_unassigned($value)]);
                     } elseif ($key == 'collection_priority') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['collection_priority' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'a.collection_priority', $value]);
-                        }
+                        $query->andWhere(['IN', 'a.collection_priority', $this->assign_unassigned($value)]);
                     } elseif ($key == 'telecaller_priority') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['telecaller_priority' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'a.telecaller_priority', $value]);
-                        }
+                        $query->andWhere(['IN', 'a.telecaller_priority', $this->assign_unassigned($value)]);
                     } elseif ($key == 'min_proposed_amount') {
                         if ($value == 'unassigned') {
                             $query->andWhere(['lap.proposed_amount' . $key => null]);
@@ -2859,11 +2837,7 @@ class OrganizationsController extends ApiBaseController
                     } elseif ($key == 'last_emi_received_end_date') {
                         $query->andWhere(['<=', 'COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date)', $value]);
                     } elseif ($key == 'branch') {
-                        if (in_array("unassigned", $value)) {
-                            $query->andWhere(['b.location_enc_id' => null]);
-                        } else {
-                            $query->andWhere(['IN', 'b.location_enc_id', $value]);
-                        }
+                        $query->andWhere(['IN', 'b.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'min_total_pending_amount') {
                         $query->andHaving(['>=', "total_pending_amount", "$value"]);
                     } elseif ($key == 'max_total_pending_amount') {

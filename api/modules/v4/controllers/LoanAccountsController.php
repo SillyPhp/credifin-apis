@@ -357,14 +357,47 @@ class LoanAccountsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $limit = !empty($params['limit']) ? $params['limit'] : 25;
         $page = !empty($params['page']) ? $params['page'] : 1;
+
+        function payment_method_add($data)
+        {
+            if (in_array(4, $data)) {
+                $data[] = 81;
+            }
+            if (in_array(5, $data)) {
+                $data[] = 82;
+            }
+            if (in_array(1, $data)) {
+                $data[] = 9;
+            }
+            return $data;
+        }
+
+        function payment_mode_add($data)
+        {
+            if (in_array(1, $data)) {
+                $data[] = 21;
+            }
+            if (in_array(2, $data)) {
+                $data[] = 22;
+            }
+            if (in_array(3, $data)) {
+                $data[] = 23;
+            }
+            if (in_array(4, $data)) {
+                $data[] = 24;
+            }
+            return $data;
+        }
+
         $payment_methods = EmiCollectionForm::$payment_methods;
         $payment_modes = EmiCollectionForm::$payment_modes;
         $model = EmiCollection::find()
             ->alias('a')
             ->select([
                 'a.customer_visit', 'a.customer_interaction',
-                'a.emi_collection_enc_id',
+                'a.emi_collection_enc_id', 'a.phone',
                 'a.customer_name', 'a.collection_date', 'a.amount', 'a.emi_payment_method', 'a.emi_payment_mode',
+                "SUM(a.amount) OVER(PARTITION BY loan_account_number) total_amount",
                 "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by",
                 "CASE 
                     WHEN a.other_delay_reason IS NOT NULL 
@@ -392,6 +425,7 @@ class LoanAccountsController extends ApiBaseController
                         THEN  CONCAT('" . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . "',a.borrower_image_location, '/', a.borrower_image) 
                     ELSE NULL 
                 END as borrower_image",
+                "CONCAT('http://maps.google.com/maps?q=', a.latitude, ',', a.longitude) AS link",
                 'a.created_on', 'a.emi_payment_status', 'a.reference_number', 'a.ptp_amount', 'a.ptp_date',
                 "(CASE WHEN a.ptp_payment_method = '1' THEN 'cash' 
                 WHEN a.ptp_payment_method = '0' THEN 'online' ELSE 'null' END) AS ptp_payment_method",
@@ -402,7 +436,15 @@ class LoanAccountsController extends ApiBaseController
                 $d->joinWith(['loanPaymentsEnc d1'], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0, 'loan_account_number' => $lac]);
-        $count = $model->count();
+
+        if (isset($org_id)) {
+            $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+        }
+
+        if (isset($lac)) {
+            $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
         $model = $model
             ->limit($limit)
             ->offset(($page - 1) * $limit)
@@ -428,7 +470,7 @@ class LoanAccountsController extends ApiBaseController
                 $value['pr_receipt_image'] = $proof;
             }
         }
-        return ['data' => $model, 'count' => $count];
+        return ['data' => $model];
     }
 
     public function actionCustomerLoanAccountDetail()
@@ -1384,10 +1426,7 @@ class LoanAccountsController extends ApiBaseController
             foreach ($params["fields_search"] as $key => $value) {
                 if (!empty($value) || $value == "0") {
                     if ($key == 'sub_bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $value[] = null;
-                        }
-                        $ptpcases->andWhere(['in', 'c.sub_bucket', $value]);
+                        $ptpcases->andWhere(['IN', 'c.sub_bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'assigned_caller') {
                         if ($value == 'unassigned') {
                             $ptpcases->andWhere(['CONCAT(ac.first_name, \' \', COALESCE(ac.last_name, \'\'))' => null]);
@@ -1397,25 +1436,13 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'loan_account_number') {
                         $ptpcases->andWhere(['b.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['c.bucket' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'c.bucket', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'c.bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'loan_type') {
                         $ptpcases->andWhere(['IN', 'c.loan_type', $value]);
                     } elseif ($key == 'branch') {
-                        if (in_array("unassigned", $value)) {
-                            $ptpcases->andWhere(['bb.location_enc_id' => null]);
-                        } else {
-                            $ptpcases->andWhere(['IN', 'bb.location_enc_id', $value]);
-                        }
+                        $ptpcases->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'total_pending_amount') {
                         $ptpcases->having(['=', "COALESCE(SUM(c.ledger_amount), 0) + COALESCE(SUM(c.overdue_amount), 0)", $value]);
                     } elseif ($key == 'min_proposed_amount') {
@@ -1883,6 +1910,9 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['branch_loc'])) {
             return 'send branch loc';
         }
+        if (empty($params['date'])) {
+            return 'send date';
+        }
         $custom_name_function = !empty($params['find_name']);
         $branch_loc = $params['branch_loc'];
         if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
@@ -2068,7 +2098,6 @@ class LoanAccountsController extends ApiBaseController
                         $loan = $model->where($where)->one();
                     }
                     if (!$loan) {
-                        $new = true;
                         $loan = new LoanAccounts();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000000);
                         $loan->loan_account_enc_id = $utilitiesModel->encrypt();
@@ -2083,6 +2112,18 @@ class LoanAccountsController extends ApiBaseController
                     } else {
                         $old_cases++;
                     }
+
+                    $overdue = EmiCollection::find()
+                        ->alias('a')
+                        ->select(['SUM(a.amount) AS overdue'])
+                        ->where([
+                            'a.loan_account_number' => $loan->loan_account_number,
+                            'a.emi_payment_status' => 'paid'
+                        ])
+                        ->andWhere(['>', 'a.collection_date', $params['date']])
+                        ->asArray()
+                        ->one();
+                    $overdue = $overdue ? $overdue['overdue'] : 0;
                     $loan->updated_on = date('Y-m-d H:i:s');
                     $loan->updated_by = $user->user_enc_id;
 
@@ -2175,7 +2216,7 @@ class LoanAccountsController extends ApiBaseController
                                 throw new \Exception("db field not found for $header");
                             }
 
-                            if (!empty($value) || $value === 0) {
+                            if (!empty($value) || $value == 0) {
                                 $def = $defined[$header];
                                 if (in_array($header, [
                                     'Stock',
@@ -2188,6 +2229,8 @@ class LoanAccountsController extends ApiBaseController
                                 ])) {
                                     if ($header == 'Ledger A/c' && in_array($loan_type, ['Loan Against Property', 'MSME']) && $value < 0) {
                                         $value = 0;
+                                    } elseif ($header == 'OverDue') {
+                                        $value -= $overdue;
                                     }
                                     $loan->$def = $value;
                                 } else {
@@ -2201,7 +2244,6 @@ class LoanAccountsController extends ApiBaseController
                     if (!$loan->save()) {
                         throw new \Exception(implode(' ', array_column($loan->getErrors(), '0')));
                     }
-                    unset($new);
                 }
                 fclose($handle);
                 $transaction->commit();
@@ -2504,32 +2546,17 @@ class LoanAccountsController extends ApiBaseController
                         $sub_query->andWhere(['b.' . $key => $value]);
                         $query->andWhere(['ec.' . $key => $value]);
                     } elseif ($key == 'state_enc_id') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['c2.state_enc_id' => null]);
-                            $query->andWhere(['c2.state_enc_id' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                            $query->andWhere(['IN', 'c2.state_enc_id', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'c2.state_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'bucket') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['c.bucket' => null]);
-                            $query->andWhere(['la.bucket' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'c.bucket', $value]);
-                            $query->andWhere(['IN', 'la.bucket', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'c.bucket', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'la.bucket', $this->assign_unassigned($value)]);
                     } elseif ($key == 'loan_type') {
                         $sub_query->andWhere(['IN', 'c.loan_type', $value]);
                         $query->andWhere(['IN', 'la.loan_type', $value]);
                     } elseif ($key == 'branch') {
-                        if (in_array("unassigned", $value)) {
-                            $sub_query->andWhere(['bb.location_enc_id' => null]);
-                            $query->andWhere(['bb.location_enc_id' => null]);
-                        } else {
-                            $sub_query->andWhere(['IN', 'bb.location_enc_id', $value]);
-                            $query->andWhere(['IN', 'bb.location_enc_id', $value]);
-                        }
+                        $sub_query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
+                        $query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'assigned_bdo') {
                         $sub_query->andWhere(['ala.user_type' => 1])
                             ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -2860,6 +2887,7 @@ class LoanAccountsController extends ApiBaseController
                 'b.name',
                 'b.loan_account_number',
                 'b.bucket',
+                'b.sub_bucket',
                 'b.bucket_status_date',
                 'c.payment_amount',
                 'c.payment_status',
@@ -2881,6 +2909,7 @@ class LoanAccountsController extends ApiBaseController
             'loan_account_number',
             'customer_name',
             'bucket',
+            'sub_bucket',
             'phone',
             'loan_type',
             'collection_start_date',
@@ -2915,6 +2944,9 @@ class LoanAccountsController extends ApiBaseController
                         break;
                     case 'phone':
                         $data->andWhere(['LIKE', 'b.phone', "$val%", false]);
+                        break;
+                    case 'sub_bucket':
+                        $data->andWhere(['IN', 'b.sub_bucket', $this->assign_unassigned($val)]);
                         break;
                     default:
                         // default is only for b alias name so set accordingly
