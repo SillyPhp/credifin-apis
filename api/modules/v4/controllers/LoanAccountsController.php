@@ -1567,7 +1567,7 @@ class LoanAccountsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                END target_collection_amount", "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(["assignedCaller ac"], false)
