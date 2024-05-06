@@ -2424,19 +2424,19 @@ class EmiCollectionsController extends ApiBaseController
         }
         $valuesSma = LoanAccountsExtended::$buckets;
         $select = [
-            "COALESCE(COUNT(DISTINCT ec.id), 0) total_cases_count",
+            "COALESCE(COUNT(CASE WHEN AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'), 0) total_cases_count",
             "COALESCE(SUM(CASE WHEN ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_cases_sum",
             "COALESCE(SUM(CASE WHEN ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_verified_amount",
             "COALESCE(SUM(CASE WHEN ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_unverified_amount",
-            "COALESCE(COUNT(DISTINCT CASE WHEN lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN lap.id END), 0) total_interaction_count",
+            "COALESCE(COUNT(CASE WHEN lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN lap.id END), 0) total_interaction_count",
             "COALESCE(SUM(CASE WHEN lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN (ec.amount + lap.proposed_amount) END), 0) total_interaction_sum",
         ];
         foreach ($valuesSma as $key => $value) {
-            $select[] = "COALESCE(COUNT(DISTINCT CASE WHEN (lac.sub_bucket IN ('{$value['subBucket']}')) AND ec.amount > 0 THEN ec.id END), 0) {$key}_total_cases_count";
+            $select[] = "COALESCE(COUNT(CASE WHEN (lac.sub_bucket IN ('{$value['subBucket']}')) AND ec.amount > 0 THEN ec.id END), 0) {$key}_total_cases_count";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_cases_sum";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_verified_amount";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_unverified_amount";
-            $select[] = "COALESCE(COUNT(DISTINCT CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.id END), 0) {$key}_total_interaction_count";
+            $select[] = "COALESCE(COUNT(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.id END), 0) {$key}_total_interaction_count";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('{$value['subBucket']}') AND lap.id IS NOT NULL AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN (ec.amount + lap.proposed_amount) END), 0) {$key}_total_interaction_sum";
         }
         $select = implode(',', $select);
