@@ -22,23 +22,28 @@ class LoanAccountsExtended extends LoanAccounts
     public static $buckets = [
         'SMA0' => [
             'name' => 'SMA-0',
-            'value' => 1.25
+            'value' => 1.25,
+            'subBucket'=>'1,2'
         ],
         'SMA1' => [
             'name' => 'SMA-1',
-            'value' => 1.5
+            'value' => 1.5,
+            'subBucket'=>'3,4'
         ],
         'SMA2' => [
             'name' => 'SMA-2',
-            'value' => 1.5
+            'value' => 1.5,
+            'subBucket'=>'5,6'
         ],
         'NPA' => [
             'name' => 'NPA',
-            'value' => 2
+            'value' => 2,
+            'subBucket'=>'7,8'
         ],
         'OnTime' => [
             'name' => 'OnTime',
-            'value' => null
+            'value' => null,
+            'subBucket'=>'X'
         ],
     ];
 
