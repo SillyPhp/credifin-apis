@@ -3690,10 +3690,29 @@ class CompanyDashboardController extends ApiBaseController
             $specialroles = false;
             $roleUnderId = null;
 
-            // checking if its organization
-            if ($user->organization_enc_id) {
+            $cross_sale = [
+                'k4x1rvbEZd3N6LKLrzG8oaY7p5gXMV', '6mMpL8zN9QqAn0V0KjV7QAxKOrBbnw', 'qnpLz0AvYopAPWKxpVq6dPrW15BMN9',
+                'NnVA4XWJ6oAlnDJDMVp4ROz8e2MyGq', 'abvgrG4VyQNLBK5Kr4g5opW30A9nXK', 'n9lYWbywLRkWAWpB2874RE854A1z7M', 'BnE3860mWdn2LgNgAML3djw9A2K5DJ', '3wVg50vYNo8PkDYDJ1m3oBGKXJmWpO', 'rNap3jW8EobkAqPxPr5KdB0yYn7GXq'
+            ];
 
-                // getting dsa
+            // Initialize variables
+            $specialroles = false;
+            $leadsAccessOnly = false;
+            $roleUnderId = null;
+            $dsa = [];
+
+            // Check if the user is in the specified list of usernames
+            if (in_array($user->username, ["Phf24", "PHF141", "phf607", "PHF491", "Satparkash", "shgarima21", "ritika927", "Sumit1992", "wishey", "phf1026", "phf1116", "phf766"])) {
+                if ($user->username == 'wishey') {
+                    $leadsAccessOnly = 'both';
+                } elseif ($user->username == 'ritika927') {
+                    $product_filter = true;
+                } else {
+                    $leadsAccessOnly = in_array($user->username, ["Sumit1992", "phf1116", "phf1026"]) ? "lap" : "vehicle";
+                }
+            }
+            if ($user->organization_enc_id) {
+                // getting DSA
                 $dsa = $this->getDsa($user->user_enc_id);
             } else {
                 $accessroles = UserUtilities::$rolesArray;
@@ -3716,7 +3735,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['serviceEnc b'], false)
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
-
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
             $start_date = $params['start_date'];
@@ -3787,6 +3805,33 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->where(['b.is_deleted' => 0, 'b.is_removed' => 0, 'b.form_type' => 'others']);
+
+
+            if (!$user->organization_enc_id && !$specialroles && !$leadsAccessOnly) {
+                // checking lead_by and managed_by by logged-in user or shared app_ids exists then also getting data for those applications
+                $where = ['OR', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id], ['b.loan_app_enc_id' => $shared_apps['app_ids']]];
+                if (isset($product_filter)) {
+                    $where[] = ["b.loan_products_enc_id" => $cross_sale];
+                }
+                $employeeAmount1->andWhere($where);
+                $employeeAmount2->andWhere($where);
+            }
+
+            if (!empty($leadsAccessOnly)) {
+                if ($leadsAccessOnly == 'vehicle') {
+                    $where = ['lp.name' => $this->vehicleList];
+                } else if ($leadsAccessOnly == 'both') {
+                    $where = ["OR"];
+                    $where[] = ["lp.name" => $this->vehicleList];
+                    //'Loan Against Property','Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
+                    $where[] = ["b.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
+                } else {
+                    //'Loan Against Property', 'Capital LAP BC 10', 'Capital HL BC 25', 'Amrit Home loan', 'Amrit LAP', 'BHN HL', 'BHN LAP'
+                    $where = ["b.loan_products_enc_id" => ['k4x1rvbEZd36W9NGp079oaY7p5gXMV', 'g2PlVzA0MQ1BPW675wqaRbZ8yqE9ON', '39pOaLxn1RyAp0OOmv8pRwrK85kq6m', 'N3184JGZzorA9ZaBXrAwRljBkgmqV7', 'Nxj6lKYbJdDE5wYe8WbqQvg5VrAZ3y', 'zpBn4vYx2RmBDmgLWmXLoJg3Aq9Vyl', 'bK4XlVLwvQEy6l9pDVp8QkrBEAD0mO']];
+                }
+                $employeeAmount1->andWhere($where);
+                $employeeAmount2->andWhere($where);
+            }
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $employeeAmount1->andWhere(['b.lead_by' => $dsa]);
@@ -3813,6 +3858,7 @@ class CompanyDashboardController extends ApiBaseController
             }
             $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
             $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+
             $employeeAmount1 = $employeeAmount1
                 ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
                 ->limit(1)->asArray()->one();
