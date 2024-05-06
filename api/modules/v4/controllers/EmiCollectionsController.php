@@ -2456,35 +2456,12 @@ class EmiCollectionsController extends ApiBaseController
             foreach ($params['fields_search'] as $key => $value) {
                 if (!empty($value) || $value == 0) {
                     switch ($key) {
-                        case 'phone':
-                        case 'username':
-                            $where[] = ['like', 'a.' . $key, $value];
-                            break;
-                        case 'state_enc_id':
-                            if (in_array("unassigned", $value)) {
-                                $where[] = ['ce2.state_enc_id' => null];
-                            } else {
-                                $where[] = ['IN', 'ce2.state_enc_id', $value];
-                            }
-                            break;
-                        case 'employee_name':
-                            $where[] = ['like', "CONCAT(a.first_name,' ',COALESCE(a.last_name))", $value];
-                            break;
-                        case 'reporting_person':
-                            $where[] = ['like', "CONCAT(b2.first_name,' ',COALESCE(b2.last_name))", $value];
-                            break;
                         case 'branch':
                             if (in_array("unassigned", $value)) {
-                                $where[] = ['b3.location_enc_id' => null];
+                                $where[] = ['b1.location_enc_id' => null];
                             } else {
-                                $where[] = ['IN', 'b3.location_enc_id', $value];
+                                $where[] = ['IN', 'b1.location_enc_id', $value];
                             }
-                            break;
-                        case 'designation_id':
-                            $where[] = ['IN', 'gd.assigned_designation_enc_id', $value];
-                            break;
-                        case 'employee_code':
-                            $where[] = ['like', 'b.employee_code', $value];
                             break;
                         default:
                             if (strpos($key, 'min_') === 0) {
