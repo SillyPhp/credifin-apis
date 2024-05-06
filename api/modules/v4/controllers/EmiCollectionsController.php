@@ -1373,26 +1373,7 @@ class EmiCollectionsController extends ApiBaseController
                                         END)
                                 END)
                         END) AS target_collection_amount",
-
-                "(CASE WHEN (COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)) <= 0 THEN 
-                (CASE WHEN lc.bucket = 'onTime' THEN 0 ELSE
-                    (CASE WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount * (CASE 
-                        WHEN lc.bucket = 'sma-0' THEN 1.25
-                        WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN lc.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)  
-                        ELSE emi_amount * 
-                            (CASE 
-                                WHEN lc.bucket = 'sma-0' THEN 1.25
-                                WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN lc.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END) ELSE COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
-                END) AS total_pending_amount"
+                "(GREATEST(lc.ledger_amount + lc.overdue_amount, 0)) AS total_pending_amount",
             ])
             ->joinWith(['updatedBy ub'], false)
             ->joinWith(['loanAccountEnc lc' => function ($lc) {
