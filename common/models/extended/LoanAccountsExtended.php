@@ -53,7 +53,7 @@ class LoanAccountsExtended extends LoanAccounts
         $startDate = $params['start_date'];
         $endDate = $params['end_date'];
         $select = [
-            "COALESCE(COUNT(CASE WHEN ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  THEN ec.id), 0) total_cases_count", //till date start data end date total emi
+            "COALESCE(COUNT(CASE WHEN ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.id END), 0) total_cases_count", //till start and end date total emi collected
             "COALESCE(SUM(CASE WHEN ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_cases_sum",
             "COALESCE(SUM(CASE WHEN ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_verified_amount",
             "COALESCE(SUM(CASE WHEN ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) total_collected_unverified_amount",
@@ -62,7 +62,7 @@ class LoanAccountsExtended extends LoanAccounts
         ];
         foreach ($valuesSma as $key => $value) {
             $inClause = "('" . implode("', '", $value['subBucket']) . "')";
-            $select[] = "COALESCE(COUNT(CASE WHEN lac.sub_bucket IN $inClause AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.id END), 0) {$key}_total_cases_count"; //till date start data end date total emi
+            $select[] = "COALESCE(COUNT(CASE WHEN lac.sub_bucket IN $inClause AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.id END), 0) {$key}_total_cases_count"; //till start and end date total emi collected
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_cases_sum";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.emi_payment_status = 'paid' AND ec.amount > 0 AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_verified_amount";
             $select[] = "COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' THEN ec.amount END), 0) {$key}_collected_unverified_amount";
