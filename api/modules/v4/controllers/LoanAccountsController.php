@@ -278,7 +278,7 @@ class LoanAccountsController extends ApiBaseController
                     return $b['created_on'] - $a['created_on'];
                 });
                 $data['phone'] = array_values(array_unique(array_column($merge, 'phone')));
-                if (!empty($ph)) {
+                if (!empty($ph) && !in_array($ph,$data['phone'])) {
                     $data['phone'][] = $ph;
                 }
                 foreach ($phones as $loc) {
