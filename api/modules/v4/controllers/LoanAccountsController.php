@@ -1897,7 +1897,7 @@ class LoanAccountsController extends ApiBaseController
         }
         $custom_name_function = !empty($params['find_name']);
         $branch_loc = $params['branch_loc'];
-        if (!in_array($branch_loc, ['ZoneName', 'CompanyName'])) {
+        if (!in_array($branch_loc, ['ZoneName', 'CompanyName', 'CityName'])) {
             return 'send correct loc';
         }
         $branches = [
@@ -1949,7 +1949,15 @@ class LoanAccountsController extends ApiBaseController
             "JP" => "6mMpL8zN9QqAqwEGpLLmQAxKOrBbnw",
             "PTA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
             "PAN" => "zpBn4vYx2RmBjkEnnBq1oJg3Aq9Vyl",
-            "FARIDKOT" => "r58bO41kKRebD65jX9lvol0gN7YV9j"
+            "FARIDKOT" => "r58bO41kKRebD65jX9lvol0gN7YV9j",
+            "GURDASPUR" => "bK4XlVLwvQEy26N8WOqpQkrBEAD0mO",
+            "MUKATSAR" => "k92XHDDvjSLHRb1Z9Mgqzrjsivbd9yPY",
+            "TANDA" => "",
+            "BATHINDA" => "n9lYWbywLRkWpA80NyJvRE854A1z7M",
+            "SHRI GANGANAGAR" => "39pOaLxn1RypEvOakPZ5QwrK85kq6m",
+            "PATIALA" => "qOLw3GDM1RZj2w4E2VwxRgjYBra6Ak",
+            "MAKHU" => "",
+            "FEROZEPUR" => "jKbDalL5YRxwe3XvqxGrQGqgwrkA06"
         ];
         $defined = [
             'FileNumberNew' => 'loan_account_number',
@@ -2004,7 +2012,7 @@ class LoanAccountsController extends ApiBaseController
             'Ledger A/c',
             'MobileNumber',
             'Name',
-
+            $branch_loc
         ];
         $new_cases = $updated = $old_cases = 0;
         $file = $_FILES['file'];
@@ -2126,7 +2134,6 @@ class LoanAccountsController extends ApiBaseController
                         if (strtoupper(trim($status)) == 'REPOSSESSED') {
                             if (!$loan->id)
                                 continue;
-
                             $loan->status = 'Repossessed';
                         }
                     }
@@ -2173,6 +2180,7 @@ class LoanAccountsController extends ApiBaseController
                             'VehicleMain',
                             'LastInstallmentDate',
                             'ZoneName',
+                            'CityName',
                             'OverDue'
                         ])) {
                             $value = $data[array_search($header, $headers)];
@@ -2180,12 +2188,15 @@ class LoanAccountsController extends ApiBaseController
                             if (in_array($header, ['NachApproved'])) {
                                 $value = $value == 'Yes' ? 1 : 0;
                             } else if ($header == $branch_loc) {
-                                $branch_name = trim(str_replace($no_need, '', $value));
-                                $branch = $branches[$branch_name];
-                                if (empty($branch)) {
-                                    throw new \Exception("branch not found '$branch_name'");
+                                if (!empty($value)) {
+                                    $branch_name = trim(str_replace($no_need, '', $value));
+                                    if (!isset($branches[$branch_name])) {
+                                        throw new \Exception("branch not found '$branch_name'");
+                                    }
+                                    $branch = $branches[$branch_name];
+                                    if (!empty($branch))
+                                        $loan->branch_enc_id = $branch;
                                 }
-                                $loan->branch_enc_id = $branch;
                             } else if ($header == 'VehicleModel') {
                                 if (!is_numeric($value) || strlen((string)$value) != 4) {
                                     continue;
@@ -2215,7 +2226,7 @@ class LoanAccountsController extends ApiBaseController
                                 }
                                 $value = $date;
                             }
-                            if ($header == 'ZoneName') {
+                            if (in_array($header, ['ZoneName', 'CityName'])) {
                                 continue;
                             }
 
