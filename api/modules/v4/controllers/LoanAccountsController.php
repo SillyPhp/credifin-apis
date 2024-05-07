@@ -2006,8 +2006,7 @@ class LoanAccountsController extends ApiBaseController
             'Name',
 
         ];
-        $new_cases = 0;
-        $old_cases = 0;
+        $new_cases = $updated = $old_cases = 0;
         $file = $_FILES['file'];
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -2093,6 +2092,14 @@ class LoanAccountsController extends ApiBaseController
                         $new_cases++;
                     } else {
                         $old_cases++;
+                    }
+                    $investment_source = in_array('InvestmentSource', $headers) ? $data[array_search('InvestmentSource', $headers)] : '';
+                    if (!empty($investment_source)) {
+                        $check = trim(str_replace(['BC -', 'BC-'], '', $investment_source));
+                        if (strlen($investment_source) !== strlen($check)) {
+                            continue;
+                        }
+                        $loan->investment_source = $investment_source;
                     }
 
                     $overdue = EmiCollection::find()
@@ -2223,13 +2230,14 @@ class LoanAccountsController extends ApiBaseController
                             }
                         }
                     }
+                    $updated++;
                     if (!$loan->save()) {
                         throw new \Exception(implode(' ', array_column($loan->getErrors(), '0')));
                     }
                 }
                 fclose($handle);
                 $transaction->commit();
-                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
+                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases, 'updated' => $updated]);
             }
         } catch (\Exception $exception) {
             $transaction->rollback();
