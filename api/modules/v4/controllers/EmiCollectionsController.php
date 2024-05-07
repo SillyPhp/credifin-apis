@@ -1348,31 +1348,22 @@ class EmiCollectionsController extends ApiBaseController
                 "CONCAT(a.address,', ', COALESCE(a.pincode, '')) address", "CONCAT(b.first_name , ' ', COALESCE(b.last_name, '')) as collected_by", 'a.created_on',
                 "b.user_enc_id as collected_by_id", 'c2.name as state_name', 'c2.state_enc_id',
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket',
-                "(CASE
-                        WHEN lc.bucket = 'onTime' THEN
-                            (CASE
-                                WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) <= 0 THEN 0
-                                ELSE lc.emi_amount
-                                END)
-                                ELSE
-                                (CASE
-                                    WHEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0) < lc.emi_amount *
-                                        (CASE
-                                            WHEN lc.bucket = 'sma-0' THEN 1.25
-                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                            WHEN lc.bucket = 'npa' THEN 2
-                                            ELSE 1
-                                        END)
-                                    THEN COALESCE(SUM(lc.ledger_amount), 0) + COALESCE(SUM(lc.overdue_amount), 0)
-                                    ELSE lc.emi_amount *
-                                        (CASE
-                                            WHEN lc.bucket = 'sma-0' THEN 1.25
-                                            WHEN lc.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                            WHEN lc.bucket = 'npa' THEN 2
-                                            ELSE 1
-                                        END)
-                                END)
-                        END) AS target_collection_amount",
+                "(CASE 
+                    WHEN lc.sub_bucket = 'X' THEN 
+                        CASE 
+                            WHEN (lc.ledger_amount + lc.overdue_amount) < 0 THEN 0 
+                            ELSE (lc.ledger_amount + lc.overdue_amount) 
+                        END 
+                    ELSE 
+                        LEAST(lc.ledger_amount + lc.overdue_amount, lc.emi_amount * 
+                            (CASE 
+                                WHEN lc.sub_bucket IN ('1','2') THEN 1.25 
+                                WHEN lc.sub_bucket IN ('3','4','5','6') THEN 1.50 
+                                WHEN lc.sub_bucket IN ('7','8') THEN 2 
+                                ELSE 1 
+                            END) 
+                        ) 
+                END) AS target_collection_amount",
                 "(GREATEST(lc.ledger_amount + lc.overdue_amount, 0)) AS total_pending_amount",
             ])
             ->joinWith(['updatedBy ub'], false)

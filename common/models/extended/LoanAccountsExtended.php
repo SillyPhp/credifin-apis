@@ -72,6 +72,27 @@ class LoanAccountsExtended extends LoanAccounts
       return  $select = implode(',', $select);
     }
 
+    public static function targetAmount(){
+         $select = "(CASE 
+                    WHEN a.sub_bucket = 'X' THEN 
+                        CASE 
+                            WHEN (a.ledger_amount + a.overdue_amount) < 0 THEN 0 
+                            ELSE (a.ledger_amount + a.overdue_amount) 
+                        END 
+                    ELSE 
+                        LEAST(a.ledger_amount + a.overdue_amount, a.emi_amount * 
+                            (CASE 
+                                WHEN a.sub_bucket IN ('1','2') THEN 1.25 
+                                WHEN a.sub_bucket IN ('3','4','5','6') THEN 1.50 
+                                WHEN a.sub_bucket IN ('7','8') THEN 2 
+                                ELSE 1 
+                            END) 
+                        ) 
+                END) AS target_collection_amount
+                ";
+        return $select;
+    }
+
     public static $user_types = [
         'Area Collection Manager' => 'Collection',
         'Area Sales Manager' => 'Sales',
