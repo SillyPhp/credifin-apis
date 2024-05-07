@@ -215,7 +215,7 @@ class LoanAccountsController extends ApiBaseController
                     "a.loan_type",
                     "a.emi_amount",
                     "a.loan_account_number",
-                        $select,
+                    $select,
                     "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     "be.location_name as branch_name"
@@ -1149,7 +1149,7 @@ class LoanAccountsController extends ApiBaseController
         $this->isAuth();
         $params = $this->post;
         $user = $this->user;
-        $where = ['a.is_deleted' => 0, 'a.hard_recovery' => 0];
+        $where = ['a.is_deleted' => 0, 'a.hard_recovery' => 0, 'a.status' => 'Active'];
         if (!empty($params['fields_search'])) {
             $fields_search = $params['fields_search'];
             foreach ($fields_search as $key => $value) {
@@ -1273,7 +1273,7 @@ class LoanAccountsController extends ApiBaseController
                     ])
                     ->from(['x' => EmiCollection::tableName()])
                     ->innerJoin(['y' => $subQuery], "REGEXP_REPLACE(y.loan_account_number, '[^a-zA-Z0-9]', '') = REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '')")
-                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id")
+                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id AND a.status = 'Active'")
                     ->where(['x.is_deleted' => 0])
                     ->andWhere($where)
             ])
