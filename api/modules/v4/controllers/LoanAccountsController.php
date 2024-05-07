@@ -278,7 +278,7 @@ class LoanAccountsController extends ApiBaseController
                     return $b['created_on'] - $a['created_on'];
                 });
                 $data['phone'] = array_values(array_unique(array_column($merge, 'phone')));
-                if (!empty($ph) && !in_array($ph,$data['phone'])) {
+                if (!empty($ph) && !in_array($ph, $data['phone'])) {
                     $data['phone'][] = $ph;
                 }
                 foreach ($phones as $loc) {
@@ -2037,7 +2037,7 @@ class LoanAccountsController extends ApiBaseController
                         return in_array($key, [array_search('FileNumberNew', $headers), array_search('CaseNo', $headers)]) ? str_replace(' ', '', $item) : $item;
                     }, array_keys($data), $data);
                     unset($loan_account_number);
-                    if (array_search('FileNumberNew', $headers) !== false) {
+                    if (in_array('FileNumberNew', $headers)) {
                         $loan_account_number = $data[array_search('FileNumberNew', $headers)];
                     }
                     if ($custom_name_function) {
@@ -2120,6 +2120,24 @@ class LoanAccountsController extends ApiBaseController
                         $loan_type = $data[array_search('LoanType', $headers)];
                     } else {
                         $loan_type = $params['loan_type'];
+                    }
+                    if (in_array('GroupName', $headers)) {
+                        $status = $data[array_search('GroupName', $headers)];
+                        if (strtoupper(trim($status)) == 'REPOSSESSED') {
+                            if (!$loan->id)
+                                continue;
+
+                            $loan->status = 'Repossessed';
+                        }
+                    }
+
+                    if (in_array('OverDue', $headers) && in_array($loan_type, ['Loan Against Property', 'MSME'])) {
+                        $check = $data[array_search('OverDue', $headers)] <= -100000;
+                        if ($check) {
+                            if (!$loan->id)
+                                continue;
+                            $loan->status = 'Foreclosed';
+                        }
                     }
                     $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : $loan_type;
                     $loan->updated_by = $user->user_enc_id;
