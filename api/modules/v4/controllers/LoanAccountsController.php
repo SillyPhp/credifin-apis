@@ -232,25 +232,7 @@ class LoanAccountsController extends ApiBaseController
                     END) 
                 END) target_collection_amount",
 
-                    "(CASE WHEN (COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)) < 0 THEN 
-                (CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                        WHEN a.bucket = 'sma-0' THEN 1.25
-                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN a.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
-                            (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END) ELSE COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)
-                END) AS total_pending_amount",
+                    "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     "be.location_name as branch_name"
                 ])
@@ -1585,7 +1567,7 @@ class LoanAccountsController extends ApiBaseController
                                 ELSE 1
                         END) 
                     END) 
-                END target_collection_amount", "COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) AS total_pending_amount",
+                END target_collection_amount", "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(["assignedCaller ac"], false)
