@@ -236,10 +236,10 @@ class EmployeeController extends ApiBaseController
             }
             $valuesSma = LoanAccountsExtended::$buckets;
             $select = [
-                "COALESCE(COUNT(DISTINCT lac.loan_account_enc_id),0) total_cases_count",
-                "COUNT(DISTINCT CASE WHEN lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) total_collected_cases_count",
-                "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND  ec.emi_payment_status = 'paid' AND ec.amount > 0 AND a.user_enc_id = ec.created_by THEN ec.amount END), 0), 2) total_collected_verified_amount",
-                "ROUND(COALESCE(SUM(CASE WHEN  lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND  ec.emi_payment_status NOT IN ('rejected', 'failed','pending', 'paid') AND a.user_enc_id = ec.created_by THEN ec.amount END), 0), 2) total_collected_unverified_amount",
+                "COALESCE(COUNT(DISTINCT lac.loan_account_enc_id),0) total_cases_count", //total cases need to  be collected
+                "COUNT(DISTINCT CASE WHEN lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status IN ('paid', 'partial','pipeline','collected') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) total_collected_cases_count",
+                "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND  ec.emi_payment_status IN ('paid','partial') AND ec.amount > 0 AND a.user_enc_id = ec.created_by THEN ec.amount END), 0), 2) total_collected_verified_amount",
+                "ROUND(COALESCE(SUM(CASE WHEN  lac.sub_bucket IN ('X','1','2','3','4','5','6','7','8','') AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND  ec.emi_payment_status IN ('pipeline', 'collected') AND a.user_enc_id = ec.created_by THEN ec.amount END), 0), 2) total_collected_unverified_amount",
                 "ROUND(SUM(CASE WHEN lac.sub_bucket = 'X' THEN lac.emi_amount ELSE LEAST(lac.ledger_amount + lac.overdue_amount, lac.emi_amount * 
                 (CASE 
                         WHEN lac.sub_bucket IN ('1','2') THEN 1.25
@@ -251,15 +251,15 @@ class EmployeeController extends ApiBaseController
             ];
             foreach ($valuesSma as $key => $value) {
                 $inClause = "('" . implode("', '", $value['subBucket']) . "')";
-                $select[] = "COALESCE(COUNT(DISTINCT CASE WHEN lac.sub_bucket IN $inClause THEN lac.loan_account_enc_id END),0) {$key}_total_cases_count";
-                $select[] = "COUNT(DISTINCT CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) {$key}_collected_cases_count";
+                $select[] = "COALESCE(COUNT(DISTINCT CASE WHEN lac.sub_bucket IN $inClause THEN lac.loan_account_enc_id END),0) {$key}_total_cases_count"; //total cases that need to be collected
+                $select[] = "COUNT(DISTINCT CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}' AND ec.emi_payment_status IN ('paid', 'partial','pipeline','collected') AND a.user_enc_id = ec.created_by THEN lac.loan_account_enc_id END) {$key}_collected_cases_count";
                 if ($key == 'OnTime') :
                     $select[] = "ROUND(SUM(CASE WHEN lac.sub_bucket IN $inClause THEN COALESCE(lac.emi_amount, 0) ELSE 0 END), 2) {$key}_target_amount";
                 else :
                     $select[] = "ROUND(SUM(CASE WHEN lac.sub_bucket IN $inClause THEN LEAST(COALESCE(lac.ledger_amount, 0) + COALESCE(lac.overdue_amount, 0), lac.emi_amount * '{$value['value']}') ELSE 0 END), 2) {$key}_target_amount";
                 endif;
-                $select[] = "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status = 'paid' AND a.user_enc_id = ec.created_by  THEN COALESCE(ec.amount, 0) END),0), 2) {$key}_collected_verified_amount";
-                $select[] = "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status != 'paid' AND ec.emi_payment_status NOT IN ('rejected', 'failed','pending') AND a.user_enc_id = ec.created_by THEN COALESCE(ec.amount, 0) END),0), 2) {$key}_collected_unverified_amount";
+                $select[] = "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status IN ('paid', 'partial') AND a.user_enc_id = ec.created_by  THEN COALESCE(ec.amount, 0) END),0), 2) {$key}_collected_verified_amount";
+                $select[] = "ROUND(COALESCE(SUM(CASE WHEN lac.sub_bucket IN $inClause AND ec.created_on BETWEEN '{$startDate}' AND '{$endDate}'  AND ec.emi_payment_status IN ('collected', 'pipeline') AND a.user_enc_id = ec.created_by THEN COALESCE(ec.amount, 0) END),0), 2) {$key}_collected_unverified_amount";
             }
             $select = implode(',', $select);
             $list = Users::find()
