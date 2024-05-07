@@ -262,7 +262,7 @@ class LoanAccountsController extends ApiBaseController
                     return $b['created_on'] - $a['created_on'];
                 });
                 $data['phone'] = array_values(array_unique(array_column($merge, 'phone')));
-                if (!empty($ph)) {
+                if (!empty($ph) && !in_array($ph, $data['phone'])) {
                     $data['phone'][] = $ph;
                 }
                 foreach ($phones as $loc) {
@@ -274,6 +274,10 @@ class LoanAccountsController extends ApiBaseController
                         'created_by' => $loc['created_by']
                     ];
                 }
+                usort($data['location'], function ($a, $b) {
+                    return strtotime($b['created_on']) - strtotime($a['created_on']);
+                });
+
                 unset($data['emiCollections']);
                 unset($data['loanAccountOtherDetails']);
             }
@@ -1434,12 +1438,25 @@ class LoanAccountsController extends ApiBaseController
                     } elseif ($key == 'emi_date') {
                         $ptpcases->andWhere(['DAY(c.emi_date)' => $value]);
                     } elseif ($key == 'collection_manager') {
-                        $ptpcases->andWhere(['ala.user_type' => 2])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $ptpcases->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = b.loan_account_enc_id')
+                                ->andWhere(['user_type' => '2'])]);
+                        } else {
+                            $ptpcases->andWhere(['ala.user_type' => 2])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'assigned_bdo') {
                         if ($value == 'unassigned') {
-                            $ptpcases->andWhere(['ala.user_type' => 1])
-                                ->andWhere(['CONCAT(d1.first_name, \' \', COALESCE(d1.last_name, \'\'))' => null]);
+                            $ptpcases->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = b.loan_account_enc_id')
+                                ->andWhere(['user_type' => '1'])]);
                         } else {
                             $ptpcases->andWhere(['ala.user_type' => 1])
                                 ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
@@ -1990,8 +2007,7 @@ class LoanAccountsController extends ApiBaseController
             'Name',
 
         ];
-        $new_cases = 0;
-        $old_cases = 0;
+        $new_cases = $updated = $old_cases = 0;
         $file = $_FILES['file'];
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -2077,6 +2093,14 @@ class LoanAccountsController extends ApiBaseController
                         $new_cases++;
                     } else {
                         $old_cases++;
+                    }
+                    $investment_source = in_array('InvestmentSource', $headers) ? $data[array_search('InvestmentSource', $headers)] : '';
+                    if (!empty($investment_source)) {
+                        $check = trim(str_replace(['BC -', 'BC-'], '', $investment_source));
+                        if (strlen($investment_source) !== strlen($check)) {
+                            continue;
+                        }
+                        $loan->investment_source = $investment_source;
                     }
 
                     $overdue = EmiCollection::find()
@@ -2207,13 +2231,14 @@ class LoanAccountsController extends ApiBaseController
                             }
                         }
                     }
+                    $updated++;
                     if (!$loan->save()) {
                         throw new \Exception(implode(' ', array_column($loan->getErrors(), '0')));
                     }
                 }
                 fclose($handle);
                 $transaction->commit();
-                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases]);
+                return $this->response(200, ['message' => 'successfully saved', 'new_cases' => $new_cases, 'old_cases' => $old_cases, 'updated' => $updated]);
             }
         } catch (\Exception $exception) {
             $transaction->rollback();
@@ -2489,7 +2514,7 @@ class LoanAccountsController extends ApiBaseController
             }], false)
             ->joinWith(['collectionManager cm'], false)
             ->where(['IS NOT', 'la.loan_type', null])
-            ->andwhere(['>=', 'a.proposed_date', date('Y-m-d')])
+            ->andwhere(['BETWEEN', 'a.proposed_date', date('Y-m-d'), date('Y-m-d', strtotime('+3 days'))])
             ->groupBy(['la.loan_type']);
 
         if (!empty($params["fields_search"])) {
@@ -2524,15 +2549,45 @@ class LoanAccountsController extends ApiBaseController
                         $sub_query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                         $query->andWhere(['IN', 'bb.location_enc_id', $this->assign_unassigned($value)]);
                     } elseif ($key == 'assigned_bdo') {
-                        $sub_query->andWhere(['ala.user_type' => 1])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
-                        $query->andWhere(['ala.user_type' => 1])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $sub_query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = c.loan_account_enc_id')
+                                ->andWhere(['user_type' => '1'])]);
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = la.loan_account_enc_id')
+                                ->andWhere(['user_type' => '1'])]);
+                        } else {
+                            $sub_query->andWhere(['ala.user_type' => 1])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                            $query->andWhere(['ala.user_type' => 1])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'collection_manager') {
-                        $sub_query->andWhere(['ala.user_type' => 2])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
-                        $query->andWhere(['ala.user_type' => 2])
-                            ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        if ($value == 'unassigned') {
+                            $sub_query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = c.loan_account_enc_id')
+                                ->andWhere(['user_type' => '2'])]);
+                            $query->andWhere(['not exists', (new \yii\db\Query())
+                                ->select('user_type')
+                                ->from(AssignedLoanAccounts::tableName())
+                                ->leftJoin(['d1' => users::tableName()], 'shared_to = d1.user_enc_id')
+                                ->where('loan_account_enc_id = la.loan_account_enc_id')
+                                ->andWhere(['user_type' => '2'])]);
+                        } else {
+                            $sub_query->andWhere(['ala.user_type' => 2])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                            $query->andWhere(['ala.user_type' => 2])
+                                ->andWhere(['LIKE', "CONCAT(d1.first_name, ' ', COALESCE(d1.last_name, ''))", "$value%", false]);
+                        }
                     } elseif ($key == 'min_proposed_amount') {
                         $sub_query->andWhere([">=", 'a.proposed_amount', $value]);
                         $query->andWhere([">=", 'a.proposed_amount', $value]);
