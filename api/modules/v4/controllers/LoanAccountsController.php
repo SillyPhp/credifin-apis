@@ -290,6 +290,10 @@ class LoanAccountsController extends ApiBaseController
                         'created_by' => $loc['created_by']
                     ];
                 }
+                usort($data['location'], function ($a, $b) {
+                    return strtotime($b['created_on']) - strtotime($a['created_on']);
+                });
+
                 unset($data['emiCollections']);
                 unset($data['loanAccountOtherDetails']);
             }
