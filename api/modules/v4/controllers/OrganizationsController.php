@@ -2583,6 +2583,7 @@ class OrganizationsController extends ApiBaseController
             ->andWhere(['>', 'z1.proposed_date', date('Y-m-d')])
             ->orderBy(['z1.proposed_date' => SORT_DESC]);
         $hard_recovery = !empty($params['type']) && $params['type'] == 'hard_recovery' ? 1 : 0;
+        $targetCollectionSelect = LoanAccountsExtended::targetAmount();
         $query = LoanAccountsExtended::find()
             ->alias("a")
             ->select([
@@ -2600,25 +2601,7 @@ class OrganizationsController extends ApiBaseController
                 "COALESCE(ANY_VALUE(e.collection_date), a.last_emi_received_date) AS last_emi_received_date",
                 "COALESCE(ANY_VALUE(e.amount), a.last_emi_received_amount) AS last_emi_received_amount",
                 'c2.name as state_name', 'c2.state_enc_id',
-                "(CASE WHEN a.bucket = 'onTime' THEN (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) <= 0 THEN 0
-                    ELSE a.emi_amount END)
-                                ELSE
-                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                        WHEN a.bucket = 'sma-0' THEN 1.25
-                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN a.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                                    ELSE a.emi_amount *
-                            (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END) target_collection_amount",
+                $targetCollectionSelect,
                 "(CASE WHEN epr.id IS NOT NULL THEN 'true' ELSE 'false' END) AS due"
             ])
             ->addSelect($selectQuery)
