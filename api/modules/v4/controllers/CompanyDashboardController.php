@@ -18,6 +18,7 @@ use common\models\ColumnPreferences;
 use common\models\CreditLoanApplicationReports;
 use common\models\CreditRequestedData;
 use common\models\CreditResponseData;
+use common\models\EmiCollection;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanAccountsExtended;
 use common\models\extended\AssignedLoanProviderExtended;
@@ -1276,6 +1277,13 @@ class CompanyDashboardController extends ApiBaseController
             ->join('LEFT JOIN', ['p1' => LoanPayments::tableName()], 'p1.loan_payments_enc_id = p.loan_payments_enc_id')
             ->orderBy(['p1.created_on' => SORT_ASC]);
 
+        $emiLocation = (new \yii\db\Query())
+            ->select(['a.loan_app_enc_id', 'b.emi_collection_enc_id', 'b.address', 'b.latitude', 'b.longitude', "CONCAT(c.first_name, ' ', c.last_name) AS created_by", 'b.created_on', "CASE WHEN c.image IS NOT NULL THEN CONCAT('" . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, "https") . "', c.image_location, '/', c.image) ELSE CONCAT('https://ui-avatars.com/api/?name=', CONCAT(c.first_name,' ',c.last_name), '&size=200&rounded=false&background=', REPLACE(c.initials_color, '#', ''), '&color=ffffff') END image"])
+            ->from(['a' => LoanAccounts::tableName()])
+            ->leftJoin(['b' => EmiCollection::tableName()], 'b.loan_account_enc_id = a.loan_account_enc_id')
+            ->leftJoin(['c' => Users::tableName()], 'c.user_enc_id = b.created_by')
+            ->where(['a.loan_app_enc_id' => $params['loan_id']])
+            ->all();
         // getting loan detail
         $loan = LoanApplications::find()
             ->alias('a')
@@ -1491,7 +1499,12 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-
+        $lc = $loan['loanVerificationLocations'];
+        $merge = array_merge($lc, $emiLocation);
+        usort($merge, function ($a, $b) {
+            return strtotime($b['created_on']) - strtotime($a['created_on']);
+        });
+        $loan['loanVerificationLocations'] = $merge;
         if ($loan) {
             if (!$this->isSpecial(1) && $loan['is_removed'] == 1) {
                 return $this->response(422, ['status' => 422, 'message' => 'Application Removed']);
