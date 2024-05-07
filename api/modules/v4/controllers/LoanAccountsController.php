@@ -187,6 +187,7 @@ class LoanAccountsController extends ApiBaseController
         if (empty($params['loan_account_enc_id']) && empty($params['loan_account_number'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id" or "loan_account_number"']);
         }
+        $select = LoanAccountsExtended::targetAmount();
         $loan_id = $params['loan_account_enc_id'];
         if (!empty($loan_id)) {
             $data = LoanAccounts::find()
@@ -214,24 +215,7 @@ class LoanAccountsController extends ApiBaseController
                     "a.loan_type",
                     "a.emi_amount",
                     "a.loan_account_number",
-                    "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                        WHEN a.bucket = 'sma-0' THEN 1.25
-                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN a.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
-                            (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END) target_collection_amount",
-
+                        $select,
                     "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     "be.location_name as branch_name"
