@@ -1273,7 +1273,7 @@ class LoanAccountsController extends ApiBaseController
                     ])
                     ->from(['x' => EmiCollection::tableName()])
                     ->innerJoin(['y' => $subQuery], "REGEXP_REPLACE(y.loan_account_number, '[^a-zA-Z0-9]', '') = REGEXP_REPLACE(x.loan_account_number, '[^a-zA-Z0-9]', '')")
-                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id AND a.status = 'Active'")
+                    ->innerJoin(['la' => LoanAccounts::tableName()], "la.loan_account_enc_id = x.loan_account_enc_id AND la.status = 'Active'")
                     ->where(['x.is_deleted' => 0])
                     ->andWhere($where)
             ])
