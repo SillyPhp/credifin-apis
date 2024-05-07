@@ -2654,7 +2654,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['emiPaymentRecords AS epr' => function ($epr) {
                 $epr->andOnCondition("epr.status REGEXP 'fail|failed' AND epr.charges_paid = 0");
             }], false)
-            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => $hard_recovery])
+            ->andWhere(["a.is_deleted" => 0, "a.hard_recovery" => $hard_recovery, 'a.status' => 'Active'])
             ->groupBy(['a.loan_account_enc_id', 'epr.id'])
             ->orderBy([
                 ("CASE WHEN ANY_VALUE(d.user_type) = 1 THEN a.sales_priority
