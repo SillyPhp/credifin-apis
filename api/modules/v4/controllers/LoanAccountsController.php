@@ -2105,8 +2105,10 @@ class LoanAccountsController extends ApiBaseController
                     $investment_source = in_array('InvestmentSource', $headers) ? $data[array_search('InvestmentSource', $headers)] : '';
                     if (!empty($investment_source)) {
                         $check = trim(str_replace(['BC -', 'BC-'], '', $investment_source));
-                        if (strlen($investment_source) !== strlen($check) && !$loan->id) {
-                            continue;
+                        if (strlen($investment_source) !== strlen($check)) {
+                            if (!$loan->id)
+                                continue;
+                            $loan->status = 'Inactive';
                         }
                         $loan->investment_source = $investment_source;
                     }
