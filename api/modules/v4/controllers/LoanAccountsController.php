@@ -2149,7 +2149,7 @@ class LoanAccountsController extends ApiBaseController
                             $loan->status = 'Foreclosed';
                         }
                     }
-                    $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : $loan_type;
+                    $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : ($loan_type == 'THREE WHELLER' ? 'THREE WHEELER' : $loan_type);
                     $loan->updated_by = $user->user_enc_id;
                     foreach ($headers as $header) {
                         if (in_array($header, [
