@@ -6,6 +6,7 @@ use api\modules\v4\models\Employee;
 use api\modules\v4\utilities\ArrayProcessJson;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\extended\LoanAccountsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\Users;
@@ -13,6 +14,7 @@ use Yii;
 use yii\db\Expression;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 class EmployeeController extends ApiBaseController
@@ -375,9 +377,30 @@ class EmployeeController extends ApiBaseController
             if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $list->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
+
             if (isset($params['report_type']) && $params['report_type'] != "") {
-                $list->andWhere(['=', 'ala.user_type', $params['report_type']]);
+                //1 as sales 2 as collection 3 as telecaller
+
+                if ($params['report_type']==1){
+                    $reportDesig = 'Sales';
+                }elseif ($params['report_type']==2){
+                    $reportDesig = 'Collection';
+                }elseif($params['report_type']==3){
+                    $reportDesig = 'Call Center';
+                }
+                $reportListDesig = FinancerAssignedDesignations::find()
+                    ->alias('a')
+                    ->select(['assigned_designation_enc_id'])
+                    ->joinWith(['department0 b'],false,'INNER JOIN')
+                    ->where(['a.organization_enc_id'=>'R09YXEkaql0a9WWvJ8Y27531Wdo82J'])
+                    ->andWhere(['b.department'=>$reportDesig])
+                    ->asArray()
+                    ->all();
+                $reportListDesig = ArrayHelper::getColumn($reportListDesig,'assigned_designation_enc_id');
+
+                $list->andWhere(['IN', 'gd.assigned_designation_enc_id', $reportListDesig]);
             }
+
             $count = $list->count();
             $list = $list
                 ->limit($limit)

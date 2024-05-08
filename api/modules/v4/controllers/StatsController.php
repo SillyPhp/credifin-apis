@@ -42,7 +42,7 @@ class StatsController extends ApiBaseController
         $keyword = str_replace('%20', ' ', $keyword);
 
         $color = [
-            'X' => 'green',
+            'X' => 'violet',
             '1' => 'green',
             '2' => 'blue',
             '3' => 'red',
@@ -79,7 +79,7 @@ class StatsController extends ApiBaseController
         }
 
         $query = $query
-            ->andWhere(["a.is_deleted" => 0, 'a.status' => 'Active'])
+            ->andWhere(["a.is_deleted" => 0, 'a.status' => 'Active', 'a.hard_recovery' => 0])
             ->andWhere(['IN', 'a.sub_bucket', $case])
             ->groupBy(['a.sub_bucket'])
             ->orderBy(['a.sub_bucket' => SORT_ASC])
