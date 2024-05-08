@@ -2149,7 +2149,7 @@ class EmiCollectionsController extends ApiBaseController
             ->joinWith(['branchEnc b1'=>function($b1){
                 $b1->joinWith(['cityEnc b2'], false);
             }],false)
-            ->where(['b.is_deleted' => 0, 'b1.organization_enc_id' => $org_id])
+            ->where(['b.is_deleted' => 0, 'b.status' => 'Active', 'b1.organization_enc_id' => $org_id])
             ->andWhere(['NOT', ['b.branch_enc_id' => null]])
             ->andWhere(['NOT', ['b.bucket' => null]])
             ->groupBy(['b1.location_enc_id']);
@@ -2251,7 +2251,9 @@ class EmiCollectionsController extends ApiBaseController
                     ->joinWith(['userTypeEnc b4']);
             }], false)
             ->joinWith(['emiCollections ec' => function ($asla) {
-                $asla->joinWith(['loanAccountEnc lac'],false);
+                $asla->joinWith(['loanAccountEnc lac' => function ($lac) {
+                    $lac->andOnCondition(['lac.status' => 'Active']);
+                }],false);
                 $asla->joinWith(['loanAccountPtps lap'],false);
             }], false)
             ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
@@ -2372,6 +2374,7 @@ class EmiCollectionsController extends ApiBaseController
                 $x->joinWith(['branchEnc b1'=>function($b1){
                     $b1->joinWith(['cityEnc b2'], false);
                 }],false);
+                $x->andOnCondition(['lac.status' => 'Active']);
             }],false)
             ->joinWith(['loanAccountPtps lap'],false)
             ->where(['b1.organization_enc_id' => $org_id])

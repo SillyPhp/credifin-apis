@@ -450,27 +450,12 @@ class LoanAccountsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_account_enc_id"']);
         }
         $loan_acc_id = $params['loan_account_enc_id'];
+        $targetCollectionSelect = LoanAccountsExtended::targetAmount();
         $data = LoanAccounts::find()
             ->alias('a')
             ->select([
                 'a.name', 'a.loan_account_number', 'a.loan_type', 'DAY(emi_date) AS emi_date', 'a.overdue_amount', 'a.emi_amount',
-                "(CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                    (CASE WHEN (a.ledger_amount + a.overdue_amount) < (a.emi_amount * (CASE 
-                                                                                        WHEN a.bucket = 'sma-0' THEN 1.25
-                                                                                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                                                                        WHEN a.bucket = 'npa' THEN 2
-                                                                                        ELSE 1
-                                                                                    END) )
-                        THEN a.ledger_amount + a.overdue_amount 
-                    ELSE emi_amount * 
-                        (CASE 
-                            WHEN a.bucket = 'sma-0' THEN 1.25
-                            WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                            WHEN a.bucket = 'npa' THEN 2
-                            ELSE 1
-                        END) 
-                    END) 
-                END) AS target_collection_amount"
+                $targetCollectionSelect
             ])
             ->andWhere(['loan_account_enc_id' => $loan_acc_id])
             ->asArray()
@@ -1162,6 +1147,9 @@ class LoanAccountsController extends ApiBaseController
                                 $where['a.branch_enc_id'] = $value;
                             }
                             break;
+                        case 'sub_bucket':
+                            $where['a.sub_bucket'] = $value;
+                            break;
                         case 'loan_type':
                             $where['a.loan_type'] = $value;
                             break;
@@ -1549,28 +1537,13 @@ class LoanAccountsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $loan_number = $params['loan_number'];
         if (!empty($loan_number['loan_account_enc_id']) && $loan_number['loan_account_enc_id'] !== "null") {
+            $targetCollectionSelect = LoanAccountsExtended::targetAmount();
             $query = LoanAccountsExtended::find()
                 ->alias('a')
                 ->select([
                     'a.loan_account_enc_id', "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
-                    "CASE WHEN a.bucket = 'onTime' THEN a.emi_amount ELSE
-                    (CASE WHEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0) < a.emi_amount * (CASE 
-                        WHEN a.bucket = 'sma-0' THEN 1.25
-                        WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                        WHEN a.bucket = 'npa' THEN 2
-                        ELSE 1
-                    END)  
-                    THEN COALESCE(SUM(a.ledger_amount), 0) + COALESCE(SUM(a.overdue_amount), 0)  
-                        ELSE emi_amount * 
-                            (CASE 
-                                WHEN a.bucket = 'sma-0' THEN 1.25
-                                WHEN a.bucket IN ('sma-1', 'sma-2') THEN 1.50
-                                WHEN a.bucket = 'npa' THEN 2
-                                ELSE 1
-                        END) 
-                    END) 
-                END target_collection_amount", "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
+                    $targetCollectionSelect, "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
                     'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
                 ])
                 ->joinWith(["assignedCaller ac"], false)
