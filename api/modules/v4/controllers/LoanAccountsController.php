@@ -1147,6 +1147,9 @@ class LoanAccountsController extends ApiBaseController
                                 $where['a.branch_enc_id'] = $value;
                             }
                             break;
+                        case 'sub_bucket':
+                            $where['a.sub_bucket'] = $value;
+                            break;
                         case 'loan_type':
                             $where['a.loan_type'] = $value;
                             break;
