@@ -289,6 +289,7 @@ class EmployeeController extends ApiBaseController
                 ->joinWith(['assignedLoanAccounts0 ala' => function ($asla) {
                     $asla->joinWith(['loanAccountEnc lac' => function ($lac) {
                         $lac->joinWith(['emiCollections ec']);
+                        $lac->andOnCondition(['lac.status' => 'Active']);
                     }]);
                 }], false)
                 ->andWhere(['b4.user_type' => 'Employee', 'b.is_deleted' => 0])
