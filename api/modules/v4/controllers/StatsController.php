@@ -79,7 +79,7 @@ class StatsController extends ApiBaseController
         }
 
         $query = $query
-            ->andWhere(["a.is_deleted" => 0])
+            ->andWhere(["a.is_deleted" => 0, 'a.status' => 'Active'])
             ->andWhere(['IN', 'a.sub_bucket', $case])
             ->groupBy(['a.sub_bucket'])
             ->orderBy(['a.sub_bucket' => SORT_ASC])
