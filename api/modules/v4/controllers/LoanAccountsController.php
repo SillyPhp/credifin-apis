@@ -1153,6 +1153,9 @@ class LoanAccountsController extends ApiBaseController
                         case 'loan_type':
                             $where['a.loan_type'] = $value;
                             break;
+                        case 'state_enc_id':
+                            $where['d.state_enc_id'] = $value;
+                            break;
                     }
                 }
             }
@@ -1207,6 +1210,9 @@ class LoanAccountsController extends ApiBaseController
             ])
             ->addSelect($b_select)
             ->from(['a' => $loan])
+            ->leftJoin(['b' => OrganizationLocations::tableName()], 'b.location_enc_id = a.branch_enc_id')
+            ->leftJoin(['c' => Cities::tableName()], 'c.city_enc_id = b.city_enc_id')
+            ->leftJoin(['d' => States::tableName()], 'd.state_enc_id = c.state_enc_id')
             ->where($where);
         if (isset($params['sub_bucket']) && $params['sub_bucket'] !== "") {
             $bucket->andWhere(['a.sub_bucket' => $params['sub_bucket']]);
@@ -1745,6 +1751,7 @@ class LoanAccountsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'Marked Hard Recovery']);
     }
+
     public function actionAssignInvestmentSource()
     {
         $this->isAuth(2);
