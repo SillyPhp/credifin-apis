@@ -170,7 +170,7 @@ class StatsController extends ApiBaseController
 
         $color = [
             '1' => 'green',
-            '2' => 'green',
+            '2' => 'violet',
             '3' => 'blue',
             '4' => 'blue',
             '5' => 'red',
@@ -246,6 +246,78 @@ class StatsController extends ApiBaseController
                     'fill' => $fill,
                 ];
             }
+        }
+
+        $response = [
+            "postfix" => "USD",
+            "data" => $data
+        ];
+
+        return $response;
+    }
+
+    public function actionProductStatsAllBuckets()
+    {
+        $params = Yii::$app->request->get();
+
+        $keyword = isset($params['keyword']) ? urldecode($params['keyword']) : null;
+        $keyword = str_replace('%', ' ', $keyword);
+        $keyword = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $keyword);
+        $keyword = str_replace('%20', ' ', $keyword);
+
+        $color = [
+            'X' => 'violet',
+            '1' => 'green',
+            '2' => 'blue',
+            '3' => 'red',
+            '4' => 'yellow',
+            '5' => 'orange',
+            '6' => 'purple',
+            '7' => 'cyan',
+            '8' => 'magenta',
+        ];
+
+//        $loan_types = [];
+//        if (isset($params['hr'])) {
+//            $case = [5, 6, 7, 8];
+//        } elseif (isset($params['lr'])) {
+//            $case = ['X', 1, 2, 3, 4];
+//        }
+
+        if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {
+            $loan_types = ['MSME', 'Loan Against Property'];
+        } elseif ($keyword == 'HCV' || $keyword == 'LCV') {
+            $loan_types = ['HCV', 'LCV'];
+        } else {
+            $loan_types = [$keyword];
+        }
+
+        $query = LoanAccountsExtended::find()
+            ->alias("a")
+            ->select([
+                "a.sub_bucket", "COUNT(*) AS count"
+            ]);
+
+        if (!empty($loan_types)) {
+            $query->andWhere(["IN", "a.loan_type", $loan_types]);
+        }
+
+        $query = $query
+            ->andWhere(["a.is_deleted" => 0, 'a.status' => 'Active', 'a.hard_recovery' => 0])
+//            ->andWhere(['IN', 'a.sub_bucket', $case])
+            ->groupBy(['a.sub_bucket'])
+            ->orderBy(['a.sub_bucket' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $data = [];
+        foreach ($query as $row) {
+            $sub_bucket = $row['sub_bucket'];
+            $data[] = [
+                'name' => $sub_bucket,
+                'value' => $row['count'],
+                'fill' => isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray',
+            ];
         }
 
         $response = [

@@ -1156,6 +1156,10 @@ class LoanAccountsController extends ApiBaseController
                         case 'state_enc_id':
                             $where['d.state_enc_id'] = $value;
                             break;
+                        case 'collection_date':
+                            $day = (int)$value;
+                            $where["DAY(a.emi_date)"] = $day;
+                            break;
                     }
                 }
             }
