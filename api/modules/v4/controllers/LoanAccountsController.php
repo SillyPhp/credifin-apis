@@ -1377,7 +1377,7 @@ class LoanAccountsController extends ApiBaseController
         $ptpcases = $ptpcases
             ->groupBy(['a.ptp_enc_id'])
             ->orderBy(['a.proposed_date' => SORT_ASC]);
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $ptpcases->andWhere(['IN', 'a.created_by', $juniors]);
             if (!in_array($user->username, ['phf1148', 'phf110', 'ghuman']))
@@ -2476,7 +2476,7 @@ class LoanAccountsController extends ApiBaseController
             ->leftJoin(['d1' => Users::tableName()], 'd1.user_enc_id = ala.created_by')
             ->groupBy(['proposed_date']);
 
-        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
+        if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $sub_query->andWhere(['IN', 'a.created_by', $juniors]);
         }
