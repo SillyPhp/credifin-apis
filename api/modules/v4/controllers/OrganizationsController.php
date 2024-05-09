@@ -2990,7 +2990,8 @@ class OrganizationsController extends ApiBaseController
                 ["IN", "a.created_by", $juniors],
                 ["IN", "a.loan_account_enc_id", $assigned_lc]
             ]);
-            $query->andWhere(['!=', 'a.sub_bucket', 'X']);
+            if (!in_array($user->username, ['phf1148', 'phf110', 'ghuman']))
+                $query->andWhere(['!=', 'a.sub_bucket', 'X']);
         }
 
         if (!empty($params["bucket"])) {

@@ -1229,7 +1229,8 @@ class LoanAccountsController extends ApiBaseController
                     ["IN", "a.created_by", $juniors],
                     ["IN", "a.loan_account_enc_id", $assigned_lc],
                 ]);
-            $bucket->andWhere(['!=', 'a.sub_bucket', 'X']);
+            if (!in_array($user->username, ['phf1148', 'phf110', 'ghuman']))
+                $bucket->andWhere(['!=', 'a.sub_bucket', 'X']);
         }
         $bucket = $bucket->one();
         $bucket = array_merge($bucket, $this->ptpCasesStats($where));
@@ -1379,7 +1380,8 @@ class LoanAccountsController extends ApiBaseController
         if (empty($user->organization_enc_id) && !in_array($user->username, ['nisha123', 'rajniphf', 'KKB', 'phf604', 'wishey'])) {
             $juniors = UserUtilities::getting_reporting_ids($user->user_enc_id, 1);
             $ptpcases->andWhere(['IN', 'a.created_by', $juniors]);
-            $ptpcases->andWhere(['!=', 'c.sub_bucket', 'X']);
+            if (!in_array($user->username, ['phf1148', 'phf110', 'ghuman']))
+                $ptpcases->andWhere(['!=', 'c.sub_bucket', 'X']);
         }
 
         if (!empty($params["fields_search"])) {
