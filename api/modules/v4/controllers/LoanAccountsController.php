@@ -2163,6 +2163,9 @@ class LoanAccountsController extends ApiBaseController
                             'CityName',
                             'OverDue'
                         ])) {
+                            if (in_array($header, ['VehicleMain', 'VehicleModel', 'VehicleMake', 'VehicleEngineNo', 'VehicleChassisNo', 'VehicleNo']) && in_array($loan_type, ['Loan Against Property', 'MSME'])) {
+                                continue;
+                            }
                             $value = $data[array_search($header, $headers)];
 
                             if (in_array($header, ['NachApproved'])) {
