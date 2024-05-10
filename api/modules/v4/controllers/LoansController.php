@@ -1000,15 +1000,15 @@ class LoansController extends ApiBaseController
         $params = Yii::$app->request->post();
 
         // creating co applicant form object
-        $model = new CoApplicantForm();
-        $model->user_id = $user->user_enc_id;
+            $model = new CoApplicantForm();
+            $model->user_id = $user->user_enc_id;
 
         // loading data to model
         if ($model->load(Yii::$app->request->post())) {
 
             // validating model
             if ($model->validate()) {
-                if ($this->phone_validation($model->phone, $params['loan_co_app_enc_id'])) {
+                if (!empty($model->phone) && $this->phone_validation($model->phone, $params['loan_co_app_enc_id'])) {
                     return $this->response(422, ['status' => 422, 'message' => 'Phone no. already exists']);
                 }
                 // if not empty loan_co_app_enc_id updating co-applicant
