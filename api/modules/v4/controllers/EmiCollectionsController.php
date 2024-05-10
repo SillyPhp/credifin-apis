@@ -12,9 +12,7 @@ use common\models\extended\EmiCollectionExtended;
 use common\models\extended\EmployeesCashReportExtended;
 use common\models\extended\LoanAccountsExtended;
 use common\models\extended\UsersExtended;
-use common\models\LoanAccountPtps;
 use common\models\LoanAccounts;
-use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
@@ -1416,7 +1414,7 @@ class EmiCollectionsController extends ApiBaseController
             $model->andWhere("IF(a.emi_payment_mode = 1, a.emi_payment_status != 'pending', TRUE)");
         }
         if (!empty($search)) {
-            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'start_date', 'end_date'];
+            $a = ['loan_account_number', 'company_id', 'case_no', 'customer_name', 'dealer_name', 'reference_number', 'emi_payment_mode', 'min_amount', 'max_amount', 'min_ptp_amount', 'max_ptp_amount', 'address', 'collection_date', 'loan_type', 'emi_payment_method', 'ptp_date', 'emi_payment_status', 'collection_start_date', 'collection_end_date', 'delay_reason', 'proposed_start_date', 'proposed_end_date'];
             $others = ['collected_by', 'branch', 'min_target_collection_amount', 'max_target_collection_amount', 'min_total_pending_amount', 'max_total_pending_amount', 'designation', 'payment_status', 'state_enc_id', 'ptp_status', 'updated_by', 'updated_on_start_date', 'updated_on_end_date', 'bucket', 'sub_bucket'];
             foreach ($search as $key => $value) {
                 if (!empty($value) || $value == '0') {
@@ -1476,10 +1474,10 @@ class EmiCollectionsController extends ApiBaseController
                             case 'max_ptp_amount':
                                 $model->andWhere(['<=', 'a.ptp_amount', $value]);
                                 break;
-                            case 'start_date':
+                            case 'proposed_start_date':
                                 $model->andWhere(['>=', 'a.ptp_date', $value]);
                                 break;
-                            case 'end_date':
+                            case 'proposed_end_date':
                                 $model->andWhere(['<=', 'a.ptp_date', $value]);
                                 break;
                             case 'emi_payment_mode':
