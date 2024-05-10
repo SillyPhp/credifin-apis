@@ -375,6 +375,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.lead_by',
                 'a.managed_by',
                 'lp.name as loan_product',
+                'a.updated_on as last_updated_on',
                 'i.updated_on',
                 'a.created_on',
                 'a.loan_status_updated_on as disbursement_date',
