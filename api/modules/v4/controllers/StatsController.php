@@ -131,9 +131,6 @@ class StatsController extends ApiBaseController
             }], false)
             ->joinWith(['loanProductsEnc c' => function ($c) use ($keyword) {
                 $c->andWhere(['c.name' => $keyword]);
-//                $c->joinWith(['assignedFinancerLoanTypeEnc d' => function ($d) {
-//                    $d->joinWith(['loanTypeEnc e'], false);
-//                }], false);
             }], false)
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['ce2.name'])
@@ -191,10 +188,7 @@ class StatsController extends ApiBaseController
 
         $query = LoanAccountsExtended::find()
             ->alias("a")
-            ->select(["a.sub_bucket"
-                , "COUNT(*) AS count"
-//            ,"CAST(COUNT(*) AS UNSIGNED) AS count"
-            ])
+            ->select(["a.sub_bucket", "COUNT(*) AS count"])
             ->andWhere(['a.is_deleted' => 0, 'a.status' => "Active", 'a.hard_recovery' => 0]);
 
         if (!empty($loan_types)) {
@@ -215,12 +209,7 @@ class StatsController extends ApiBaseController
         $data = [];
         foreach ($results as $row) {
             $sub_bucket = $row['sub_bucket'];
-            $value = (int)$row['count'];
-
-//            if ($sub_bucket == 'X') {
-//                continue;
-//            }
-
+            $value = (string)$row['count'];
             $bucket_name = null;
             foreach ($buckets as $bucket_key => $bucket) {
                 if (in_array($sub_bucket, $bucket['subBucket'])) {
@@ -232,7 +221,7 @@ class StatsController extends ApiBaseController
             $found = false;
             foreach ($data as &$item) {
                 if ($item['name'] == $bucket_name) {
-                    $item['value'] += $value;
+                    $item['value'] = (string)((int)$item['value'] + (int)$value);
                     $found = true;
                     break;
                 }
@@ -277,13 +266,6 @@ class StatsController extends ApiBaseController
             '8' => 'magenta',
         ];
 
-//        $loan_types = [];
-//        if (isset($params['hr'])) {
-//            $case = [5, 6, 7, 8];
-//        } elseif (isset($params['lr'])) {
-//            $case = ['X', 1, 2, 3, 4];
-//        }
-
         if ($keyword == 'MSME' || $keyword == 'Loan Against Property') {
             $loan_types = ['MSME', 'Loan Against Property'];
         } elseif ($keyword == 'HCV' || $keyword == 'LCV') {
@@ -304,7 +286,6 @@ class StatsController extends ApiBaseController
 
         $query = $query
             ->andWhere(["a.is_deleted" => 0, 'a.status' => 'Active', 'a.hard_recovery' => 0])
-//            ->andWhere(['IN', 'a.sub_bucket', $case])
             ->groupBy(['a.sub_bucket'])
             ->orderBy(['a.sub_bucket' => SORT_ASC])
             ->asArray()
@@ -313,11 +294,13 @@ class StatsController extends ApiBaseController
         $data = [];
         foreach ($query as $row) {
             $sub_bucket = $row['sub_bucket'];
-            $data[] = [
-                'name' => $sub_bucket,
-                'value' => $row['count'],
-                'fill' => isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray',
-            ];
+            if ($sub_bucket != null) {
+                $data[] = [
+                    'name' => $sub_bucket,
+                    'value' => $row['count'],
+                    'fill' => isset($color[$sub_bucket]) ? $color[$sub_bucket] : 'gray',
+                ];
+            }
         }
 
         $response = [
