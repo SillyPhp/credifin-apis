@@ -343,6 +343,7 @@ class EmployeeController extends ApiBaseController
                         }
                     }
                 }
+
                 $list->andWhere($where);
                 $list->andHaving($having);
             }
@@ -392,7 +393,7 @@ class EmployeeController extends ApiBaseController
                     ->alias('a')
                     ->select(['assigned_designation_enc_id'])
                     ->joinWith(['department0 b'],false,'INNER JOIN')
-                    ->where(['a.organization_enc_id'=>'R09YXEkaql0a9WWvJ8Y27531Wdo82J'])
+                    ->where(['a.organization_enc_id'=>$org_id])
                     ->andWhere(['b.department'=>$reportDesig])
                     ->asArray()
                     ->all();
