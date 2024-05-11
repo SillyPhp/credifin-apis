@@ -75,12 +75,9 @@ class LoanAccountsExtended extends LoanAccounts
     public static function targetAmount(){
          $select = "(CASE 
                     WHEN a.sub_bucket = 'X' THEN 
-                        CASE 
-                            WHEN (a.ledger_amount + a.overdue_amount) < 0 THEN 0 
-                            ELSE (a.ledger_amount + a.overdue_amount) 
-                        END 
+                        GREATEST(a.ledger_amount + a.overdue_amount, 0)
                     ELSE 
-                        LEAST(a.ledger_amount + a.overdue_amount, a.emi_amount * 
+                        LEAST(GREATEST(a.ledger_amount + a.overdue_amount, 0), a.emi_amount * 
                             (CASE 
                                 WHEN a.sub_bucket IN ('1','2') THEN 1.25 
                                 WHEN a.sub_bucket IN ('3','4','5','6') THEN 1.50 
