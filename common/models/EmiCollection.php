@@ -17,6 +17,7 @@ use Yii;
  * @property string $collection_date Collection Date
  * @property string $loan_account_number Loan Account Number
  * @property string $phone Phone Number
+ * @property string $sub_bucket
  * @property string $payment_method
  * @property string $other_payment_method
  * @property double $amount Amount
@@ -85,6 +86,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['customer_interaction', 'customer_visit', 'emi_payment_status', 'address', 'comments'], 'string'],
             [['emi_collection_enc_id', 'loan_account_enc_id', 'branch_enc_id', 'customer_name', 'case_no', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'reference_number', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
+            [['sub_bucket'], 'string', 'max' => 2],
             [['payment_method'], 'string', 'max' => 30],
             [['other_payment_method', 'dealer_name'], 'string', 'max' => 50],
             [['pincode'], 'string', 'max' => 8],
