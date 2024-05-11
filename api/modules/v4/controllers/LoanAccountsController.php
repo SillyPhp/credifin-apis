@@ -1556,7 +1556,7 @@ class LoanAccountsController extends ApiBaseController
                     'a.loan_account_enc_id', "(CASE WHEN a.nach_approved = 0 THEN 'Inactive' WHEN a.nach_approved = 1 THEN 'Active' ELSE '' END) AS nach_approved", "CONCAT(ac.first_name, ' ', COALESCE(ac.last_name, '')) as assigned_caller",
                     'a.loan_account_number', 'a.name', 'a.phone', 'a.loan_account_enc_id AS id',
                     $targetCollectionSelect, "(GREATEST(a.ledger_amount + a.overdue_amount, 0)) AS total_pending_amount",
-                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket',
+                    'a.emi_amount', 'a.overdue_amount', 'a.ledger_amount', 'a.loan_type', 'a.emi_date', 'a.bucket', "a.sub_bucket"
                 ])
                 ->joinWith(["assignedCaller ac"], false)
                 ->joinWith(["assignedLoanAccounts d" => function ($d) {
@@ -2137,6 +2137,9 @@ class LoanAccountsController extends ApiBaseController
                             $loan->status = 'Foreclosed';
                         }
                     }
+                    if (in_array('AmountFinanced', $headers)) {
+                        $loan_type = $data[array_search('AmountFinanced', $headers)] <= 180000 && in_array($loan_type, ['THREE WHELLER', 'THREE WHEELER']) ? 'E-Rickshaw' : $loan_type;
+                    }
                     $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : ($loan_type == 'THREE WHELLER' ? 'THREE WHEELER' : $loan_type);
                     $loan->updated_by = $user->user_enc_id;
                     foreach ($headers as $header) {
@@ -2151,7 +2154,6 @@ class LoanAccountsController extends ApiBaseController
                             'TotalInstallments',
                             'AmountFinanced',
                             'Stock',
-                            'AmountFinanced',
                             'SMA_STATUS',
                             'SMA_STATUS_DATE',
                             'Name',

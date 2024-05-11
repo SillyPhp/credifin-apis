@@ -1348,12 +1348,9 @@ class EmiCollectionsController extends ApiBaseController
                 'a.comments', 'a.emi_payment_status', 'a.reference_number', 'a.dealer_name', 'd1.payment_short_url', 'lc.bucket',
                 "(CASE 
                     WHEN lc.sub_bucket = 'X' THEN 
-                        CASE 
-                            WHEN (lc.ledger_amount + lc.overdue_amount) < 0 THEN 0 
-                            ELSE (lc.ledger_amount + lc.overdue_amount) 
-                        END 
+                        GREATEST(lc.ledger_amount + lc.overdue_amount, 0)
                     ELSE 
-                        LEAST(lc.ledger_amount + lc.overdue_amount, lc.emi_amount * 
+                        LEAST(GREATEST(lc.ledger_amount + lc.overdue_amount, 0), lc.emi_amount * 
                             (CASE 
                                 WHEN lc.sub_bucket IN ('1','2') THEN 1.25 
                                 WHEN lc.sub_bucket IN ('3','4','5','6') THEN 1.50 
