@@ -2137,6 +2137,9 @@ class LoanAccountsController extends ApiBaseController
                             $loan->status = 'Foreclosed';
                         }
                     }
+                    if (in_array('AmountFinanced', $headers)) {
+                        $loan_type = $data[array_search('AmountFinanced', $headers)] <= 180000 && in_array($loan_type, ['THREE WHELLER', 'THREE WHEELER']) ? 'E-Rickshaw' : $loan_type;
+                    }
                     $loan->loan_type = in_array($loan_type, ['E-RICKSHAW', 'E- Rickshaw', 'E-RICKSHAW -ELECTRIC', 'E RIKSHAW']) ? 'E-Rickshaw' : ($loan_type == 'THREE WHELLER' ? 'THREE WHEELER' : $loan_type);
                     $loan->updated_by = $user->user_enc_id;
                     foreach ($headers as $header) {
@@ -2151,7 +2154,6 @@ class LoanAccountsController extends ApiBaseController
                             'TotalInstallments',
                             'AmountFinanced',
                             'Stock',
-                            'AmountFinanced',
                             'SMA_STATUS',
                             'SMA_STATUS_DATE',
                             'Name',
